@@ -20,19 +20,20 @@ function doTurn() {
 
 function updateBoard() {
   var num = 1;
-  $("td").click(function(){
+  $("td").on("click", function(){
     if($(this).html() == '' && (num % 2 == 0)) {
        $(this).text("X");
+       num += 1;
     } else if ($(this).html() == '' && (num % 2 != 0)){
        $(this).text("O");
+       num += 1;
     } else {
       alert("This position is taken.");
     }
     checkWinner();
-    if(num == 9) {
+    if(num == 10) {
       alert("Cats Game!");
     };
-    num += 1;
   });
 }
 
