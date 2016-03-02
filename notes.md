@@ -1,3 +1,5 @@
-http://jsfiddle.net/nishacodes/2Jvtu/
+Delete Games
 
+Refresh page
 
+Decide right turn count
