@@ -1,25 +1,5 @@
 var num = 1;
-// var gameCount = 0;
 var currentGame;
-
-$(document).ready(function(){
-  updateBoard();
-  attachListeners();
-});
-
-
-// function doTurn() {
-//   updateBoard();
-// }
-
-// function player(num) {
-//   if(num % 2 == 0) {
-//     $(this).text('O');
-//   } else {
-//     $(this).text('X');
-//   }
-// }
-
 
 function updateBoard() {
   $("td").on("click", function(){
@@ -33,8 +13,7 @@ function updateBoard() {
       alert("This position is taken.");
     }
 
-
-    checkWinner();
+   checkWinner();
 
     if (num == 10) {
       alert("Cats Game!");
@@ -144,11 +123,6 @@ function checkWinner() {
   } 
 }
 
-
-var message = function(message) {
-  $("#message").html(message);
-}
-
 var findTurn = function(state) {
   var num = 1;
   state.forEach(function(item) {
@@ -160,9 +134,6 @@ var findTurn = function(state) {
 }
 
 var attachListeners = function() {
-  $("tbody").click(function(event) {
-    doTurn(event)
-  });
   $("#games").click(function(event) {
     var state = parseState(event)
     swapGame(state, getGameId(event))
@@ -207,17 +178,17 @@ var swapGame = function(state, id) {
   num = findTurn(state);
 }
 
-var placeToken = function(marks) {
+var placeToken = function(token) {
   $("td").each(function(i) {
-    $(this).text(marks[i]);
+    $(this).text(token[i]);
   })
 }
 var getToken = function() {
-  var marks = []
+  var token = []
   $("td").each(function(i) {
-    marks.push($(this).text())
+    token.push($(this).text())
   })
-  return marks;
+  return token;
 }
 
 var save = function(resetCurrentGame) {
@@ -249,5 +220,7 @@ var save = function(resetCurrentGame) {
   })
 }
 
-
-
+$(document).ready(function(){
+  updateBoard();
+  attachListeners();
+});
