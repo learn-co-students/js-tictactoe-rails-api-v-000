@@ -13,7 +13,7 @@ describe('Tic Tac Toe Functionality', function() {
       spyOn(window, "doTurn");
       $(selector).click();
       expect(window.doTurn).toHaveBeenCalled();
-    });     
+    });
   });
 
   describe( "#doTurn", function() {
@@ -31,13 +31,13 @@ describe('Tic Tac Toe Functionality', function() {
       expect(turn).toEqual(1);
       expect(window.updateState).toHaveBeenCalled;
       expect(window.checkWinner).toHaveBeenCalled;
-    });     
+    });
   });
 
   describe( "#player", function() {
     it("should return the mark of the current player when player is X", function() {
       expect(player()).toEqual("X");
-    });     
+    });
     it("should return the mark of the current player when player is O", function() {
       turn = 1;
       expect(player()).toEqual("O");
@@ -51,7 +51,7 @@ describe('Tic Tac Toe Functionality', function() {
       var selector = '[data-x="0"][data-y="0"]';
       $(selector).click();
       expect($(selector).html()).toEqual("X");
-    }); 
+    });
 
     it("calls on `player()`", function() {
       setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table></body>');
@@ -60,7 +60,7 @@ describe('Tic Tac Toe Functionality', function() {
       var selector = '[data-x="1"][data-y="0"]';
       $(selector).click();
       expect(window.player).toHaveBeenCalled();
-    });     
+    });
   });
 
   describe( "#message", function() {
@@ -70,7 +70,7 @@ describe('Tic Tac Toe Functionality', function() {
       var string = "Player X Won!";
       message(string);
       expect($("#message").html()).toEqual(string);
-    });     
+    });
   });
 
   describe( "#checkWinner", function() {
@@ -82,8 +82,8 @@ describe('Tic Tac Toe Functionality', function() {
       $(selector).click()
       var selector = '[data-x="0"][data-y="1"]'
       $(selector).click()
-      expect(checkWinner()).toEqual(false)   
-    });     
+      expect(checkWinner()).toEqual(false)
+    });
 
     it("calls on 'message' and passes it the string 'Player X Won!' when player X wins vertically", function() {
       setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table></body>');
@@ -96,7 +96,7 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="0"][data-y="2"]').click();
       // _X_|_O_|_O_
       // _X_|___|___
-      //  X |   |   
+      //  X |   |
       expect(window.message).toHaveBeenCalledWith("Player X Won!");
     });
 
@@ -111,8 +111,8 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="2"][data-y="2"]').click();
       // _X_|_O_|_O_
       // ___|_X_|___
-      //    |   | X 
-      expect(window.message).toHaveBeenCalledWith("Player X Won!"); 
+      //    |   | X
+      expect(window.message).toHaveBeenCalledWith("Player X Won!");
     });
   });
 
@@ -150,15 +150,15 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="2"][data-y="2"]').click();
       // _O_|_X_|_X_
       // ___|_O_|___
-      //    | X | O 
+      //    | X | O
       expect($("#message").html()).toEqual("Player O Won!");
       // ___|___|___
       // ___|___|___
-      //    |   |   
+      //    |   |
       expect(turn).toEqual(0);
       $("td").each(function() {
         expect($(this).html()).toEqual("")
-      }); 
+      });
     });
 
     it("resets the board and sets turn to zero when there is a tie", function() {
@@ -175,15 +175,15 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="2"][data-y="0"]').click();
       // _X_|_O_|_X_
       // _O_|_O_|_X_
-      //  X | X | O 
+      //  X | X | O
       expect($("#message").html()).toEqual("Tie game");
       // ___|___|___
       // ___|___|___
-      //    |   |   
+      //    |   |
       expect(turn).toEqual(0);
       $("td").each(function() {
         expect($(this).html()).toEqual("")
-      });  
+      });
     });
 
     it("allows client to play multiple game", function() {
@@ -200,11 +200,11 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="2"][data-y="0"]').click();
       // _X_|_O_|_X_
       // _O_|_O_|_X_
-      //  X | X | O 
+      //  X | X | O
       expect($("#message").html()).toEqual("Tie game");
       // ___|___|___
       // ___|___|___
-      //    |   |   
+      //    |   |
       expect(turn).toEqual(0);
       $("td").each(function() {
         expect($(this).html()).toEqual("")
@@ -217,18 +217,18 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="2"][data-y="2"]').click();
       // _O_|_X_|_X_
       // ___|_O_|___
-      //    | X | O 
+      //    | X | O
       expect($("#message").html()).toEqual("Player O Won!");
       // ___|___|___
       // ___|___|___
-      //    |   |   
+      //    |   |
       expect(turn).toEqual(0);
       $("td").each(function() {
         expect($(this).html()).toEqual("")
       });
     });
   });
-}); 
+});
 
 
 describe('#integration tests of persistence', function() {
@@ -269,7 +269,7 @@ describe('#integration tests of persistence', function() {
         }
       }
       var response = {
-        "status": 200, 
+        "status": 200,
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
@@ -291,7 +291,7 @@ describe('#integration tests of persistence', function() {
         games: []
       }
       var response = {
-        "status": 200, 
+        "status": 200,
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
@@ -313,15 +313,16 @@ describe('#integration tests of persistence', function() {
         }]
       }
       var response = {
-        "status": 200, 
+        "status": 200,
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
       $('#previous').click()
       jasmine.Ajax.requests.mostRecent().respondWith(response);
+      debugger;
       expect($("#games").children().length).toBe(1);
     });
-  }); 
+  });
 
   it("if i click save it should persist the game so that when i asked for previous games i should get one more in the DOM", function() {
     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0">X</td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1">O</td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
@@ -335,7 +336,7 @@ describe('#integration tests of persistence', function() {
         }]
       }
       var response = {
-        "status": 200, 
+        "status": 200,
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
@@ -347,7 +348,7 @@ describe('#integration tests of persistence', function() {
         games: [{
           id:1,
           state: ["X","","","","","","","",""]
-        }, 
+        },
         {
           id:2,
           state: ["","","","","","","","",""]
@@ -355,7 +356,7 @@ describe('#integration tests of persistence', function() {
         ]
       }
       var response = {
-        "status": 200, 
+        "status": 200,
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
@@ -378,7 +379,7 @@ describe('#integration tests of persistence', function() {
       $('[data-x="0"][data-y="2"]').click();
       //     // _X_|_O_|_O_
       //     // _X_|___|___
-      //     //  X |   |   
+      //     //  X |   |
       var request = jasmine.Ajax.requests.mostRecent();
       expect(request.url).toBe('/games');
       expect(request.method).toBe('POST');
@@ -398,7 +399,7 @@ describe('#integration tests of persistence', function() {
       $('[data-x="0"][data-y="2"]').click();
       //     // _X_|_O_|_O_
       //     // _X_|___|___
-      //     //  X |   |   
+      //     //  X |   |
       var request = jasmine.Ajax.requests.mostRecent();
       expect(request.url).toBe('/games');
       expect(request.method).toBe('POST');
@@ -409,7 +410,7 @@ describe('#integration tests of persistence', function() {
         }
       }
       var response = {
-        "status": 200, 
+        "status": 200,
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
@@ -420,7 +421,7 @@ describe('#integration tests of persistence', function() {
       $('[data-x="2"][data-y="0"]').click();
       //     // _X_|_O_|_O_
       //     // _X_|___|___
-      //     //    |   |   
+      //     //    |   |
       expect(jasmine.Ajax.requests.count()).toBe(1)
       $("#save").click()
       expect(jasmine.Ajax.requests.count()).toBe(2)
@@ -440,7 +441,7 @@ describe('#integration tests of persistence', function() {
         games: [{
           id:1,
           state: ["X","","","","","","","",""]
-        }, 
+        },
         {
           id:2,
           state: ["","X","O","","O","","","",""]
@@ -448,7 +449,7 @@ describe('#integration tests of persistence', function() {
         ]
       }
       var response = {
-        "status": 200, 
+        "status": 200,
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
@@ -460,5 +461,5 @@ describe('#integration tests of persistence', function() {
       expect($('[data-x="2"][data-y="0"]').text()).toBe("O")
       expect($('[data-x="1"][data-y="1"]').text()).toBe("O")
     });
-  });      
+  });
 });
