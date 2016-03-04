@@ -128,7 +128,7 @@ function message(m) {
 function getGames(event) {
   $.getJSON('/games').done(function(gamesJson) {
     $(gamesJson.games).each(function(gameId){
-      $('#list').append('<li>' + (gameId + 1) + '</id>')
+      $('#list').append('<li data-gameid=' + (gameId + 1) + '>' + (gameId + 1) + '</id>')
     });
   });
 }

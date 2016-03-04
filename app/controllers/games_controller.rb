@@ -17,7 +17,6 @@ class GamesController < ApplicationController
   end
 
   def show
-    binding.pry
     game = Game.find(params[:id].to_i)
     render json: game.to_json
   end
