@@ -1,7 +1,7 @@
+require 'pry'
 class GamesController < ApplicationController
-
   def create
-    game = Game.create
+    game = Game.create(id: params[:id], state: params[:game][:state])
   end
 
   def index
@@ -11,7 +11,8 @@ class GamesController < ApplicationController
 
   def update
     game = Game.find(params[:id])
-    game.state = params[:state]
+    game.update(state: params[:game][:state])
     game.save
   end
+
 end

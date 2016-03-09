@@ -33,6 +33,7 @@
 				saveGame();
 				newGame();
 				showPrevious();
+				loadGame();
 			});
 
 			var currentGame = 0,
@@ -89,6 +90,7 @@
 				}
 			}
 
+
 			function newGame() {
 				$('#newGame').on('click', function() {
 					turn = 0;
@@ -112,23 +114,19 @@
 			}
 
 			function saveGame() {
-				$('#save').on('click', function(event){
-					event.preventDefault();
+				$('#save').on('click', function(){
 					var gameBoard = [],
 							url = '',
 							method = '';
 
-					if(currentGame) {
-						url = '/games/' + currentGame;
-						method = 'PATCH';
-					} else {
-						url = '/games';
-						method = 'POST'
-					}
+					$('td').each(function() {
+						gameBoard.push($(this).text());
+					});
+					// debugger;
 
 					$.ajax({
-						url: url,
-						method: method,
+						url: '/games/' + currentGame,
+						method: 'PATCH',
 						data: {
 							game: {
 								state: gameBoard
@@ -136,25 +134,37 @@
 						}
 					});
 				});
+				gameAppender();
+			}
+
+			function loadGame(){
+				$('div#games').on('click', 'button', function(){
+					currentGame = $(this).attr("data-game")
+					var state = $(this).attr("data-state");
+					var board = state.split(',');
+					$('td').each(function(i, val) {
+						$(val).html(board[i]);
+					});
+
+				});
+			}
+
+			function gameAppender(){
+				var gameList = [];
+				$.getJSON("/games").done(function(data) {
+					gameList = data.games;
+					var list = $("#games");
+					list.html("");
+					gameList.forEach(function(game){
+						list.append('<button class="loader" data-game="' + game['id'] + '" data-state="' + game['state'] + '">' + game['id'] + '</button>');
+					});
+				});
 			}
 
 			function showPrevious(){
-				$("#previous").on('click', function(event){
-					event.preventDefault();
-					var gameList = [];
-					$.getJSON("/games", function(data) {
-						var games = data["games"];
-						for (i = 0; i < games.length; i++){
-							gameList.push(games[i]);
-						}
-					});
-					$('#games').append("<ol>");
-					var ol = $("#games");
-					gameList.forEach(function(game){
-						ol.append('<li><a href="/games/' + game[0] + '">' + game[0] + '</a></li>');
-					});
-					$('#games').append("</ol>");
-				});
+
+				$("#previous").on('click', gameAppender()
+				);
 			}
 		</script>
 	</body>
