@@ -24,5 +24,138 @@
 		<div id="message"></div>
 		<button id="save">Save Game</button>
 		<button id="previous">Show Previous Games</button>
+		<button id="newGame">New Game</button>
+
+		<script type="text/javascript" charset="utf-8">
+
+			$(function (){
+				attachListeners();
+				saveGame();
+				newGame();
+				showPrevious();
+			});
+
+			var currentGame = 0,
+					turn = 0,
+					winCombos = [
+					[[0,0], [1,0], [2,0]],
+					[[0,1], [1,1], [2,1]],
+					[[0,2], [1,2], [2,2]],
+	        [[0,0], [0,1], [0,2]],
+	        [[1,0], [1,1], [1,2]],
+	        [[2,0], [2,1], [2,2]],
+	        [[0,0], [1,1], [2,2]],
+	        [[0,2], [1,1], [2,0]]
+				];
+
+
+			function attachListeners() {
+				$("td").on("click", function(event){
+					event.preventDefault();
+					doTurn(this, event);
+				});
+			}
+
+			function doTurn(cell, event) {
+				turn ++;
+				updateState(cell);
+				checkWinner();
+			}
+
+			function updateState(cell) {
+				$(cell).html(player());
+				checkWinner(event);
+			}
+
+			function checkWinner(cell) {
+
+				for (var i = 0; i < winCombos.length; i++) {
+					var winner = winCombos[i];
+
+					var currentBoard = [];
+					$.each(winner, function(i, position){
+						var x = position[0],
+							  y = position[1],
+								board = $('[data-x="' + x +'"][data-y="' + y + '"]').html();
+
+							if (board === player()) {
+								currentBoard.push(board);
+							}
+
+							if (currentBoard.length === 3) {
+								message(player());
+							}
+					});
+				}
+			}
+
+			function newGame() {
+				$('#newGame').on('click', function() {
+					turn = 0;
+					++currentGame;
+					$('td').each(function(){
+						$(this).html('');
+					});
+				});
+			}
+
+			function message(player) {
+				$('#message').html("Player " + player + " Won!");
+			}
+
+			function player() {
+				if (turn %2 === 0) {
+					return "X";
+				} else {
+					return "O";
+				};
+			}
+
+			function saveGame() {
+				$('#save').on('click', function(event){
+					event.preventDefault();
+					var gameBoard = [],
+							url = '',
+							method = '';
+
+					if(currentGame) {
+						url = '/games/' + currentGame;
+						method = 'PATCH';
+					} else {
+						url = '/games';
+						method = 'POST'
+					}
+
+					$.ajax({
+						url: url,
+						method: method,
+						data: {
+							game: {
+								state: gameBoard
+							}
+						}
+					});
+				});
+			}
+
+			function showPrevious(){
+				$("#previous").on('click', function(event){
+					event.preventDefault();
+					var gameList = [];
+					$.getJSON("/games", function(data) {
+						var games = data["games"];
+						for (i = 0; i < games.length; i++){
+							gameList.push(games[i]);
+						}
+					});
+					$('#games').append("<ol>");
+					var ol = $("#games");
+					gameList.forEach(function(game){
+						ol.append('<li><a href="/games/' + game[0] + '">' + game[0] + '</a></li>');
+					});
+					$('#games').append("</ol>");
+				});
+			}
+		</script>
 	</body>
 </html>
