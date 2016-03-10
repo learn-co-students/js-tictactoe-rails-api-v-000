@@ -36,8 +36,9 @@
 				loadGame();
 			});
 
-			var currentGame = 0,
+			var currentGame,
 					turn = 0,
+					method,
 					winCombos = [
 					[[0,0], [1,0], [2,0]],
 					[[0,1], [1,1], [2,1]],
@@ -50,9 +51,9 @@
 				];
 
 
+
 			function attachListeners() {
 				$("td").on("click", function(event){
-					event.preventDefault();
 					doTurn(this, event);
 				});
 			}
@@ -93,6 +94,7 @@
 
 			function newGame() {
 				$('#newGame').on('click', function() {
+					method = "POST";
 					turn = 0;
 					++currentGame;
 					$('td').each(function(){
@@ -114,32 +116,49 @@
 			}
 
 			function saveGame() {
-				$('#save').on('click', function(){
-					var gameBoard = [],
-							url = '',
-							method = '';
+				var gameBoard = [],
+						url = '';
+
+				$('#save').on('click', function(event){
+					event.preventDefault();
 
 					$('td').each(function() {
 						gameBoard.push($(this).text());
 					});
-					// debugger;
+
+					if(method === "PATCH") {
+						url = "/games/" + parseInt(currentGame);
+					} else {
+						url = "/games";
+					}
+
+					debugger;
 
 					$.ajax({
-						url: '/games/' + currentGame,
-						method: 'PATCH',
+						url: url,
+						method: method,
+						// dataType: "json",
 						data: {
 							game: {
 								state: gameBoard
 							}
 						}
 					});
+					gameBoard = [];
+					gameAppender();
 				});
-				gameAppender();
 			}
 
 			function loadGame(){
 				$('div#games').on('click', 'button', function(){
-					currentGame = $(this).attr("data-game")
+					method = "PATCH";
+					currentGame = parseInt($(this).attr("data-game"));
+					turn = 0;
+					$('td').each(function(data){
+						if (data.html != ""){
+							turn++;
+						}
+					});
 					var state = $(this).attr("data-state");
 					var board = state.split(',');
 					$('td').each(function(i, val) {
@@ -163,8 +182,10 @@
 
 			function showPrevious(){
 
-				$("#previous").on('click', gameAppender()
-				);
+				$("#previous").on('click', function(event) {
+					event.preventDefault();
+					gameAppender();
+				});
 			}
 		</script>
 	</body>
