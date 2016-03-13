@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:update, :show]
+  before_action :set_game, only: [:show, :update, :destroy]
 
   def index
     @games = Game.all
@@ -10,7 +10,6 @@ class GamesController < ApplicationController
   end
 
   def show
-    @game = Game.find(params[:id])
     respond_to do |format|
       format.html { render :show }
       format.json { render json: @game}
@@ -18,22 +17,15 @@ class GamesController < ApplicationController
   end
 
   def create
-    @game = Game.create(state: params[:game][:state])
-    respond_to do |format|
-      format.html { render :show }
-      format.json { render json: @game}
-    end
+    Game.create(state: params[:game][:state])
   end
 
   def update
     @game.update(state: params[:game][:state])
-    respond_to do |format|
-      format.html { render :show }
-      format.json { render json: @game}
-    end
   end
 
   def destroy
+    @game.destroy
   end
 
   private
