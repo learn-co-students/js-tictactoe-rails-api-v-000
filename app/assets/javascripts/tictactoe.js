@@ -6,6 +6,7 @@ $(document).ready(function(){
   var $playerTurn = 'X';
   var $win=false;
 
+
   $cells.click(function(){
     //if gameover or one player won, restart
     if(gameover() || $win) {
@@ -79,4 +80,30 @@ $(document).ready(function(){
     $('#message').text('');
   }
 
+
+  $("#previous").on("click", getPreviousGame);
+
+
 });
+
+//server sends back something like:
+// {"x": [00, 12, 01],"o": [22, 11, 10]}
+
+function getPreviousGame() {
+  var previousGameId = $('#games').text();
+
+  $.get('/games/'+previousGameId+'.json', function(data){
+    data["x"].forEach(function(position){
+      $('[data-x="'+position[0]+'"][data-y="'+position[1]+'"]').text("X");
+    });
+    data["o"].forEach(function(position){
+      $('[data-x="'+position[0]+'"][data-y="'+position[1]+'"]').text("O");
+    });
+  })
+
+  $("#games").text(previousGameId-1);
+}
+
+function saveGame() {
+
+}
