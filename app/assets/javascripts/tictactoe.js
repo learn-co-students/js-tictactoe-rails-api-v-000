@@ -14,7 +14,7 @@ function attachListeners() {
   //$('[data-x="0"][data-y="0"]').click(function() {
   //  doTurn();
   //});
-  $('[data-x]').click(function() {
+  $('tbody').click(function() {
     //var cell = this;
     //debugger;
     doTurn(this);
