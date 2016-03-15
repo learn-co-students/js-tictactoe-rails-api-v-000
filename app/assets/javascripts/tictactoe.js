@@ -11,10 +11,6 @@ var winningCombos =
 [[2,0],[1,1],[0,2]]]
 
 function attachListeners() {
-<<<<<<< HEAD
-  $("tbody").click(function(event) {
-    doTurn(event)
-=======
   //$('[data-x="0"][data-y="0"]').click(function() {
   //  doTurn();
   //});
@@ -22,7 +18,6 @@ function attachListeners() {
     //var cell = this;
     //debugger;
     doTurn(this);
->>>>>>> 9ce55a4251a85c4f82d9d4dee03f40ae47785c8e
   });
 }
 
