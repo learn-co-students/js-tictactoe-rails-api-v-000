@@ -44,6 +44,9 @@ function checkWinner() {
       return message("Player " + player() + " Won!");
     }
   });
+  if (turn > 7) {
+    message("Tie game");
+  }
   return false;
 }
 
