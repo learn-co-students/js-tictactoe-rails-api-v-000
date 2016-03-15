@@ -50,8 +50,8 @@ function checkWinner() {
 
 }
 
-function message() {
-
+function message(string) {
+  $('#message').text(string);
 }
 
 $(document).ready(function() {
