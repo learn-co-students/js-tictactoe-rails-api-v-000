@@ -21,8 +21,11 @@ function attachListeners() {
 function doTurn(cell) {
   if ($(cell).text() === "") {
     updateState(cell);
-    checkWinner();
-    //turn += 1;
+    if (checkWinner()) {
+      resetGame();
+    } else {
+      turn += 1;
+    }
   }
 }
 
@@ -49,14 +52,11 @@ function checkWinner() {
 
   if (winner) {
     message("Player " + winner + " Won!");
-    resetGame();
     return winner;
   } else if (turn > 7) {
     message("Tie game");
-    resetGame();
     return 'tie';
   } else {
-    turn += 1;
     return false;
   }
 }
