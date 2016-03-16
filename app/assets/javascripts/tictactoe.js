@@ -19,9 +19,11 @@ function attachListeners() {
 }
 
 function doTurn(cell) {
-  updateState(cell);
-  checkWinner();
-  turn += 1;
+  if ($(cell).text() === "") {
+    updateState(cell);
+    checkWinner();
+    //turn += 1;
+  }
 }
 
 function player() {
@@ -33,25 +35,39 @@ function player() {
 }
 
 function updateState(cell) {
-  if ($(cell).text() === "") {
-    $(cell).text(player());
-  }
+  $(cell).text(player());
 }
 
 function checkWinner() {
+  var winner;
+
   $.each(winningCombos, function (index, combo) {
     if ($(combo[0]).text() === player() && $(combo[1]).text() === player() && $(combo[2]).text() === player()) {
-      return message("Player " + player() + " Won!");
+      winner = player();
     }
   });
-  if (turn > 7) {
+
+  if (winner) {
+    message("Player " + winner + " Won!");
+    resetGame();
+    return winner;
+  } else if (turn > 7) {
     message("Tie game");
+    resetGame();
+    return 'tie';
+  } else {
+    turn += 1;
+    return false;
   }
-  return false;
 }
 
 function message(string) {
   $('#message').text(string);
+}
+
+function resetGame() {
+  $('td').text("");
+  turn = 0;
 }
 
 $(document).ready(function() {
