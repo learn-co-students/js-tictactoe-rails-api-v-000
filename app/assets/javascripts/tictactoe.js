@@ -5,7 +5,9 @@ $(document).ready(function(){
   var $cells=$('td');
   var $playerTurn = 'X';
   var $win=false;
+  var newGame = true;
 
+  getLastSavedGameId();
 
   $cells.click(function(){
     //if gameover or one player won, restart
@@ -83,27 +85,69 @@ $(document).ready(function(){
 
   $("#previous").on("click", getPreviousGame);
 
+  $('#save').on("click", saveGame);
+
+
+  //server sends back something like: 6
+  function getLastSavedGameId(){
+    $.get('/last_game.json', function(data){
+      $("#games").text(data);
+    });
+  }
+
+  //server sends back something like:
+  // {"x": ["00", "12", "01"],"o": ["22", "11", "10"]}
+  function getPreviousGame() {
+    $('td').each(function(){
+      $(this).text('');
+    });
+
+
+    var previousGameId = parseInt($('#games').text());
+
+    $.get('/games/'+previousGameId+'.json', function(data){
+      data["x"].forEach(function(position){
+        $('[data-x="'+position[0]+'"][data-y="'+position[1]+'"]').text("X");
+      });
+      data["o"].forEach(function(position){
+        $('[data-x="'+position[0]+'"][data-y="'+position[1]+'"]').text("O");
+      });
+    })
+
+    $("#games").text(previousGameId-1);
+
+    newGame = false;
+
+  }
+
+  function saveGame() {
+    var xValues = [];
+    var oValues = [];
+    var status ={};
+    var id = null;
+
+    for(var x=0; x<=2; x++){
+      for(var y=0; y<=2; y++){
+        if($('[data-x="'+x+'"][data-y="'+y+'"]').text() === "X"){
+          xValues.push(x.toString()+y.toString());
+        } else if ($('[data-x="'+x+'"][data-y="'+y+'"]').text() === "O"){
+          oValues.push(x.toString()+y.toString());
+        }
+      }
+    }
+
+    status={
+      'x': xValues,
+      'o': oValues
+    }
+
+    id = parseInt($('#games').text());
+
+    $.post('/games', {'status': status, 'id': id, 'new_game': newGame});
+
+    getLastSavedGameId();
+    restart();
+    newGame=true;
+  }
 
 });
-
-//server sends back something like:
-// {"x": [00, 12, 01],"o": [22, 11, 10]}
-
-function getPreviousGame() {
-  var previousGameId = $('#games').text();
-
-  $.get('/games/'+previousGameId+'.json', function(data){
-    data["x"].forEach(function(position){
-      $('[data-x="'+position[0]+'"][data-y="'+position[1]+'"]').text("X");
-    });
-    data["o"].forEach(function(position){
-      $('[data-x="'+position[0]+'"][data-y="'+position[1]+'"]').text("O");
-    });
-  })
-
-  $("#games").text(previousGameId-1);
-}
-
-function saveGame() {
-
-}
