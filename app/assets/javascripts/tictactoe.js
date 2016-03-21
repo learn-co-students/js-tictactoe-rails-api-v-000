@@ -10,6 +10,7 @@ var winningCombos = [
                       [[2,0],[1,1],[0,2]]
                     ]
 var currentGame;
+
 $(document).ready(function(){
   attachListeners();
 });
@@ -18,6 +19,17 @@ function attachListeners(){
   $('td').on("click",function(event){
     doTurn(event);
   });
+  
+  $('#previous').on("click", function(event){
+    event.preventDefault();
+    getAllGames();
+  });
+
+  $('#save').on("click",function(event){
+    event.preventDefault();
+    saveGame();
+  });
+
 }
 
 function doTurn(event){
@@ -68,4 +80,32 @@ function resetBoard(){
   $('td').each(function(cell){
     $(this).text("");
   });
+}
+
+function getAllGames(){
+  $.get('/games', function(response){
+    debugger;
+  });
+}
+
+function getBoard(){
+  return $.map($('td'),function(cell){
+    return ($(cell).text());
+  });
+}
+
+function saveGame(){
+  var url;
+  var method;
+  
+  if (currentGame === 'undefined'){
+     url = "/games";
+     method = "PATCH";
+  }
+  else{
+    url = "/games/" + currentGame
+    method = "POST";
+  }
+
+  debugger;
 }
