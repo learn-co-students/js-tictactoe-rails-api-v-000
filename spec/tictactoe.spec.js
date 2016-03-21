@@ -455,6 +455,21 @@ describe('#integration tests of persistence', function() {
       jasmine.Ajax.requests.mostRecent().respondWith(response);
       // when you display the previous games you must give them a data attribute of gameid
       $('[data-gameid="2"]').click()
+      
+      var data = {
+        game:{
+          id:2,
+          state: ["","X","O","","O","","","",""]
+        }
+      }
+
+      var response = {
+        "status": 200, 
+        "contentType": 'application/json',
+        "responseText" : JSON.stringify(data)
+      }
+      jasmine.Ajax.requests.mostRecent().respondWith(response);
+      
       expect($('[data-x="0"][data-y="0"]').text()).toBe("")
       expect($('[data-x="1"][data-y="0"]').text()).toBe("X")
       expect($('[data-x="2"][data-y="0"]').text()).toBe("O")
