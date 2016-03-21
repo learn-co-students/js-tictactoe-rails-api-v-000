@@ -9,7 +9,7 @@ var winningCombos = [
                       [[1,0],[1,1],[1,2]], 
                       [[2,0],[1,1],[0,2]]
                     ]
-var currentGame;
+var currentGame = 0;
 
 $(document).ready(function(){
   attachListeners();
@@ -17,6 +17,7 @@ $(document).ready(function(){
 
 function attachListeners(){
   $('td').on("click",function(event){
+    event.preventDefault();
     doTurn(event);
   });
   
@@ -33,24 +34,40 @@ function attachListeners(){
 }
 
 function doTurn(event){
-  updateState(event);
-  turn++;
-  checkWinner();
+    updateState(event);
+    turn++;
+    checkWinner();
 }
 
-function checkWinner(){
-  winningCombos.forEach(function(combo){
+function checkCombos(){
+  var cell_1;
+  var cell_2;
+  var cell_3;
+  
+  winningCombos.some(function(combo){
     cell_1 = $('td[data-x=' + combo[0][0] + '][data-y=' + combo[0][1] + ']').text();
     cell_2 = $('td[data-x=' + combo[1][0] + '][data-y=' + combo[1][1] + ']').text();
     cell_3 = $('td[data-x=' + combo[2][0] + '][data-y=' + combo[2][1] + ']').text();
+    
     if(cell_1 === cell_2 && cell_1 === cell_3 && (cell_1 === 'X' || cell_1 === 'O')){
       message("Player " + cell_1 + " Won!");
+      saveGame();
       resetBoard();
+      return true;
     }
   });
+  return false;
+}
+
+function checkWinner(){
+  var winBool;
   
-  if (turn === 9){
+  winBool = checkCombos();
+  debugger;
+  
+  if (turn === 9 && winBool === false){
     message("Tie game");
+    saveGame();
     resetBoard();
   }
   else{
@@ -83,7 +100,18 @@ function resetBoard(){
 }
 
 function getAllGames(){
+  var appendText;
+  
   $.get('/games', function(response){
+    
+    if (response["games"].length > 0){
+      response["games"].forEach(function(game){
+        appendText += '<li id="[data-game-' + game["id"] + ']">' + game["id"] + '</li>' 
+      });
+    }
+  
+  }).done(function(){
+    $('#games').html(appendText);
     debugger;
   });
 }
@@ -95,17 +123,28 @@ function getBoard(){
 }
 
 function saveGame(){
+  debugger;
   var url;
   var method;
-  
-  if (currentGame === 'undefined'){
+  if (currentGame === 0){
      url = "/games";
-     method = "PATCH";
+     method = "POST";
   }
   else{
     url = "/games/" + currentGame
-    method = "POST";
+    method = "PATCH";
   }
 
-  debugger;
+  $.ajax({
+    url:url,
+    method:method,
+    data:{
+      game:{
+        state:getBoard()
+      }
+    }
+  }).done(function(response){
+    currentGame = response["game"]["id"];
+    $('#list').append('<li id="[data-game-' + currentGame + ']">' + currentGame + '</li>');
+  });
 }
