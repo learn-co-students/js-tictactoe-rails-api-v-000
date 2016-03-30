@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+	<testsuite tests="9" errors="0" failures="0" time="0.151" timestamp="2016-03-21T17:18:13">
+		<testcase classname="#integration tests of persistence" name="if i click the getAllGames button it should send a get request to /games" time="0.004">
+		</testcase>
+		<testcase classname="#integration tests of persistence" name="if i click the save game button it should post to /games" time="0.002">
+		</testcase>
+		<testcase classname="#integration tests of persistence" name="if i click the save game button a second time it should send a PATCH to /games/:id" time="0.006">
+		</testcase>
+		<testcase classname="#integration tests of persistence" name="if i click the previous game button and no games have been saved i should get no games in the DOM" time="0.002">
+		</testcase>
+		<testcase classname="#integration tests of persistence" name="if i click the previous game button and a game has already been saved it should add the previous game to the DOM" time="0.002">
+		</testcase>
+		<testcase classname="#integration tests of persistence" name="if i click save it should persist the game so that when i asked for previous games i should get one more in the DOM" time="0.004">
+		</testcase>
+		<testcase classname="#integration tests of persistence" name="if i play a game it should autosave at the end of the game" time="0.028">
+		</testcase>
+		<testcase classname="#integration tests of persistence" name="if i play a game it should autosave and start a new game" time="0.053">
+		</testcase>
+		<testcase classname="#integration tests of persistence" name="if should be able to switch to an old game" time="0.044">
+		</testcase>
+	</testsuite>
+</testsuites>
+

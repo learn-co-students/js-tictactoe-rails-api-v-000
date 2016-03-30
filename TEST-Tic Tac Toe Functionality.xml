@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+	<testsuite tests="14" errors="0" failures="0" time="0.463" timestamp="2016-03-21T17:18:12">
+		<testcase classname="Tic Tac Toe Functionality" name="#attachListeners should attach event listeners which call your turn function when someone clicks on a square" time="0.008">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="#doTurn should increment turn and call on `checkWinner()`, `updateState()`" time="0.004">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="#player should return the mark of the current player when player is X" time="0.001">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="#player should return the mark of the current player when player is O" time="0">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="#updateState adds the return value of `player()` to the clicked `td` on the board" time="0.013">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="#updateState calls on `player()`" time="0.01">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="#message adds the string it&amp;apos;s passed to the div with an id of message" time="0.002">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="#checkWinner returns false if there is no winning combo on the board" time="0.026">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="#checkWinner calls on &amp;apos;message&amp;apos; and passes it the string &amp;apos;Player X Won!&amp;apos; when player X wins vertically" time="0.052">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="#checkWinner calls on &amp;apos;message&amp;apos; and passes it the string &amp;apos;Player X Won!&amp;apos; when player X wins diagonally" time="0.044">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="when there is a tie calls on &amp;apos;message&amp;apos; and passes it the string &amp;apos;Tie game&amp;apos; when there is a tie" time="0.086">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="resetting the board resets the board and sets turn to zero when there is a winner" time="0.062">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="resetting the board resets the board and sets turn to zero when there is a tie" time="0.1">
+		</testcase>
+		<testcase classname="Tic Tac Toe Functionality" name="resetting the board allows client to play multiple game" time="0.048">
+		</testcase>
+	</testsuite>
+</testsuites>
+
