@@ -35,7 +35,7 @@ var updateState = function(coords, event) {
   board[coords[0]][coords[1]] = player();
 }
 
-function checkWinner(){
+var checkWinner = function(){
   var win = false;
   WINNERS.forEach(function(winner){
     if(board[winner[0][0]][winner[0][1]] == board[winner[1][0]][winner[1][1]] && board[winner[2][0]][winner[2][1]] == board[winner[1][0]][winner[1][1]] && board[winner[0][0]][winner[0][1]] != null) {
@@ -55,7 +55,7 @@ function checkWinner(){
   }
 }
 
-function player(){
+var player = function(){
   if (turn % 2 == 0) {
     return "X";
   } else {
@@ -63,16 +63,17 @@ function player(){
   }
 }
 
-function message(msg) {
+var message = function(msg) {
   $('#message').text(msg);
 }
 
-function reset_board() {
+var reset_board = function() {
     board = [[null, null, null], [null, null, null], [null, null, null]];
     $("td").text("");
     turn = -1;
     console.log("Resetting turn = " + turn);
 }
+
 $(document).ready(function(){
   attachListeners();
 });
