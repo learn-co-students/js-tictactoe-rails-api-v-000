@@ -15,9 +15,26 @@ $(document).ready(function() {
 
 function attachListeners() {
 
+  $('newGame').on('click', function(event) {
+    newGame();
+  });
+
+
+  $('td').on('click', function(event) {
+    doTurn(this, event)
+  });
 }
 
-function checkWinner(cell) {
+function doTurn(cell, event) {
+  updateState(cell);
+  checkWinner();
+}
+
+function message(player) {
+  $('#message').html("Player " + player + " Won!");
+}
+
+function checkWinner() {
 
   for (var i = 0; i < winCombos.length; i++) {
     var combo = winCombos[i];
@@ -34,6 +51,7 @@ function checkWinner(cell) {
 
         if (currentBoard.length === 3) {
           message(player());
+          debugger;
         }
     });
   }
@@ -53,22 +71,22 @@ function player() {
   return token;
 }
 
-function updateState() {
-  $('td').on('click', function() {
-    if($(this).html == '') {
-      $(this).text = player();
+function updateState(cell) {
+  
+    if($.trim($("selector").html())=='') {
+      $(cell).html(player());
       turn += 1;
     } else {
       alert("This position is taken.")
     }
-    checkWinner();
+
 
     if(turn == 10) {
       alert("Cats Game!");
-      saveGame();
+      //saveGame();
       $('table td').empty(); //removes the content from all td within the table.
       turn = 1; //resets the turn counter to 1 for a new game
     }
-  });
-}
+  }
+
 
