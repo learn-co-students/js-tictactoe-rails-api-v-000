@@ -32,8 +32,14 @@ function attachListeners(){
   });
 
   $('#games').on("click",function(event){
+    $('message').html('');
     var gameId = $(event["target"]).data("gameid")
     loadGame(gameId);
+  });
+
+  $('#newGame').on("click", function(event){
+    $('#message').html('')
+    resetBoard();
   });
 }
 
@@ -152,7 +158,6 @@ function saveGame(resetBool){
     }
   }).done(function(response){
     currentGame = response["game"]["id"];
-    debugger;
     $('#list').append('<li data-gameid="' + currentGame + '">' + currentGame + '</li>');
     if(resetBool === true){
       resetBoard();
@@ -161,5 +166,10 @@ function saveGame(resetBool){
 }
 
 function updateState(event){
-  $(event["currentTarget"]).html(player());
+  if($(event["currentTarget"]).text() !== "X" && $(event["currentTarget"]).text() !== "O"){
+    $(event["currentTarget"]).html(player());
+  }
+  else{
+    $('#message').text("Try another move");
+  }
 }
