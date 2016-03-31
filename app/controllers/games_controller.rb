@@ -1,11 +1,11 @@
 class GamesController < ApplicationController
   def index
-    @games = Game.all.map(&:id)
+    @games = Game.all
     render json: @games, status: 201
   end
 
   def create 
-    @game = Game.create(state: params["board"].split(''))
+    @game = Game.create(state: params["game"]["state"])
     render json: @game, status: 201
   end
 

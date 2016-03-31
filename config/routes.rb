@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   get 'games/:id', to: 'games#show'
 
-  patch 'games/update', to: 'games#update'
+  patch 'games/:id', to: 'games#update'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
