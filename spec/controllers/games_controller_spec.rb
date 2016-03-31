@@ -1,5 +1,5 @@
 require "rails_helper"
-
+require 'pry'
 RSpec.describe GamesController, :type => :controller do
   describe "responds to" do
 
@@ -21,6 +21,7 @@ RSpec.describe GamesController, :type => :controller do
     it "should return a JSON object with the games" do
       Game.create(:state => ["X", "O", "", "", "", "", "", "", ""])
       Game.create(:state => ["X", "O", "X", "", "", "", "", "", ""])
+    
       get :index
       expected = {
         "games"=>

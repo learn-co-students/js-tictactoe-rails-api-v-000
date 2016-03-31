@@ -1,19 +1,18 @@
+require 'pry'
 class GamesController < ApplicationController
   before_action :set_game, only: [:show, :update]
 
   def index
     @games = Game.all
-    respond_to do |format|
-      format.html { render :show }
-      format.json { render json: @games}
-    end
+    
+    render json: @games
+    
   end
 
   def show
-    respond_to do |format|
-      format.html { render :show }
-      format.json { render json: @game}
-    end
+    
+    render json: @game
+    
   end
 
   def create
