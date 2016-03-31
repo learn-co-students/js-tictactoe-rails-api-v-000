@@ -22,12 +22,17 @@ function attachListeners() {
 
   $('#games').click(function(event) {
     loadGame($(event.target).data('state').split(','));
-    currentGame = $(event.target).data('id');
+    gameNumber = $(event.target).data('game');
+    
   });
 
   $('#save').on('click', function() {
     saveGame();
   });
+
+  $('#previous').on('click', function() {
+    listGames();
+  })
 
 
   $('td').on('click', function(event) {
@@ -103,10 +108,12 @@ function updateState(cell) {
   function loadGame(game) {
     $('td').each(function(index) {
       $(this).html(game[index]);
+      
     });
   }
 
   function listGames() {
+    clearGameList();
     var gameList = [];
     $.getJSON("/games").done(function(data) {
       gameList = data.games;
@@ -118,6 +125,10 @@ function updateState(cell) {
     });
   }
 
+  function clearGameList() {
+    $('#games').html("");
+  }
+
   function saveGame() {
     var board = [];
     var url = '/games';
@@ -127,7 +138,7 @@ function updateState(cell) {
       url = '/games/' + gameNumber;
       method = 'PATCH';
     }
-
+      debugger;
     $('td').each(function() {
       board.push($(this).text());
     });
@@ -144,7 +155,8 @@ function updateState(cell) {
     });
 
     board = [];
-    listGames();
+    clearGameList();
+    //listGames();
 
   }
 
