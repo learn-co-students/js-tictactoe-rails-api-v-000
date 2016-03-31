@@ -4,7 +4,7 @@ $(document).ready(function(){
 
 
 var turn = 0;
-
+var currentGame = 0;
 var winningCombinations = [
   ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="0"]', '[data-x="2"][data-y="0"]'], //[0, 1, 2],
   ['[data-x="0"][data-y="1"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="1"]'],//[3, 4, 5],
@@ -27,6 +27,12 @@ var player = function(){
 function attachListeners() {
   $("td").on('click', function(event) {
     doTurn(event.target);
+  });
+  $('#previous').on('click', function(event) {
+    getGames(event);
+  });
+  $('#save').on('click', function(event) {
+    saveGame(event);
   });
 }
 
@@ -57,7 +63,7 @@ function checkWinner() {
       won = true;//need to keep the () besides player
     }
   });
-  
+
   if(won){
     message("Player " + player() + " Won!");
     return player();
@@ -65,7 +71,7 @@ function checkWinner() {
   message("Tie game");
   return 'tie';
   } else {
-  return false;
+  return won;
   }    
 }
 
@@ -83,4 +89,21 @@ function message(text) {
 var currentGame = function(){
 
 };
+
+function getGames(event){
+    $.get('/games').done(function(allGames){
+      $(allGames.games).each(function(id){
+        $('ul#games').append('<li><a href="/games/' + (id + 1) + '">' + (id + 1) + '</a></li>');
+
+      });
+    });
+}
+
+function saveGame(event){
+
+  
+
+
+}
+
 
