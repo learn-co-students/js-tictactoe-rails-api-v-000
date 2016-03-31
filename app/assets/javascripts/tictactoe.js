@@ -13,6 +13,7 @@ var winCombos = [
 
 $(function() {
   attachListeners();
+  saveGame();
 });
 
 function attachListeners(){
@@ -80,6 +81,29 @@ function resetBoard(){
     $(this).text("");
   })
 }
+
+function boardState(){
+  var board = []
+  $('td').each(function(){
+    board.push($(this).text());
+  });
+  return board;
+}
+
+function saveGame(){
+  $('#save').on('click', function(){
+    $.ajax({
+      url: '/games',
+      method: 'post',
+      data: { 
+        game: {
+          state: boardState()
+        }
+      }
+    });
+  });
+}
+
 
 
 
