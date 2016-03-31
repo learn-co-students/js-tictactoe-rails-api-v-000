@@ -1,3 +1,4 @@
+var gameNumber = 0;
 var turn = 1;
 var winCombos = [
 [[0,0], [1,0], [2,0]],
@@ -15,8 +16,17 @@ $(document).ready(function() {
 
 function attachListeners() {
 
-  $('newGame').on('click', function(event) {
+  $('#newGame').on('click', function(event) {
     newGame();
+  });
+
+  $('#games').click(function(event) {
+    loadGame($(event.target).data('state').split(','));
+    currentGame = $(event.target).data('id');
+  });
+
+  $('#save').on('click', function() {
+    saveGame();
   });
 
 
@@ -90,6 +100,24 @@ function updateState(cell) {
     }
   }
 
+  function loadGame(game) {
+    $('td').each(function(index) {
+      $(this).html(game[index]);
+    });
+  }
+
+  function listGames() {
+    var gameList = [];
+    $.getJSON("/games").done(function(data) {
+      gameList = data.games;
+      var listSelector = $("#games");
+      listSelector.html("");
+      gameList.forEach(function(game) {
+        listSelector.append('<button class="loader" data-game="' + game['id'] + '" data-state="' + game['state'] + '">' + game['id'] + '</button>');
+      });
+    });
+  }
+
   function saveGame() {
     var board = [];
     var url = '/games';
@@ -116,6 +144,7 @@ function updateState(cell) {
     });
 
     board = [];
+    listGames();
 
   }
 
