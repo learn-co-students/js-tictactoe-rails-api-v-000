@@ -51,7 +51,7 @@ function checkWinner() {
 
         if (currentBoard.length === 3) {
           message(player());
-          debugger;
+          //debugger;
         }
     });
   }
@@ -64,6 +64,7 @@ function newBoard() {
 function newGame() {
   newBoard();
   turn = 1;
+  gameNumber = 0;
 }
 
 function player() {
@@ -87,6 +88,35 @@ function updateState(cell) {
       $('table td').empty(); //removes the content from all td within the table.
       turn = 1; //resets the turn counter to 1 for a new game
     }
+  }
+
+  function saveGame() {
+    var board = [];
+    var url = '/games';
+    var method = 'POST';
+
+    if (gameNumber != 0) { 
+      url = '/games/' + gameNumber;
+      method = 'PATCH';
+    }
+
+    $('td').each(function() {
+      board.push($(this).text());
+    });
+
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: JSON,
+      data: {
+        game: {
+          state: board
+        }
+      }
+    });
+
+    board = [];
+
   }
 
 
