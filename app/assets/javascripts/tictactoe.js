@@ -1,7 +1,8 @@
 var turn = 0;
+var currentGame;
 
 var winCombos = [
-  [0,1,2],  //Top row
+  [0,1,2],  // Top row
   [3,4,5],  // Middle row
   [6,7,8],  // Bottom row
   [0,3,6],  // Vertical row
@@ -13,7 +14,6 @@ var winCombos = [
 
 $(function() {
   attachListeners();
-  saveGame();
 });
 
 function attachListeners(){
@@ -21,6 +21,9 @@ function attachListeners(){
     var x = $(this).data("x");
     var y = $(this).data("y");
     doTurn(x, y);
+  });
+  $('#save').on('click', function(){
+    saveGame();
   });
 }
 
@@ -72,6 +75,7 @@ function player(){
 
 function message(string){
   $('#message').html(string);
+  saveGame(true);
   resetBoard();
 }
 
@@ -90,20 +94,34 @@ function boardState(){
   return board;
 }
 
-function saveGame(){
-  $('#save').on('click', function(){
-    $.ajax({
-      url: '/games',
-      method: 'post',
-      data: { 
-        game: {
-          state: boardState()
+function saveGame(resetCurrentGame){
+  var url, method;
+  if(currentGame) {
+    url = "/games/" + currentGame
+    method = "PATCH"
+  } else {
+    url = "/games"
+    method = "POST"
+  }
+
+  $.ajax({
+    url: url,
+    method: method,
+    data: { 
+      game: {
+        state: boardState()
         }
+      },
+      success: function(data) {
+      if(resetCurrentGame) {
+        currentGame = undefined;
+      } else {
+        currentGame = data.id;
       }
-    });
+    }
   });
 }
 
-
+ 
 
 
