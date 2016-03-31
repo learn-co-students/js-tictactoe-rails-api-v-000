@@ -54,25 +54,30 @@ function updateState(selector){
   }
 };
 
-
-
 function checkWinner() {
   var won = false;
+  var tie = false;
+  var notOver = true;
   $.each(winningCombinations, function (index, combo) {
     if($(combo[0]).text() === player() && $(combo[1]).text() === player() && $(combo[2]).text() === player()) {
-      won = true;//need to keep the () besides player
+      won = true;
+    }else if(turn > 7){
+      tie = true;
+    }else{
+      notOver = false;
     }
   });
-
   if(won){
     message("Player " + player() + " Won!");
     return player();
-  } else if (turn > 7) {
-  message("Tie game");
-  return 'tie';
-  } else {
-  return won;
-  }    
+  }
+  else if(tie){
+    message("Tie game");
+    return true;
+  }
+  else{
+    return notOver;
+  }
 }
 
 function resetBoard(){
