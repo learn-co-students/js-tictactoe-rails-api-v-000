@@ -6,6 +6,7 @@ class GamesController < ApplicationController
 
   def create 
     @game = Game.create(state: params["game"]["state"])
+    binding.pry
     render json: @game, status: 201
   end
 

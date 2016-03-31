@@ -119,6 +119,7 @@ var saveGame = function(reset){
       if(reset){
         currentGame = undefined;
       } else {
+        debugger
         currentGame = data.game.id;
       }
     }
