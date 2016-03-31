@@ -93,7 +93,6 @@ var message = function(msg) {
 var resetBoard = function() {
     $("td").text("");
     turn = 0;
-    currentGame = 0;
 }
 
 var saveGame = function(reset){
