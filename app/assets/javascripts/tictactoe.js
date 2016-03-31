@@ -43,6 +43,7 @@ function attachListeners() {
 function doTurn(cell, event) {
   updateState(cell);
   checkWinner();
+  turn += 1
 }
 
 function message(player) {
@@ -63,7 +64,7 @@ function checkWinner() {
         if (board === player()) {
           currentBoard.push(board);
         }
-
+        debugger;
         if (currentBoard.length === 3) {
           message(player());
           //debugger;
@@ -77,6 +78,7 @@ function newBoard() {
 }
 
 function newGame() {
+  $('#message').html("");
   newBoard();
   turn = 1;
   gameNumber = 0;
@@ -91,7 +93,7 @@ function updateState(cell) {
   
     if($.trim($("selector").html())=='') {
       $(cell).html(player());
-      turn += 1;
+      //turn += 1;
     } else {
       alert("This position is taken.")
     }
@@ -99,7 +101,7 @@ function updateState(cell) {
 
     if(turn == 10) {
       alert("Cats Game!");
-      //saveGame();
+      saveGame();
       $('table td').empty(); //removes the content from all td within the table.
       turn = 1; //resets the turn counter to 1 for a new game
     }
