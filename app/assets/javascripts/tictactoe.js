@@ -25,6 +25,10 @@ function attachListeners(){
   $('#save').on('click', function(){
     saveGame();
   });
+  $('#previous').on('click', function(){
+    returnGames();
+  });
+  
 }
 
 function doTurn(x, y){
@@ -107,17 +111,50 @@ function saveGame(resetCurrentGame){
   $.ajax({
     url: url,
     method: method,
+    dataType: "json",
     data: { 
       game: {
         state: boardState()
         }
       },
       success: function(data) {
+        console.log(data)
       if(resetCurrentGame) {
         currentGame = undefined;
       } else {
-        currentGame = data.id;
+        currentGame = data["id"];
       }
+    }
+  });
+}
+
+function returnGames(){
+  $.ajax({
+    url: '/games',
+    method: 'GET',
+    dataType: "json",
+    success: function(data) {
+      console.log(data)
+      allGames = data["games"]
+      html = "<ul>"
+      for (var i = 0; i < allGames.length; i++) {
+        html += "<li data-id=" +  allGames[i]["id"] + ">" + allGames[i]["id"] + "</li>"
+      };
+      html += "</ul>"
+      $('#games').html(html);
+      loadGame(data);
+    }
+  });
+}
+
+function loadGame(data){
+  $('li').on('click', function(){
+    var gameId = $(this).data("id");
+    var oldGame = data["games"][gameId]["state"]
+    console.log(oldGame)
+    currentGame = gameId
+    for(var i = 0; i < oldGame.length; i++){
+      $('td:eq(' + i + ')').text(oldGame[i]);
     }
   });
 }
