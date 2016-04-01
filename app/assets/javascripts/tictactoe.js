@@ -41,7 +41,7 @@ function doTurn(selector){
   if(!checkWinner()){
     turn++;
   }else{
-    resetBoard();
+    saveGame();
   }
 
 };
@@ -105,9 +105,21 @@ function getGames(event){
 }
 
 function saveGame(event){
+  event.preventDefault();
+  //alert("this should save the game then reset the board");
+  var boardPositions = [];
+  $("table tr").each(function(row, tr){
+    boardPositions.push($(tr).find('td:eq(0)').text())
+    boardPositions.push($(tr).find('td:eq(1)').text())
+    boardPositions.push($(tr).find('td:eq(2)').text())
+  });
+  boardPositions
+  var saveBoard = $.post('/games', {state: boardPositions});
 
-  
+  saveBoard.done(function(data){
 
+  });
+  resetBoard();
 
 }
 
