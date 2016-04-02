@@ -1,4 +1,5 @@
 $(document).ready(function(){
+  //getGames();
   attachListeners();
 });
 
@@ -25,15 +26,31 @@ var player = function(){
 //////functions/////
 
 function attachListeners() {
+
+  $("#games").on('click', 'li', function(event) {
+    getSingle(event.target);
+    event.stopPropagation();
+  });
   $("td").on('click', function(event) {
     doTurn(event.target);
+    event.preventDefault();
   });
-  $('#previous').on('click', function(event) {
-    getGames(event);
-  });
+  //$('#getAllGames').on('click', function(event) {
+   // getGames();
+    //event.preventDefault;
+
+  //});
   $('#save').on('click', function(event) {
     saveGame(event);
+
   });
+  $('#previous').on('click', function(event) {
+    //getPrevious();
+    getAllGames(event);
+    event.preventDefault();
+
+  });
+
 }
 
 function doTurn(selector){
@@ -95,17 +112,23 @@ var currentGame = function(){
 
 };
 
-function getGames(event){
-    $.get('/games').done(function(allGames){
-      $(allGames.games).each(function(id){
-        $('ul#games').append('<li><a href="/games/' + (id + 1) + '">' + (id + 1) + '</a></li>');
-
-      });
+function getAllGames(event){
+  $('ul#games li').replaceWith('')
+  $.get('/games').done(function(allGames){
+   $(allGames.games).each(function(id){
+      //$('div#games').
+      $('ul#games').append('<li id="indi">' + (id + 1) + '</li>');
     });
+  });
+  //getSingle('ul#games li:last-child');
 }
 
+//function getPrevious(){
+  //getSingle('ul#games li:last-child');
+  //console.log($('div#games:last-child').html());
+//}
+
 function saveGame(event){
-  event.preventDefault();
   //alert("this should save the game then reset the board");
   var boardPositions = [];
   $("table tr").each(function(row, tr){
@@ -113,14 +136,36 @@ function saveGame(event){
     boardPositions.push($(tr).find('td:eq(1)').text())
     boardPositions.push($(tr).find('td:eq(2)').text())
   });
-  boardPositions
-  var saveBoard = $.post('/games', {state: boardPositions});
+  var saveBoard = $.post('/games', su{state: boardPositions});
 
   saveBoard.done(function(data){
 
   });
   resetBoard();
-
 }
+
+function getSingle(selector){
+  var id = $(selector).text();
+   var gameId = parseInt(id, 10);
+    $.get('/games/' + gameId).done(function(data){
+      var state = data["game"]["state"];
+      console.log(state);
+      loadGamePositions(state);
+  });
+}
+
+function loadGamePositions(board){
+  var position = -1;
+  $("table tr").each(function(row, tr){
+       position++;
+   $(tr).find('td:eq(0)').text(board[position]);
+       position++;
+   $(tr).find('td:eq(1)').text(board[position]);
+       position++;
+   $(tr).find('td:eq(2)').text(board[position]);
+ });
+}
+
+
 
 
