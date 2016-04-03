@@ -1,7 +1,7 @@
 class GamesController < ApplicationController
   def index
-    @games = Game.all
-    render json: @games
+    games = Game.all
+    render json: games
   end
 
   def create
@@ -10,9 +10,9 @@ class GamesController < ApplicationController
   end
 
   def update
-    @game = Game.find(params[:id])
-    @game.update(state: game_params[:state])
-    render json: @game
+    game = Game.find(params[:id])
+    game.update(state: game_params[:state])
+    render json: game
   end
 
   def show

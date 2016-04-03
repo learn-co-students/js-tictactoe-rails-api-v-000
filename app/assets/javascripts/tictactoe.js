@@ -1,11 +1,11 @@
 $(document).ready(function(){
-  //getGames();
   attachListeners();
 });
 
-
+var gameid = null;
 var turn = 0;
-var currentGame = 0;
+
+
 var winningCombinations = [
   ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="0"]', '[data-x="2"][data-y="0"]'], //[0, 1, 2],
   ['[data-x="0"][data-y="1"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="1"]'],//[3, 4, 5],
@@ -29,26 +29,18 @@ function attachListeners() {
 
   $("#games").on('click', 'li', function(event) {
     getSingle(event.target);
-    event.stopPropagation();
+
   });
   $("td").on('click', function(event) {
     doTurn(event.target);
-    event.preventDefault();
   });
-  //$('#getAllGames').on('click', function(event) {
-   // getGames();
-    //event.preventDefault;
 
-  //});
   $('#save').on('click', function(event) {
     saveGame(event);
 
   });
   $('#previous').on('click', function(event) {
-    //getPrevious();
     getAllGames(event);
-    event.preventDefault();
-
   });
 
 }
@@ -56,18 +48,16 @@ function attachListeners() {
 function doTurn(selector){
   updateState(selector);
   if(!checkWinner()){
+    message("");
     turn++;
   }else{
     saveGame();
   }
-
 };
 
 function updateState(selector){
   if($(selector).text() === ""){
-    $(selector).text(player());
-  }else{
-    updateState(selector);
+    $(selector).text(player);
   }
 };
 
@@ -78,7 +68,7 @@ function checkWinner() {
   $.each(winningCombinations, function (index, combo) {
     if($(combo[0]).text() === player() && $(combo[1]).text() === player() && $(combo[2]).text() === player()) {
       won = true;
-    }else if(turn > 7){
+    }else if(turn === 8){
       tie = true;
     }else{
       notOver = false;
@@ -97,10 +87,16 @@ function checkWinner() {
   }
 }
 
+function resetGame(){
+  turn = 0
+  gameid = null;
+  $("td").text("");
+};
+
 function resetBoard(){
   turn = 0
   $("td").text("");
-};
+}
 
 
 function message(text) {
@@ -109,52 +105,64 @@ function message(text) {
 
 
 var currentGame = function(){
-
+  return gameid;
 };
 
 function getAllGames(event){
-  $('ul#games li').replaceWith('')
-  $.get('/games').done(function(allGames){
-   $(allGames.games).each(function(id){
-      //$('div#games').
-      $('ul#games').append('<li id="indi">' + (id + 1) + '</li>');
+  $('#games li').replaceWith('');
+  $.get('/games').done(function(data){
+    var gamesArr = data["games"];
+    gamesArr.forEach(function(game){
+    gameid = game["id"];
+    $('#games').append('<li data-gameid="'+gameid+'">' + gameid + '</li>');
     });
   });
-  //getSingle('ul#games li:last-child');
 }
 
-//function getPrevious(){
-  //getSingle('ul#games li:last-child');
-  //console.log($('div#games:last-child').html());
-//}
-
 function saveGame(event){
-  //alert("this should save the game then reset the board");
   var boardPositions = [];
   $("table tr").each(function(row, tr){
     boardPositions.push($(tr).find('td:eq(0)').text())
     boardPositions.push($(tr).find('td:eq(1)').text())
     boardPositions.push($(tr).find('td:eq(2)').text())
   });
-  var saveBoard = $.post('/games', su{state: boardPositions});
+  if(gameid === null){
+    var saveNewBoard = $.ajax({
+      type: "POST",
+      url: '/games',
+      data: {state: boardPositions},
+      success: {}
+    });
 
-  saveBoard.done(function(data){
+    saveNewBoard.done(function(data){
+      gameid = data["game"]["id"]
+    });
 
-  });
-  resetBoard();
+  }else{
+    var saveOldBoard = $.ajax({
+      type: "PATCH",
+      url: '/games/'+gameid, 
+      data: {state: boardPositions},
+      success: {}
+    });
+
+    saveOldBoard.done(function(data){
+    });
+  }
+  resetGame();
 }
 
 function getSingle(selector){
-  var id = $(selector).text();
-   var gameId = parseInt(id, 10);
-    $.get('/games/' + gameId).done(function(data){
+   gameid = $(selector).text();
+    $.get('/games/' + gameid).done(function(data){
       var state = data["game"]["state"];
-      console.log(state);
+      gameid = data["game"]["id"]
       loadGamePositions(state);
   });
 }
 
 function loadGamePositions(board){
+  resetBoard();
   var position = -1;
   $("table tr").each(function(row, tr){
        position++;
