@@ -136,11 +136,12 @@ function returnGames(){
     success: function(data) {
       console.log(data)
       allGames = data["games"]
-      html = "<ul>"
+      var html = ""
+      // html = "<ul>"
       for (var i = 0; i < allGames.length; i++) {
-        html += "<li data-id=" +  allGames[i]["id"] + ">" + allGames[i]["id"] + "</li>"
+        html += "<li data-gameid=" +  allGames[i]["id"] + " data-state=" + allGames[i]["state"] + ">" + allGames[i]["id"] + "</li>"
       };
-      html += "</ul>"
+      // html += "</ul>"
       $('#games').html(html);
       loadGame(data);
     }
@@ -149,12 +150,10 @@ function returnGames(){
 
 function loadGame(data){
   $('li').on('click', function(){
-    var gameId = $(this).data("id");
-    var oldGame = data["games"][gameId]["state"]
-    console.log(oldGame)
-    currentGame = gameId
-    for(var i = 0; i < oldGame.length; i++){
-      $('td:eq(' + i + ')').text(oldGame[i]);
+    currentGame = $(this).data("gameid");
+    var state = $(this).data("state").split(",");
+    for(var i = 0; i < state.length; i++){
+      $('td:eq(' + i + ')').text(state[i]);
     }
   });
 }
