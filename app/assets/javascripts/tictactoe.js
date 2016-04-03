@@ -52,6 +52,7 @@ function doTurn(selector){
     turn++;
   }else{
     saveGame();
+    resetGame();
   }
 };
 
@@ -149,7 +150,6 @@ function saveGame(event){
     saveOldBoard.done(function(data){
     });
   }
-  resetGame();
 }
 
 function getSingle(selector){
