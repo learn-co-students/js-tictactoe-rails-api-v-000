@@ -1,5 +1,5 @@
 var turn = 0;
-var currentGame;
+var currentGame = 0;
 
 var winCombos = [
   [0,1,2],  // Top row
@@ -122,7 +122,7 @@ function saveGame(resetCurrentGame){
       if(resetCurrentGame) {
         currentGame = undefined;
       } else {
-        currentGame = data["id"];
+        currentGame = data["game"]["id"];
       }
     }
   });
