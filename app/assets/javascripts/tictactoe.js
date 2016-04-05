@@ -118,7 +118,6 @@ function saveGame(resetCurrentGame){
         }
       },
       success: function(data) {
-        console.log(data)
       if(resetCurrentGame) {
         currentGame = undefined;
       } else {
@@ -134,14 +133,11 @@ function returnGames(){
     method: 'GET',
     dataType: "json",
     success: function(data) {
-      console.log(data)
       allGames = data["games"]
       var html = ""
-      // html = "<ul>"
       for (var i = 0; i < allGames.length; i++) {
         html += "<li data-gameid=" +  allGames[i]["id"] + " data-state=" + allGames[i]["state"] + ">" + allGames[i]["id"] + "</li>"
       };
-      // html += "</ul>"
       $('#games').html(html);
       loadGame(data);
     }
