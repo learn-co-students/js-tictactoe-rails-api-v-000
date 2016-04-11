@@ -1,10 +1,9 @@
 $(document).ready(function(){
-  attachListeners();
+  attachListeners();  
+  gameid;
+
 });
-
-var gameid = null;
-var turn = 0;
-
+  var gameid = null;
 
 var winningCombinations = [
   ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="0"]', '[data-x="2"][data-y="0"]'], //[0, 1, 2],
@@ -20,7 +19,11 @@ var winningCombinations = [
 ];
 
 var player = function(){
-  return (turn % 2 === 0) ? 'X' : 'O'
+  return (turn() % 2 === 0) ? 'X' : 'O'
+};
+
+var turn = function(){
+  return $("td").text().length;
 };
 
 //////functions/////
@@ -49,7 +52,6 @@ function doTurn(selector){
   updateState(selector);
   if(!checkWinner()){
     message("");
-    turn++;
   }else{
     saveGame();
     resetGame();
@@ -89,13 +91,11 @@ function checkWinner() {
 }
 
 function resetGame(){
-  turn = 0
   gameid = null;
   $("td").text("");
 };
 
 function resetBoard(){
-  turn = 0
   $("td").text("");
 }
 
