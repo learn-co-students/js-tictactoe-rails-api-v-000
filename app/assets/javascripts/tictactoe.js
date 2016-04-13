@@ -15,9 +15,7 @@ function attachListeners() {
 		var selector = this;
 		var x = $(this).data('x');
 		var y = $(this).data('y');
-		if ($(selector).html() === "") {
-			doTurn(selector);
-		}
+		doTurn(selector);
 	});
 
 	$('#previous').click(function() {

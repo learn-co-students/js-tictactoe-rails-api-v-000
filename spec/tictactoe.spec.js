@@ -399,7 +399,7 @@ describe('#integration tests of persistence', function() {
       //     // _X_|_O_|_O_
       //     // _X_|___|___
       //     //  X |   |   
-      debugger;
+
       var request = jasmine.Ajax.requests.mostRecent();
       expect(request.url).toBe('/games');
       expect(request.method).toBe('POST');
