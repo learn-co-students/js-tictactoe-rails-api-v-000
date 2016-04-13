@@ -1,5 +1,4 @@
-var turn = 0;
-var board;
+var turn = 0, board = ["","","","","","","","","","",""], currentGame = 0
 var winCombinations = [ [0,1,2],[3,4,5],
 												[6,7,8],[2,5,8],
 												[0,3,6],[1,4,7],
@@ -21,20 +20,25 @@ function attachListeners() {
 		}
 	});
 
-	$('.previous').click(function() {
+	$('#previous').click(function() {
 		getAllGames();
-	})
+	});
 
-
+	$('#save').click(function() {
+		saveGame(false);
+	});
 }
 
 function doTurn(selector) {
 	updateState(selector);
-	board = $('td').map(function(n) { return $('td:eq('+n+')').html() });
+	board = $.makeArray($('td').map(function(n) { return $('td:eq('+n+')').html() }));
+	
 	if (checkWinner()) {
-		return resetGame();
-	};
+		saveGame(true);
+		resetGame();
+	} else {
 	turn += 1;
+	}
 }
 
 
@@ -72,7 +76,7 @@ function message(sentence) {
 }
 
 function isFull() {
-	return $.makeArray(board).indexOf("") === -1 ? true : false;
+	return board.indexOf("") === -1 ? true : false;
 }
 
 function resetGame() {
@@ -82,9 +86,53 @@ function resetGame() {
 
 function getAllGames() {
 	$.get('/games', function(data) {
-		debeugger;
+		var games = ""
+			data.games.forEach(function(game){
+				games += "<li data-gameid=" + game.id + " data-state=" + game.state + ">" + game.id + "</li>"
+			})
+		 
+		$('#games').html(games);
+		loadGame(data);
 	});
 }
+
+function loadGame(data) {
+	$('li').on('click', function() {
+		currentGame = $(this).data('gameid');
+		board = $(this).data('state').split(",");
+		for (var i = 0; i < board.length; i++) {
+			$('td:eq('+i+')').html(board[i])
+		}
+	})
+}
+
+
+function saveGame(isOver) {
+	var gameState = { game: { state: board } };
+	var url, method;
+	if (currentGame !== 0) {
+		url = '/games/' + currentGame;
+		method = 'PATCH';
+	} else {
+		url = '/games';
+		method = 'POST';
+	};
+
+	$.ajax({
+		method: method,
+		url: url, 
+		data: gameState
+	})
+	.done(function(data){
+		console.log(data);
+		if (isOver) {
+			currentGame = 0
+	 	} else {
+	 		currentGame = data["game"]["id"]
+		}
+	});
+}
+
 
 
 
