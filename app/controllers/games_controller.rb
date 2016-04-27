@@ -2,7 +2,6 @@ class GamesController < ApplicationController
 
   def create
     Game.create(game_params)
-
   end
 
   def update

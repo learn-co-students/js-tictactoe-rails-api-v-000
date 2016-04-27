@@ -34,9 +34,17 @@ $('.myClass').click(function() {
 });
 
 
+// method is currently causing system to hang
 var saveGame = function() {
-
-  $.post("/games", "this");
+  $.ajax({
+    url: "/games",
+    method: "POST",
+    data: {
+      game: {
+        state: currentState()
+      }
+    }
+  })
 }
 var showGames = function(){''
   $.get("/games");
@@ -126,5 +134,12 @@ var message = function(str) {
 
 var currentGame = function() {
 
+}
+
+var currentState = function() {
+  var state = $("td").map(function(arg) {
+    return ( $(this).text() )
+  })
+  return state
 }
 
