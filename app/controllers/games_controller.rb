@@ -1,19 +1,21 @@
 class GamesController < ApplicationController
 
   def create
-    Game.create(game_params)
+    # binding.pry
+    @game = Game.create(game_params)
+    render json: @game
   end
 
   def update
     @game = Game.find(params[:id])
     @game.update(game_params)
+    render json: @game
   end
 
   def index
     @games = Game.all
     render json: @games
   end
-
 
 
   private

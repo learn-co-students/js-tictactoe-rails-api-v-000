@@ -34,28 +34,50 @@ $('.myClass').click(function() {
 });
 
 
-// method is currently causing system to hang
 var saveGame = function() {
   $.ajax({
     url: "/games",
     method: "POST",
+    dataType: 'json',
     data: {
       game: {
         state: currentState()
       }
+    },
+    success: function(msg) {
+      currentGame = msg.game.id;
     }
   })
 }
+
 var showGames = function(){''
-  $.get("/games");
+  $('#games').text("")
+  $.ajax({
+    url: "/games",
+    method: "GET",
+    dataType: 'json',
+    success: function(msg) {
+      msg.games.forEach(function(arg){
+        $('#games').append("<li>" + arg.state + "</li>");
+      })
+    }
+  })
 }
 
 var updateGame = function(){
   // $.patch("/games/:id")
   $.ajax({
-    url: "/games/1",
-    data: "data",
-    type: 'PATCH'
+    url: "/games/" + currentGame,
+    method: "PATCH",
+    dataType: 'json',
+    data: {
+      game: {
+        state: currentState()
+      }
+    },
+    success: function(msg) {
+      currentGame = msg.game.id;
+    }
   })
 }
 
@@ -71,6 +93,7 @@ var doTurn = function(e) {
 var checkTie = function(){
   if(turn === 9){
     message("Tie game");
+    saveGame();
     resetBoard();
   }
 }
@@ -101,9 +124,11 @@ var checkWinner = function() {
   combos.forEach(function(arg) {
     if (arg === "XXX"){
       message("Player X Won!");
+      saveGame();
       resetBoard();
     } else if(arg === "OOO"){
       message("Player O Won!");
+      saveGame();
       resetBoard();
     } else {
       outcome = false;
@@ -137,9 +162,15 @@ var currentGame = function() {
 }
 
 var currentState = function() {
-  var state = $("td").map(function(arg) {
-    return ( $(this).text() )
-  })
+  var state = []
+  $('td').each(function(arg){
+    state.push( $(this).text() );
+  }  )
+  // var state = $("td").map(function(arg) {
+  //   return ( $(this).text() )
+  // })
+  // return "i am here"
+  // debugger;
   return state
 }
 
