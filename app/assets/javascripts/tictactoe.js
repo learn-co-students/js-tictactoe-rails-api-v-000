@@ -21,6 +21,14 @@ var attachListeners = function() {
       updateGame();
     }
   });
+  $("#games").click(function(e){
+    // debugger;
+    var arry = $(e.target).text().split(",")
+
+    $("td").each(function( index ) {
+    $(this).text(arry[index]);
+    })
+  })
 }
 
 $('.myClass').click(function() {
@@ -58,7 +66,7 @@ var showGames = function(){''
     dataType: 'json',
     success: function(msg) {
       msg.games.forEach(function(arg){
-        $('#games').append("<li>" + arg.state + "</li>");
+        $('#games').append("<li " + "data-gameid=" + arg.id +">" + arg.state + "</li>");
       })
     }
   })
