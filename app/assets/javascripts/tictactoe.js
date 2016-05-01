@@ -38,8 +38,17 @@ function attachListeners () {
   });  
 
   $("#games").click(function(e){
-    var gameId = $(e.target).data("gameid");
-    loadGame(gameId);
+
+    currentState = $(e.target).data("state").split(",");
+
+    currentGame = $(e.target).data("gameid");
+
+    currentState.forEach(function(cell, index){
+      $("td").eq(index).text(cell);
+    });
+
+    setTurn();
+
   });
 }
 
@@ -68,7 +77,7 @@ function message (message) {
   $("#message").html(message);
 }
 
-// Get game state information
+// Get game information
 function player () {
   return turn % 2 === 0 ? "X" : "O";
 }
@@ -119,9 +128,7 @@ function saveGame (gameEnded) {
       method: "post",
       data: $.param(gameData())
     }).done(function(data){
-      if (gameEnded != true){
-        currentGame = data.game.id;
-      }
+      if (!gameEnded){currentGame = data.game.id;}
 
       console.log("Game saved!");
     }).fail(function(error){
@@ -144,27 +151,12 @@ function findPreviousGames () {
       var previousGames = '';
 
       data.games.forEach(function(game) {
-        previousGames += '<li class="game" data-gameid="' + game["id"] + '">' + game["id"] + '</li>';
+        previousGames += '<li class="game" data-gameid="' + game["id"] + '" data-state="' + game.state + '">' + game["id"] + '</li>';
       });
 
       $("#games").html(previousGames);
     }
   });
-}
-
-function loadGame (gameId) {
-  $.get("/games/" + gameId, function(data){
-
-    var state = data.game.state;
-    $("td").each(function(index, cell){
-      $(cell).text(state[index]);
-    });
-    currentState = state;
-    currentGame = gameId;
-    setTurn();
-  });
-
-  console.log("Loaded game " + gameId);
 }
 
 function setTurn () {
@@ -178,15 +170,5 @@ function setTurn () {
 
   turn = countXsAndOs;
 }
-
-
-
-
-
-
-
-
-
-
 
 
