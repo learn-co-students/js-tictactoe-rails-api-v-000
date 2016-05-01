@@ -154,16 +154,16 @@ function findPreviousGames () {
 
 function loadGame (gameId) {
   $.get("/games/" + gameId, function(data){
-    currentState = state;
-    currentGame = gameId;
 
     var state = data.game.state;
     $("td").each(function(index, cell){
       $(cell).text(state[index]);
     });
+    currentState = state;
+    currentGame = gameId;
+    setTurn();
   });
 
-  setTurn();
   console.log("Loaded game " + gameId);
 }
 
@@ -171,12 +171,12 @@ function setTurn () {
   var countXsAndOs = 0;
 
   currentState.forEach(function(cell, index) {
-    if (cell[index] === "X" || cell[index] === "O") {
+    if (cell === "X" || cell === "O") {
       countXsAndOs++
     }
   });
 
-  turn = countXsAndOs;  
+  turn = countXsAndOs;
 }
 
 
