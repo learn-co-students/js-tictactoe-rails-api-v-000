@@ -109,14 +109,6 @@ function reset(){
   endGame = false;
 }
 
-function getGames(gameData){
-  $('#games').html("");
-  var games = gameData.games;
-  for(var i = 0; i < games.length ;i++){
-    $('#games').append("<p>" + games[i].id + "</p>");
-  }
-}
-
 function saveGame(endGame){
   $.post('/games', {state: state}).done(function(resp){
       if(endGame === false){
@@ -134,3 +126,20 @@ function updateGame(){
     });
 }
 
+function getGames(gameData){
+  $('#games').html("");
+  var games = gameData.games;
+  for(var i = 0; i < games.length ;i++){
+    game = games[i];
+    $('#games').append("<a href ='#' id='game_" + game.id +"'>" + game.id + "</a>");
+    $('#game_' + game.id).on('click', function(){
+      alert("hi");
+      debugger
+      //save game going on
+      //clear everything
+      //set state to game.state
+      //fill in screen board with current state
+      //figure out the turn number and set that
+    });
+  }
+}
