@@ -409,9 +409,7 @@ describe('#integration tests of persistence', function() {
       //     // _X_|_O_|_O_
       //     // _X_|___|___
       //     //  X |   |   
-      debugger
       var request = jasmine.Ajax.requests.mostRecent();
-      debugger
       expect(request.url).toBe('/games');
       expect(request.method).toBe('POST');
       var data = {
@@ -425,9 +423,7 @@ describe('#integration tests of persistence', function() {
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
-      debugger
       jasmine.Ajax.requests.mostRecent().respondWith(response);
-      debugger
       $('[data-x="0"][data-y="0"]').click();
       $('[data-x="1"][data-y="0"]').click();
       $('[data-x="0"][data-y="1"]').click();
