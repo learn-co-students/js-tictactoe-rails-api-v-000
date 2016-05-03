@@ -13,7 +13,7 @@ var WinningCombos = [[0, 1, 2],
                      [0, 4, 8],
                      [2, 4, 6]];
 var currentGame;
-
+var endGame = false;
 
 
 function doTurn(e){
@@ -23,9 +23,7 @@ function doTurn(e){
   }else{
     alert("Not a valid move");
   }
-  if (checkWinner(state) === true){
-      reset();
-  }
+  checkWinner(state);
 }
 
 function attachListeners(){
@@ -44,11 +42,9 @@ function attachListeners(){
 
   $("#save").on('click', function(){
     if(currentGame){
-      debugger
       updateGame();
     }else{
-      debugger
-      saveGame();
+      saveGame(endGame);
     }
   });
 
@@ -66,18 +62,21 @@ function checkWinner(state){
     if(a !== "" && a === b & b === c){
       var win_message = "Player " + a + " Won!";
       message(win_message);
-      saveGame();
-      reset();
-      return true;
+      endGame = true;
     }
   }
+
+  if(endGame === true){
+    saveGame(endGame);
+    reset();
+  }
+
   if(turn === 9){
     message("Tie game");
-    saveGame();
+    endGame = true;
+    saveGame(endGame);
     reset();
-    return true;
   }
-  return false;
 }
 
 function updateState(e){
@@ -107,6 +106,7 @@ function reset(){
   turn = 0;
   state = ["","","","","","","","",""];
   $("td").text("");
+  endGame = false;
 }
 
 function getGames(gameData){
@@ -117,11 +117,13 @@ function getGames(gameData){
   }
 }
 
-function saveGame(){
+function saveGame(endGame){
   $.post('/games', {state: state}).done(function(resp){
-    var id = resp.game.id;
-    currentGame = id;
-  });
+      if(endGame === false){
+        currentGame = resp.game.id;
+      }
+    }
+  );
 }
 
 function updateGame(){
