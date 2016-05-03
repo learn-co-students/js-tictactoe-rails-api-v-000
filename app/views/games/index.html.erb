@@ -1,2 +1,4 @@
-<h1>Games#index</h1>
-<p>Find me in app/views/games/index.html.erb</p>
+<%= form_tag '/games', method: 'post' do %>
+  <%= text_field_tag :state %>
+  <%= submit_tag "submit" %>
+<% end %>
