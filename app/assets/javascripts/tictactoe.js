@@ -1,3 +1,4 @@
+var gameTurn;
 var turn = 0;
 
 var winCombos = [
@@ -11,6 +12,9 @@ var winCombos = [
     [6,4,2]
   ];
 
+var savedGame = false;
+var gameTracker;
+
 $(function() {
   currentGame = $('td').map(function(index, item){
    return $(item).text();
@@ -19,7 +23,6 @@ $(function() {
 });
 
 function attachListeners(){
-
   $('td').on('click', function(event){
     doTurn(event);
   });
@@ -28,6 +31,11 @@ function attachListeners(){
   });
   $('#previous').on('click', function(event){
     getGames();
+  });
+  $('#games').each( function(){
+      $(this).on('click', 'div', function(data){
+        loadGame(this);
+      })
   });
 }
 
@@ -57,12 +65,14 @@ function player(){
 function checkWinner(){
   var currentGame = $('td').map(function(index, item){ return $(item).text(); });
   var winner = winningCombo(currentGame);
-  if (typeof winner === "undefined" && turn === 9){
+    if (typeof winner === "undefined" && turn === 9){
+    saveAndStartNewGame();
     message("Tie game");
   } else if (typeof winner === "undefined"){
     return false;
   } else {
     var string = "Player " + currentGame[winner[0]] + " Won!";
+    saveAndStartNewGame();
     message(string);
   };
 }
@@ -75,8 +85,8 @@ function message(string){
 function resetBoard(){
   $('td').each(function(index, item){
     $(item).text("");
-    turn = 0;
   });
+  turn = 0;
 }
 
 function winningCombo(currentGame){
@@ -86,56 +96,99 @@ function winningCombo(currentGame){
 }
 
 function saveGame(){
-  // var currentGame = $('td').map(function(index, item){
-  //  return $(item).text();
-  // });
-  gameArray = jQuery.makeArray(currentGame);
-  gameArray = gameArray.map(function(pos){
-    if(pos === ""){
-      return " ";
-    } else {
-        return pos;
+  var currentGame = $('td').map(function(index, item){
+   return $(item).text();
+  });
+  var gameState = gameString(currentGame)
+  
+  if (typeof gameTracker === "undefined"){
+    var posting = $.post("/games", {game: {state: gameState}});
+    posting.done(function(data){
+      if (data["game"]){
+      gameTracker = data["game"]["id"];
+      } else {
+      gameTracker = data["id"];
       };
     });
-  var posting = $.post("/games", gameArray.join(""));
-
-  posting.done(function(data){
-    $("#save").on('click', function(data){
-      var currentGame = $('td').map(function(index, item){
-        return $(item).text();
-        });
-      gameArray = jQuery.makeArray(currentGame);
-      gameArray = gameArray.map(function(pos){
-        if(pos === ""){
-          return " ";
-        } else {
-            return pos;
-          };
-        });
-
+  } else {
+    var method = "PATCH";
     var patching = $.ajax({
-      url: '/games/' + $('td a:last').text(),
-      type: 'PATCH',
-      data: gameArray.join("")
-      });
+      url: '/games/' + gameTracker,
+      method: method,
+      data: {
+        game: {
+          state: gameState
+        }
+      }
     });
-  });
+  };
 }
 
 function getGames(){
-  // var currentGame = $('td').map(function(index, item){
-  //  return $(item).text();
-  // });
   var games = $.get("/games");
   games.done(function(data){
-    gameList = data["games"]
-    gameList.forEach(function(game, index, self){
-      if($('#games').text().length < self.length){
-        $('#games').append('<a href="/games/' + game["id"] + '">' + game["id"] + '</a><br />');
-      };
-    })
+    var gameList = data["games"];
+    var gamesDisplayed = $('#games').children().length;
+    if(gamesDisplayed === 0){
+      gameList.forEach(function(game, index, self){
+        addToDom(game["state"], game["id"]);
+      });
+    } else if(gamesDisplayed < gameList.length){
+      var numToAdd = gameList.length - gamesDisplayed;
+      var addList = gameList.splice(gamesDisplayed, numToAdd);
+      addList.forEach(function(game, index, self){
+        addToDom(game["state"], game["id"]);
+      });
+    };
   });
 }
+
+function gameString(currentGame){
+  var gameArray = jQuery.makeArray(currentGame);
+    return gameArray.map(function(pos){
+      if(pos === ""){
+        return " ";
+      } else {
+          return pos;
+      };
+    });
+}
+
+function saveAndStartNewGame(){
+  currentGame = $('td').map(function(index, item){
+   return $(item).text();
+  });
+  var gameState = gameString(currentGame)
+  var posting = $.post("/games", {game: {state: gameState}});
+  gameTracker = undefined;
+}
+
+function loadGame(game){
+  var state = game.dataset.gamestate.replace(/-/g, " ");
+  var gameState = state.split(",");
+  gameTracker = game.dataset.gameid;
+  $('td').each(function(index, item){
+    $(item).text(gameState[index]);
+  });
+  var turns = $('td').map(function(index, item){
+    if ($(item).text() === 'X' || $(item).text() === 'O'){
+      return item;
+    };
+  });
+  turn = turns.length;
+}
+
+function addToDom(gameState, gameId){
+  var gameHolder = $.map(gameState, function(pos){
+    if(pos === " "){
+      return "-";
+    } else {
+      return pos;
+    };
+  });
+  $('#games').append('<div  data-gameid=' + gameId + ' data-gameState=' + gameHolder +'>' + gameId + '</div>');
+}
+
 
 
 
