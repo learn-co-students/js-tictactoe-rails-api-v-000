@@ -93,5 +93,5 @@ function reset(){
 }
 
 function message(string){
-  $('div#message').append(string);
+  $('div#message').html(string);
 }
