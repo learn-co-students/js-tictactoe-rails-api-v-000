@@ -1,6 +1,6 @@
 "use strict";
 
-var turn = 1;
+var turn = 0;
 
 $(document).ready(function(){
   attachListeners();
@@ -15,7 +15,7 @@ function attachListeners(){
     //load previously saved games
   });
 
-  $('td').on('click', function(){
+  $('td').on('click', function(event){
     //process turn when clicking on a table element
     doTurn(event);
   });
@@ -36,7 +36,8 @@ function player(){
 }
 
 function updateState(event){
-  //$('td')
+  //sets the target (td) of the jquery event object to either "O" or "X"
+  $(event.target).html(player());
 }
 
 function checkWinner(){
