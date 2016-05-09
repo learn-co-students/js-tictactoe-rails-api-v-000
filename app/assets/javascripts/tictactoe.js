@@ -40,7 +40,7 @@ function attachListeners(){
 function doTurn(event){
   updateState(event);
   if (checkWinner() || checkTie()){
-    saveGame(); //autosave at end of game
+    saveGame(true); //autosave at end of game
     reset();
   } else {
     turn++;
@@ -124,7 +124,7 @@ function generateGameBullet(game){
   return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
 }
 
-function saveGame(){
+function saveGame(resetCurrentGame){
   //console.log(getBoard());
   var ajaxUrl, ajaxMethod;
 
@@ -147,7 +147,12 @@ function saveGame(){
     },
     dataType: 'json'
   }).success(function(response){
-    currentGame = response.game.id; //get the database game id from the response
+    if (resetCurrentGame){
+      currentGame = undefined;
+    } else {
+      currentGame = response.game.id; //get the database game id from the response
+    }
+
     console.log(response);
   });
 }
