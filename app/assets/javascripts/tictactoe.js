@@ -22,10 +22,14 @@ $(document).ready(function(){
 function attachListeners(){
   $('button#save').on('click', function(){
     //save game to database
+    saveGame();
   });
 
   $('button#previous').on('click', function(){
     //load previously saved games
+    $.getJSON('/games').done(function(response){
+      displayGames(response.games);
+    });
   });
 
   $('td').on('click', function(event){
@@ -94,4 +98,12 @@ function reset(){
 
 function message(string){
   $('div#message').html(string);
+}
+
+function displayGames(games){
+
+}
+
+function saveGame(){
+  
 }
