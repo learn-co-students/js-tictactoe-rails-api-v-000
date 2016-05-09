@@ -28,9 +28,7 @@ function attachListeners(){
 
   $('button#previous').on('click', function(){
     //load previously saved games
-    $.getJSON('/games').done(function(response){
-      displayGames(response.games);
-    });
+    displayGames();
   });
 
   $('td').on('click', function(event){
@@ -104,7 +102,26 @@ function message(string){
 }
 
 function displayGames(games){
+  $.getJSON('/games').success(function(response){
+    var games = response.games;
 
+    if (games.length > 0){
+      $('div#games').html(''); //clear list
+      $('div#games').append('<ol>');
+
+      games.forEach(function(game){
+        $('div#games').append(generateGameBullet(game));
+      });
+
+      $('div#games').append('</ol>');
+      loadGame();
+    }
+
+  });
+}
+
+function generateGameBullet(game){
+  return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
 }
 
 function saveGame(){
@@ -132,5 +149,27 @@ function saveGame(){
   }).success(function(response){
     currentGame = response.game.id; //get the database game id from the response
     console.log(response);
+  });
+}
+
+function loadGame(){
+  $('li').on('click', function(){
+    currentGame = $(this).data('gameid');
+    var state = $(this).data('state').split(','); //turn data string into array
+
+    $('td').each(function(index, item){
+      $(this).text(state[index]);
+    });
+
+    calculateTurn(state);
+  });
+}
+
+function calculateTurn(state){
+  currentTurn = 0;
+  state.forEach(function(item) {
+    if(item != "") {
+      currentTurn += 1;
+    }
   });
 }
