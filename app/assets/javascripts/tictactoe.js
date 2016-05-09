@@ -11,7 +11,8 @@ var winCombinations = [
   [2,4,6],
 ]
 
-var currentGame = {game: {state: ''}};
+var gameParams = {game: {state: ['','','','','','','','','']}};
+var currentGame = gameParams['game']['id'];
 
 function boardState(){ 
   return $('td').map(function(){
@@ -20,22 +21,22 @@ function boardState(){
 }
 
 function saveGame(){
-  if(!currentGame['game']['id']){
-    $.post('/games', currentGame, function(savedGame){
-      currentGame = savedGame;
+  if(!gameParams['game']['id']){
+    $.post('/games', gameParams, function(savedGame){
+      gameParams = savedGame;
     });
   } else {
     $.ajax({
       type: 'PATCH',
-      url: '/games/'+ currentGame['game']['id'],
-      data: currentGame,
+      url: '/games/'+ gameParams['game']['id'],
+      data: gameParams,
       dataType: 'json'
     });
   }
 }
 
 function resetBoard(){ 
-  currentGame = {game: {state: ''}};
+  gameParams = {game: {state: ['','','','','','','','','']}};
   $('td').each(function(){
     $(this).text('');
   });
@@ -43,10 +44,10 @@ function resetBoard(){
 }
 
 function showPreviousGames(){
-  $('#games').html('<ul></ul>');
+  $('#games').html('');
   $.get('/games', function(data){
     data['games'].forEach(function(game){
-      $('#games').append("<li>"+ game['id'] +"</a></li>");
+      $('#games').append("<li data-gameid="+ game['id'] +">"+ game['id'] +"</li>");
     });
   });
 }
@@ -73,8 +74,8 @@ function restoreGame(){
     data['games'].forEach(function(game){
       if (game['id'] == gameNumber){
         board = game['state'];
-        currentGame['game']['state'] = board;
-        currentGame['game']['id'] = gameNumber;
+        gameParams['game']['state'] = board;
+        gameParams['game']['id'] = gameNumber;
         returnTokens(board)
         setTurns(board)
       }
@@ -92,7 +93,7 @@ function checkWinner(){
   var win;
   winCombinations.forEach(function(combo){
     if (boardState()[combo[0]] === boardState()[combo[1]] && boardState()[combo[0]] === boardState()[combo[2]] && boardState()[combo[0]] != "" ){
-       win = "Player " + boardState()[combo[0]] + " Won!";
+      win = "Player " + boardState()[combo[0]] + " Won!";
     }
   });
   if (win) {
@@ -110,7 +111,7 @@ function checkWinner(){
 
 function updateState(e, cell){
   $(cell).html(player);
-  currentGame['game']['state'] = boardState();
+  gameParams['game']['state'] = boardState();
 }
 
 function player() {
@@ -129,7 +130,7 @@ function attachListeners(){
   });
   $('#previous').click(showPreviousGames);
   $('#save').click(saveGame);
-  $('#games').on('click', 'li', restoreGame);
+  $('#games').on('click', 'li[data-gameid]', restoreGame);
 }
 
 
