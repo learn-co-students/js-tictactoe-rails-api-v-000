@@ -107,13 +107,13 @@ function displayGames(games){
 
     if (games.length > 0){
       $('div#games').html(''); //clear list
-      $('div#games').append('<ol>');
+      //$('div#games').append('<ol>');
 
       games.forEach(function(game){
         $('div#games').append(generateGameBullet(game));
       });
 
-      $('div#games').append('</ol>');
+      //$('div#games').append('</ol>');
       loadGame();
     }
 
@@ -166,10 +166,10 @@ function loadGame(){
 }
 
 function calculateTurn(state){
-  currentTurn = 0;
+  turn = 0;
   state.forEach(function(item) {
     if(item != "") {
-      currentTurn += 1;
+      turn += 1;
     }
   });
 }
