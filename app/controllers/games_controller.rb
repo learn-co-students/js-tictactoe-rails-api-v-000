@@ -1,6 +1,8 @@
 class GamesController < ApplicationController
 
   def index
+    @games=Game.all
+    render json: @games
   end
 
 
@@ -20,7 +22,6 @@ class GamesController < ApplicationController
       @game = Game.create!(game_params)
       redirect_to games_path
     else
-      byebug
       @game=game.update(game_params)
       redirect_to games_path
     end
