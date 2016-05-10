@@ -18,35 +18,17 @@ function attachListeners(){
 }
 
 function doTurn(){
-// debugger;
 
   var gameState = $("td").map(function(){ 
     return $(this).text() 
   })
 
-  
-// debugger;
-  
-  // var taken = []
-  // for (var i=0; i<gameState.length; i++){ 
-  //   if (gameState[i] != ""){ 
-  //     taken.push(gameState[i])}
-  // }
-  // debugger;
-
   var position = $(this)
   updateState(position)
   checkWinner(gameState)
 
-
   turn ++
-  // then post game state
-  // then check for winner
-  // then change player
 
-  // if (($("#game").attr("data-id")) === "curr"){
-  //   $.post("games/", values
-  // }
 
 }
 
@@ -70,30 +52,12 @@ function player(){
   }
 }
 
-function checkWinner(){
-
-  // $("td[data-x=0]:contains('X')").length === 3 ///CHECKS FIRST VERT
-  // $("td[data-x=1]:contains('X')").length === 3
-  // $("td[data-x=2]:contains('X')").length === 3
-  // $("td[data-y=0]:contains('X')").length === 3
-  // $("td[data-y=1]:contains('X')").length === 3
-  // $("td[data-y=2]:contains('X')").length === 3
-
-  if ($("tr:contains('X')").children(":contains('X')").length === 3){
-    console.log("true")
-    message("Player X Won!")
-    return true
+function checkWinner(gameState){
+  if (winCombos() === true){
+    message("Player " + player() + " Won!")
+  }else if(turn +1 === 9){
+    message("Tie game") 
   }else{
-    console.log("false")
-    return false
-  }
-
-  if ($("tr:contains('O')").children(":contains('O')").length === 3){
-    return true
-    console.log("true")
-    message("Player X Won!")
-  }else{
-    console.log("false")
     return false
   }
 }
@@ -102,5 +66,77 @@ function message(string){
   $("#message").html(string)
 }
 
-// var empty = []
-// for (var i=0; i<gameState.length; i++){ if (gameState[i]!=""){ empty.push(gameState[i])}}
+function tieGame(gameState){
+
+}
+
+function winCombos() {
+  // debugger;
+  switch (3) {
+    case $("td[data-x=0]:contains('X')").length:
+    debugger;
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-x=0]:contains('O')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-x=1]:contains('X')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-x=1]:contains('O')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-x=2]:contains('X')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-x=2]:contains('O')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-y=0]:contains('X')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-y=0]:contains('O')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-y=1]:contains('X')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-y=1]:contains('O')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-y=2]:contains('X')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-y=2]:contains('O')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-x='0'][data-y='0']:contains('O'), td[data-x='1'][data-y='1']:contains('O'), td[data-x='2'][data-y='2']:contains('O')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-x='0'][data-y='0']:contains('X'), td[data-x='1'][data-y='1']:contains('X'), td[data-x='2'][data-y='2']:contains('X')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-x='2'][data-y='0']:contains('O'), td[data-x='1'][data-y='1']:contains('O'), td[data-x='0'][data-y='2']:contains('O')").length:
+      return true
+      // message("Player X Won!")
+      break;
+    case $("td[data-x='2'][data-y='0']:contains('X'), td[data-x='1'][data-y='1']:contains('X'), td[data-x='0'][data-y='2']:contains('X')").length:
+      return true
+      // message("Player X Won!")
+      break;
+  }
+}
