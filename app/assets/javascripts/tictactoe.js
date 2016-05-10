@@ -17,34 +17,40 @@ function attachListeners(){
   })
 }
 
+
 function doTurn(){
 
   var gameState = $("td").map(function(){ 
     return $(this).text() 
   })
-
+debugger;
   var position = $(this)
   updateState(position)
-  checkWinner(gameState)
+  checkWinner()
+
+  if ($('#message').html() !== ""){
+    resetGame(gameState)
+  }
 
   turn ++
 
-
+  // POST GAME STATE HERE
 }
+
 
 function updateState(obj){
   var pos = obj
   pos.text(player)
-
 }
+
 
 function isAvailable(obj){
   var position = obj
   return position.val() === ""
 }
 
+
 function player(){
-  // debugger;
   if (turn % 2 === 0){
     return "X"
   }else{
@@ -52,7 +58,7 @@ function player(){
   }
 }
 
-function checkWinner(gameState){
+function checkWinner(){
   if (winCombos() === true){
     message("Player " + player() + " Won!")
   }else if(turn +1 === 9){
@@ -66,15 +72,30 @@ function message(string){
   $("#message").html(string)
 }
 
-function tieGame(gameState){
+
+function resetGame(gameState){
+// debugger;
+  var state=gameState
+  // get id for game: $("div").attr("data-id")
+  // persist game
+  // call games#create
 
 }
+
+function persistGame(gameState){
+
+  // switch ($("#game").attr("data-id") {
+  //   // case "curr"
+  // })
+}
+
+
 
 function winCombos() {
   // debugger;
   switch (3) {
     case $("td[data-x=0]:contains('X')").length:
-    debugger;
+    // debugger;
       return true
       // message("Player X Won!")
       break;

@@ -8,6 +8,7 @@ class GamesController < ApplicationController
 
 
   def create
+byebug
     @game=Game.new
     if @game.save!
       redirect_to games_path
@@ -18,6 +19,7 @@ class GamesController < ApplicationController
 
 
   def update
+byebug
     game = Game.find_by(id: params[:id])
     if game.nil?
       @game = Game.create!(game_params)
