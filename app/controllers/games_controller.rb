@@ -3,7 +3,9 @@ class GamesController < ApplicationController
 
   def index
 # byebug
-    # @game=Game.new(state: Array.new(9, ""))
+    @games=Game.all
+    render json: @games
+
      
   end
 
@@ -11,10 +13,8 @@ class GamesController < ApplicationController
   def create
 # byebug
     @game=Game.create(state: params["game"])
-    respond_to do |format|
-      format.html { render 'home/index'}
-      format.json { render json: @game }
-    end
+    render json: @game 
+    
     # @game=Game.new
     # if @game.save!
     #   redirect_to games_path
@@ -25,13 +25,11 @@ class GamesController < ApplicationController
 
 
   def update
-byebug
+# byebug
     @game = Game.find_by(id: params[:id])
     @game.update(state: params["game"])
-    respond_to do |format|
-      format.html { render 'home/index'}
-      format.json { render json: @game}
-    end
+    render json: @game
+    
 
     # if game.nil?
     #   @game = Game.create!(game_params)

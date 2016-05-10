@@ -7,4 +7,6 @@ Rails.application.routes.draw do
 
   resources :games, only: [:index, :create, :update]
 
+  # post "/games/:id", to: "games#update"
+
 end
