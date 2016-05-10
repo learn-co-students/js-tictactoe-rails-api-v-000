@@ -1,6 +1,18 @@
 var turn = 0
+var gameID
+
+var testState
+
 
 $(document).ready(function(){
+
+  testState = $("td").map(function(){ 
+    return $(this).text() 
+  })
+
+  gameID = $('#game').attr("data-id")
+
+
   attachListeners()
 })
 
@@ -23,10 +35,12 @@ function doTurn(){
   var gameState = $("td").map(function(){ 
     return $(this).text() 
   })
-debugger;
+
   var position = $(this)
   updateState(position)
+  persistGame(gameState)
   checkWinner()
+
 
   if ($('#message').html() !== ""){
     resetGame(gameState)
@@ -34,7 +48,7 @@ debugger;
 
   turn ++
 
-  // POST GAME STATE HERE
+
 }
 
 
@@ -74,7 +88,7 @@ function message(string){
 
 
 function resetGame(gameState){
-// debugger;
+
   var state=gameState
   // get id for game: $("div").attr("data-id")
   // persist game
@@ -83,19 +97,39 @@ function resetGame(gameState){
 }
 
 function persistGame(gameState){
+  // debugger;
+  var gameParams = {game: gameState.toArray()}
 
-  // switch ($("#game").attr("data-id") {
-  //   // case "curr"
-  // })
+  switch (gameID) {
+    case ("curr"):
+      $.post("/games.json", gameParams, function(response){
+        console.log(response)
+        var game = response["game"]
+        // $("#game").attr("data-id", game["id"])
+        gameID = game["id"]
+      })
+      break;
+    default:
+    
+      $.ajax({
+        url: "games/" + gameID + ".json",
+        method: "PATCH",
+        data: gameParams, 
+        success: function(response){
+        var game = response["game"]
+        console.log(game["state"])
+        }
+      })
+    }
 }
 
 
 
 function winCombos() {
-  // debugger;
+  
   switch (3) {
     case $("td[data-x=0]:contains('X')").length:
-    // debugger;
+    
       return true
       // message("Player X Won!")
       break;
