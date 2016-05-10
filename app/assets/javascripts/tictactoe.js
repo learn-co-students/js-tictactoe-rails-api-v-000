@@ -36,7 +36,7 @@ function doTurn(){
 
   var position = $(this)
   updateState(position)
-  console.log(checkWinner(gameState))
+  checkWinner(gameState)
 
 
   turn ++
@@ -71,11 +71,35 @@ function player(){
 }
 
 function checkWinner(){
+
+  // $("td[data-x=0]:contains('X')").length === 3 ///CHECKS FIRST VERT
+  // $("td[data-x=1]:contains('X')").length === 3
+  // $("td[data-x=2]:contains('X')").length === 3
+  // $("td[data-y=0]:contains('X')").length === 3
+  // $("td[data-y=1]:contains('X')").length === 3
+  // $("td[data-y=2]:contains('X')").length === 3
+
   if ($("tr:contains('X')").children(":contains('X')").length === 3){
+    console.log("true")
+    message("Player X Won!")
     return true
   }else{
+    console.log("false")
     return false
   }
+
+  if ($("tr:contains('O')").children(":contains('O')").length === 3){
+    return true
+    console.log("true")
+    message("Player X Won!")
+  }else{
+    console.log("false")
+    return false
+  }
+}
+
+function message(string){
+  $("#message").html(string)
 }
 
 // var empty = []
