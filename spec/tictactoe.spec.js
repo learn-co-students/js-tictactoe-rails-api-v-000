@@ -12,6 +12,7 @@ describe('Tic Tac Toe Functionality', function() {
       var selector = '[data-x="0"][data-y="0"]';
       spyOn(window, "doTurn");
       $(selector).click();
+      debugger;
       expect(window.doTurn).toHaveBeenCalled();
     });     
   });

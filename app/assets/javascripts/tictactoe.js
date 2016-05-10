@@ -1,8 +1,8 @@
 var turn = 0
 
-// $(document).ready(function(){
-//   attachListenters()
-// })
+$(document).ready(function(){
+  attachListeners()
+})
 
 
 function attachListeners(){
@@ -18,20 +18,28 @@ function attachListeners(){
 }
 
 function doTurn(){
-
+// debugger;
 
   var gameState = $("td").map(function(){ 
     return $(this).text() 
   })
+
   
-  var taken = []
-  for (var i=0; i<gameState.length; i++){ 
-    if (gameState[i] != ""){ 
-      taken.push(gameState[i])}
-  }
+// debugger;
+  
+  // var taken = []
+  // for (var i=0; i<gameState.length; i++){ 
+  //   if (gameState[i] != ""){ 
+  //     taken.push(gameState[i])}
+  // }
+  // debugger;
 
-  $(this).text(player(taken.length))
+  var position = $(this)
+  updateState(position)
+  console.log(checkWinner(gameState))
 
+
+  turn ++
   // then post game state
   // then check for winner
   // then change player
@@ -42,18 +50,31 @@ function doTurn(){
 
 }
 
+function updateState(obj){
+  var pos = obj
+  pos.text(player)
+
+}
+
 function isAvailable(obj){
   var position = obj
   return position.val() === ""
 }
 
-function player(turn){
-  var check = turn
+function player(){
   // debugger;
-  if (check % 2 === 0){
+  if (turn % 2 === 0){
     return "X"
   }else{
     return "O"
+  }
+}
+
+function checkWinner(){
+  if ($("tr:contains('X')").children(":contains('X')").length === 3){
+    return true
+  }else{
+    return false
   }
 }
 
