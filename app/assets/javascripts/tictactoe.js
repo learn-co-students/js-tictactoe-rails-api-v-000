@@ -1,7 +1,7 @@
 var turn = 0
-var gameID
+var currentGame
 
-var testState
+var gameState
 
 
 $(document).ready(function(){
@@ -10,7 +10,7 @@ $(document).ready(function(){
     return $(this).text() 
   })
 
-  gameID = $('#game').attr("data-id")
+  currentGame = $('#game').attr("data-id")
 
 
   attachListeners()
@@ -21,6 +21,7 @@ function attachListeners(){
   $("td").click(doTurn)
 
   $("#save").click(function(){
+    persistGame(gameState)
     console.log("another ajax call!")
   })
 
@@ -32,7 +33,7 @@ function attachListeners(){
 
 function doTurn(){
 
-  var gameState = $("td").map(function(){ 
+  gameState = $("td").map(function(){ 
     return $(this).text() 
   })
 
@@ -100,19 +101,19 @@ function persistGame(gameState){
   // debugger;
   var gameParams = {game: gameState.toArray()}
 
-  switch (gameID) {
+  switch (currentGame) {
     case ("curr"):
       $.post("/games.json", gameParams, function(response){
         console.log(response)
         var game = response["game"]
         // $("#game").attr("data-id", game["id"])
-        gameID = game["id"]
+        currentGame = game["id"]
       })
       break;
     default:
     
       $.ajax({
-        url: "games/" + gameID + ".json",
+        url: "games/" + currentGame + ".json",
         method: "PATCH",
         data: gameParams, 
         success: function(response){
