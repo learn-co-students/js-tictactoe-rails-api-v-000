@@ -21,9 +21,10 @@ function boardState(){
 }
 
 function saveGame(){
-  if(!gameParams['game']['id']){
+  if(!currentGame){
     $.post('/games', gameParams, function(savedGame){
       gameParams = savedGame;
+      currentGame = gameParams['game']['id']
     });
   } else {
     $.ajax({
