@@ -1,8 +1,9 @@
 class GamesController < ApplicationController
 
   def index
-    @games=Game.all
-    render json: @games
+# byebug
+    @game=Game.new(state: Array.new(9, ""))
+    render 
   end
 
 
