@@ -13,6 +13,7 @@ var winCombinations = [
 
 var gameParams = {game: {state: ['','','','','','','','','']}};
 var currentGame = gameParams['game']['id'];
+var gameData;
 
 function boardState(){ 
   return $('td').map(function(){
@@ -47,6 +48,7 @@ function resetBoard(){
 function showPreviousGames(){
   $('#games').html('');
   $.getJSON('/games').then(function(data){
+    gameData = data;
     data['games'].forEach(function(game){
       $('#games').append("<li data-gameid="+ game['id'] +">"+ game['id'] +"</li>");
     });
@@ -71,18 +73,14 @@ function setTurns(board){
 function restoreGame(){
   var gameNumber = $(this).text();
   var board;
-  debugger;
-  $.getJSON('/games').then(function(data){
-    debugger;
-    data['games'].forEach(function(game){
-      if (game['id'] == gameNumber){
-        board = game['state'];
-        gameParams['game']['state'] = board;
-        gameParams['game']['id'] = gameNumber;
-        returnTokens(board);
-        setTurns(board);
-      }
-    });
+  gameData['games'].forEach(function(game){
+    if (game['id'] == gameNumber){
+      board = game['state'];
+      gameParams['game']['state'] = board;
+      gameParams['game']['id'] = gameNumber;
+      returnTokens(board);
+      setTurns(board);
+    }
   });
 }
 
