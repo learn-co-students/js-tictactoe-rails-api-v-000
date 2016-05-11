@@ -23,9 +23,7 @@ function boardState(){
 function saveGame(){
   if(!currentGame){
     $.post('/games', gameParams, function(savedGame){
-      console.log('savedGame 1', savedGame);
       gameParams = savedGame;
-      console.log('savedGame 2', savedGame);
       currentGame = gameParams['game']['id']
     });
   } else {
@@ -73,8 +71,9 @@ function setTurns(board){
 function restoreGame(){
   var gameNumber = $(this).text();
   var board;
+  debugger;
   $.getJSON('/games').then(function(data){
-    // debugger;
+    debugger;
     data['games'].forEach(function(game){
       if (game['id'] == gameNumber){
         board = game['state'];
