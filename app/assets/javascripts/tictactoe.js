@@ -18,7 +18,11 @@ function attachListeners(){
   $("td").click(doTurn)
 
   $("#save").click(function(){
-    persistGame(gameState)
+    persistGame(gameState, function(response){
+        var game = response["game"]
+        $("#game").attr("data-id", game["id"])
+        currentGame = game["id"]
+    })
   })
 
   $("#previous").click(getAllGames)
@@ -85,34 +89,40 @@ function message(string){
 
 
 function resetGame(gameState){
-
-  persistGame(gameState)
-  turn=0
+  var state=gameState
+  turn = 0
   currentGame=0
   $("#game").attr("data-id", "curr")
   $("td").html("")
+// debugger;
+  persistGame(state)
+
+
 }
 
-function persistGame(gameState, options){
-
+function persistGame(gameState, callback){
   var gameParams = {state: gameState.toArray()}
+
 
   switch (currentGame) {
     case (0):
-      $.post("/games", gameParams, {async:false}, function(response){
-        var game = response["game"]
-        $("#game").attr("data-id", game["id"])
-        currentGame = game["id"]
-      })
+      $.post("/games", gameParams, function(response){
+  
+        // var game = response["game"]
+        // $("#game").attr("data-id", game["id"])
+        // currentGame = game["id"]
+      }).done(callback)
       break;
+
     default:
       $.ajax({
       url: "/games/" + currentGame, 
       method: "patch",
       data: gameParams, 
       success: function(response){
-  
+        console.log("updated")
         currentGame = response["game"]["id"]
+        return "updated"
       }
     })
   }
@@ -125,7 +135,7 @@ function getAllGames(){
       var gamesList = ""
       
       $.each(games, function(index, game){
-        gamesList += "<button data-gamestate='" + JSON.stringify(game.state) + "' data-gameid='" + game.id + "' >Game " + game.id + "</button><br>"
+        gamesList += "<li><button data-gamestate='" + JSON.stringify(game.state) + "' data-gameid='" + game.id + "' >Game " + game.id + "</button>"
     })
     
     $("#games").html(gamesList)

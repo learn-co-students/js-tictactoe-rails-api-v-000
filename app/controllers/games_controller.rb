@@ -7,15 +7,16 @@ class GamesController < ApplicationController
   end
 
   def create
-
+# byebug
     @game=Game.create(state: params["state"])
     render json: @game
   end
 
 
   def update
+  # byebug
     @game = Game.find_by(id: params[:id])
-    @game.update(state: params["game"]["state"])
+    @game.update(state: params["state"])
     render json: @game
   end
 
