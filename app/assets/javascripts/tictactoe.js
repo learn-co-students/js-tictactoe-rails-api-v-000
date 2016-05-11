@@ -23,7 +23,9 @@ function boardState(){
 function saveGame(){
   if(!currentGame){
     $.post('/games', gameParams, function(savedGame){
+      console.log('savedGame 1', savedGame);
       gameParams = savedGame;
+      console.log('savedGame 2', savedGame);
       currentGame = gameParams['game']['id']
     });
   } else {
@@ -46,7 +48,7 @@ function resetBoard(){
 
 function showPreviousGames(){
   $('#games').html('');
-  $.get('/games', function(data){
+  $.getJSON('/games').then(function(data){
     data['games'].forEach(function(game){
       $('#games').append("<li data-gameid="+ game['id'] +">"+ game['id'] +"</li>");
     });
@@ -71,24 +73,25 @@ function setTurns(board){
 function restoreGame(){
   var gameNumber = $(this).text();
   var board;
-  $.get('/games', function(data){
+  $.getJSON('/games').then(function(data){
+    // debugger;
     data['games'].forEach(function(game){
       if (game['id'] == gameNumber){
         board = game['state'];
         gameParams['game']['state'] = board;
         gameParams['game']['id'] = gameNumber;
-        returnTokens(board)
-        setTurns(board)
+        returnTokens(board);
+        setTurns(board);
       }
     });
   });
 }
 
 function doTurn(e, cell){
-  if(turn === 0){
-    saveGame()
-  }
   updateState(e, cell);
+  if(turn === 0){
+    saveGame();
+  }
   turn++;
   checkWinner();
 }
