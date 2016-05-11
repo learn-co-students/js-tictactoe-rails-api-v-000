@@ -15,7 +15,8 @@ $(document).ready(function(){
 
 
 function attachListeners(){
-  $("td").click(doTurn)
+  // $("td").click(doTurn)
+  $("tr").children().click(doTurn)
 
   $("#save").click(function(){
     persistGame(gameState, function(response){
@@ -94,7 +95,6 @@ function resetGame(gameState){
   currentGame=0
   $("#game").attr("data-id", "curr")
   $("td").html("")
-// debugger;
   persistGame(state)
 
 
@@ -107,10 +107,6 @@ function persistGame(gameState, callback){
   switch (currentGame) {
     case (0):
       $.post("/games", gameParams, function(response){
-  
-        // var game = response["game"]
-        // $("#game").attr("data-id", game["id"])
-        // currentGame = game["id"]
       }).done(callback)
       break;
 
