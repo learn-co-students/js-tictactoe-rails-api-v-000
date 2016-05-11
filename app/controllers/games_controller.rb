@@ -15,7 +15,7 @@ class GamesController < ApplicationController
 
   def update
     @game = Game.find_by(id: params[:id])
-    @game.update(state: params["game"])
+    @game.update(state: params["game"]["state"])
     render json: @game
   end
 
