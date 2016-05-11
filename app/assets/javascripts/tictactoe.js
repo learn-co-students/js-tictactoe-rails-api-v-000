@@ -1,12 +1,12 @@
 var turn = 0
 var currentGame = 0
-
+var htmlMap=["data-x=0 data-y=0 ","data-x=1 data-y=0 ","data-x=2 data-y=0 ","data-x=0 data-y=1 ","data-x=1 data-y=1 ","data-x=2 data-y=1 ","data-x=0 data-y=2 ","data-x=1 data-y=2 ","data-x=2 data-y=2 "]
 var gameState
 
 
 $(document).ready(function(){
 
-  testState = $("td").map(function(){ 
+  gameState = $("td").map(function(){ 
     return $(this).text() 
   })
 
@@ -61,7 +61,7 @@ function isAvailable(obj){
 
 function player(){
   if (turn % 2 === 0){
-    return "X"
+    return "X" 
   }else{
     return "O"
   }
@@ -89,19 +89,19 @@ function resetGame(gameState){
   persistGame(gameState)
   turn=0
   currentGame=0
+  $("#game").attr("data-id", "curr")
   $("td").html("")
-
 }
 
-function persistGame(gameState){
+function persistGame(gameState, options){
 
-  var gameParams = {game: gameState.toArray()}
+  var gameParams = {state: gameState.toArray()}
 
   switch (currentGame) {
     case (0):
-      $.post("/games", gameParams, function(response){
+      $.post("/games", gameParams, {async:false}, function(response){
         var game = response["game"]
-        // $("#game").attr("data-id", game["id"])
+        $("#game").attr("data-id", game["id"])
         currentGame = game["id"]
       })
       break;
@@ -111,6 +111,7 @@ function persistGame(gameState){
       method: "patch",
       data: gameParams, 
       success: function(response){
+  
         currentGame = response["game"]["id"]
       }
     })
@@ -120,16 +121,36 @@ function persistGame(gameState){
 
 function getAllGames(){
   $.get('/games', function(response){
-    // debugger;
-    var games=response["games"]
-    var gamesList = ""
-    
-    $.each(games, function(index, game){
-      gamesList += "<li><a href='http://localhost:3000/games/" + game.id + "' data-gameid='" + game.id + "' >Game " + game.id + "</a></li>"
+      var games=response["games"]
+      var gamesList = ""
+      
+      $.each(games, function(index, game){
+        gamesList += "<button data-gamestate='" + JSON.stringify(game.state) + "' data-gameid='" + game.id + "' >Game " + game.id + "</button><br>"
     })
     
     $("#games").html(gamesList)
+    $("#games button").click(getOldGame)
   })
+}
+
+function getOldGame(){
+
+  var id = $(this).attr("data-gameid")
+  var state = JSON.parse($(this).attr("data-gamestate"))
+  var assembled=["<tr>"]
+  
+  for (var i = 0; i < state.length; i++){ 
+    assembled.push("<td " + htmlMap[i] + ">" + state[i] + "</td>")
+  }
+
+  assembled.splice(4, 0, "</tr><tr>")
+  assembled.splice(8, 0, "</tr><tr>")
+  assembled.push("</tr>")
+  var assJoin = assembled.join("")
+  currentGame = id
+  $("#game").attr("data-id", currentGame)
+  $("tbody").html(assJoin)
+
 }
 
 
