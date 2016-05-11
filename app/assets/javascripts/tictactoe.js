@@ -1,7 +1,7 @@
 var turn = 0
 var currentGame = 0
 var htmlMap=["data-x=0 data-y=0 ","data-x=1 data-y=0 ","data-x=2 data-y=0 ","data-x=0 data-y=1 ","data-x=1 data-y=1 ","data-x=2 data-y=1 ","data-x=0 data-y=2 ","data-x=1 data-y=2 ","data-x=2 data-y=2 "]
-var gameState
+var gameState 
 
 
 $(document).ready(function(){
@@ -15,7 +15,11 @@ $(document).ready(function(){
 
 
 function attachListeners(){
-  $("tr").children().click(doTurn)
+  // $("tr").children().click(doTurn)
+  // $("td").on('click', doTurn)
+  $("td").click(function(){
+    doTurn(this);
+  })
 
   $("#save").click(function(){
     persistGame(gameState, function(response){
@@ -30,14 +34,16 @@ function attachListeners(){
 }
 
 
-function doTurn(){
+function doTurn(obj){
+  var position = obj
+  updateState(position)
 
+debugger;
   gameState = $("td").map(function(){ 
     return $(this).text() 
   })
 
-  var position = $(this)
-  updateState(position)
+  
   
   var winner = checkWinner()
 
@@ -52,8 +58,7 @@ function doTurn(){
 
 
 function updateState(obj){
-  var pos = obj
-  pos.text(player)
+  $(obj).text(player)
 }
 
 
