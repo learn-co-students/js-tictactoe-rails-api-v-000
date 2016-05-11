@@ -85,6 +85,9 @@ function restoreGame(){
 }
 
 function doTurn(e, cell){
+  if(turn === 0){
+    saveGame()
+  }
   updateState(e, cell);
   turn++;
   checkWinner();

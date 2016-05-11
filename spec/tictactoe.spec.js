@@ -413,6 +413,7 @@ describe('#integration tests of persistence', function() {
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
+      debugger;
       jasmine.Ajax.requests.mostRecent().respondWith(response);
       $('[data-x="0"][data-y="0"]').click();
       $('[data-x="1"][data-y="0"]').click();
