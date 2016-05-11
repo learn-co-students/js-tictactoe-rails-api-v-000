@@ -15,7 +15,6 @@ $(document).ready(function(){
 
 
 function attachListeners(){
-  // $("td").click(doTurn)
   $("tr").children().click(doTurn)
 
   $("#save").click(function(){
