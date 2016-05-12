@@ -57,12 +57,18 @@ function saveGame(){
       state: gameState
     }
   }
-
   // if currentGame = 0, it hasn't been saved to the db
   if (currentGame === 0) {
-    $.post("/games", gameData).done(function(response){  
+    $.post({
+      url: "/games", 
+      dataType: 'json',
+      data: gameData
+      }).done(function(response){  
+      // response is not the right format!
+      debugger;
       currentGame = response.game.id; // why is the response not returning the proper serialized @game? 
-                                      // the controller seems to be returning the right object...
+                                      // the controller Create method returns the correct object in Pry, but not here
+                                      // it's as if the serializer doesn't exist here
                                       // the tests pass because they stub the response
     });
   }
