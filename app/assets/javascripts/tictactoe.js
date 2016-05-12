@@ -26,7 +26,8 @@ function attachListeners() {
   $("#save").click(function(event) {
     saveGame();
   });
-  $("a.prev-game").click(function(event) {
+  $("#games").on("click", "[data-gameid]", function(event) {
+    debugger;
     loadGame(event);
   });
 }
@@ -38,7 +39,7 @@ function getPreviousGames() {
     if (data.games.length > 0) {
       var prevGames = "";
       $.each(data.games, function(index, game){
-        prevGames += '<a href="#" class="prev-game" data-gameid="' + game.id + '">Game '  + game.id + '</a>';
+        prevGames += '<p data-gameid="' + game.id + '">Game '  + game.id + '</p>';
       });
       $("#games").html(prevGames);
     }
@@ -47,8 +48,6 @@ function getPreviousGames() {
 
 function saveGame() {
   // build current gameData for saving
-  debugger;
-  // currentGame should be 0 on first test & second test
   var gameState = [];
   $("td").each(function(index, td){
     gameState.push($(td).text());
@@ -68,29 +67,35 @@ function saveGame() {
       data: gameData
       }).done(function(response){
         var wonGame = won();
-        debugger;
-        if (wonGame === false) {
+        if (wonGame === true) {
+          resetBoard();
+        }
+        else {
           currentGame = response.game.id;
         }
     });
   }
   else {
-    debugger;
     $.ajax({
       url: "/games/" + currentGame,
       type: 'PATCH',
       dataType: 'json',
       data: gameData
+    }).done(function(response){
+      var wonGame = won();
+      if (wonGame === true) {
+        resetBoard();
+      }
     });
   }
 }
 
 function loadGame(event) {
-  event.preventDefault();
   currentGame = $(event.target).data("gameid");
   debugger;
   $.get("/games/" + currentGame, function(data){
     var state = data.game.state;
+    debugger; // this was not activated in the test
     $("td").each(function(index, td){
       $(td).text(state[index]);
     });
@@ -123,8 +128,6 @@ function message(string) {
 }
 
 function resetBoard() {
-  saveGame();
-  debugger;
   turn = 0;
   currentGame = 0;
   $("td").each(function(index, td){
@@ -155,14 +158,13 @@ function won() {
 
 function checkWinner() {
   var wonGame = won();
-  debugger;
   if (wonGame === true) { // call message with winner
     message("Player " + winner + " Won!");
-    resetBoard();
+    saveGame();
   }
   else if (turn === 9) { // if the board is full and nobody won
     message("Tie game");
-    resetBoard();
+    saveGame();
   }
   else {
     return false;
