@@ -27,7 +27,6 @@ function attachListeners() {
     saveGame();
   });
   $("#games").on("click", "[data-gameid]", function(event) {
-    debugger;
     loadGame(event);
   });
 }
@@ -58,6 +57,7 @@ function saveGame() {
       state: gameState
     }
   };
+
   // if currentGame = 0, it hasn't been saved to the db
   if (currentGame === 0) {
     $.ajax({
@@ -67,7 +67,7 @@ function saveGame() {
       data: gameData
       }).done(function(response){
         var wonGame = won();
-        if (wonGame === true) {
+        if (wonGame === true || turn === 9) {
           resetBoard();
         }
         else {
@@ -83,7 +83,7 @@ function saveGame() {
       data: gameData
     }).done(function(response){
       var wonGame = won();
-      if (wonGame === true) {
+      if (wonGame === true || turn === 9) {
         resetBoard();
       }
     });
@@ -92,10 +92,9 @@ function saveGame() {
 
 function loadGame(event) {
   currentGame = $(event.target).data("gameid");
-  debugger;
   $.get("/games/" + currentGame, function(data){
     var state = data.game.state;
-    debugger; // this was not activated in the test
+    // debugger; // this was not activated in the test
     $("td").each(function(index, td){
       $(td).text(state[index]);
     });
@@ -128,6 +127,7 @@ function message(string) {
 }
 
 function resetBoard() {
+  debugger;
   turn = 0;
   currentGame = 0;
   $("td").each(function(index, td){
