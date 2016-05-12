@@ -2,52 +2,54 @@
 
 var turn = 0;
 var currentGame = 0;
+var winner = "";
 var winCombos = [
-  ['[data-x="0"][data-y="0"]', '[data-x="0"][data-y="1"]', '[data-x="0"][data-y="2"]'], 
-  ['[data-x="1"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="1"][data-y="2"]'], 
-  ['[data-x="2"][data-y="0"]', '[data-x="2"][data-y="1"]', '[data-x="2"][data-y="2"]'], 
-  ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="0"]', '[data-x="2"][data-y="0"]'], 
-  ['[data-x="0"][data-y="1"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="1"]'], 
-  ['[data-x="0"][data-y="2"]', '[data-x="1"][data-y="2"]', '[data-x="2"][data-y="2"]'], 
-  ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="2"]'], 
-  ['[data-x="2"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="0"][data-y="2"]'] 
-]
+  ['[data-x="0"][data-y="0"]', '[data-x="0"][data-y="1"]', '[data-x="0"][data-y="2"]'],
+  ['[data-x="1"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="1"][data-y="2"]'],
+  ['[data-x="2"][data-y="0"]', '[data-x="2"][data-y="1"]', '[data-x="2"][data-y="2"]'],
+  ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="0"]', '[data-x="2"][data-y="0"]'],
+  ['[data-x="0"][data-y="1"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="1"]'],
+  ['[data-x="0"][data-y="2"]', '[data-x="1"][data-y="2"]', '[data-x="2"][data-y="2"]'],
+  ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="2"]'],
+  ['[data-x="2"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="0"][data-y="2"]']
+];
 
 ////// listeners
 
-function attachListeners(){
-  $("td").click(function(event){
+function attachListeners() {
+  $("td").click(function(event) {
     doTurn(event);
   });
-  $("#previous").click(function(event){
+  $("#previous").click(function(event) {
     getPreviousGames();
   });
-  $("#save").click(function(event){
+  $("#save").click(function(event) {
     saveGame();
-  })
-  $("li").click(function(event){
+  });
+  $("a.prev-game").click(function(event) {
     loadGame(event);
   });
 }
 
 ////// persistence
 
-function getPreviousGames(){
+function getPreviousGames() {
   $.get("/games", function(data){
-    if (data["games"].length > 0) {
-      var prevGames = "<ul>"
-      $.each(data["games"], function(index, game){
-        prevGames += '<li data-gameid="' + game["id"] + '">Game '  + game["id"] + '</li>'
+    if (data.games.length > 0) {
+      var prevGames = "";
+      $.each(data.games, function(index, game){
+        prevGames += '<a href="#" class="prev-game" data-gameid="' + game.id + '">Game '  + game.id + '</a>';
       });
-      prevGames += "</ul>"
       $("#games").html(prevGames);
     }
   });
 }
 
-function saveGame(){
+function saveGame() {
   // build current gameData for saving
-  var gameState = []
+  debugger;
+  // currentGame should be 0 on first test & second test
+  var gameState = [];
   $("td").each(function(index, td){
     gameState.push($(td).text());
   });
@@ -56,23 +58,24 @@ function saveGame(){
       id: currentGame,
       state: gameState
     }
-  }
+  };
   // if currentGame = 0, it hasn't been saved to the db
   if (currentGame === 0) {
-    $.post({
-      url: "/games", 
+    $.ajax({
+      url: '/games',
+      type: 'POST',
       dataType: 'json',
       data: gameData
-      }).done(function(response){  
-      // response is not the right format!
-      debugger;
-      currentGame = response.game.id; // why is the response not returning the proper serialized @game? 
-                                      // the controller Create method returns the correct object in Pry, but not here
-                                      // it's as if the serializer doesn't exist here
-                                      // the tests pass because they stub the response
+      }).done(function(response){
+        var wonGame = won();
+        debugger;
+        if (wonGame === false) {
+          currentGame = response.game.id;
+        }
     });
   }
   else {
+    debugger;
     $.ajax({
       url: "/games/" + currentGame,
       type: 'PATCH',
@@ -82,8 +85,10 @@ function saveGame(){
   }
 }
 
-function loadGame(event){
+function loadGame(event) {
+  event.preventDefault();
   currentGame = $(event.target).data("gameid");
+  debugger;
   $.get("/games/" + currentGame, function(data){
     var state = data.game.state;
     $("td").each(function(index, td){
@@ -94,7 +99,7 @@ function loadGame(event){
 
 ////// playing the game
 
-function doTurn(event){
+function doTurn(event) {
   updateState(event);
   turn += 1;
   checkWinner();
@@ -105,39 +110,53 @@ function player(){
     return "X";
   }
   else {
-    return "O"
+    return "O";
   }
 }
 
-function updateState(event){
+function updateState(event) {
   $(event.target).text(player());
 }
 
-function message(string){
+function message(string) {
   $('#message').text(string);
 }
 
-function resetBoard(){
+function resetBoard() {
   saveGame();
+  debugger;
   turn = 0;
   currentGame = 0;
   $("td").each(function(index, td){
-    $(this).text("");
-  });    
+    $(td).text("");
+  });
 }
 
-function checkWinner(){
-    var winner = "";
-    if (winCombos.some(function(combo) { // if this function returns true, aka if there is a winning combo
-      var allX = combo.every(function(element){
-        return $(element).text() === "X";
-      });
-      var allO = combo.every(function(element){
-        return $(element).text() === "O";
-      });
-      allX ? winner = "X" : allO ? winner = "O" : winner // set the winner variable for the message
-      return allX || allO;
-    })) { // call message with winner
+function won() {
+  return winCombos.some(function(combo) { // this function returns true if there is a winning combo
+    var allX = combo.every(function(element){ // allX is true if there is a winning X combo
+      return $(element).text() === "X";
+    });
+    var allO = combo.every(function(element){ // allO is true is there is a winning O combo
+      return $(element).text() === "O";
+    });
+    if (allX === true) { // set the winner for the message
+      winner = "X";
+    }
+    else if (allO === true) {
+      winner = "O";
+    }
+    else {
+      winner = "";
+    }
+    return allX || allO; // if there is a winner, this returns true
+  });
+}
+
+function checkWinner() {
+  var wonGame = won();
+  debugger;
+  if (wonGame === true) { // call message with winner
     message("Player " + winner + " Won!");
     resetBoard();
   }
@@ -152,6 +171,6 @@ function checkWinner(){
 
 ////// document ready!
 
-$(document).ready(function(){
+$(document).ready(function() {
   attachListeners();
 });
