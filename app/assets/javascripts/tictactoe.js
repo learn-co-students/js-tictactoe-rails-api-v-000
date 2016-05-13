@@ -3,16 +3,28 @@
 var turn = 0;
 var currentGame = 0;
 var winner = "";
+var stateOfGame = [];
 var winCombos = [
-  ['[data-x="0"][data-y="0"]', '[data-x="0"][data-y="1"]', '[data-x="0"][data-y="2"]'],
-  ['[data-x="1"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="1"][data-y="2"]'],
-  ['[data-x="2"][data-y="0"]', '[data-x="2"][data-y="1"]', '[data-x="2"][data-y="2"]'],
-  ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="0"]', '[data-x="2"][data-y="0"]'],
-  ['[data-x="0"][data-y="1"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="1"]'],
-  ['[data-x="0"][data-y="2"]', '[data-x="1"][data-y="2"]', '[data-x="2"][data-y="2"]'],
-  ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="2"]'],
-  ['[data-x="2"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="0"][data-y="2"]']
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
 ];
+// old:
+// [ 
+//   ['[data-x="0"][data-y="0"]', '[data-x="0"][data-y="1"]', '[data-x="0"][data-y="2"]'],
+//   ['[data-x="1"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="1"][data-y="2"]'],
+//   ['[data-x="2"][data-y="0"]', '[data-x="2"][data-y="1"]', '[data-x="2"][data-y="2"]'],
+//   ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="0"]', '[data-x="2"][data-y="0"]'],
+//   ['[data-x="0"][data-y="1"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="1"]'],
+//   ['[data-x="0"][data-y="2"]', '[data-x="1"][data-y="2"]', '[data-x="2"][data-y="2"]'],
+//   ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="2"]'],
+//   ['[data-x="2"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="0"][data-y="2"]']
+// ];
 
 ////// listeners
 
@@ -45,19 +57,14 @@ function getPreviousGames() {
   });
 }
 
-function saveGame() {
-  // build current gameData for saving
-  var gameState = [];
-  $("td").each(function(index, td){
-    gameState.push($(td).text());
-  });
+function saveGame(gameState, gameOver = false) {
+  // build current gameData for saving  
   var gameData = {
     game: {
       id: currentGame,
       state: gameState
     }
   };
-
   // if currentGame = 0, it hasn't been saved to the db
   if (currentGame === 0) {
     $.ajax({
@@ -66,26 +73,20 @@ function saveGame() {
       dataType: 'json',
       data: gameData
       }).done(function(response){
-        var wonGame = won();
-        if (wonGame === true || turn === 9) {
-          resetBoard();
-        }
-        else {
+        // var wonGame = won(gameState);
+        // if wonGame === false || turn < 9
+        if (gameOver === false) {
           currentGame = response.game.id;
         }
     });
   }
-  else {
+  else { // update the existing game in the db
     $.ajax({
       url: "/games/" + currentGame,
       type: 'PATCH',
       dataType: 'json',
       data: gameData
     }).done(function(response){
-      var wonGame = won();
-      if (wonGame === true || turn === 9) {
-        resetBoard();
-      }
     });
   }
 }
@@ -93,8 +94,8 @@ function saveGame() {
 function loadGame(event) {
   currentGame = $(event.target).data("gameid");
   $.get("/games/" + currentGame, function(data){
-    var state = data.game.state;
-    // debugger; // this was not activated in the test
+    state = data.game.state;
+    // debugger; // this was not activated in the last test
     $("td").each(function(index, td){
       $(td).text(state[index]);
     });
@@ -105,6 +106,10 @@ function loadGame(event) {
 
 function doTurn(event) {
   updateState(event);
+  stateOfGame = [];
+  $("td").each(function(index, td){
+    stateOfGame.push($(td).text());
+  });
   turn += 1;
   checkWinner();
 }
@@ -127,7 +132,6 @@ function message(string) {
 }
 
 function resetBoard() {
-  debugger;
   turn = 0;
   currentGame = 0;
   $("td").each(function(index, td){
@@ -135,14 +139,15 @@ function resetBoard() {
   });
 }
 
-function won() {
+function won(gameState) {
   return winCombos.some(function(combo) { // this function returns true if there is a winning combo
-    var allX = combo.every(function(element){ // allX is true if there is a winning X combo
-      return $(element).text() === "X";
+    var allX = combo.every(function(position){ // allX is true if there is a winning X combo
+      return gameState[position] === "X";
     });
-    var allO = combo.every(function(element){ // allO is true is there is a winning O combo
-      return $(element).text() === "O";
+    var allO = combo.every(function(position){ // allO is true is there is a winning O combo
+      return gameState[position] === "O";
     });
+    debugger;
     if (allX === true) { // set the winner for the message
       winner = "X";
     }
@@ -157,14 +162,16 @@ function won() {
 }
 
 function checkWinner() {
-  var wonGame = won();
+  var wonGame = won(stateOfGame);
   if (wonGame === true) { // call message with winner
     message("Player " + winner + " Won!");
-    saveGame();
+    resetBoard();
+    saveGame(stateOfGame, true);
   }
   else if (turn === 9) { // if the board is full and nobody won
     message("Tie game");
-    saveGame();
+    resetBoard();
+    saveGame(stateOfGame, true);
   }
   else {
     return false;
