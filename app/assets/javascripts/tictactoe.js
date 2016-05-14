@@ -14,17 +14,6 @@ var winCombos = [
   [0, 4, 8],
   [2, 4, 6]
 ];
-// old:
-// [ 
-//   ['[data-x="0"][data-y="0"]', '[data-x="0"][data-y="1"]', '[data-x="0"][data-y="2"]'],
-//   ['[data-x="1"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="1"][data-y="2"]'],
-//   ['[data-x="2"][data-y="0"]', '[data-x="2"][data-y="1"]', '[data-x="2"][data-y="2"]'],
-//   ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="0"]', '[data-x="2"][data-y="0"]'],
-//   ['[data-x="0"][data-y="1"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="1"]'],
-//   ['[data-x="0"][data-y="2"]', '[data-x="1"][data-y="2"]', '[data-x="2"][data-y="2"]'],
-//   ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="2"]'],
-//   ['[data-x="2"][data-y="0"]', '[data-x="1"][data-y="1"]', '[data-x="0"][data-y="2"]']
-// ];
 
 ////// listeners
 
@@ -80,7 +69,7 @@ function saveGame(gameState, gameOver = false) {
   }
   else { // update the existing game in the db
     $.ajax({
-      url: "/games/" + currentGame,
+      url: '/games/' + currentGame,
       type: 'PATCH',
       dataType: 'json',
       data: gameData
@@ -91,14 +80,8 @@ function saveGame(gameState, gameOver = false) {
 
 function loadGame(event) {
   currentGame = $(event.target).data("gameid");
-  debugger;
-  var url = "/games/" + currentGame;
-  $.get(url, function(data){ // not getting called!
-    debugger;
-    // this works fine when I play around in the browser on the rails server, but fails running the Jasmine test
-    // I get this alert in the console when I run the Jasmine test:
-    // "jquery.min.js:4 XMLHttpRequest cannot load file:///games. Cross origin requests are only supported for protocol schemes: http, data, chrome, chrome-extension, https, chrome-extension-resource."
-    // am I supposed to use jsonp or something?
+  var url = '/games/' + currentGame;
+  $.get(url, function(data){ 
     state = data.game.state;
     $("td").each(function(index, td){
       $(td).text(state[index]);
