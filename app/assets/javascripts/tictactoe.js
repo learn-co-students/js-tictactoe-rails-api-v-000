@@ -26,17 +26,17 @@ var attachListeners = function(){
   });
   $('#save').on('click', function(){
     saveState();
-    var ajaxMethod = currentGame === 0 ? 'POST' : 'PATCH';
-    var ajaxURL = currentGame === 0 ? '/games' : '/games/' + currentGame
-    ajaxSave(ajaxMethod, ajaxURL);
+    ajaxSave();
   });
   $('#previous').on('click', ajaxList);
   $('#games').on('click', ajaxLoad);
 };
 
-var ajaxSave = function(method, ternaryURL, gameOver=false){
+var ajaxSave = function(gameOver=false){
+  var method = currentGame === 0 ? 'POST' : 'PATCH';
+  var ajaxURL = currentGame === 0 ? '/games' : '/games/' + currentGame
   $.ajax({
-    url: ternaryURL, 
+    url: ajaxURL, 
     type: method,
     dataType: 'json',
     data: {'game':{
@@ -153,16 +153,10 @@ var checkCombo = function(combo){
 
 var wrapGame = function(msg){
   saveState();
-  // $('#save').click();
-  var ajaxMethod = currentGame === 0 ? 'POST' : 'PATCH';
-  var ajaxURL = currentGame === 0 ? '/games' : '/games/' + currentGame;
-  ajaxSave(ajaxMethod, ajaxURL, true);
+  ajaxSave(true);
   message(msg);
   resetBoard();
   turn = 0;
-  // if (currentGame != 0) {
-  currentGame = 0;
-  // }
 };
 
 var saveState = function(){
