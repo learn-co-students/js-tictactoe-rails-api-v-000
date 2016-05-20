@@ -7,6 +7,16 @@ var currentState;
 var turn = 0;
 var gameId;
 
+function newGame(){
+  $('td').each(function(index, cell){
+    $(cell).text('');
+  });
+
+  turn = 0;
+  gameId =nil;
+
+}
+
 
 function attachListeners(){
   $('td').click(function(){
@@ -113,11 +123,11 @@ if (gameId){
 
 function checkWinner(){
   if (winCombos() == true ){
-    message("Player " + player() + " Won!")
-    gameReset();
+    var mess = "Player " + player() + " Won!";
+    gameReset(mess);
   }else if(turn+1 === 9){
-    message("Tie game")
-    gameReset();
+    var mess = "Tie game";
+    gameReset(mess);
     return "tie";
   }else{
     return false
@@ -155,7 +165,8 @@ function message(message){
 
 ////////  Resetting Game /////
 
-function gameReset(){
-  var turn = 0;
-  $('td').text('');
+function gameReset(mess){
+  debugger;
+  message(mess);
+  newGame();
 }
