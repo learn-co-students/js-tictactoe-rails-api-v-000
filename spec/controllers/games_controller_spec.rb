@@ -24,7 +24,7 @@ RSpec.describe GamesController, :type => :controller do
       get :index
       expected = {
         "games"=>
-          [{"id"=>1, "state"=>["X", "O", "", "", "", "", "", "", ""]}, 
+          [{"id"=>1, "state"=>["X", "O", "", "", "", "", "", "", ""]},
           {"id"=>2, "state"=>["X", "O", "X", "", "", "", "", "", ""]}
         ]
       }
