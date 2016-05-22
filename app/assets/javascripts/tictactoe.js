@@ -6,25 +6,43 @@ $('document').ready(function(){
 var currentState;
 var turn = 0;
 var gameId;
+var currentGame = 0;
 
 function newGame(){
+  var state = [];
+  $('td').each(function(index, cell){
+    state.push($(cell).text());
+  });
+  currentState = state;
+  saveGame();
+
   $('td').each(function(index, cell){
     $(cell).text('');
   });
 
-  turn = 0;
-  gameId =nil;
-
+  turn = -1;
+  gameId =undefined;
 }
 
 
 function attachListeners(){
   $('td').click(function(){
+    var clean = '';
+    message(clean);
     doTurn(this);
   });
 
   $('#save').click(function(){
     saveGame();
+  });
+
+  $('#previous').click(function(){
+    getAllGames();
+  });
+
+  $("#games").click(function(event) {
+  var state = parseState(event)
+  swapGame(state, getGameId(event))
   });
 };
 
@@ -42,6 +60,7 @@ function doTurn(data){
 //////////////    WIN COMBOS  //////////////////
 
 function winCombos(){
+
   switch(3){
 
     // All X combos ///
@@ -64,6 +83,9 @@ function winCombos(){
       return true
       break;
     case $("td[data-x=0][data-y=2]:contains('X'), td[data-x=1][data-y=2]:contains('X'), td[data-x=2][data-y=2]:contains('X')" ).length:
+      return true
+      break;
+    case $("td[data-x=2][data-y=0]:contains('X'), td[data-x=1][data-y=1]:contains('X'), td[data-x=0][data-y=2]:contains('X')" ).length:
       return true
       break;
 
@@ -90,7 +112,11 @@ function winCombos(){
     case $("td[data-x=0][data-y=2]:contains('O'), td[data-x=1][data-y=2]:contains('O'), td[data-x=2][data-y=2]:contains('O')" ).length:
       return true
       break;
-
+    case $("td[data-x=2][data-y=0]:contains('O'), td[data-x=1][data-y=1]:contains('O'), td[data-x=0][data-y=2]:contains('O')" ).length:
+      return true
+      break;
+    default:
+    return false;
   }
 };
 
@@ -121,18 +147,107 @@ if (gameId){
   }
 };
 
+
+
+var getAllGames = function() {
+  $.getJSON("/games").done(function(response) {
+    showGames(response.games)
+  })
+}
+
+var showGames = function(games) {
+  var dom = $()
+  games.forEach(function(game) {
+    dom = dom.add(showGame(game));
+  })
+  $("#games").html(dom);
+}
+
+var showGame = function(game) {
+  return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
+}
+
+var parseState = function(event) {
+  return $(event.target).data("state").split(",")
+}
+var getGameId = function(event) {
+  return $(event.target).data("gameid")
+}
+
+
+var swapGame = function(state, id) {
+  placeMarks(state);
+
+  gameId = id;
+  turn = findTurn(state);
+}
+
+var findTurn = function(state) {
+  var turn = 0;
+  state.forEach(function(item) {
+    if(item != "") {
+      turn += 1;
+    }
+  })
+  return turn;
+}
+
+
+var placeMarks = function(marks) {
+  $("td").each(function(i) {
+    $(this).text(marks[i]);
+  })
+}
+
+
+
+
+// function getAllGames(){
+//
+//   var response = [];
+//   $.ajax({
+//     url: "/games",
+//     method: "GET",
+//     data: ["game"]
+//   }).done (function(resp){
+//
+//     $.each(resp.games, function(index, cell){
+//       response.push(cell.id);
+//     })
+//     response;
+//     $('#games').children().text(response);
+//
+//   })
+// }
+
+
 function checkWinner(){
+
   if (winCombos() == true ){
     var mess = "Player " + player() + " Won!";
     gameReset(mess);
-  }else if(turn+1 === 9){
-    var mess = "Tie game";
-    gameReset(mess);
-    return "tie";
+  } else if (turn == 9){
+    debugger;
+    tie();
   }else{
-    return false
+    false
   }
 };
+
+
+function tie() {
+  var thereIsATie = true;
+  $("td").each(function() {
+    if ($(this).html().length <= 0) {
+      thereIsATie = false;
+    }
+  });
+  if (thereIsATie){
+  var mess = "";
+  mess = "Tie game";
+  gameReset(mess);
+}
+}
 
 
 
@@ -166,7 +281,6 @@ function message(message){
 ////////  Resetting Game /////
 
 function gameReset(mess){
-  debugger;
   message(mess);
   newGame();
 }
