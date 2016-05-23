@@ -17,8 +17,6 @@ function newGame(){
 
   saveGame();
 
-
-
   $('td').html('');
 
   turn = -1;
@@ -38,7 +36,7 @@ function attachListeners(){
 
   $('#save').click(function(){
     var saving = saveGame(function(resp){
-      debugger;
+
       gameId = resp["game"]["id"];
     });
   });
@@ -134,9 +132,7 @@ function gameData(){
 }
 
 function saveGame(callback){
-  
 if (gameId){
-
   $.ajax({
     url: "/games/" + gameId,
     method: "PATCH",

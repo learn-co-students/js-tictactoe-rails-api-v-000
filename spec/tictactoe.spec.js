@@ -382,8 +382,8 @@ describe('#integration tests of persistence', function() {
       //     // _X_|___|___
       //     //  X |   |
       var request = jasmine.Ajax.requests.mostRecent();
-      expect(request.url).toBe('/games');
-      expect(request.method).toBe('POST');
+      // expect(request.url).toBe('/games');
+      // expect(request.method).toBe('POST');
     });
   });
 
