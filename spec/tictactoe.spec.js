@@ -131,7 +131,7 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="0"][data-y="2"]').click();
       $('[data-x="1"][data-y="0"]').click();
       $('[data-x="2"][data-y="0"]').click();
-  
+
       // _X_|_O_|_X_
       // _O_|_O_|_X_
       //  X | X | O
@@ -427,6 +427,7 @@ describe('#integration tests of persistence', function() {
       $("#save").click()
       expect(jasmine.Ajax.requests.count()).toBe(2)
       var request = jasmine.Ajax.requests.mostRecent();
+      // debugger;
       expect(request.url).toBe('/games');
       expect(request.method).toBe('POST');
     });

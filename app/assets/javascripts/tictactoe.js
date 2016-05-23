@@ -14,15 +14,19 @@ function newGame(){
     state.push($(cell).text());
   });
   currentState = state;
+
   saveGame();
 
-  $('td').each(function(index, cell){
-    $(cell).text('');
-  });
+
+
+  $('td').html('');
 
   turn = -1;
+
   gameId =undefined;
 }
+
+
 
 
 function attachListeners(){
@@ -33,7 +37,10 @@ function attachListeners(){
   });
 
   $('#save').click(function(){
-    saveGame();
+    var saving = saveGame(function(resp){
+      debugger;
+      gameId = resp["game"]["id"];
+    });
   });
 
   $('#previous').click(function(){
@@ -126,24 +133,21 @@ function gameData(){
 
 }
 
-function saveGame(){
-  // debugger;
+function saveGame(callback){
+  
 if (gameId){
 
   $.ajax({
     url: "/games/" + gameId,
     method: "PATCH",
     data: gameData()
-
   });
 } else{
   $.ajax({
      url: "/games",
      method: "POST",
      data: gameData(),
-   }).done (function(resp){
-       gameId = resp.game.id;
-     })
+   }).done (callback);
   }
 };
 
@@ -226,11 +230,10 @@ function checkWinner(){
   if (winCombos() == true ){
     var mess = "Player " + player() + " Won!";
     gameReset(mess);
-  } else if (turn == 9){
-    debugger;
+  } else if (turn == 8){
     tie();
   }else{
-    false
+    return false
   }
 };
 
