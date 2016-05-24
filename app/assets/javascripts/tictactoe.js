@@ -1,5 +1,5 @@
 var turn = 0;
-
+var currentGame = '';
 var selector = [
   '[data-x="0"][data-y="0"]',
   '[data-x="1"][data-y="0"]',
@@ -46,17 +46,20 @@ function checkWinner() {
 
   if(turn === 9 && winner === '') {
     message('Tie game');
-    reset();
+    saveGame();
+    resetAll();
     return;
 
   } else if(winner === "O") {
     message('Player O Won!');
-    reset();
+    saveGame();
+    resetAll();
     return;
 
   } else if(winner === "X") {
     message('Player X Won!');
-    reset();
+    saveGame();
+    resetAll();
     return;
 
   } else {
@@ -64,22 +67,108 @@ function checkWinner() {
   }
 }
 
-function currentGame() {
+function getGames() {
+  $.get("/games", function(data) {
+    var savedGame = '';
+    var games = data["games"]
 
+    games.forEach(function(game) {
+      savedGame += ('<li data-gameid="' + game["id"] + '">' + game["id"] + '</li>');
+    });
+    $("#games").html(savedGame);
+  });
+}
+
+function autoLoad(event) {
+  currentGame = $(event.target).data("gameid")
+
+  $.get('/games/' + currentGame, function(data) {
+      var game = data["game"];
+      turn = findTurn(game["state"]);
+
+      for(i = 0; i < 9; i++) {
+        $(selector[i]).text(game["state"][i]);
+        // .val(game["state"][i])
+      }
+  });
+}
+
+function findTurn(state) {
+  var turn = 0;
+  state.forEach(function(token) {
+    if(token != "") {
+      turn++;
+    }
+  });
+  return turn;
+}
+
+//saves a game with an id, resets board
+function saveGame() {
+    if(currentGame == "") {
+      $.post('/games', currentState()).success(function(response) {
+        if(checkWinner() === false) {
+          currentGame = response.game.id;
+          resetBoard();
+        }
+
+      });
+    } else {
+      $.ajax({
+        url: '/games/' + currentGame,
+        method: "PATCH",
+        contentType: "application/json",
+        content: currentState()
+      });
+    }
+}
+
+// if you're playing a game, you can hit save and persist a new game.
+//if you hit save, and hit it again, it should patch.
+
+// //returns the current board
+var currentState = function() {
+  var state = [];
+  for(i = 0; i < 9; i++) {
+    state.push($(selector[i]).val());
+  }
+  return {game: {state: state}};
 }
 
 function updateState(selector) {
   $(selector).text(player()).val(player());
+
 }
 
 function attachListeners() {
   selector.forEach(function(selector) {
     $(selector).click(function(data) { doTurn(this) });
   });
+  $("#save").click(function(event) {
+    saveGame();
+  });
+
+  $("#previous").click(function(event) {
+    getGames();
+  });
+
+  $("#games").click(function(event) {
+    autoLoad(event);
+  });
+
 }
 
-function reset() {
+function resetBoard() {
   turn = 0;
+  // currentGame = '';
+  selector.forEach(function(selector) {
+    $(selector).text('').val('');
+  });
+}
+
+function resetAll() {
+  turn = 0;
+  currentGame = '';
   selector.forEach(function(selector) {
     $(selector).text('').val('');
   });
