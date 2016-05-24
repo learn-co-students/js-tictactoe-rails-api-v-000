@@ -1,5 +1,7 @@
 var turn = 0;
-var currentGame = '';
+var currentGame = false;
+var id = '';
+var saves = 0;
 var selector = [
   '[data-x="0"][data-y="0"]',
   '[data-x="1"][data-y="0"]',
@@ -44,7 +46,7 @@ function checkWinner() {
     }
   });
 
-  if(turn === 9 && winner === '') {
+  if(turn > 8 && winner === '') {
     message('Tie game');
     saveGame();
     resetAll();
@@ -80,15 +82,16 @@ function getGames() {
 }
 
 function autoLoad(event) {
-  currentGame = $(event.target).data("gameid")
+  id = $(event.target).data("gameid");
+  currentGame = true;
 
-  $.get('/games/' + currentGame, function(data) {
+
+  $.get('/games/' + id, function(data) {
       var game = data["game"];
       turn = findTurn(game["state"]);
 
       for(i = 0; i < 9; i++) {
-        $(selector[i]).text(game["state"][i]);
-        // .val(game["state"][i])
+        $(selector[i]).text(game["state"][i]).val(game["state"][i]);
       }
   });
 }
@@ -105,22 +108,18 @@ function findTurn(state) {
 
 //saves a game with an id, resets board
 function saveGame() {
-    if(currentGame == "") {
-      $.post('/games', currentState()).success(function(response) {
-        if(checkWinner() === false) {
-          currentGame = response.game.id;
-          resetBoard();
-        }
-
-      });
+  debugger;
+    if(currentGame == false) {
+      $.post('/games', currentState()).success(function(response) {});
     } else {
       $.ajax({
-        url: '/games/' + currentGame,
+        url: '/games/' + id,
         method: "PATCH",
-        contentType: "application/json",
-        content: currentState()
+        dataType: "json",
+        data: currentState()
       });
     }
+    // resetAll();
 }
 
 // if you're playing a game, you can hit save and persist a new game.
@@ -146,6 +145,7 @@ function attachListeners() {
   });
   $("#save").click(function(event) {
     saveGame();
+    saves++;
   });
 
   $("#previous").click(function(event) {
@@ -160,7 +160,6 @@ function attachListeners() {
 
 function resetBoard() {
   turn = 0;
-  // currentGame = '';
   selector.forEach(function(selector) {
     $(selector).text('').val('');
   });
