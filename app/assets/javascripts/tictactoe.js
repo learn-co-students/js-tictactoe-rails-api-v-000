@@ -83,6 +83,7 @@ function getGames() {
 
 function autoLoad(event) {
   id = $(event.target).data("gameid");
+  debugger;
   currentGame = true;
 
 
@@ -119,8 +120,9 @@ function saveGame() {
         data: currentState()
       });
     }
-    // resetAll();
 }
+//if you save and you haven't won, the board doesn't clear.
+//if you win, the game saves
 
 // if you're playing a game, you can hit save and persist a new game.
 //if you hit save, and hit it again, it should patch.
