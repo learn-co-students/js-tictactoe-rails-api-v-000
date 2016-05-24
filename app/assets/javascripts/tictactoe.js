@@ -18,7 +18,7 @@ function attachListeners(){
     });
     
     $("#save").click(function(){
-        getBoard();
+        //save 
     });
 }
 
@@ -43,14 +43,22 @@ function updateState(event){
 function getBoard(){
     board = [];
     $.each($("td"), function(index, cell){
-        board.push(cell); //NOT RETURNING CORRECT VALUE
+        board.push($(this).text()); //adds value of cell to board array
     });
-    alert(board);
 }
 
 function checkWinner(){
-    for(var i = 0; i > win_combos.length; i++){
-        //if indexes on board for each value in combo == X || Y, 
+    for(var i = 0; i < win_combos.length; i++){
+        //if all three indexes of win_combo are X, return win message
+        //else if all three indexes of win combo are O, return win message
+        //else if board is full, return tie message
+        
+        getBoard();
+        if (board[win_combos[i][0]] == 'X' && board[win_combos[i][1]] == 'X' && board[win_combos[i][2]] == 'X'){
+            alert('Player X won!'); //updated to message()
+        } else if (board[win_combos[i][0]] == 'O' && board[win_combos[i][1]] == 'O' && board[win_combos[i][2]] == 'O'){
+            alert'Player O won!'); //update to message()
+        } 
     }
 }
 
