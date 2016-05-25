@@ -11,8 +11,9 @@ var win_combos = [
   [0, 4, 8],
   [2, 4, 6]
 ];
-var gameId = 0;
-var currentGame = 0;
+
+var saved = false;
+var currentGameId = undefined;
 var board = [];
 
 //SET LISTENERS ------------------------
@@ -27,8 +28,11 @@ function attachListeners(){
     $("#previous").click(function(){
         showGames();
     });
-    $("#games").on("click", "[data-gameid]", function(event) {
+    $("#games").click(function(event) {
         loadGame(event);
+    });
+    $('#reset').click(function(){
+       resetBoard();
     });
 }
 
@@ -67,8 +71,10 @@ function checkWinner(){
         getBoard();
         if (board[win_combos[i][0]] == 'X' && board[win_combos[i][1]] == 'X' && board[win_combos[i][2]] == 'X'){
             message('Player X won!');
+            resetBoard();
         } else if (board[win_combos[i][0]] == 'O' && board[win_combos[i][1]] == 'O' && board[win_combos[i][2]] == 'O'){
             message('Player O won!');
+            resetBoard();
         } 
     }
 }
@@ -77,31 +83,45 @@ function message(text){
     $('#message').text(text);
 }
 
+function resetBoard(){
+    board=[];
+    turn = 0;
+    saved = false;
+    setSaved();
+    $('td').text("");
+}
+
 //PERSISTENCE ------------------------------
 
+function setSaved(){
+    $('#saved').text('Saved: ' + saved)
+}
+
 function save(){
+    //if saved === false, post request
+    //set saved to true
+    //set currentGameId
+    //else if saved === true, patch request
+    //set saved to true
+    
     getBoard();
     
-    var gameData = {
-        game: {
-            id: gameId, //need to increment gameID on new game
-            state: board
-        }
-    };
-    
-    if (gameId === 0){ //if its the first game, need to create new (otherwise we just need to update)
-        $.ajax({
-            url:'/games',
-            type:'POST',
-            dataType: 'json',
-            data: gameData
+    if (saved == false){ //if game has never been saved
+        alert('saving...');
+        $.post('/games', {game: {state: board}}, function(success){
+            //need to get/set currentGameId
+            currentGameId = success.game.id;
+            $('#data').text("Current game: " + currentGameId);
+            saved = true;
+            setSaved(); 
         });
-    } else {
-        $.ajax({
-            url:'/games',
-            type:'PATCH',
-            dataType: 'json',
-            data: gameData
+    } else { //if game has been previously saved
+        var url = '/games/' +  currentGameId; //need to set currentGameId first
+        $.patch(url, {state: board}, function(success){
+            currentGameId = success.game.id;
+            $('#data').text("Current game: " + currentGameId);
+            saved = true;
+            setSaved();
         });
     }
 }
@@ -111,7 +131,7 @@ function showGames(){
         if (data.games.length > 0){
             var html = '';
             $.each(data.games, function(i, game){
-                html += "<p data-gameId='" + game.id + "'>Game " + game.id + "</p>";
+                html += "<p data-gameid='" + game.id + "'>Game " + game.id + "</p>";
             });
             $("#games").html(html);
         } else{
@@ -121,14 +141,14 @@ function showGames(){
 }
 
 function loadGame(event){
-    currentGame = $(event.target).data('gameId');
-    alert(currentGame);
-    var url = '/games/'+ currentGame;
-    $.get(url, function(data){
-        board = data.game.state;
-        $('td').each(function(index, cell){
-            $(this).text(board[index]);     
-        });
+    //load from gameid data attribute
+    //set saved = true
+    //set board
+    
+    var url = '/games/' + $(event.target).data('gameid');
+    alert(url);
+    $.get(url, '', function(success){ //ID GOING THROUGH AS NIL, MAY BE CLOUD 9 ISSUE
+       alert(success.game.state); 
     });
 }
 
