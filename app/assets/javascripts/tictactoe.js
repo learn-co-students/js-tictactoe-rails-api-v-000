@@ -1,7 +1,5 @@
 var turn = 0;
-var currentGame = false;
-var id = '';
-var saves = 0;
+var currentGame;
 var selector = [
   '[data-x="0"][data-y="0"]',
   '[data-x="1"][data-y="0"]',
@@ -48,19 +46,19 @@ function checkWinner() {
 
   if(turn > 8 && winner === '') {
     message('Tie game');
-    saveGame();
+    saveGame(true);
     resetAll();
     return;
 
   } else if(winner === "O") {
     message('Player O Won!');
-    saveGame();
+    saveGame(true);
     resetAll();
     return;
 
   } else if(winner === "X") {
     message('Player X Won!');
-    saveGame();
+    saveGame(true);
     resetAll();
     return;
 
@@ -82,18 +80,16 @@ function getGames() {
 }
 
 function autoLoad(event) {
-  id = $(event.target).data("gameid");
-  debugger;
-  currentGame = true;
+  currentGame = $(event.target).data("gameid");
 
-
-  $.get('/games/' + id, function(data) {
+  $.get('/games/' + currentGame, function(data) {
       var game = data["game"];
       turn = findTurn(game["state"]);
 
       for(i = 0; i < 9; i++) {
         $(selector[i]).text(game["state"][i]).val(game["state"][i]);
       }
+      checkWinner();
   });
 }
 
@@ -107,27 +103,27 @@ function findTurn(state) {
   return turn;
 }
 
-//saves a game with an id, resets board
-function saveGame() {
-  debugger;
-    if(currentGame == false) {
-      $.post('/games', currentState()).success(function(response) {});
-    } else {
-      $.ajax({
-        url: '/games/' + id,
-        method: "PATCH",
-        dataType: "json",
-        data: currentState()
-      });
+var saveGame = function(resetGame) {
+  var url, method;
+  if(currentGame) {
+    url = "/games/" + currentGame
+    method = "PATCH"
+  } else {
+    url = "/games"
+    method = "POST"
+  }
+
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: currentState(),
+    success: function(response) {
+      resetGame ? currentGame = '' : currentGame = response.game.id;
     }
+  })
 }
-//if you save and you haven't won, the board doesn't clear.
-//if you win, the game saves
 
-// if you're playing a game, you can hit save and persist a new game.
-//if you hit save, and hit it again, it should patch.
-
-// //returns the current board
 var currentState = function() {
   var state = [];
   for(i = 0; i < 9; i++) {
@@ -138,7 +134,6 @@ var currentState = function() {
 
 function updateState(selector) {
   $(selector).text(player()).val(player());
-
 }
 
 function attachListeners() {
@@ -147,7 +142,6 @@ function attachListeners() {
   });
   $("#save").click(function(event) {
     saveGame();
-    saves++;
   });
 
   $("#previous").click(function(event) {
@@ -160,19 +154,12 @@ function attachListeners() {
 
 }
 
-function resetBoard() {
-  turn = 0;
+function resetAll() {
   selector.forEach(function(selector) {
     $(selector).text('').val('');
   });
-}
-
-function resetAll() {
   turn = 0;
   currentGame = '';
-  selector.forEach(function(selector) {
-    $(selector).text('').val('');
-  });
 }
 
 function message(message) {
