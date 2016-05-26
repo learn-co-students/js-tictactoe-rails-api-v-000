@@ -21,7 +21,7 @@ function attachListeners(){
     $("td").click(function(event){
         doTurn(event);
     });
-    
+
     $("#save").click(function(){
         save();
     });
@@ -38,8 +38,8 @@ function attachListeners(){
 
 //GAMEPLAY -------------------------------
 function doTurn(event){
-    turn++;
     updateState(event);
+    turn++;
     checkWinner();
 }
 
@@ -52,7 +52,7 @@ function player(){
 }
 
 function updateState(event){
-    $(event.target).text(player()); //add if already occupied, cannot play there
+    $(event.target).text(player());
 }
 
 function getBoard(){
@@ -67,16 +67,24 @@ function checkWinner(){
         //if all three indexes of win_combo are X, return win message
         //else if all three indexes of win combo are O, return win message
         //else if board is full and there is no winner, return tie message
-        
+        var won = false;
         getBoard();
         if (board[win_combos[i][0]] == 'X' && board[win_combos[i][1]] == 'X' && board[win_combos[i][2]] == 'X'){
-            message('Player X won!');
+            message('Player X Won!');
+            won = true;
+            forceNewSave();
             resetBoard();
         } else if (board[win_combos[i][0]] == 'O' && board[win_combos[i][1]] == 'O' && board[win_combos[i][2]] == 'O'){
-            message('Player O won!');
+            message('Player O Won!');
+            won = true;
+            forceNewSave();
             resetBoard();
-        } 
+        } else if (turn == 9){
+          message('Tie game');
+          resetBoard();
+        }
     }
+    return won;
 }
 
 function message(text){
@@ -97,15 +105,25 @@ function setSaved(){
     $('#saved').text('Saved: ' + saved)
 }
 
+function forceNewSave(){
+  $.post('/games', {game: {state: board}}, function(success){
+      //need to get/set currentGameId
+      currentGameId = success.game.id;
+      $('#data').text("Current game: " + currentGameId);
+      saved = true;
+      setSaved();
+  });
+}
+
 function save(){
     //if saved === false, post request
     //set saved to true
     //set currentGameId
     //else if saved === true, patch request
     //set saved to true
-    
+
     getBoard();
-    
+
     if (saved == false){ //if game has never been saved
         alert('saving...');
         $.post('/games', {game: {state: board}}, function(success){
@@ -113,16 +131,16 @@ function save(){
             currentGameId = success.game.id;
             $('#data').text("Current game: " + currentGameId);
             saved = true;
-            setSaved(); 
-        });
-    } else { //if game has been previously saved
-        var url = '/games/' +  currentGameId; //need to set currentGameId first
-        $.patch(url, {state: board}, function(success){
-            currentGameId = success.game.id;
-            $('#data').text("Current game: " + currentGameId);
-            saved = true;
             setSaved();
         });
+    } else { //if game has been previously saved
+      $.ajax({
+        url: '/games/' + currentGame,
+        type: 'PATCH',
+        dataType: 'json',
+        data: {game: {state: board}}
+      }).done(function(response){
+      });
     }
 }
 
@@ -144,11 +162,10 @@ function loadGame(event){
     //load from gameid data attribute
     //set saved = true
     //set board
-    
     var url = '/games/' + $(event.target).data('gameid');
     alert(url);
     $.get(url, '', function(success){ //ID GOING THROUGH AS NIL, MAY BE CLOUD 9 ISSUE
-       alert(success.game.state); 
+       alert(success.game.state);
     });
 }
 
