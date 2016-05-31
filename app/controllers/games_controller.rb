@@ -7,26 +7,26 @@ class GamesController < ApplicationController
 
     def create
       @game = Game.create()
-      @game.state = game_params
+      @game.state = board_params
       @game.save
       render json: @game
     end
-    
+
     def show
-       @game = Game.find(params: :id) 
+       @game = Game.find_by(id: params[:id])
        render json: @game
     end
-    
+
     def update
         @game = Game.find(params: id)
         @game.state = params[:game][:state]
         @game.save
         render json: @game
     end
-    
-    
-    def game_params
+
+
+    def board_params
         params.require(:game).permit(:state)
     end
-    
+
 end

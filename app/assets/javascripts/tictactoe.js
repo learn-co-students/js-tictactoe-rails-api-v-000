@@ -126,6 +126,7 @@ function save(){
 
     if (saved == false){ //if game has never been saved
         alert('saving...');
+        alert(board);
         $.post('/games', {game: {state: board}}, function(success){
             //need to get/set currentGameId
             currentGameId = success.game.id;
@@ -164,8 +165,12 @@ function loadGame(event){
     //set board
     var url = '/games/' + $(event.target).data('gameid');
     alert(url);
-    $.get(url, '', function(success){ //ID GOING THROUGH AS NIL, MAY BE CLOUD 9 ISSUE
-       alert(success.game.state);
+    $.get(url, function(success){
+      board = success.game.state;
+      alert(board); //BOARD IS AN OBJECT, CANT ACCESS DATA
+       $('td').each(function(index, cell){
+         $(cell).text("x");
+       });
     });
 }
 
