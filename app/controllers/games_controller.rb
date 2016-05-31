@@ -7,13 +7,14 @@ class GamesController < ApplicationController
 
     def create
       @game = Game.create()
-      @game.state = board_params
+      @game.state = params[:game][:state]
       @game.save
       render json: @game
     end
 
     def show
        @game = Game.find_by(id: params[:id])
+       puts @game.state
        render json: @game
     end
 

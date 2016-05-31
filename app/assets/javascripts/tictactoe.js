@@ -125,23 +125,23 @@ function save(){
     getBoard();
 
     if (saved == false){ //if game has never been saved
-        alert('saving...');
-        alert(board);
         $.post('/games', {game: {state: board}}, function(success){
             //need to get/set currentGameId
             currentGameId = success.game.id;
             $('#data').text("Current game: " + currentGameId);
             saved = true;
             setSaved();
+            alert('Game Saved!');
         });
     } else { //if game has been previously saved
-      $.ajax({
+      $.ajax({ //NOT BEING CALLED???
         url: '/games/' + currentGame,
         type: 'PATCH',
         dataType: 'json',
         data: {game: {state: board}}
       }).done(function(response){
       });
+      alert('Game Saved!');
     }
 }
 
@@ -164,14 +164,14 @@ function loadGame(event){
     //set saved = true
     //set board
     var url = '/games/' + $(event.target).data('gameid');
-    alert(url);
     $.get(url, function(success){
-      board = success.game.state;
-      alert(board); //BOARD IS AN OBJECT, CANT ACCESS DATA
-       $('td').each(function(index, cell){
-         $(cell).text("x");
-       });
+        board = success.game.state;
+        $('td').each(function(index, cell){
+        $(cell).text(board[index]);
+        });
     });
+    saved = true;
+    setSaved();
 }
 
 
