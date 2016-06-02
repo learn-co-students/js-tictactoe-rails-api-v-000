@@ -1,5 +1,6 @@
 var currentGame = 0;
 var turn = 0;
+var currentBoard = []
 
 var winningCombinations = [
     [[0,0],[1,0],[2,0]],
@@ -22,10 +23,41 @@ function resetBoard() {
 }
 
 function attachListeners(){
-    $('td').click(function(event){
-      doTurn(event);
-    })
-  }
+  $('td').click(function(event){
+    doTurn(event);
+  })
+
+  $("#previous").click(function(event) {
+    oldGames();
+  });
+
+  $("#save").click(function(event) {
+    saveGame();
+  });
+
+}
+
+function oldGames() {
+  $.get("/games", function(data){
+    if (data.games.length > 0) {
+      var prevGames = "";
+      $.each(data.games, function(index, game){
+        prevGames += '<li data-gameid="' + game.id + '">Game '  + game.id + '</li>';
+      });
+      $("#games").html(prevGames);
+    }
+  });
+}
+
+function saveGame(){
+  currentBoard = $.map($('td'), function(cell, index){
+    return $(cell).text();});
+
+  $.post({url: '/games'}, {state: currentBoard})
+  .done(function(game){message("game successfully saved")});
+}
+
+
 
 function doTurn(event){
   updateState(event);
@@ -37,7 +69,7 @@ function doTurn(event){
 function updateState(event){
     $(event.target).text(player());
 }
-//
+
 function player(){
   return (turn % 2) ? "O" : "X";
 }
@@ -52,12 +84,10 @@ function checkWinner(){
   if (tie.length === 0) {
     message("Tie game");
     return true;
-    // resetBoard();
   }
   else if (winner.length > 0) {
     message("Player " + player() + " Won!");
     return true;
-    // resetBoard();
   }
   else { return false;}
 }

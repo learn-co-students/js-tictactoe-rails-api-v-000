@@ -1,7 +1,7 @@
 class GamesController < ApplicationController
 
   def create
-    game = Game.create
+    game = Game.create(state: params[:state])
   end
 
   def update
