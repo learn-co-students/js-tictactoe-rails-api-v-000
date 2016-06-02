@@ -19,21 +19,37 @@ function attachListeners(){
   }
 
 function doTurn(event){
-  checkWinner();
   updateState(event);
+  checkWinner();
   turn += 1;
 }
 
 function updateState(event){
     $(event.target).text(player());
 }
-
+//
 function player(){
   return (turn % 2) ? "O" : "X";
 }
 
-function checkWinner(){}
+function checkWinner(){
+  var winner = winningCombinations.filter(function(combo) {
+  return ($('td[data-x=' + combo[0][0] + '][data-y=' + combo[0][1] + ']').text() === player()) &&
+  ($('td[data-x=' + combo[1][0] + '][data-y=' + combo[1][1] + ']').text() === player()) &&
+  ($('td[data-x=' + combo[2][0] + '][data-y=' + combo[2][1] + ']').text() === player());
+  });
+  if (winner.length > 0) { message("Player " + player() + " Won!"); return true}
+  //
+  else { return false;}
+  //   var tie = $('td').filter(function(index, char){return $(char).text() === ""});
+  //   if (tie.length === 0)
+  //     {message("Tie game");}
+}
 
+
+  // if (winner.length > 0) { $('#message').text("There's a winner"); return true} else { $('#message').text("no one won"); return false;}
+
+//
 function message(string) {
   $('#message').text(string);
 }
@@ -58,35 +74,8 @@ $('document').ready(function(){
   // $.each(winningCombinations[3], function(index, value) {
   //   $('td[data-x=' + value[0] + '][data-y=' + value[1] + ']').text("O");
   // });
-  //
-  // var playerarray = ["X", "O"]
-  // $.map(playerarray, function(playerValue, playerIndex) {
-  //   $.each(winningCombinations, function(wcIndex, winValue) {
-  //     if (
-  //           $('td[data-x=' + winValue[0][0] + '][data-y=' + winValue[0][1] + ']').text() === playerValue &&
-  //           $('td[data-x=' + winValue[1][0] + '][data-y=' + winValue[1][1] + ']').text() === playerValue &&
-  //           $('td[data-x=' + winValue[2][0] + '][data-y=' + winValue[2][1] + ']').text() === playerValue)
-  //
-  //           { $('#message').text(playerValue + " won");}
-  //   });
-  // });
-
-  // $.each(winningCombinations, function(index, value) {
-  //   if (
-  //         $('td[data-x=' + value[0][0] + '][data-y=' + value[0][1] + ']').text() === "X" &&
-  //         $('td[data-x=' + value[1][0] + '][data-y=' + value[1][1] + ']').text() === "X" &&
-  //         $('td[data-x=' + value[2][0] + '][data-y=' + value[2][1] + ']').text() === "X")
-  //
-  //         { $('#message').text("X won");}
-  // });
 
 
-
-// $('td[data-x=' + value[0] + '][data-y=' + value[1] + ']').text("X");
-
-// value is a winning combination
-// comprised of three arrays
-// each array corresponds to a cell
 
 
 });
