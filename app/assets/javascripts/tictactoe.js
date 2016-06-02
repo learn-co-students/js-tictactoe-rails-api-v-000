@@ -1,3 +1,4 @@
+var currentGame = 0;
 var turn = 0;
 
 var winningCombinations = [
@@ -12,6 +13,14 @@ var winningCombinations = [
   ];
 
 
+function resetBoard() {
+  turn = 0;
+  currentGame = 0;
+  $("td").each(function(index, td){
+  $(td).text("");
+  });
+}
+
 function attachListeners(){
     $('td').click(function(event){
       doTurn(event);
@@ -20,8 +29,9 @@ function attachListeners(){
 
 function doTurn(event){
   updateState(event);
-  checkWinner();
-  turn += 1;
+  if (checkWinner() === true) {resetBoard();}
+  else {
+  turn += 1;}
 }
 
 function updateState(event){
@@ -39,44 +49,26 @@ function checkWinner(){
   ($('td[data-x=' + combo[1][0] + '][data-y=' + combo[1][1] + ']').text() === player()) &&
   ($('td[data-x=' + combo[2][0] + '][data-y=' + combo[2][1] + ']').text() === player());
   });
-  if (tie.length === 0)
-  //   var tie = $('td').filter(function(index, char){return $(char).text() === ""});
-  //   if (tie.length === 0)
-       {message("Tie game")}
-  else if (winner.length > 0) { message("Player " + player() + " Won!"); return true}
+  if (tie.length === 0) {
+    message("Tie game");
+    return true;
+    // resetBoard();
+  }
+  else if (winner.length > 0) {
+    message("Player " + player() + " Won!");
+    return true;
+    // resetBoard();
+  }
   else { return false;}
 }
 
 
-  // if (winner.length > 0) { $('#message').text("There's a winner"); return true} else { $('#message').text("no one won"); return false;}
-
-//
 function message(string) {
   $('#message').text(string);
 }
 
-// $('td').on('click', function(event){
-//
-//   if ($(this).text()==="") {
-//
-//     $(this).text("X");
-//     event.stopPropagation();
-// }
-//   else {alert("box occupied")}
-// });
-
-  // event.stopPropagation();
-
-
 $('document').ready(function(){
 
   attachListeners();
-
-  // $.each(winningCombinations[3], function(index, value) {
-  //   $('td[data-x=' + value[0] + '][data-y=' + value[1] + ']').text("O");
-  // });
-
-
-
 
 });
