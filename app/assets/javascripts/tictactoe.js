@@ -33,17 +33,18 @@ function player(){
 }
 
 function checkWinner(){
+  var tie = $('td').filter(function(index, char){return $(char).text() === ""});
   var winner = winningCombinations.filter(function(combo) {
   return ($('td[data-x=' + combo[0][0] + '][data-y=' + combo[0][1] + ']').text() === player()) &&
   ($('td[data-x=' + combo[1][0] + '][data-y=' + combo[1][1] + ']').text() === player()) &&
   ($('td[data-x=' + combo[2][0] + '][data-y=' + combo[2][1] + ']').text() === player());
   });
-  if (winner.length > 0) { message("Player " + player() + " Won!"); return true}
-  //
-  else { return false;}
+  if (tie.length === 0)
   //   var tie = $('td').filter(function(index, char){return $(char).text() === ""});
   //   if (tie.length === 0)
-  //     {message("Tie game");}
+       {message("Tie game")}
+  else if (winner.length > 0) { message("Player " + player() + " Won!"); return true}
+  else { return false;}
 }
 
 
