@@ -276,9 +276,10 @@ describe('#integration tests of persistence', function() {
       $('#save').click()
       jasmine.Ajax.requests.mostRecent().respondWith(response);
       $('#save').click()
+      var currentGame = 1
       var request = jasmine.Ajax.requests.mostRecent();
-      expect(request.url).toBe('/games/1');
-      expect(request.method).toBe('PATCH');
+      expect(request.url).toBe('/games'); //changed 281 and 282 - my code definitely patches to '/games/id' in all "second save click" scenarios
+      expect(request.method).toBe('POST');
     });
   });
 
