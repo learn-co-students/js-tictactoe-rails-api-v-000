@@ -1,6 +1,7 @@
 var turn = 0;
 var won = false;
 var over = false;
+var currentGame;
 
 var win_combo = [
     [$("[data-x=0][data-y=0]").text(), $("[data-x=0][data-y=1]").text(), $("[data-x=0][data-y=1]").text()],
@@ -17,6 +18,24 @@ function attachListeners(event){
   $("td").click(function(event){
     doTurn(event);
   });
+
+  $("#previous").click(function(event) {
+     getGames();
+  });
+
+  $("#save").click(function(event) {
+     saveGame();
+  });
+
+  $("#games").on("click", function(event){
+    //switchGame($(event.target).data("gameid"));
+  });
+
+}
+
+
+var switchGame = function(id) {
+  currentGame = id;
 }
 
 function checkTokenX(cell){
@@ -37,6 +56,56 @@ function doTurn(event){
   }
 }
 
+function getGames(){
+   $.get("/games", function(data) {
+
+    games = data["games"];
+
+    $("#games").text("");
+
+    
+    games.forEach(function(game){
+      $("#games").append("<li data-gameid=" + game["id"] + " data-state=" + game["state"] + ">" + game["id"] + "</li>");
+    });
+
+  });
+}
+
+function saveGame() {
+
+  var url, method;
+  if(currentGame) {
+    url = "/games/" + currentGame;
+    method = "PATCH"
+  } else {
+    url = "/games"
+    method = "POST"
+  }
+
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: {
+      game: {
+        state: getTokens()
+      }
+    },
+    success: function(data) {
+        currentGame = data.game.id;
+    }
+  })
+}
+
+function getTokens() {
+  var marks = []
+  $("td").each(function(i) {
+    marks.push($(this).text())
+  })
+  return marks;
+}
+
+
 function full(win_combo){
   for(var i = 0; i < win_combo.length; i++){
     for(var j = 0; j < win_combo[i].length; j++){
@@ -50,7 +119,7 @@ function full(win_combo){
 
 function reset(){
   $("td").each(function(){
-      $(this).html("");
+      $(this).text("");
   });
 }
 
@@ -78,6 +147,7 @@ function checkWinner(event){
       turn = 0;
       over = true;  
       reset();
+      saveGame();
     }
     else if(win_combo[i].every(checkTokenO)){
       message("Player O Won!");
@@ -85,6 +155,7 @@ function checkWinner(event){
       turn = 0;
       over = true;
       reset();
+      saveGame();
     }
   }
 
@@ -93,6 +164,7 @@ function checkWinner(event){
     over = true;
     turn = 0;
     reset();
+    saveGame();
   }
 
   return false;
@@ -119,4 +191,6 @@ function player(){
 function message(message){
   $("#message").html(message);
 }
+
+
 
