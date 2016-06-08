@@ -28,15 +28,24 @@ function attachListeners(event){
   });
 
   $("#games").on("click", function(event){
-    //switchGame($(event.target).data("gameid"));
+    var state = $(event.target).data("state").split(",")
+    switchGame(state, $(event.target).data("gameid"))
+  });
+
+  $("#previous").click(function() {
+    getGames();
   });
 
 }
 
+var switchGame = function(state, id) {
+  $("td").each(function(i) {
+    $(this).text(state[i]);
+  })
 
-var switchGame = function(id) {
   currentGame = id;
 }
+
 
 function checkTokenX(cell){
   return cell === "X" 
@@ -71,9 +80,11 @@ function getGames(){
   });
 }
 
-function saveGame() {
+function saveGame(resetGame) {
+
 
   var url, method;
+
   if(currentGame) {
     url = "/games/" + currentGame;
     method = "PATCH"
@@ -88,21 +99,26 @@ function saveGame() {
     dataType: "json",
     data: {
       game: {
-        state: getTokens()
+        state: getState()
       }
     },
     success: function(data) {
+      if(resetGame) {
+        currentGame = undefined;
+      } else {
         currentGame = data.game.id;
+      }
+      
     }
   })
 }
 
-function getTokens() {
-  var marks = []
-  $("td").each(function(i) {
-    marks.push($(this).text())
+var getState = function() {
+  var state = []
+  $("td").each(function() {
+    state.push($(this).text())
   })
-  return marks;
+  return state;
 }
 
 
@@ -121,6 +137,8 @@ function reset(){
   $("td").each(function(){
       $(this).text("");
   });
+
+  currentGame = 0; 
 }
 
 
@@ -130,7 +148,7 @@ function checkWinner(event){
   over = false;
 
   var win_combo = [
-    [$("[data-x=0][data-y=0]").text(), $("[data-x=0][data-y=1]").text(), $("[data-x=0][data-y=1]").text()],
+    [$("[data-x=0][data-y=0]").text(), $("[data-x=0][data-y=1]").text(), $("[data-x=0][data-y=2]").text()],
     [$("[data-x=1][data-y=0]").text(), $("[data-x=1][data-y=1]").text(), $("[data-x=1][data-y=2]").text()],
     [$("[data-x=2][data-y=0]").text(), $("[data-x=2][data-y=1]").text(), $("[data-x=2][data-y=2]").text()], 
     [$("[data-x=0][data-y=0]").text(), $("[data-x=1][data-y=0]").text(), $("[data-x=2][data-y=0]").text()],
@@ -144,30 +162,28 @@ function checkWinner(event){
     if(win_combo[i].every(checkTokenX)){
       message("Player X Won!");
       won = true;
-      turn = 0;
-      over = true;  
-      reset();
-      saveGame();
+      SaveAndReset();
     }
     else if(win_combo[i].every(checkTokenO)){
       message("Player O Won!");
       won = true;
-      turn = 0;
-      over = true;
-      reset();
-      saveGame();
+      SaveAndReset();
     }
   }
 
   if(won === false && full(win_combo) == true){
     message("Tie game");
-    over = true;
-    turn = 0;
-    reset();
-    saveGame();
+    SaveAndReset();
   }
 
   return false;
+}
+
+function SaveAndReset(){
+  turn = 0;
+  over = true; 
+  saveGame(true); 
+  reset();
 }
 
 
