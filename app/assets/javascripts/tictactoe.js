@@ -3,7 +3,7 @@ $(document).ready(function() {
     attachListeners();
 });
 
-var turn = 1;
+var turn = 0;
 
 var winningCombos = [
 [ [0,0], [1,0], [2,0] ], 
@@ -15,10 +15,6 @@ var winningCombos = [
 [ [1,0], [1,1], [1,2] ],
 [ [2,0], [1,1], [0,2] ]
 ]
-
-var xMoves = []
-var oMoves = []
-
 
 var attachListeners = function(){
   $('td').on('click', function(event){
@@ -47,7 +43,7 @@ var updateState = function(event){
 } 
 
 var message = function(message) {
-  $('#message').append(message)
+  $('#message').text(message)
 };
 
 
@@ -56,6 +52,10 @@ var checkWinner = function(){
     var winner = checkBoard(combo)
     if(winner){
       message("Player " + winner + " Won!")
+      resetGame()
+    } else if(turn == 9 && winner == false){
+      message("Tie game")
+      resetGame()
     }
   })
   return false
@@ -80,6 +80,9 @@ var checkBoard = function(combo){
   }
 }
 
-
-
-// ['toElement']['dataset']
+var resetGame = function(){
+  turn = 0
+  $('td').each(function(i, td){
+    $(this).html('')
+  })
+}
