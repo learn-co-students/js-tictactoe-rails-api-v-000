@@ -4,6 +4,8 @@ $(document).ready(function() {
 });
 
 var turn = 0;
+var currentGame;
+var gameLayout = []
 
 var winningCombos = [
 [ [0,0], [1,0], [2,0] ], 
@@ -22,7 +24,72 @@ var attachListeners = function(){
       doTurn(event);
     } 
   });
+  $('#previous').on('click', function() {loadPreviousGames()});
+  $('#games').on('click', function(event){
+    var layout = $(event.target).data()['state'].split(",")
+    var id = $(event.target).data()['id']
+    loadGame(layout, id);
+  });
+  $('#save').on('click', function(){
+    saveLayout();
+    saveGame();
+  });
 };
+
+var loadPreviousGames = function(){
+  $.get('/games', function(json){
+    showGames(json.games);
+  });
+}
+
+var showGames = function(data){
+  var games = $();
+  $.each(data, (function(i, game) {
+      games = games.add(showGame(game));
+  }));
+  $("#games").html(games);
+}
+
+var showGame = function(game) {
+  return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
+}
+
+
+var saveLayout = function(){
+  gameLayout = $.map($('td'), function(d, i){
+    return $(d).text();
+  });
+};
+
+var saveGame = function(gameReset=false){
+  var url;
+  if(currentGame){
+    url = "/games/" + currentGame;
+    method = "PATCH";
+} else {
+    url = "/games";
+    var method = "POST";
+    
+  }
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: {
+      game: {
+        state: gameLayout
+      }
+    },
+    success: function(data) {
+      if(gameReset) {
+        currentGame = undefined;
+      } else {
+        currentGame = data.game.id;
+      }
+    }
+  })
+
+}
 
 var doTurn = function(event){
   updateState(event);
@@ -81,8 +148,17 @@ var checkBoard = function(combo){
 }
 
 var resetGame = function(){
+  saveGame(true)
   turn = 0
+  currentGame = 0
   $('td').each(function(i, td){
     $(this).html('')
+  })
+}
+
+var loadGame = function(layout, id) {
+  currentGame = id;
+  $.each(layout, function(i, cell){
+    $($('td')[i]).text(cell)
   })
 }
