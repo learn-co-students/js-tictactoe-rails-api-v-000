@@ -134,6 +134,7 @@ function save(){
             alert('Game Saved!');
         });
     } else { //if game has been previously saved
+        alert('updatgin')
       $.ajax({ //NOT BEING CALLED???
         url: '/games/' + currentGame,
         type: 'PATCH',
@@ -141,7 +142,6 @@ function save(){
         data: {game: {state: board}}
       }).done(function(response){
       });
-      alert('Game Saved!');
     }
 }
 
