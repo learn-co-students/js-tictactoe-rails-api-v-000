@@ -178,7 +178,7 @@ function saveGame(bool){
       'state': getBoard()
       }
     },
-    success: function(resp, text, xhr){
+    success: function(resp){
       if(bool){
   //      alert("reset!")
         currentGame = 0;
