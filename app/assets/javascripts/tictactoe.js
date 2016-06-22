@@ -1,4 +1,4 @@
-var turn = 0
+var turn = 0;
 
 $(function(){
 
@@ -9,7 +9,11 @@ $(function(){
 function attachListeners(){
   $('table').on('click', 'td', function(e){
     doTurn(e);
-  })
+  });
+};
+
+function updateState(event){
+  $(event.target).text(player());
 };
 
 function doTurn(event){
@@ -18,9 +22,6 @@ function doTurn(event){
   checkWinner();
 };
 
-function updateState(event){
-  $(event.target).text(player());
-};
 
 function checkWinner(){
 
@@ -35,9 +36,7 @@ function player(){
   }
 };
 
-function updateState(){
 
-};
 
 function checkWinner(){
 
