@@ -44,9 +44,10 @@ function checkWinner(){
       tokens.push(selector.text());
       };
        if (tokens.every(function(e){return (e === player())})){
-        return( "Player " + player() + " Won!");
+        return message( "Player " + player() + " Won!");
      };
-    };   
+    };  
+    return false 
   };
 
 
@@ -61,7 +62,7 @@ function player(){
 
 
 
-function message(){
-
+function message(winner){
+  $('#message').text(winner);
 };
 
