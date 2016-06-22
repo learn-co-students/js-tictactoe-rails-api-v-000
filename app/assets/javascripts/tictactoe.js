@@ -44,11 +44,11 @@ function checkWinner(){
       tokens.push(selector.text());
       };
        if (tokens.every(function(e){return (e === player())})){
-        return console.log( "Player " + player() + " Won!");
+        return( "Player " + player() + " Won!");
      };
     };   
   };
-  
+
 
 function player(){
   if(turn % 2 === 0){
