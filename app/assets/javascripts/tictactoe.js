@@ -68,6 +68,7 @@ function checkWinner(){
   function boardReset(){
     turn = 0;
     $('td').text('');
+    gameState = [];
    }
 
 
@@ -94,19 +95,16 @@ function saveGame(){
     url: '/games',
     method: 'POST',
     data: {
-      game: {
-        state: gameState
-      }
+      state: gameState
     }
   });
 
-  posting.done(function(data) {
+    posting.done(function(data) {
       var game = data;
        $("#games").append('<li data-id =' + game["id"] + '>' + game["id"] + '</li>');
-      });
-
-  gameState = [];
-};
+       boardReset();
+    });
+  };
 
 
 function showGames(){
