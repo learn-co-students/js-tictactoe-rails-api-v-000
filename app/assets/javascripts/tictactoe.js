@@ -1,5 +1,8 @@
 var turn = 0;
 var gameState = []
+var METHOD = 'POST'
+var URL = '/games'
+var currentGame;
 
 var winCombinations = [
   [[0,0],[1,0],[2,0]],
@@ -38,8 +41,12 @@ function updateState(event){
 function doTurn(event){
   turn += 1;
   updateState(event);
-  checkWinner();
-  checkTie();
+  if (checkWinner() != false){
+    boardReset();
+  };
+  if (checkTie() != false){
+    boardReset();
+  };
 };
 
 
@@ -61,13 +68,15 @@ function checkWinner(){
 
   function checkTie(){
     if (checkWinner() === false && turn === 9){
-      message('Tie game');
+      return message('Tie game');
     };
+    return false
   }
 
   function boardReset(){
     turn = 0;
-    $('td').text('');
+    $('td').each(function(){
+      $(this).text('')});
     gameState = [];
    }
 
@@ -92,8 +101,8 @@ function saveGame(){
   });
   
    posting = $.ajax({
-    url: '/games',
-    method: 'POST',
+    url: URL,
+    method: METHOD,
     data: {
       state: gameState
     }
@@ -108,6 +117,10 @@ function saveGame(){
 
 
 function showGames(){
-
+  $('#games').toggle();
 };
+
+function resumeGame(){
+
+}
 
