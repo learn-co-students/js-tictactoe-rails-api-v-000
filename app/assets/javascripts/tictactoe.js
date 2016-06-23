@@ -22,10 +22,10 @@ function attachListeners(){
   $('table').on('click', 'td', function(e){
     doTurn(e);
   });
-  $('button').on('click', '#save', function(){
+ $("#save").click(function(){
     saveGame();
   });
-  $('button').on('click', '#previous', function(){
+  $("#previous").click(function(){
     showGames();
   });
 
@@ -60,7 +60,7 @@ function checkWinner(){
   };
 
   function checkTie(){
-    if (checkWinner() === false){
+    if (checkWinner() === false && turn === 9){
       message('Tie game');
     };
   }
@@ -89,6 +89,21 @@ function saveGame(){
   $('td').each(function() {
     gameState.push($(this).text());
   });
+  
+   posting = $.ajax({
+    url: '/games',
+    method: 'POST',
+    data: {
+      game: {
+        state: gameState
+      }
+    }
+  });
+
+  posting.done(function(data) {
+      var game = data;
+       $("#games").append('<li data-id =' + game["id"] + '>' + game["id"] + '</li>');
+      });
 
   gameState = [];
 };

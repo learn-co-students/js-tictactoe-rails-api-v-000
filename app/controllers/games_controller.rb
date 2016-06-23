@@ -4,11 +4,12 @@ class GamesController < ApplicationController
 
   def index
     @games = Game.all
-    render json: @games, status: 201 
+    render json: @games, status: 200 
   end
 
   def create
-    @game = Game.create(game_params)
+   #binding.pry
+    @game = Game.create(state: params["game"]["state"])
     render json: @game, status: 201
   end
 
@@ -19,7 +20,7 @@ class GamesController < ApplicationController
   end
 
   def show
-    render json: @game, status: 201
+    render json: @game, status: 200
   end
 
   private
@@ -28,9 +29,6 @@ class GamesController < ApplicationController
       @game = Game.find(params[:id])
     end
 
-    def game_params
-      params.require(:game).permit(:state => [])
-    end  
 
   
 
