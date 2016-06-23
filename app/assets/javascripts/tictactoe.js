@@ -31,7 +31,9 @@ function attachListeners(){
   $("#previous").click(function(){
     showGames();
   });
-
+  $('#games').on('click', 'li', function(e){
+    resumeGame(e);
+  });
 };
 
 function updateState(event){
@@ -78,6 +80,8 @@ function checkWinner(){
     $('td').each(function(){
       $(this).text('')});
     gameState = [];
+    METHOD = 'POST';
+    URL = '/games';
    }
 
 
@@ -95,10 +99,15 @@ function message(winner){
   $('#message').text(winner);
 };
 
-function saveGame(){
+function updateBoardState(){
   $('td').each(function() {
     gameState.push($(this).text());
   });
+}
+
+
+function saveGame(){
+    updateBoardState();
   
    posting = $.ajax({
     url: URL,
@@ -120,7 +129,27 @@ function showGames(){
   $('#games').toggle();
 };
 
-function resumeGame(){
+function resumeGame(event){
+  id = $(event.target).text()
+  URL = '/games/' + id
+  METHOD = 'PATCH'
+
+   retrieval = $.ajax({
+    url: URL,
+    method: 'GET',
+    dataType: 'json'
+  });
+
+    retrieval.done(function(data) {
+      var cells = data["state"];
+      var n = 0;
+      $('td').each(function(){
+        $(this).text(cells[n]);
+        n++;
+      });
+    });
+    $('li[data-id="' + id + '"]').remove();
 
 }
+
 
