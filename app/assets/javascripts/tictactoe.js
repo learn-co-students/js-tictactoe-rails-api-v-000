@@ -1,4 +1,5 @@
 var turn = 0;
+var gameState = []
 
 var winCombinations = [
   [[0,0],[1,0],[2,0]],
@@ -21,6 +22,13 @@ function attachListeners(){
   $('table').on('click', 'td', function(e){
     doTurn(e);
   });
+  $('button').on('click', '#save', function(){
+    saveGame();
+  });
+  $('button').on('click', '#previous', function(){
+    showGames();
+  });
+
 };
 
 function updateState(event){
@@ -73,8 +81,20 @@ function player(){
 };
 
 
-
 function message(winner){
   $('#message').text(winner);
+};
+
+function saveGame(){
+  $('td').each(function() {
+    gameState.push($(this).text());
+  });
+
+  gameState = [];
+};
+
+
+function showGames(){
+
 };
 
