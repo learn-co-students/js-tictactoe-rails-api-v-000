@@ -85,7 +85,7 @@ describe('Tic Tac Toe Functionality', function() {
       expect(checkWinner()).toEqual(false)
     });
 
-    it("calls on 'message' and passes it the string 'Player X Won!' when player X wins vertically", function() {
+    it("calls on 'message' and passes it the string 'Player O Won!' when player O wins vertically", function() {
       setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table></body>');
       attachListeners();
       spyOn(window, "message");
@@ -94,13 +94,13 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="0"][data-y="1"]').click();
       $('[data-x="2"][data-y="0"]').click();
       $('[data-x="0"][data-y="2"]').click();
-      // _X_|_O_|_O_
-      // _X_|___|___
-      //  X |   |
-      expect(window.message).toHaveBeenCalledWith("Player X Won!");
+      // _O_|_X_|_X_
+      // _O_|___|___
+      //  O |   |
+      expect(window.message).toHaveBeenCalledWith("Player O Won!");
     });
 
-    it("calls on 'message' and passes it the string 'Player X Won!' when player X wins diagonally", function() {
+    it("calls on 'message' and passes it the string 'Player O Won!' when player O wins diagonally", function() {
       setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table></body>');
       attachListeners();
       spyOn(window, "message");
@@ -109,10 +109,10 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="1"][data-y="1"]').click();
       $('[data-x="2"][data-y="0"]').click();
       $('[data-x="2"][data-y="2"]').click();
-      // _X_|_O_|_O_
-      // ___|_X_|___
-      //    |   | X
-      expect(window.message).toHaveBeenCalledWith("Player X Won!");
+      // _O_|_X_|_X_
+      // ___|_O_|___
+      //    |   | O
+      expect(window.message).toHaveBeenCalledWith("Player O Won!");
     });
   });
 

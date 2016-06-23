@@ -31,6 +31,7 @@ function doTurn(event){
   turn += 1;
   updateState(event);
   checkWinner();
+  checkTie();
 };
 
 
@@ -49,6 +50,17 @@ function checkWinner(){
     };  
     return false 
   };
+
+  function checkTie(){
+    if (checkWinner() === false){
+      message('Tie game');
+    };
+  }
+
+  function boardReset(){
+    turn = 0;
+    $('td').text('');
+   }
 
 
 function player(){
