@@ -2,7 +2,7 @@ var turn = 0;
 var gameState = []
 var METHOD = 'POST'
 var URL = '/games'
-var currentGame;
+var currentGame = ''
 
 var winCombinations = [
   [[0,0],[1,0],[2,0]],
@@ -33,8 +33,11 @@ function attachListeners(){
   });
   $('#games').on('click', 'li', function(e){
     resumeGame(e);
+    $("#message").text('');
   });
   $("#new").click(function(){
+    currentGame = ''
+    $("#message").text('');
    boardReset();
   });
 };
@@ -62,6 +65,7 @@ function checkWinner(){
       };
        if (tokens.every(function(e){return (e === player())})){
         message( "Player " + player() + " Won!");
+        saveGame();
         return boardReset();
      };
     };  
@@ -71,6 +75,7 @@ function checkWinner(){
   function checkTie(){
     if (checkWinner() === false && turn === 9){
       message('Tie game');
+      saveGame();
       return boardReset();
     };
     return false
@@ -83,6 +88,7 @@ function checkWinner(){
     gameState = [];
     METHOD = 'POST';
     URL = '/games';
+    currentGame = ''
    }
 
 
@@ -110,7 +116,14 @@ function updateBoardState(){
 
 function saveGame(){
     updateBoardState();
-     console.log(gameState);
+
+    if(currentGame != ''){
+      URL = '/games/' + currentGame;
+      METHOD = 'PATCH';
+    };
+
+    console.log(currentGame);
+     console.log(gameState);    
     console.log(URL);
     console.log(METHOD);
   
@@ -123,15 +136,14 @@ function saveGame(){
   });
 
     posting.done(function(data) {
-      var game = data;
-       $('li[data-id="' + game["id"] + '"]').remove();
-       $("#games").append('<li data-id =' + game["id"] + '>' + game["id"] + '</li>');
-       URL = '/games/' + game["id"];
-       METHOD = 'PATCH';
+      console.log(data);
+      currentGame = data["id"];
     });  
   };
 
 function getGames(){
+  $("#games").empty();
+
   allGames = $.ajax({
     url: '/games',
     method: 'GET',
@@ -141,21 +153,22 @@ function getGames(){
  allGames.done(function(data){
   var games = data['games']
     for(var i = 0; i < games.length; i++ ){
-      console.log(games[i]['id']);
-        $("#games").append('<li data-id =' + games[i]["id"] + '>' + games[i]["id"] + '</li>');
+        $("#games").append('<li data-gameid=' + games[i]["id"] + '>' + games[i]["id"] + '</li>');
       };      
     });  
 }
 
 
 function showGames(){
+  $("#games").toggle()
   getGames();
 };
 
 function resumeGame(event){
-  id = $(event.target).text()
-  URL = '/games/' + id
-  METHOD = 'PATCH'
+  id = $(event.target).text();
+  currentGame = id;
+  URL = '/games/' + id;
+  METHOD = 'PATCH';
 
    retrieval = $.ajax({
     url: URL,
