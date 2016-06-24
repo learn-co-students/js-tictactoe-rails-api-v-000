@@ -122,10 +122,10 @@ function saveGame(){
       METHOD = 'PATCH';
     };
 
-    console.log(currentGame);
-     console.log(gameState);    
-    console.log(URL);
-    console.log(METHOD);
+    //console.log(currentGame);
+     //console.log(gameState);    
+    //console.log(URL);
+    //console.log(METHOD);
   
    posting = $.ajax({
     url: URL,
@@ -136,7 +136,7 @@ function saveGame(){
   });
 
     posting.done(function(data) {
-      console.log(data);
+      //console.log(data);
       currentGame = data["id"];
     });  
   };
