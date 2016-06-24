@@ -131,9 +131,25 @@ function saveGame(){
     });  
   };
 
+function getGames(){
+  allGames = $.ajax({
+    url: '/games',
+    method: 'GET',
+   dataType: 'json'
+  });
+
+ allGames.done(function(data){
+  var games = data['games']
+    for(var i = 0; i < games.length; i++ ){
+      console.log(games[i]['id']);
+        $("#games").append('<li data-id =' + games[i]["id"] + '>' + games[i]["id"] + '</li>');
+      };      
+    });  
+}
+
 
 function showGames(){
-  $('#games').toggle();
+  getGames();
 };
 
 function resumeGame(event){
