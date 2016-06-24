@@ -34,6 +34,9 @@ function attachListeners(){
   $('#games').on('click', 'li', function(e){
     resumeGame(e);
   });
+  $("#new").click(function(){
+   boardReset();
+  });
 };
 
 function updateState(event){
@@ -43,12 +46,8 @@ function updateState(event){
 function doTurn(event){
   turn += 1;
   updateState(event);
-  if (checkWinner() != false){
-    boardReset();
-  };
-  if (checkTie() != false){
-    boardReset();
-  };
+  checkWinner();
+  checkTie();
 };
 
 
@@ -62,7 +61,8 @@ function checkWinner(){
       tokens.push(selector.text());
       };
        if (tokens.every(function(e){return (e === player())})){
-        return message( "Player " + player() + " Won!");
+        message( "Player " + player() + " Won!");
+        return boardReset();
      };
     };  
     return false 
@@ -70,7 +70,8 @@ function checkWinner(){
 
   function checkTie(){
     if (checkWinner() === false && turn === 9){
-      return message('Tie game');
+      message('Tie game');
+      return boardReset();
     };
     return false
   }
@@ -100,6 +101,7 @@ function message(winner){
 };
 
 function updateBoardState(){
+  gameState = [];
   $('td').each(function() {
     gameState.push($(this).text());
   });
@@ -108,6 +110,9 @@ function updateBoardState(){
 
 function saveGame(){
     updateBoardState();
+     console.log(gameState);
+    console.log(URL);
+    console.log(METHOD);
   
    posting = $.ajax({
     url: URL,
@@ -119,9 +124,11 @@ function saveGame(){
 
     posting.done(function(data) {
       var game = data;
+       $('li[data-id="' + game["id"] + '"]').remove();
        $("#games").append('<li data-id =' + game["id"] + '>' + game["id"] + '</li>');
-       boardReset();
-    });
+       URL = '/games/' + game["id"];
+       METHOD = 'PATCH';
+    });  
   };
 
 
@@ -148,7 +155,6 @@ function resumeGame(event){
         n++;
       });
     });
-    $('li[data-id="' + id + '"]').remove();
 
 }
 

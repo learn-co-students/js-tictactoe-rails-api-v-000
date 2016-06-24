@@ -15,6 +15,7 @@ class GamesController < ApplicationController
 
 
   def update
+    #binding.pry
     @game.update(state: params["state"])
     render json: @game, status: 201
   end

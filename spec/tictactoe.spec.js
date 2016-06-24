@@ -148,10 +148,10 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="1"][data-y="1"]').click();
       $('[data-x="2"][data-y="0"]').click();
       $('[data-x="2"][data-y="2"]').click();
-      // _O_|_X_|_X_
-      // ___|_O_|___
-      //    | X | O
-      expect($("#message").html()).toEqual("Player O Won!");
+      // _X_|_O_|_O_
+      // ___|_X_|___
+      //    | O | X
+      expect($("#message").html()).toEqual("Player X Won!");
       // ___|___|___
       // ___|___|___
       //    |   |
@@ -215,10 +215,10 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="1"][data-y="1"]').click();
       $('[data-x="2"][data-y="0"]').click();
       $('[data-x="2"][data-y="2"]').click();
-      // _O_|_X_|_X_
-      // ___|_O_|___
-      //    | X | O
-      expect($("#message").html()).toEqual("Player O Won!");
+      // _X_|_O_|_O_
+      // ___|_X_|___
+      //    | O | X
+      expect($("#message").html()).toEqual("Player X Won!");
       // ___|___|___
       // ___|___|___
       //    |   |
