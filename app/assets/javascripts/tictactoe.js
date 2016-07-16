@@ -120,7 +120,18 @@ function previousListener() {
 }
 
 function getAllGames() {
-  $.get("/games");
+  $.get("/games", function(data) {
+    displayGames(data["games"]);
+  });
+}
+
+function displayGames(games) {
+  var el = [];
+  games.forEach(function(game) {
+    el.push("<li>" + game.id + "</li>");
+  });
+
+  $("#games").html(el);
 }
 
 $(function(){

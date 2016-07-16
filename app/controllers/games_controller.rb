@@ -10,7 +10,7 @@ class GamesController < ApplicationController
 
   def create
     binding.pry
-    game = Game.create(game_params)
+    game = Game.create(state: params[:state])
   end
 
   def show
@@ -31,6 +31,6 @@ class GamesController < ApplicationController
 
   private
     def game_params
-      params.require(:game).permit( {state: [] } )
+      params.require(:game).permit({state: []})
     end
 end
