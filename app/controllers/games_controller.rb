@@ -1,6 +1,7 @@
 class GamesController < ApplicationController
   def index
-
+    @games = Game.all
+    render json: @games
   end
 
   def new
@@ -8,7 +9,8 @@ class GamesController < ApplicationController
   end
 
   def create
-
+    binding.pry
+    game = Game.create(game_params)
   end
 
   def show
@@ -26,4 +28,9 @@ class GamesController < ApplicationController
   def destroy
 
   end
+
+  private
+    def game_params
+      params.require(:game).permit( {state: [] } )
+    end
 end
