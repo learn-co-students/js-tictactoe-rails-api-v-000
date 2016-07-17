@@ -48,8 +48,7 @@ function checkWinner() {
 
   if (winner !== undefined) {
     message("Player " + board[winner[0]] + " Won!");
-
-    resetGame();
+    return true;
   } else {
     return false;
   }
@@ -62,16 +61,16 @@ function boardSize() {
 function checkTie() {
   if (boardSize() === 9) {
     message("Tie game");
-    // save
-    resetGame();
+    return true;
   }
 }
 
 function resetGame() {
+  $("table").removeAttr('data-id');
   $('td').text("");
   turn = 0;
   board = ["","","","","","","","",""];
-  // start new game on back end
+  currentGame = 0;
 }
 
 function message(str) {
@@ -80,15 +79,19 @@ function message(str) {
 
 function doTurn(cellElement) {
   updateState(cellElement);
-  turn += 1;
-  checkWinner();
-  checkTie();
+  if (checkWinner() || checkTie()) {
+    saveHandler(true);
+    resetGame();
+  } else {
+    turn ++;
+  }
 }
 
 function attachListeners() {
   tableListener();
   saveListener();
   previousListener();
+  gamesListener();
 }
 
 function tableListener() {
@@ -103,20 +106,84 @@ function tableListener() {
 
 function saveListener() {
   $("#save").on("click", function(e) {
-    saveHandler()
+    saveHandler();
   });
 }
 
-function saveHandler() {
-// $.post request to save game state
-  debugger;
-  $.post("/games", { state: board} );
+function saveHandler(resetThisGame) {
+  var method,url;
+  var gameId = $('table').data('id');
+
+  if (gameId) {
+    method = "PATCH"
+    url = "/games/" + gameId;
+  } else {
+    method = "POST"
+    url = "/games"
+  }
+
+  $.ajax({
+    url: url,
+    type: method,
+    dataType: 'json',
+    data: {
+      'game': {
+          'state': board
+      }
+    },
+    success: function(data) {
+      if(resetThisGame) {
+        currentGame = undefined;
+      } else {
+        currentGame = data.game.id;
+        $("table").attr('data-id', currentGame);
+      }
+    }
+  });
 }
 
 function previousListener() {
   $("#previous").on("click", function(e) {
     getAllGames();
   });
+}
+
+function gamesListener() {
+  $("#games").on("click", function(e) {
+    $.get("/games/" + e.target.dataset.gameid , function(data) {
+      setBoard(data["game"]);
+    });
+  });
+}
+
+function processBoard(board) {
+  return board.slice(2,-2).split(",").map(function(element) {
+    var value = element.match(/[XO]/);
+
+    if (value !== null) {
+      return value[0]
+    } else {
+      return "";
+    }
+  });
+}
+
+function setBoard(newGame) {
+  var newBoard = processBoard(newGame["state"]);
+
+  board = newBoard;
+  currentGame = newGame.id;
+  $("table").attr('data-id',currentGame)
+
+  showBoard(board);
+}
+
+function showBoard(board) {
+  $("td").each(function(index) {
+    $(this).text(board[index]);
+  });
+
+  turn = boardSize();
 }
 
 function getAllGames() {
@@ -128,12 +195,12 @@ function getAllGames() {
 function displayGames(games) {
   var el = [];
   games.forEach(function(game) {
-    el.push("<li>" + game.id + "</li>");
+    el.push("<li data-gameid='" + game.id + "' data-state='" + game.state + "'>" + game.id + "</li>");
   });
 
   $("#games").html(el);
 }
 
 $(function(){
-  attachListeners(board);
+  attachListeners();
 });
