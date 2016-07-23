@@ -5,9 +5,13 @@ $(document).ready(function () {
   attachListeners();
 });
 
-var turn = 2;
-var board = [];
-var status = 'false'
+var turn = 0;
+var currentGame = [];
+var gameResult = '';
+var currentGame = [];
+var state = 0;
+var gameId = "false";
+
 const WIN_COMBINATIONS = [
   [0,1,2],
   [3,4,5],
@@ -31,10 +35,65 @@ function attachListeners() {
   $("td").on('click', function(event) {
     doTurn(event);
   });
+
+  $("#save").on('click', function() {
+    saveGame();
+  });
+
+  $("#previous").on('click', function() {
+    listGames();
+  });
 }
 
-function updateState(event) {
-  $(event.currentTarget).text(player())
+
+function saveGame() {
+  if(isNaN(gameId)){
+    createGame();
+  }else {
+    updateGame();
+  }
+}
+
+
+function listGames() {
+  $.get("/games",function(response) {
+    $("#games").html("");
+    response["games"].forEach(function(game){
+      $("#games").append("<li data-gameid="+game["id"]+" class=oldGames id=" +game["id"] + ">" + game["id"]+ "</li>")
+    })
+  }).done(function () {
+    $(".oldGames").on('click', function(event) {
+      console.log("clicked it");
+      loadGame(event);
+    });
+  });
+}
+
+function updateGame() {
+  $.ajax({
+    type: "PATCH",
+    url: "/games/" + gameId,
+    data: {state: currentGame}
+  }).done(function (result) {
+    console.log(result)
+  });
+}
+
+function loadGame(event) {
+  var oldGameId = event.currentTarget["id"]
+  $.get("/games/" + oldGameId + ".json", function(response) {
+    $("td").each(function(index){
+      $(this).html(response["state"][index]);
+    });
+  })
+  gameId = oldGameId;
+}
+
+function createGame() {
+  $.post("/games",{state: currentGame}, function(result) {
+    gameId = result["id"]
+    console.log(result)
+  });
 }
 
 function doTurn(event) {
@@ -43,29 +102,56 @@ function doTurn(event) {
   checkWinner();
 }
 
+function updateState(event) {
+  $(event.currentTarget).html(player());
+}
+
 function checkWinner() {
-  board = setBoard();
-  if(turn > 6) {
-    WIN_COMBINATIONS.map(function(pattern){
-      if(board[pattern[0]]){
-        if(board[pattern[0]] === board[pattern[1]] && board[pattern[1]] === board[pattern[2]]){
-          if(board[pattern[0]] === "X"){
-            message('Player X Won!');
-          }else {
-            message('Player O Won!');
-          };
-        };
-      };
-    });
+  currentGame = setCurrentGame().get();
+  WIN_COMBINATIONS.map(function(pattern){
+    if (gameWon(pattern,currentGame)== true) {
+      true
+    } else if (turn === 9) {
+      message("Tie game")
+      resetGame();
+      return false
+    }else {
+      return false
+    }
+  });
+  return false
+}
+
+function gameWon(pattern, currentGame) {
+  if(currentGame[pattern[0]] && currentGame[pattern[0]] === currentGame[pattern[1]] && currentGame[pattern[1]] === currentGame[pattern[2]]){
+    if(currentGame[pattern[0]] === "X"){
+      message("Player X Won!");
+      resetGame();
+      return true
+    }else {
+      message("Player O Won!");
+      resetGame();
+      return true
+    };
+
   }
 }
 
-function message(winner) {
-  $("#message").html(winner)
+function message(gameResult) {
+  $("#message").html(gameResult)
 }
 
-function setBoard() {
+function setCurrentGame() {
   return $("td").map(function(token){
-    return $(this).text()
+    return $(this).text();
   })
+}
+
+
+function resetGame() {
+  saveGame();
+  $("td").each(function(cell){
+    $(this).text('');
+  })
+  turn = 0;
 }
