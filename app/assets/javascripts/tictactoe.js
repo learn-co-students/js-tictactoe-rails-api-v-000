@@ -61,7 +61,6 @@ function attachListeners() {
 
 
 function saveGame(callback) {
-
   if(isNaN(gameId)){
     createGame(callback);
   }else {
@@ -90,7 +89,7 @@ function updateGame(callback) {
     url: "/games/" + gameId,
     data: { game: {state: currentGame}}
   }).done(function (result) {
-    console.log("Game Updated id=" + result["id"])
+    console.log("Game Updated id=" + result["game"]["id"])
 
     if(turn === 0 && reset === true){
       gameId = 'false';
@@ -104,7 +103,7 @@ function loadGame(event) {
   var oldGameId = event.currentTarget["id"]
   $.get("/games/" + oldGameId + ".json", function(response) {
     $("td").each(function(index){
-      $(this).html(response["state"][index]);
+      $(this).html(response["game"]["state"][index]);
     });
     gameId = oldGameId;
     return response
@@ -113,9 +112,9 @@ function loadGame(event) {
 }
 
 function createGame() {
-  $.post("/games",{ game: { state: currentGame }}, function(result) {
-    gameId = result["id"]
-    console.log("New Game Created id=" + result["id"])
+  $.post("/games",{game:{state: currentGame} }, function(result) {
+    gameId = result["game"]["id"]
+    console.log("New Game Created id=" + result["game"]["id"])
     if( turn === 0 && reset === true) {
       gameId = 'false';
       reset = false;
