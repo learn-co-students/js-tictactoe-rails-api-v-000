@@ -10,6 +10,7 @@ var currentGame = [];
 var gameResult = '';
 var currentGame = [];
 var state = 0;
+var reset = false;
 var gameId = "false";
 
 const WIN_COMBINATIONS = [
@@ -22,6 +23,19 @@ const WIN_COMBINATIONS = [
   [0,4,8],
   [6,4,2]
  ]
+
+ function resetGame() {
+   turn = 0;
+   $("td").each(function(cell){
+     $(this).text('');
+   });
+   reset = true
+   saveGame(function () {
+     console.log("Game Id before reset =" + gameId)
+
+   });
+
+ }
 
 function player() {
   if(turn % 2 === 0){
@@ -46,11 +60,12 @@ function attachListeners() {
 }
 
 
-function saveGame() {
+function saveGame(callback) {
+
   if(isNaN(gameId)){
-    createGame();
+    createGame(callback);
   }else {
-    updateGame();
+    updateGame(callback);
   }
 }
 
@@ -69,13 +84,19 @@ function listGames() {
   });
 }
 
-function updateGame() {
+function updateGame(callback) {
   $.ajax({
     type: "PATCH",
     url: "/games/" + gameId,
-    data: {state: currentGame}
+    data: { game: {state: currentGame}}
   }).done(function (result) {
-    console.log(result)
+    console.log("Game Updated id=" + result["id"])
+
+    if(turn === 0 && reset === true){
+      gameId = 'false';
+      reset = false
+    }
+    return result
   });
 }
 
@@ -85,14 +106,23 @@ function loadGame(event) {
     $("td").each(function(index){
       $(this).html(response["state"][index]);
     });
+    gameId = oldGameId;
+    return response
   })
-  gameId = oldGameId;
+
 }
 
 function createGame() {
-  $.post("/games",{state: currentGame}, function(result) {
+  $.post("/games",{ game: { state: currentGame }}, function(result) {
     gameId = result["id"]
-    console.log(result)
+    console.log("New Game Created id=" + result["id"])
+    if( turn === 0 && reset === true) {
+      gameId = 'false';
+      reset = false;
+    }
+    return result;
+
+
   });
 }
 
@@ -110,7 +140,7 @@ function checkWinner() {
   currentGame = setCurrentGame().get();
   WIN_COMBINATIONS.map(function(pattern){
     if (gameWon(pattern,currentGame)== true) {
-      true
+      resetGame();
     } else if (turn === 9) {
       message("Tie game")
       resetGame();
@@ -126,11 +156,9 @@ function gameWon(pattern, currentGame) {
   if(currentGame[pattern[0]] && currentGame[pattern[0]] === currentGame[pattern[1]] && currentGame[pattern[1]] === currentGame[pattern[2]]){
     if(currentGame[pattern[0]] === "X"){
       message("Player X Won!");
-      resetGame();
       return true
     }else {
       message("Player O Won!");
-      resetGame();
       return true
     };
 
@@ -145,13 +173,4 @@ function setCurrentGame() {
   return $("td").map(function(token){
     return $(this).text();
   })
-}
-
-
-function resetGame() {
-  saveGame();
-  $("td").each(function(cell){
-    $(this).text('');
-  })
-  turn = 0;
 }
