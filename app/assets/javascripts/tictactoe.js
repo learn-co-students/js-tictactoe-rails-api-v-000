@@ -8,10 +8,11 @@ $(document).ready(function () {
 var turn = 0;
 var currentGame = [];
 var gameResult = '';
-var currentGame = [];
+var currentGame = ["","","","","","","","","",];
 var state = 0;
 var reset = false;
 var gameId = "false";
+var validMove = true;
 
 const WIN_COMBINATIONS = [
   [0,1,2],
@@ -103,6 +104,7 @@ function loadGame(event) {
   var oldGameId = event.currentTarget["id"]
   $.get("/games/" + oldGameId + ".json", function(response) {
     $("td").each(function(index){
+      //debugger;
       $(this).html(response["game"]["state"][index]);
     });
     gameId = oldGameId;
@@ -119,20 +121,35 @@ function createGame() {
       gameId = 'false';
       reset = false;
     }
+  //  debugger;
     return result;
+  }).fail(function (response) {
 
-
+    console.log(response["responseText"])
   });
 }
 
 function doTurn(event) {
   updateState(event);
-  turn += 1;
+  if(validMove){
+    turn += 1;
+    console.log(turn)
+  }
+
   checkWinner();
 }
 
 function updateState(event) {
-  $(event.currentTarget).html(player());
+
+  var target = $(event.currentTarget).text()
+  if(target === ""){
+    $(event.currentTarget).html(player());
+    validMove = true
+  } else {
+    alert("position occupied");
+    validMove = false;
+  }
+
 }
 
 function checkWinner() {
