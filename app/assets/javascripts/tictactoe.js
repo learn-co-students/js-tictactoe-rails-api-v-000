@@ -10,6 +10,8 @@ var currentGame = [];
 var gameResult = '';
 var currentGame = ["","","","","","","","","",];
 var state = 0;
+var emptyBoardArr = ["","","","","","","","","",];
+var lastTurn = 0;
 var reset = false;
 var gameId = "false";
 var validMove = true;
@@ -30,12 +32,10 @@ const WIN_COMBINATIONS = [
    $("td").each(function(cell){
      $(this).text('');
    });
-   reset = true
+console.log("reset set to " +reset+ "in resetGame()" )
    saveGame(function () {
-     console.log("Game Id before reset =" + gameId)
-
+     console.log("Game Id before reset = " + gameId)
    });
-
  }
 
 function player() {
@@ -62,7 +62,9 @@ function attachListeners() {
 
 
 function saveGame(callback) {
-  if(isNaN(gameId)){
+  console.log("visited save Game game id =" + gameId)
+
+  if(gameId === 'false'){
     createGame(callback);
   }else {
     updateGame(callback);
@@ -85,47 +87,54 @@ function listGames() {
 }
 
 function updateGame(callback) {
+  console.log("visited update Action")
   $.ajax({
     type: "PATCH",
     url: "/games/" + gameId,
+    dataType: 'json',
     data: { game: {state: currentGame}}
   }).done(function (result) {
     console.log("Game Updated id=" + result["game"]["id"])
-
-    if(turn === 0 && reset === true){
-      gameId = 'false';
-      reset = false
-    }
+    console.log(result)
+    checkReset();
     return result
   });
 }
 
 function loadGame(event) {
+  console.log("old Game ID=" + event.currentTarget["id"])
   var oldGameId = event.currentTarget["id"]
   $.get("/games/" + oldGameId + ".json", function(response) {
     $("td").each(function(index){
-      //debugger;
+      debugger;
       $(this).html(response["game"]["state"][index]);
-    });
+    })
     gameId = oldGameId;
     return response
-  })
+  }).done(function(response) {
+    console.log("fail")
+    console.log("load-"+response)
+    console.log("Game" + response["game"]["state"])
+  });
 
 }
 
 function createGame() {
-  $.post("/games",{game:{state: currentGame} }, function(result) {
+  console.log("visited Create Game, Game Id currently" + gameId)
+  $.post('/games',{game:{state: currentGame} }, function(result) {
     gameId = result["game"]["id"]
     console.log("New Game Created id=" + result["game"]["id"])
-    if( turn === 0 && reset === true) {
-      gameId = 'false';
-      reset = false;
-    }
-  //  debugger;
+    console.log(turn)
+
+    console.log("Right before reset in Create Game")
+    console.log("setCurrentGame= " + setCurrentGame().get() + " currentGame = " + currentGame)
+    checkReset();
     return result;
   }).fail(function (response) {
-
-    console.log(response["responseText"])
+    checkReset();
+    // console.log(response["statusText"])
+    // console.log(response)
+    // console.log(response["status"])
   });
 }
 
@@ -133,7 +142,6 @@ function doTurn(event) {
   updateState(event);
   if(validMove){
     turn += 1;
-    console.log(turn)
   }
 
   checkWinner();
@@ -179,6 +187,24 @@ function gameWon(pattern, currentGame) {
     };
 
   }
+}
+
+function checkReset() {
+
+    if(emptyBoard() && emptyBoardArr !== currentGame ) {
+      console.log("entered reset in create game")
+      gameId = 'false';
+      reset = false;
+
+  }
+
+}
+
+
+function emptyBoard() {
+  if(setCurrentGame().get().sort().join(',') === emptyBoardArr.sort().join(',')){
+    return true
+  } else return false
 }
 
 function message(gameResult) {
