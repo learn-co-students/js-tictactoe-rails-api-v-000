@@ -17,7 +17,22 @@ var message = function(str) {
 }
 
 var attachListeners = function() {
-
+  $("td").on('click', function(){
+    doTurn(this);
+  });
+  $("#previous").on('click', function(event){
+    event.preventDefault();
+    getAllGames();
+  });
+  $("#save").on('click', function(event){
+    event.preventDefault();
+    saveGame();
+  });
+  $("#games").on('click', function(event){
+    var id = $(event.target).data("gameid");
+    var state = $(event.target).data("state").split(",");
+    loadGame(id, state);
+  });
 }
 
 var doTurn = function() {
