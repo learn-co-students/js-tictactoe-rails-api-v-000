@@ -12,6 +12,10 @@ var winningCombos = [
 [[1,0],[1,1],[1,2]], 
 [[2,0],[1,1],[0,2]]];
 
+$(document).ready(function() {
+  attachListeners();
+})
+
 var message = function(str) {
   $("#message").html(str);
 }
@@ -35,9 +39,15 @@ var attachListeners = function() {
   });
 }
 
-var doTurn = function() {
-
-}
+var doTurn = function(e){
+  updateState(e);
+  if(checkWinner() || checkTie()) {
+    save(true);
+    resetGame();
+  } else {
+    turn += 1;
+  }
+};
 
 var updateState = function(e) {
   $(e.target).text(player());
@@ -65,11 +75,18 @@ var checkWinner = function() {
 
 
 var checkTie = function() {
-  if (turn >= 9) {
-    message("Tie game");
-  }
-}
+  var tie = true;
+  $("td").each(function() {
+    if ($(this).html().length <= 0) {
+      tie = false;
+    }
+  });
+  if (tie) message("Tie game");
+  return tie;
+};
 
 var resetGame = function() {
-
+  $("td").html("");
+  turn = 0;
+  currentGame = 0;
 }
