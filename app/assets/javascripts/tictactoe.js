@@ -28,9 +28,26 @@ var updateState = function(e) {
   $(e.target).text(player());
 };
 
-var checkWinner = function() {
+var player = function() {
+  return (turn % 2) == 0 ? "X" : "O";
+}
 
+var checkWinner = function() {
+  for (var i = 0; i < winningCombos.length; i++) {
+    tokens = [];
+    for (var j = 0; j < winningCombos[i].length; j++) {
+      var x = winningCombos[i][j][0];
+      var y = winningCombos[i][j][1];
+      var selector = $('[data-x="' + x + '"][data-y="' + y + '"]');
+      tokens.push(selector.text());
+    };
+    if (tokens.every(function(e){return (e === player())})){
+      return message( "Player " + player() + " Won!");
+    };
+  };
+  return false
 };
+
 
 var checkTie = function() {
 
