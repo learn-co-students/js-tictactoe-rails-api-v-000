@@ -50,7 +50,9 @@ var checkWinner = function() {
 
 
 var checkTie = function() {
-
+  if (turn >= 9) {
+    message("Tie game");
+  }
 }
 
 var resetGame = function() {
