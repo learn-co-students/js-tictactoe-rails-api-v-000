@@ -14,7 +14,7 @@ var winningCombos = [
 
 $(document).ready(function() {
   attachListeners();
-})
+});
 
 var message = function(str) {
   $("#message").html(str);
@@ -89,4 +89,23 @@ var resetGame = function() {
   $("td").html("");
   turn = 0;
   currentGame = 0;
+}
+
+var parseState = function(e) {
+  return $(e.target).data("state").split(",");
+}
+
+var getGameId = function(e) {
+  return $(e.target).data("gameid")
+};
+
+function getAllGames() {
+  $.get("/games", function(data) {
+    var games = data["games"];
+    var gameInfo = "";
+    $.each(games, function(i, game){
+      gameInfo += '<li data-gameid="' + game["id"] + '" data-state="' + game["state"] + '">' + game["id"] + '</li>'
+    });
+    $("#games").html(gameInfo);
+  });
 }
