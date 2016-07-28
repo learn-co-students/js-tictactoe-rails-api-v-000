@@ -371,7 +371,7 @@ describe('#integration tests of persistence', function() {
   });
 
   it("if i play a game it should autosave at the end of the game", function() {
-    console.log("TEST!! end of game autosave")
+    console.log("1 end of game autosave")
     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
     attachListeners()
     expect($("#games").children().length).toBe(0);
@@ -392,6 +392,7 @@ describe('#integration tests of persistence', function() {
   });
 
   it("if i play a game it should autosave and start a new game", function() {
+    console.log("2 Autosave start new")
     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
     attachListeners()
     expect($("#games").children().length).toBe(0);
@@ -419,6 +420,7 @@ describe('#integration tests of persistence', function() {
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
+      
       jasmine.Ajax.requests.mostRecent().respondWith(response);
       $('[data-x="0"][data-y="0"]').click();
       $('[data-x="1"][data-y="0"]').click();
@@ -437,6 +439,7 @@ describe('#integration tests of persistence', function() {
   });
 
   it("if should be able to switch to an old game", function() {
+    console.log("3 Switch to old game")
     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
     attachListeners()
     jasmine.Ajax.withMock(function() {

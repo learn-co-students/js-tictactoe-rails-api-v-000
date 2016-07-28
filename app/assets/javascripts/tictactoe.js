@@ -6,15 +6,19 @@ $(document).ready(function () {
 });
 
 var turn = 0;
+var method = ""
+var url = ""
+var gameOver;
 var currentGame = [];
 var gameResult = '';
 var currentGame = ["","","","","","","","","",];
 var state = 0;
 var emptyBoardArr = ["","","","","","","","","",];
-var lastTurn = 0;
+var lastTurn = '';
 var reset = false;
 var gameId = "false";
 var validMove = true;
+var allGames = [];
 
 const WIN_COMBINATIONS = [
   [0,1,2],
@@ -28,11 +32,12 @@ const WIN_COMBINATIONS = [
  ]
 
  function resetGame() {
-   turn = 0;
+   gameId = 'false'
+   lastTurn = turn
+  turn = 0;
    $("td").each(function(cell){
      $(this).text('');
    });
-console.log("reset set to " +reset+ "in resetGame()" )
    saveGame(function () {
      console.log("Game Id before reset = " + gameId)
    });
@@ -63,12 +68,9 @@ function attachListeners() {
 
 function saveGame(callback) {
   console.log("visited save Game game id =" + gameId)
-
-  if(gameId === 'false'){
-    createGame(callback);
-  }else {
-    updateGame(callback);
-  }
+  updateGame(function(){
+    console.log("had check reset here")
+  })
 }
 
 
@@ -78,7 +80,8 @@ function listGames() {
     response["games"].forEach(function(game){
       $("#games").append("<li data-gameid="+game["id"]+" class=oldGames id=" +game["id"] + ">" + game["id"]+ "</li>")
     })
-  }).done(function () {
+  }).done(function (response) {
+    allGames = response["games"]
     $(".oldGames").on('click', function(event) {
       console.log("clicked it");
       loadGame(event);
@@ -87,63 +90,78 @@ function listGames() {
 }
 
 function updateGame(callback) {
-  console.log("visited update Action")
+callback();
+    if(lastTurn > 1 && lastTurn !== ''){
+
+      gameId = 'false';
+      lastTurn = '';
+    }
+
+    if(gameId === 'false'){
+      gameOver = false;
+      method = 'POST'
+      url = '/games'
+    }else {
+      method = 'PATCH'
+      url = "/games/" + gameId
+    }
+
+  console.log(method)
+  console.log(gameId)
   $.ajax({
-    type: "PATCH",
-    url: "/games/" + gameId,
+    type: method,
+    url: url,
     dataType: 'json',
     data: { game: {state: currentGame}}
   }).done(function (result) {
-    console.log("Game Updated id=" + result["game"]["id"])
-    console.log(result)
+    if(method === 'POST'){
+      gameId = result["game"]["id"]
+      console.log("Game Created id=" + gameId)
+    } else {
+      console.log("Game Updated id=" + gameId)
+    }
     checkReset();
     return result
   });
 }
 
 function loadGame(event) {
-  console.log("old Game ID=" + event.currentTarget["id"])
-  var oldGameId = event.currentTarget["id"]
-  $.get("/games/" + oldGameId + ".json", function(response) {
+
+  console.log("went to load game event = " + event)
+  var oldGameId = parseInt(event.currentTarget["id"])
+  console.log("old Game ID=" + oldGameId)
+  debugger;
     $("td").each(function(index){
-      debugger;
-      $(this).html(response["game"]["state"][index]);
+      $(this).html(allGames[oldGameId - 1]["state"][index]);
     })
-    gameId = oldGameId;
-    return response
-  }).done(function(response) {
-    console.log("fail")
-    console.log("load-"+response)
-    console.log("Game" + response["game"]["state"])
-  });
 
 }
 
-function createGame() {
-  console.log("visited Create Game, Game Id currently" + gameId)
-  $.post('/games',{game:{state: currentGame} }, function(result) {
-    gameId = result["game"]["id"]
-    console.log("New Game Created id=" + result["game"]["id"])
-    console.log(turn)
-
-    console.log("Right before reset in Create Game")
-    console.log("setCurrentGame= " + setCurrentGame().get() + " currentGame = " + currentGame)
-    checkReset();
-    return result;
-  }).fail(function (response) {
-    checkReset();
-    // console.log(response["statusText"])
-    // console.log(response)
-    // console.log(response["status"])
-  });
-}
+// function createGame(callback) {
+//   callback();
+//
+//   console.log("visited Create Game, Game Id currently" + gameId)
+//   $.post('/games',{game:{state: currentGame} }, function(result) {
+//     gameId = result["game"]["id"]
+//     console.log("New Game Created id=" + result["game"]["id"])
+//     console.log(turn)
+//
+//     console.log("Right before reset in Create Game")
+//     console.log("setCurrentGame= " + setCurrentGame().get() + " currentGame = " + currentGame + "Empty Board Array= " + emptyBoardArr)
+//     //checkReset();
+//     return result;
+//   }).fail(function (response) {
+//     // console.log(response["statusText"])
+//     // console.log(response)
+//     // console.log(response["status"])
+//   });
+// }
 
 function doTurn(event) {
   updateState(event);
   if(validMove){
     turn += 1;
   }
-
   checkWinner();
 }
 
@@ -164,9 +182,11 @@ function checkWinner() {
   currentGame = setCurrentGame().get();
   WIN_COMBINATIONS.map(function(pattern){
     if (gameWon(pattern,currentGame)== true) {
+      gameOver = true;
       resetGame();
     } else if (turn === 9) {
       message("Tie game")
+      gameOver = true;
       resetGame();
       return false
     }else {
@@ -190,14 +210,15 @@ function gameWon(pattern, currentGame) {
 }
 
 function checkReset() {
-
+  if (currentGame !== 0) {
     if(emptyBoard() && emptyBoardArr !== currentGame ) {
-      console.log("entered reset in create game")
-      gameId = 'false';
-      reset = false;
-
+      if(turn === 0){
+        console.log("entered reset in create game")
+        gameId = 'false';
+        console.log("Game Id set to false")
+      }
+    }
   }
-
 }
 
 
