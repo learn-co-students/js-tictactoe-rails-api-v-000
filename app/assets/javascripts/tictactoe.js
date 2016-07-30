@@ -8,7 +8,7 @@ var winningCombos = [
                     [0,4,8],[2,4,6]
                   ];
 
-var attachListeners = function(){
+function attachListeners(){
   $('body').on('click', 'td', function(e){
     doTurn(e);
   });
@@ -16,8 +16,17 @@ var attachListeners = function(){
 
 function doTurn(e){
   updateState(e);
-  checkWinner();
+  if (checkWinner()){
+    console.log(checkWinner());
+    resetBoard();
+  };
   turn++;
+}
+
+function resetBoard(){
+  $('td').each(function(){
+    $(this).text();
+  });
 }
 
 function setTurn(){
@@ -32,6 +41,7 @@ function setTurn(){
 
 function checkWinner(){
   board = getBoard();
+  console.log(board);
   for(var i = 0; i < 8; i++){
     var cellToCheck = [];
   	for(var j = 0; j < 3; j++){
@@ -44,10 +54,9 @@ function checkWinner(){
   	} else if (cellToCheck.join().includes("O,O,O")){
   	  message("Player O Won!");
       return true;
-  	} else {
-  		return false;
   	}
   }
+  return false;
 }
 
 function player(){
@@ -77,7 +86,3 @@ function showBoard(board){
     $(this).text(board[index]);
   });
 }
-
-$(function() {
-  attachListeners();
-});
