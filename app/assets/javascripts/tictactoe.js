@@ -1,7 +1,8 @@
 var turn = 0;
+var currentGame;
 var winningCombos = [
 										//columns
-                    [0,3,6],[1,4,7],[2,5,6],
+                    [0,3,6],[1,4,7],[2,5,8],
                     //rows
                     [0,1,2],[3,4,5],[6,7,8],
                     //diagonal
@@ -12,20 +13,43 @@ function attachListeners(){
   $('body').on('click', 'td', function(e){
     doTurn(e);
   });
+  $("#save").on('click', function(e){
+    saveGame();
+  });
+  $('#previous').on('click', function(e){
+    showPreviousGame(getBoard(e));
+  });
 };
 
 function doTurn(e){
   updateState(e);
-  if (checkWinner()){
-    console.log(checkWinner());
+  if (checkWinner() || tie()){
+    saveGame();
     resetBoard();
-  };
-  turn++;
+    console.log(turn);
+  } else {
+    turn = setTurn();
+  }
+}
+
+function tie(){
+  var currentBoard = getBoard();
+  var filtered = currentBoard.filter(findEmpty);
+  if (filtered.length == 0){
+    message("Tie game");
+    return true;
+  }
+  return false;
+}
+
+function findEmpty(cell){
+  return cell == '';
 }
 
 function resetBoard(){
   $('td').each(function(){
-    $(this).text();
+    $(this).text('');
+    turn = setTurn();
   });
 }
 
@@ -36,27 +60,50 @@ function setTurn(){
     var addTurn = board[i] == "" ? 0 : 1;
     turnCount += addTurn;
   };
-  turn = turnCount;
+  return turnCount;
 }
 
 function checkWinner(){
-  board = getBoard();
-  console.log(board);
+  var currentBoard = getBoard();
   for(var i = 0; i < 8; i++){
     var cellToCheck = [];
   	for(var j = 0; j < 3; j++){
-      cellToCheck.push(board[winningCombos[i][j]]);
+      cellToCheck.push(currentBoard[winningCombos[i][j]]);
   	}
-
   	if (cellToCheck.join().includes("X,X,X")){
-  	  message("Player X Won!");
+      message("Player X Won!");
       return true;
   	} else if (cellToCheck.join().includes("O,O,O")){
-  	  message("Player O Won!");
+      message("Player O Won!");
       return true;
   	}
   }
   return false;
+}
+
+function saveGame(){
+    var currentBoard = getBoard();
+    var params = {game: {state: currentBoard}};
+
+    var url, method;
+    if(currentGame) {
+      url = "/games/" + currentGame;
+      method = "PATCH";
+    } else {
+      url = "/games";
+      method = "POST";
+    }
+
+    $.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: params,
+    success: function(data) {
+      currentGame = data.id;
+      console.log("Game saved as: Game #" + data.id);
+    }
+  });
 }
 
 function player(){
@@ -66,6 +113,7 @@ function player(){
 
 function message(m){
   $("#message").text(m);
+  return true;
 }
 
 function getBoard(){
@@ -73,16 +121,50 @@ function getBoard(){
   $('td').each(function(index){
   	board.push($(this).text());
   });
-
   return board;
 }
 
 function updateState(e){
-  $(e.target).text(player());
+  var cell = $(e.target).text();
+  if(cell != "X" && cell != "O"){
+    $(e.target).text(player());
+  } else {
+    console.log("Can't go there.");
+  }
 }
 
 function showBoard(board){
+  $('#games').text(' ');
   $('td').each(function(index){
-    $(this).text(board[index]);
+    if(board == null){
+      $(this).text('');
+    } else {
+      $(this).text(board[index]);
+    }
   });
+  setTurn();
+}
+
+function showPreviousGame(){
+    $.get('/games', function(data){
+      var len = data.length;
+      var gamesID = [];
+      for(var i = 0; i < len; i++){
+        var html = "<button class='games' data-id='"
+        html += data[i].id + "'> Game #" + data[i].id + "</button></br>"
+        $('#games').append(html);
+      }
+      showPreviousOnBoard();
+    });
+}
+
+function showPreviousOnBoard(state){
+  $('.games').on('click', function(){
+    var gameID = $(this).data("id");
+    $.get('/games/'+ gameID +'.json', function(data){
+      message("Displaying game " + gameID);
+      showBoard(data["state"]);
+    })
+    currentGame = gameID;
+  })
 }

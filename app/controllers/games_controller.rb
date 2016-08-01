@@ -3,6 +3,7 @@ class GamesController < ApplicationController
 
   def index
     @games = Game.all
+    render json: @games.to_json
   end
 
   def new
@@ -14,20 +15,22 @@ class GamesController < ApplicationController
     render json: @game, status: 201
   end
 
-  def show
-    respond_to do |f|
-      f.html
-      f.json { render json: @product}
-    end
+  def update
+    @game.update_attributes(game_params)
+    render json: @game, status: 202
   end
 
+  def show
+    render json: @game
+  end
+  
   private
 
   def game_params
-    params.require(:game).permit(:state)
+    params.require(:game).permit(state: [])
   end
 
-  def set_games
+  def set_game
     @game = Game.find(params[:id])
   end
 end
