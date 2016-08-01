@@ -3,7 +3,10 @@ class GamesController < ApplicationController
 
   def index
     @games = Game.all
-    render json: @games.to_json
+    respond_to do |f|
+      f.html { redirect_to root_path }
+      f.json { render json: @games, status: 200 }
+    end
   end
 
   def new
@@ -21,9 +24,12 @@ class GamesController < ApplicationController
   end
 
   def show
-    render json: @game
+    respond_to do |f|
+      f.html
+      f.json { render json: @game }
+    end
   end
-  
+
   private
 
   def game_params

@@ -86,7 +86,7 @@ function saveGame(){
     console.log("inside saveGame");
     var currentBoard = getBoard();
     var params = {game: {state: currentBoard}};
-    
+
     var url, method;
     if(currentGame) {
       url = "/games/" + currentGame;
@@ -149,13 +149,15 @@ function showBoard(board){
 }
 
 function showPreviousGame(){
-    $.get('/games', function(data){
+    $.get('/games.json', function(data){
       var len = data.length;
       var gamesID = [];
       for(var i = 0; i < len; i++){
         var html = "<button class='games' data-id='"
         html += data[i].id + "'> Game #" + data[i].id + "</button></br>"
+          console.log(html);
         $('#games').append(html);
+
       }
       showPreviousOnBoard();
     });
