@@ -149,7 +149,7 @@ function showBoard(board){
 }
 
 function showPreviousGame(){
-    $.get('/games.json', function(data){
+    $.getJSON('/games', function(data){
       var len = data.length;
       var gamesID = [];
       for(var i = 0; i < len; i++){
