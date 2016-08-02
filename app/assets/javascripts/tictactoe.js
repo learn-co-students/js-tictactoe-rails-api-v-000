@@ -13,12 +13,11 @@ function attachListeners(){
   $('body').on('click', 'td', function(e){
     doTurn(e);
   });
-  $("#save").on('click', function(e){
+  $("#save").on('click', function(){
     saveGame();
-    console.log("clicked");
   });
-  $('#previous').on('click', function(e){
-    showPreviousGame(getBoard(e));
+  $('#previous').on('click', function(){
+    showPreviousGame();
   });
 };
 
@@ -83,7 +82,6 @@ function checkWinner(){
 }
 
 function saveGame(){
-    console.log("inside saveGame");
     var currentBoard = getBoard();
     var params = {game: {state: currentBoard}};
 
@@ -150,15 +148,18 @@ function showBoard(board){
 
 function showPreviousGame(){
     $.getJSON('/games', function(data){
-      var len = data.length;
+      var games = data["games"];
+      var len = games.length;
       var gamesID = [];
+      var html = "";
       for(var i = 0; i < len; i++){
-        var html = "<button class='games' data-id='"
-        html += data[i].id + "'> Game #" + data[i].id + "</button></br>"
-          console.log(html);
-        $('#games').append(html);
-
+        html += "<ul class='nav'>"
+        html += "<li class='games' data-id='";
+        html += games[i].id + "'> Game #" + games[i].id + "</li>";
+        html += "</ul>";
       }
+      console.log("Outside Loop: " + html);
+      $('#games').append(html);
       showPreviousOnBoard();
     });
 }

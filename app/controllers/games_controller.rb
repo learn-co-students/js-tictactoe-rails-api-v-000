@@ -14,7 +14,8 @@ class GamesController < ApplicationController
   end
 
   def create
-    @game = Game.create(game_params)
+    @game = Game.find_by(state: game_params["state"])
+    byebug
     render json: @game, status: 201
   end
 
