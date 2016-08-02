@@ -101,7 +101,6 @@ function saveGame(){
     data: params,
     success: function(data) {
       currentGame = data.id;
-      // window.location.replace('/games/'+currentGame);
       console.log("Game saved as: Game #" + data.id);
     }
   });
@@ -139,6 +138,8 @@ function showBoard(board){
   $('td').each(function(index){
     if(board == null){
       $(this).text('');
+    } else if (board[index] == ',') {
+      $(this).text("");
     } else {
       $(this).text(board[index]);
     }
@@ -154,12 +155,12 @@ function showPreviousGame(){
       var html = "";
       for(var i = 0; i < len; i++){
         html += "<ul class='nav'>"
-        html += "<li class='games' data-id='";
-        html += games[i].id + "'> Game #" + games[i].id + "</li>";
+        html += "<li class='games' data-gameid='";
+        html += games[i].id + "' ";
+        html+= "data-state='" + games[i].state + "'> Game #" + games[i].id + "</li>";
         html += "</ul>";
       }
-      console.log("Outside Loop: " + html);
-      $('#games').append(html);
+      $('#games').html(html);
       showPreviousOnBoard();
     });
 }
@@ -174,13 +175,12 @@ function showPreviousOnBoard(gameId){
       })
   } else {
     $('.games').on('click', function(){
-      var gameID = $(this).data("id");
-      $.get('/games/'+ gameID +'.json', function(data){
+      var gameID = $(this).data("gameid");
+      var gameState = $(this).data("state");
         message("Displaying game " + gameID);
-        showBoard(data["state"]);
+        showBoard(gameState);
         currentGame = gameID;
         turn = setTurn();
-      })
-    });
+      });
   }
 }
