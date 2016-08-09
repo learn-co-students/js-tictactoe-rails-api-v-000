@@ -2,7 +2,7 @@
 
 describe('Tic Tac Toe Functionality', function() {
   beforeEach(function(){
-    var turn = 0;
+    turn = 0;
   });
 
   describe( "#attachListeners", function() {
