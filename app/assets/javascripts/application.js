@@ -13,9 +13,3 @@
 //= require jquery
 //= require jquery_ujs
 //= require tictactoe
-
-function attachListeners() {
-    $('[data-x][data-y]').click(function(){
-      doTurn();
-    });
-  }
