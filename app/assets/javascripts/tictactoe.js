@@ -7,7 +7,9 @@ var turn = 0;
 
 var attachListeners = function() {
   // call function doTurn and pass param of the event
-
+  $('td').on('click', function(e) {
+    doTurn(e);
+  });
 };
 
 var doTurn = function(e) {
