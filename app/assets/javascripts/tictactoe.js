@@ -14,20 +14,19 @@ var attachListeners = function() {
 
 var doTurn = function(e) {
   // increment variable turn by one
-
+  turn += 1;
   // call function updateState and pass param of the event
-
+  updateState(e);
   // call function checkWinner
-
+  checkWinner();
 };
 
 var player = function() {
   // if turn is even, return X as string, else return O as string
 };
 
-var updateState = function() {
+var updateState = function(e) {
   // call function player, which provides return value, add return value to clicked cell
-
 };
 
 var checkWinner = function() {
