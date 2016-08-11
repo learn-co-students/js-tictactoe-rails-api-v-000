@@ -30,6 +30,8 @@ var doTurn = function(e) {
   checkWinner();
   // increment variable turn by one
   turn += 1;
+
+  // NEXT STEPS: checkTie function
 };
 
 var player = function() {
