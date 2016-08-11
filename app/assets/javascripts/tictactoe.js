@@ -13,20 +13,27 @@ var attachListeners = function() {
 };
 
 var doTurn = function(e) {
-  // increment variable turn by one
-  turn += 1;
   // call function updateState and pass param of the event
   updateState(e);
   // call function checkWinner
   checkWinner();
+  // increment variable turn by one
+  turn += 1;
 };
 
 var player = function() {
   // if turn is even, return X as string, else return O as string
+  if (turn % 2 === 0) {
+    return "X";
+  } else {
+    return "0";
+  }
 };
 
 var updateState = function(e) {
   // call function player, which provides return value, add return value to clicked cell
+  var token = player();
+  $(e.target).html(token);
 };
 
 var checkWinner = function() {
