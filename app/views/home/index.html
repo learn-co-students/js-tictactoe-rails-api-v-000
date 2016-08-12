@@ -44,9 +44,9 @@ $(function() {
   posting.done(function(data) {
 
    var game = data["game"]
- 	debugger
+ 
    fillBoard(game.state)
-   debugger
+  
   	currentGame = game	
    
   })    
@@ -58,7 +58,7 @@ $(function() {
 	$('#previous').click(function(event){
 		event.preventDefault();
     $.get('/games', function(data){
-      debugger
+      
       var games = data["game"]
       for (i = 0; i < games.length; i ++) {
         $('#games1').html('<li>Game: '+ games[i]["id"]+ '</li>')

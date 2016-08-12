@@ -126,19 +126,7 @@ function checkWinner() {
 
 ///// Controller scripts
 
-function getGames() {
-  debugger
-  $('#previous').click(function(){
-    $.get('/games', function(data){
-      
-      var games = data["games"]
-      for (i = 0; i < games.length; i ++) {
-        $('#games1').html('<li>Game: '+ games[i]["id"]+ '</li>')
-      }
-    })
-  })
 
-}
 
 
 
