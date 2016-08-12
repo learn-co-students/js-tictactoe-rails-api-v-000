@@ -20,9 +20,51 @@
 				<td data-x="2" data-y="2"></td>
 			</tr>
 		</table>
-		<div id="games"></div>
+		<div id="games"><ul id="games1"></ul>
+		</div>
 		<div id="message"></div>
 		<button id="save">Save Game</button>
 		<button id="previous">Show Previous Games</button>
 	</body>
 </html>
+
+
+
+<script type="text/javascript">
+
+$(function() {
+  $('#save').on('click', function(event) {
+    event.preventDefault();
+
+  var board = {}
+  board["state"] = getBoard()
+  
+  var posting = $.post('/games', board)
+
+  posting.done(function(data) {
+
+   var game = data["game"]
+ 	debugger
+   fillBoard(game.state)
+   debugger
+  	currentGame = game	
+   
+  })    
+  })
+})
+
+
+$(function() {
+	$('#previous').click(function(event){
+		event.preventDefault();
+    $.get('/games', function(data){
+      debugger
+      var games = data["game"]
+      for (i = 0; i < games.length; i ++) {
+        $('#games1').html('<li>Game: '+ games[i]["id"]+ '</li>')
+      }
+    })
+  })
+})
+
+</script>
