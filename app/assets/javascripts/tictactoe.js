@@ -1,6 +1,10 @@
 var turn = 0;
 var currentGame = 1;
 
+function assignGameNumber(){
+  $('#currentGame').html(countGames() + 1)
+}
+
 function cellValues(){
   var cellOne = $('[data-x="0"][data-y="0"]').html();
   var cellTwo = $('[data-x="1"][data-y="0"]').html();
@@ -46,6 +50,9 @@ function attachListeners() {
   });
   $('#save').click(function(){
     saveGame();
+  });
+  $('#games').click(function(){
+    switchGame();
   });
 }
 
@@ -103,29 +110,98 @@ function message(message){
 function resetGame(){
   turn = 0;
   saveGame();
-  currentGame += 1;
+  currentGame = 0;
   $('td').html("");
 }
 
 function saveGame(){
-  $.ajax({
+  debugger
+  if (currentGame) {
+    updateGame();
+  } else {
+    var stateValues = cellValues()
+    $.ajax({
       url: '/games',
       method: 'post',
-      data: "hello"
+      dataType: "json",
+      data: {
+        game: {
+          state: stateValues
+        }
+      }
     }).done(function(response){
-      $('#games').append("hello");
+      $('#games ul').append('<li [data-gameid="' + response.id+'"]>' + response.id+ '</li>')
+      currentGame = response.id;
     });
+  } 
+}
+
+function updateGame(){
+  $.ajax({
+    url: '/games/' + currentGame,
+    method: 'patch',
+    dataType: "json",
+    data: {
+      game: {
+        state: cellValues(),
+        id: currentGame,
+      }
+    }
+  }).done(function(response){
+    currentGame = response.id;
+  });
 }
 
 function previousGame(){
   $.ajax({
       url: '/games',
       method: 'get',
+      dataType: "json"
     }).done(function(response){
-      $('#games').html(response);
+      listGames(response.games)
     });
+  assignGameNumber();
+}
+
+function listGames(games) {
+  $('#games ul').html("");
+  for (var i = 0; i < games.length ; i++) {
+    $('#games').append('<li [data-gameid="' + games[i].id +'"]>' + games[i].id + '</li>');
+  }
+  assignGameNumber();
+}
+
+function countGames() {
+  return $('li').length
+}
+
+function switchGame (){
+  var game = $(event.target).html();
+  $.ajax({
+      url: '/games/' + game,
+      method: 'get',
+      dataType: "json",
+    }).done(function(response){
+      setGame(response);
+      currentGame = response.id;
+    });
+}
+
+function setGame(game){
+  $('[data-x="0"][data-y="0"]').html(game.state[0]);
+  $('[data-x="1"][data-y="0"]').html(game.state[1]);
+  $('[data-x="2"][data-y="0"]').html(game.state[2]);
+  $('[data-x="0"][data-y="1"]').html(game.state[3]);
+  $('[data-x="1"][data-y="1"]').html(game.state[4]);
+  $('[data-x="2"][data-y="1"]').html(game.state[5]);
+  $('[data-x="0"][data-y="2"]').html(game.state[6]);
+  $('[data-x="1"][data-y="2"]').html(game.state[7]);
+  $('[data-x="2"][data-y="2"]').html(game.state[8]);
+  currentGame = game.id;
+  assignGameNumber();
 }
 
 $(document).ready(function() {
   attachListeners() 
+  assignGameNumber()
 });
