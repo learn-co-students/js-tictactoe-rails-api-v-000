@@ -22,9 +22,13 @@ function attachListeners() {
     doTurn(positionX, positionY)
   })
 
-    clickSave();
-  previousGames();
-  switchGame();
+  $('#save').on('click', function(event){
+    clickSave(event);
+  })
+  $('#previous').on('click', function(event){
+    previousGames(event);
+  })
+
 }
 
 
@@ -152,9 +156,9 @@ function saveGame() {
 
 }
 
-function clickSave() {
+function clickSave(event) {
 
-  $('#save').on('click', function(event) {
+  
     event.preventDefault();
   if (currentGame === 0) {
   var board = {}
@@ -181,13 +185,13 @@ function clickSave() {
       message('Updated')
     })
   }   
-  })
+  
 }
 
-function previousGames() {
+function previousGames(event) {
 
   
-  $('#previous').on('click',function(event){
+
     event.preventDefault();
     var check = $('#games').html()
     if (check === "") {
@@ -198,45 +202,62 @@ function previousGames() {
       for (i = 0; i < games.length; i ++) {
         $('#games').append('<li data-gameid="'+games[i]["id"]+'">'+ games[i]["id"]+ '</li>')
       }
-    })}
+    })
+  }
     else {
       
       $.get('/games', function(data) {
         var games = data["games"]
         
         var li = $('#games').children().length
-      
         if (games.length > li) {
           
           var ids = games.length
           var diff = ids - li
           
           for (c = 0; c < diff; c ++) {
-          
-            $.get('/games/'+ (parseInt(li) + c + 1), function(data1){
+            var missing = li + c + 1
+        
+            
              
-              $('#games').append('<li data-gameid="'+ games[c]["id"]+'">'+ data1["game"]["id"]+ '</li>')
-            })
+              $('#games').append('<li data-gameid="'+ missing + '">'+missing +  '</li>')
+            
           }
 
         }
       })
     }
-  })
+    $('#games').on('click', '[data-gameid]', function(event) {
+      switchGame(event);
+    })
+
+  
 }
 
 
-function switchGame() {
+function switchGame(event) {
 
-    $('#games').on('click', 'li', function(event) {
     event.preventDefault();
-    var id = this.innerHTML
-    $.get('/games/' + id, function(data){
-      var game = data["game"]
-      fillBoard(game.state)
-      currentGame = game.id
+  
+    var id = event.target.innerHTML
+
+    $.get('/games', function(data){
+
+      var games = data["games"]
+      
+      for ( i = 0; i < games.length; i ++) {
+        
+        if (games[i]["id"] === parseInt(id)) {
+          
+          var game = games[i]
+          debugger
+        fillBoard(game.state)
+        turn = $('td').text().length
+        currentGame = game.id
+      }
+  }
     })
-  })
+  
 }
 
 
