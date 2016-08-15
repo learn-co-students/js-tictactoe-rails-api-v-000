@@ -1,14 +1,13 @@
 
 var turn = 0
-var currentGame = {}
+var currentGame = 0
 
 var wC = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],[0,1],[0,2]], [[1,0],[1,1],[1,2]], [[2,0],[2,1],[2,2]], [[0,0],[1,1],[2,2]], [[2,0],[1,1],[0,2]]]
 
 $(document).ready(function() {
+
   attachListeners();
-  clickSave();
-  previousGames();
-  switchGame();
+
 
 
 })
@@ -22,6 +21,10 @@ function attachListeners() {
  
     doTurn(positionX, positionY)
   })
+
+    clickSave();
+  previousGames();
+  switchGame();
 }
 
 
@@ -143,7 +146,7 @@ function saveGame() {
   posting.done(function(data) {
 
    var game = data["game"]
-   debugger
+  currentGame = 0
 
  })
 
@@ -153,7 +156,7 @@ function clickSave() {
 
   $('#save').on('click', function(event) {
     event.preventDefault();
-
+  if (currentGame === 0) {
   var board = {}
   board["state"] = getBoard()
   
@@ -165,9 +168,19 @@ function clickSave() {
  
    fillBoard(game.state)
   
-    currentGame = game  
+    currentGame = game.id  
+  })
+  
    
-  })    
+  } 
+  else {
+    var board = {}
+    board["state"] = getBoard()
+    var patching = $.ajax('/games/'+ currentGame, {method: 'PATCH', data: board})
+    patching.done(function(data){
+      message('Updated')
+    })
+  }   
   })
 }
 
@@ -176,14 +189,14 @@ function previousGames() {
   
   $('#previous').on('click',function(event){
     event.preventDefault();
-    var check = $('#games1').html()
+    var check = $('#games').html()
     if (check === "") {
     
     $.get('/games', function(data){
       
       var games = data["games"]
       for (i = 0; i < games.length; i ++) {
-        $('#games1').append('<li id="game '+games[i]["id"]+'">'+ games[i]["id"]+ '</li>')
+        $('#games').append('<li data-gameid="'+games[i]["id"]+'">'+ games[i]["id"]+ '</li>')
       }
     })}
     else {
@@ -191,17 +204,18 @@ function previousGames() {
       $.get('/games', function(data) {
         var games = data["games"]
         
-        var li = $('li').length
+        var li = $('#games').children().length
+      
         if (games.length > li) {
           
           var ids = games.length
           var diff = ids - li
           
           for (c = 0; c < diff; c ++) {
-  
+          
             $.get('/games/'+ (parseInt(li) + c + 1), function(data1){
-              
-              $('#games1').append('<li id="game '+data1["game"]["id"]+'">'+ data1["game"]["id"]+ '</li>')
+             
+              $('#games').append('<li data-gameid="'+ games[c]["id"]+'">'+ data1["game"]["id"]+ '</li>')
             })
           }
 
@@ -214,13 +228,13 @@ function previousGames() {
 
 function switchGame() {
 
-    $('#games1').on('click', 'li', function(event) {
+    $('#games').on('click', 'li', function(event) {
     event.preventDefault();
     var id = this.innerHTML
     $.get('/games/' + id, function(data){
       var game = data["game"]
       fillBoard(game.state)
-      currentGame = game
+      currentGame = game.id
     })
   })
 }
