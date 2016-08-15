@@ -6,6 +6,9 @@ var wC = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],
 
 $(document).ready(function() {
   attachListeners();
+  clickSave();
+  previousGames();
+  switchGame();
 
 
 })
@@ -130,7 +133,7 @@ function checkWinner() {
 
 function saveGame() {
 
-  
+
   var board = {}
 
   board["state"] = getBoard()
@@ -145,6 +148,84 @@ function saveGame() {
  })
 
 }
+
+function clickSave() {
+
+  $('#save').on('click', function(event) {
+    event.preventDefault();
+
+  var board = {}
+  board["state"] = getBoard()
+  
+  var posting = $.post('/games', board)
+
+  posting.done(function(data) {
+
+   var game = data["game"]
+ 
+   fillBoard(game.state)
+  
+    currentGame = game  
+   
+  })    
+  })
+}
+
+function previousGames() {
+
+  
+  $('#previous').on('click',function(event){
+    event.preventDefault();
+    var check = $('#games1').html()
+    if (check === "") {
+    
+    $.get('/games', function(data){
+      
+      var games = data["games"]
+      for (i = 0; i < games.length; i ++) {
+        $('#games1').append('<li id="game '+games[i]["id"]+'">'+ games[i]["id"]+ '</li>')
+      }
+    })}
+    else {
+      
+      $.get('/games', function(data) {
+        var games = data["games"]
+        
+        var li = $('li').length
+        if (games.length > li) {
+          
+          var ids = games.length
+          var diff = ids - li
+          
+          for (c = 0; c < diff; c ++) {
+  
+            $.get('/games/'+ (parseInt(li) + c + 1), function(data1){
+              
+              $('#games1').append('<li id="game '+data1["game"]["id"]+'">'+ data1["game"]["id"]+ '</li>')
+            })
+          }
+
+        }
+      })
+    }
+  })
+}
+
+
+function switchGame() {
+
+    $('#games1').on('click', 'li', function(event) {
+    event.preventDefault();
+    var id = this.innerHTML
+    $.get('/games/' + id, function(data){
+      var game = data["game"]
+      fillBoard(game.state)
+      currentGame = game
+    })
+  })
+}
+
+
 
 
 
