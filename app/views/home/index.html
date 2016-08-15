@@ -55,16 +55,27 @@ $(function() {
 
 
 $(function() {
-	$('#previous').click(function(event){
+	$('#previous').on('click',function(event){
 		event.preventDefault();
+		$('#games1').html("")
     $.get('/games', function(data){
       
-      var games = data["game"]
+      var games = data["games"]
       for (i = 0; i < games.length; i ++) {
-        $('#games1').html('<li>Game: '+ games[i]["id"]+ '</li>')
+        $('#games1').append('<li id="game '+games[i]["id"]+'">'+ games[i]["id"]+ '</li>')
       }
     })
   })
+  $('#games1').on('click', 'li', function(event) {
+		event.preventDefault();
+		var id = this.innerHTML
+		$.get('/games/' + id, function(data){
+			var game = data["game"]
+			fillBoard(game.state)
+			currentGame = game
+		})
+	})
 })
+
 
 </script>

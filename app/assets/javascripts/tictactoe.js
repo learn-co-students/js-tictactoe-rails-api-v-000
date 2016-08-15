@@ -105,12 +105,14 @@ function checkWinner() {
         msg = "Player X Won!"
         turn = 0
         message(msg)
+        saveGame()
         clearBoard()                
       }
       else if (getCell(wC[i][0][0], wC[i][0][1]) === "O" && getCell(wC[i][1][0], wC[i][1][1]) === "O" && getCell(wC[i][2][0], wC[i][2][1]) === "O") {
        msg = "Player O Won!"
        turn = 0
        message(msg)
+       saveGame()
        clearBoard()
       
       }       
@@ -126,7 +128,23 @@ function checkWinner() {
 
 ///// Controller scripts
 
+function saveGame() {
 
+  
+  var board = {}
+
+  board["state"] = getBoard()
+  
+  var posting = $.post('/games', board)
+
+  posting.done(function(data) {
+
+   var game = data["game"]
+   debugger
+
+ })
+
+}
 
 
 
