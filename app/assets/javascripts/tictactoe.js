@@ -22,11 +22,13 @@ var attachListeners = function(){
     var id = ($(this).data("gameid"));
     var url = "/games/" + id;
     $.getJSON(url, function(data){
+      // console.log(data);
       currentGame = data["game"]["id"];
       var oldBoard = (data["game"]["state"]);
+      console.log(oldBoard);
       turn = $('td').text().length;
       for(i = 0; i < oldBoard.length; i++){
-        $("[data-x='" + boardPositions[i][0] + "'][data-y='" + boardPositions[i][1] + "']").html(oldBoard[i]);
+        $("[data-x='" + boardPositions[i][0] + "'][data-y='" + boardPositions[i][1] + "']").text(oldBoard[i]);
       }
     })
   })
@@ -111,11 +113,11 @@ var getAllGames = function(){
   })
 }
 
-var getChosenGame = function(){
+// var getChosenGame = function(){
   // console.log($(event.target).data("gameid"));
   // event.preventDefault();
-
-}
+// 
+// }
 
 var currentState = function(){
   var b = $.map(boardPositions, function(p, index){
