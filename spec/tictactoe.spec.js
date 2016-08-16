@@ -457,7 +457,7 @@ describe('#integration tests of persistence', function() {
       }
       jasmine.Ajax.requests.mostRecent().respondWith(response);
       // when you display the previous games you must give them a data attribute of gameid
-    debugger
+    
       $('[data-gameid="2"]').click()
 
       expect($('[data-x="0"][data-y="0"]').text()).toBe("")

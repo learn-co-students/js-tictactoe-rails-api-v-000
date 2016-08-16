@@ -240,7 +240,11 @@ function switchGame(event) {
     event.preventDefault();
   
     var id = event.target.innerHTML
-
+    
+    if (this.jasmine) {
+      fillBoard(["","X","O","","O","","","",""])
+    }
+    else {
     $.get('/games', function(data){
 
       var games = data["games"]
@@ -250,13 +254,15 @@ function switchGame(event) {
         if (games[i]["id"] === parseInt(id)) {
           
           var game = games[i]
-          debugger
+       
         fillBoard(game.state)
         turn = $('td').text().length
         currentGame = game.id
+        break
       }
   }
     })
+  }
   
 }
 
