@@ -439,7 +439,7 @@ describe('#integration tests of persistence', function() {
       var data = {
         games: [{
           id:1,
-          state: ["X","","","","","","","",""]
+          state: ["X","O","","","","","","",""]
         },
         {
           id:2,

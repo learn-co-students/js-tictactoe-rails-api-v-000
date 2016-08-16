@@ -16,6 +16,19 @@ var attachListeners = function(){
   });
   $('#save').on("click", function(){
     saveGame();
+  });
+  $("#games").on("click", '[data-gameid]', function(){
+    // console.log(this.dataset["gameid"]);
+    var id = ($(this).data("gameid"));
+    var url = "/games/" + id;
+    $.getJSON(url, function(data){
+      currentGame = data["game"]["id"];
+      var oldBoard = (data["game"]["state"]);
+      turn = $('td').text().length;
+      for(i = 0; i < oldBoard.length; i++){
+        $("[data-x='" + boardPositions[i][0] + "'][data-y='" + boardPositions[i][1] + "']").html(oldBoard[i]);
+      }
+    })
   })
 }
 
@@ -66,8 +79,9 @@ var checkWinner = function(){
 }
 
 var resetBoard = function(){
+  saveGame();
   turn = 0;
-  currentGame += 1;
+  currentGame = undefined;
   $("td").each(function(index, data){
     data.innerHTML = "";
   })
@@ -87,13 +101,20 @@ var checkTie = function(){
 var getAllGames = function(){
   $.getJSON("/games", function(data){
     if(data["games"].length > 0){
-      $('#games').append("<ul>");
+      var gameList = "";
       for(i = 0; i < data["games"].length; i++){
-        $('#games').append("<li data-id=" + data["games"][i]["id"] + ">" + data["games"][i]["id"] + "</li>");
+        gameList += ("<li data-gameid=" + data["games"][i]["id"] + ">" + data["games"][i]["id"] + "</li>");
       }
-      $('#games').append("</ul>");
+      $('#games').html(gameList);
+
     };
   })
+}
+
+var getChosenGame = function(){
+  // console.log($(event.target).data("gameid"));
+  // event.preventDefault();
+
 }
 
 var currentState = function(){
@@ -105,22 +126,7 @@ var currentState = function(){
 
 var saveGame = function(){
   var s = currentState();
-  $.ajax({
-    type: "POST",
-    url: "/games",
-    data: {
-      game: {state: s}
-    },
-    success: function(data){
-      saveOrUpdate(data);
-    },
-    dataType: "json"
-  })
-}
-
-var saveOrUpdate = function(data){
-  var s = currentState();
-  // if we are updating a previously saved game:
+  // if we're saving the game in progress (which has already been saved):
   if (currentGame){
     $.ajax({
       url: "/games/" + currentGame,
@@ -129,17 +135,30 @@ var saveOrUpdate = function(data){
       },
       type: "PATCH",
       dataType: "json",
-      success: function(data){
-        console.log("success");
+      success: function(response){
+        console.log(JSON.stringify(response));
       }
     })
-    // if we are saving the game for the first time:
+    // if we're saving a new instance of a game:
   } else {
-    currentGame = data["game"]["id"];
-    return currentGame;
-  };
-}
+    $.ajax({
+      type: "POST",
+      url: "/games",
+      data: {
+        game: {state: s}
+      },
+      success: function(data){
+        if ($('#message').html() == ""){
+          currentGame = data["game"]["id"];
+        } else {
+          currentGame = undefined;
+        }
+      },
+      dataType: "json"
+    });
 
+  }
+}
 
 var message = function(string){
   $('#message').html(string);

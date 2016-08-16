@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
 
-  before_action :find_game, only: [:show, :update, :edit]
+  before_action :find_game, only: [:show, :update]
 
   def index
     @games = Game.all
@@ -16,19 +16,12 @@ class GamesController < ApplicationController
     end
   end
 
-  def new
-    @game = Game.new
-  end
-
   def show
     render json: @game
   end
 
   def update
     @game.update(game_params)
-  end
-
-  def edit
   end
 
   private
