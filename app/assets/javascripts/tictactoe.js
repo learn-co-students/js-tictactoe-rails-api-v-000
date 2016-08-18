@@ -1,5 +1,5 @@
 var turn = 0;
-var currentGame = 0;
+var currentGame;
 var winCombos = [
   [[0,0], [1,0], [2,0]],
   [[0,1], [1,1], [2,1]],
@@ -14,6 +14,40 @@ var winCombos = [
 function attachListeners() {
   $("tbody").on("click", function(event) {
     doTurn(event);
+  });
+
+  $("#previous").on("click", function(data) {
+    $.ajax({
+      method: "GET",
+      url: "/games",
+      data: data.games
+    })
+    .done(function(data) {
+      $("#games").html(data);
+    });
+  });
+
+  $("#save").on("click", function(data) {
+    var state = getBoardState();
+    $.ajax({
+      method: "POST",
+      url: "/games",
+      dataType: "json",
+      data: {
+        game: {
+          state: state
+        }
+      }
+    });
+  });
+
+
+}
+
+function getBoardState() {
+  var boardState = [];
+  $("td").each(function() {
+    boardState.push($(this).html());
   });
 }
 
@@ -41,26 +75,23 @@ function message(str) {
   $("#message").html(str);
 }
 
-function won() {
-  for (var n = 0; n < winCombos.length; n++) {
-    for (var j = 0; j < winCombos[n].length; j++) {
-      var winIndexOne = winCombos[n][j][0];
-      var winIndexTwo = winCombos[n][j][1];
+function won(arr) {
+    for (var j = 0; j < arr.length; j++) {
+      var winIndexOne = arr[j][0];
+      var winIndexTwo = arr[j][1];
       var winCell = $('[data-x="' + winIndexOne + '"][data-y="' + winIndexTwo + '"]');
       if(winCell.html() != player()) {
         return false;
       }
     }
-  }
       return true;
 }
 
 function checkWinner() {
-  if(won()) {
-    console.log("You Won!");
-    // message("Player " + player() + " Won!");
-  } else {
-    console.log("You Lost!");
+  for(var i = 0; i < winCombos.length; i++) {
+      if(won(winCombos[i])) {
+        message("Player " + player() + " Won!");
+      }
   }
 }
 
