@@ -24,7 +24,10 @@ var attachListeners = function() {
   });
   $('#save').click(function() {
     save();
-  })
+  });
+  $('#previous').click(function() {
+    getAllGames();
+  });
 };
 
 var doTurn = function(e) {
@@ -115,6 +118,25 @@ var getMarks = function() {
     marks.push($(this).text())
   })
   return marks;
+};
+
+// it should send a get request to /games
+var getAllGames = function() {
+  $.getJSON("/games").done(function(response) {
+    showGames(response.games);
+  });
+};
+
+var showGames = function(games) {
+  var dom = $();
+  games.forEach(function(game) {
+    dom = dom.add(showGame(game));
+  });
+  $('#games').html(dom);
+};
+
+var showGame = function(game) {
+  return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
 };
 
 var save = function(resetCurrentGame) {
