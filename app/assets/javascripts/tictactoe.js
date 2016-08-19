@@ -4,6 +4,7 @@ $(function() {
 });
 
 var turn = 0;
+var currentGame = 0;
 
 var winningCombos = [
 [[0,0],[1,0],[2,0]], 
@@ -27,11 +28,13 @@ var doTurn = function(e) {
   // call function updateState and pass param of the event
   updateState(e);
   // call function checkWinner
-  checkWinner();
-  // increment variable turn by one
-  turn += 1;
-
-  // NEXT STEPS: checkTie function
+  if(checkWinner() || checkTie() ) {
+    // NEXT: save(true);
+    resetGame();
+  } else {
+    // increment variable turn by one
+    turn += 1;
+  }
 };
 
 var player = function() {
@@ -60,6 +63,7 @@ var checkCells = function(winningCombos) {
     var x = winningCombo[0];
     var y = winningCombo[1];
     var selector = $('[data-x="' + x + '"][data-y="' + y + '"]')
+    debugger;
     if( noCellMatch(selector)) {
       return false;
     }
@@ -80,7 +84,25 @@ var checkWinner = function() {
   return false;
 };
 
+var checkTie = function() {
+  var tie = true;
+  $('td').each(function() {
+    if($(this).html().length <= 0) {
+      tie = false;
+    }
+  });
+  if(tie) message("Tie game");
+  return tie;
+};
+
+var resetGame = function() {
+  $('td').html('');
+  turn = 0;
+  currentGame = 0;
+};
+
 var message = function(string) {
   // add string to div with id of message
+  $('#message').html(string);
 }
 
