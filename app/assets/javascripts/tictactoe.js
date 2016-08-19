@@ -28,6 +28,7 @@ var attachListeners = function() {
   $('#previous').click(function() {
     getAllGames();
   });
+  //NEXT: click on previous game and revert board
 };
 
 var doTurn = function(e) {
