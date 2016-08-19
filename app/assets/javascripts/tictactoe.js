@@ -28,7 +28,45 @@ var attachListeners = function() {
   $('#previous').click(function() {
     getAllGames();
   });
-  //NEXT: click on previous game and revert board
+  $('#games').click(function(e) {
+    var state = parseState(e)
+    changeGame(state, getGameId(e))
+  });
+};
+
+// parse the state attribute data-state into X and O tokens
+var parseState = function(e) {
+  return $(e.target).data("state").split(",")
+};
+
+// parse the state attribute data-gameid
+var getGameId = function(e) {
+  return $(e.target).data("gameid")
+};
+
+// set markets, id, turn
+var changeGame = function(state, id) {
+  placeMarks(state);
+  currentGame = id;
+  turn = findTurn(state);
+};
+
+// iterate over set of td elements and place each token
+var placeMarks = function(marks) {
+  $('td').each(function(i) {
+    $(this).text(marks[i]);
+  });
+};
+
+// iterate over set of tokens and count X and O for turn count
+var findTurn = function(state) {
+  var turn = 0;
+  state.forEach(function(item) {
+    if(item != "") {
+      turn += 1;
+    }
+  });
+  return turn;
 };
 
 var doTurn = function(e) {
@@ -49,7 +87,7 @@ var player = function() {
   if (turn % 2 === 0) {
     return "X";
   } else {
-    return "0";
+    return "O";
   }
 };
 
