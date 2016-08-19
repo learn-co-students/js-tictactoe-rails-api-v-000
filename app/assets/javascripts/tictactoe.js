@@ -22,6 +22,9 @@ var attachListeners = function() {
   $('td').on('click', function(e) {
     doTurn(e);
   });
+  $('#save').click(function() {
+    save();
+  })
 };
 
 var doTurn = function(e) {
@@ -29,7 +32,7 @@ var doTurn = function(e) {
   updateState(e);
   // call function checkWinner
   if(checkWinner() || checkTie() ) {
-    // NEXT: save(true);
+    save(true);
     resetGame();
   } else {
     // increment variable turn by one
@@ -104,5 +107,44 @@ var resetGame = function() {
 var message = function(string) {
   // add string to div with id of message
   $('#message').html(string);
-}
+};
+
+var getMarks = function() {
+  var marks = []
+  $('td').each(function(i) {
+    marks.push($(this).text())
+  })
+  return marks;
+};
+
+var save = function(resetCurrentGame) {
+// save posts to /games with a patch to /games/:id
+  var url, method;
+  if(currentGame) {
+    var url = "/games/" + currentGame;
+    var method = "PATCH";
+  } else {
+    var url = "/games";
+    var method = "POST";
+  }
+
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: {
+      game: {
+        state: getMarks()
+      }
+    },
+    success: function(data) {
+      if(resetCurrentGame) {
+        currentGame = 0;
+      } else {
+        currentGame = data.game.id;
+      }
+    }
+  })
+
+};
 
