@@ -37,6 +37,7 @@ function switchGame(event){
 	var state = $(this).data("state");
 	currentGame = id;
 	console.log("switching to game " + id);
+	checkWinner();
 
 	renderState(state);
 }
@@ -151,8 +152,7 @@ function newGame(){
 	saveGame();
 	currentGame = null;
 	turn = 0;
-	state = " , , , , , , , , ";
-	renderState(state);
+	$("td").text(" ");
 }
 
 $(document).ready(function(){
