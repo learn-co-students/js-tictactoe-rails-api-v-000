@@ -6,7 +6,7 @@ class GamesController < ApplicationController
 	end
 
 	def create
-		@game = Game.new(state: params[:game][:state])
+		@game = Game.new(game_params)
     if @game.save
       render json: @game, status: 201
     else
@@ -16,11 +16,16 @@ class GamesController < ApplicationController
 
 	def update
 		@game = Game.find(params[:id])
-		if @game.update(state: params[:game][:state])
+		if @game.update(game_params)
 			render json: @game, status: 201
 		else
 			render json: @game.errors, status: :unprocessable_entity
 		end
 	end
 
+	private
+
+		def game_params
+			params.require(:game).permit(state: [])
+		end
 end

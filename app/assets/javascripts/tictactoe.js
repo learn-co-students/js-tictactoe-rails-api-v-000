@@ -45,6 +45,12 @@ function switchGame(event){
 function renderState(state){
 	console.log("loading state " + state);
 	var stateArr = state.split(",");
+	turn = 0;
+	stateArr.forEach(function(cell){
+		if(cell == "X" || cell == ""){
+			turn++;
+		}
+	})
 	console.log("state array is " + stateArr);
 	$("td").each(function(index, cell){
 		$(cell).text(stateArr[index]);
