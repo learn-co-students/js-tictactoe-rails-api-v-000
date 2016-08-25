@@ -1,5 +1,6 @@
 var turn = 0;
 var currentGame;
+var savedGame;
 var winningCombos = [
 [[0,0],[1,0],[2,0]], 
 [[0,1],[1,1],[2,1]], 
@@ -134,7 +135,7 @@ function saveGame(){
 	var verb;
 	var data = {game: {state: getState()} };
 
-	if(currentGame){
+	if(currentGame > 0){
 		url = "/games/" + currentGame;
 		verb = "PATCH";
 		data.id = currentGame;
@@ -149,16 +150,20 @@ function saveGame(){
 		type: verb,
 		data: data
 	}).done(function(data){
-		currentGame = data.game.id;
-		console.log("The current game is " + currentGame);
+		savedGame = data.game.id;
+		if(currentGame != 0){
+			currentGame = savedGame;
+		}
+		console.log("The saved game is " + savedGame);
 	})
 }
 
 function newGame(){
 	saveGame();
-	currentGame = null;
 	turn = 0;
 	$("td").text(" ");
+	currentGame = 0;
+	console.log(currentGame);
 }
 
 $(document).ready(function(){

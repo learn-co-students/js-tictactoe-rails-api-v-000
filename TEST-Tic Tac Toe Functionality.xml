@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-	<testsuite tests="14" errors="0" failures="7" time="0.077" timestamp="2016-08-25T12:42:57">
-		<testcase classname="Tic Tac Toe Functionality" name="#attachListeners should attach event listeners which call your turn function when someone clicks on a square" time="0.007">
+	<testsuite tests="14" errors="0" failures="7" time="0.084" timestamp="2016-08-25T13:06:33">
+		<testcase classname="Tic Tac Toe Functionality" name="#attachListeners should attach event listeners which call your turn function when someone clicks on a square" time="0.006">
 			<failure type="toHaveBeenCalled" message="Expected spy doTurn to have been called.">
 stack@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1293:37
 buildExpectationResult@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1270:19
@@ -43,7 +43,7 @@ onload@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTes
 		</testcase>
 		<testcase classname="Tic Tac Toe Functionality" name="#doTurn should increment turn and call on `checkWinner()`, `updateState()`" time="0.001">
 		</testcase>
-		<testcase classname="Tic Tac Toe Functionality" name="#player should return the mark of the current player when player is X" time="0.001">
+		<testcase classname="Tic Tac Toe Functionality" name="#player should return the mark of the current player when player is X" time="0">
 			<failure type="toEqual" message="Expected &amp;apos;O&amp;apos; to equal &amp;apos;X&amp;apos;.">
 stack@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1293:37
 buildExpectationResult@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1270:19
@@ -123,7 +123,7 @@ queueRunnerFactory@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-
 execute@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:548:25
 onload@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/boot.js:172:16			</failure>
 		</testcase>
-		<testcase classname="Tic Tac Toe Functionality" name="#player should return the mark of the current player when player is O" time="0.001">
+		<testcase classname="Tic Tac Toe Functionality" name="#player should return the mark of the current player when player is O" time="0">
 			<failure type="toEqual" message="Expected &amp;apos;X&amp;apos; to equal &amp;apos;O&amp;apos;.">
 stack@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1293:37
 buildExpectationResult@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1270:19
@@ -213,13 +213,13 @@ queueRunnerFactory@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-
 execute@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:548:25
 onload@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/boot.js:172:16			</failure>
 		</testcase>
-		<testcase classname="Tic Tac Toe Functionality" name="#updateState adds the return value of `player()` to the clicked `td` on the board" time="0.003">
+		<testcase classname="Tic Tac Toe Functionality" name="#updateState adds the return value of `player()` to the clicked `td` on the board" time="0.002">
 		</testcase>
-		<testcase classname="Tic Tac Toe Functionality" name="#updateState calls on `player()`" time="0.003">
+		<testcase classname="Tic Tac Toe Functionality" name="#updateState calls on `player()`" time="0.001">
 		</testcase>
-		<testcase classname="Tic Tac Toe Functionality" name="#message adds the string it&amp;apos;s passed to the div with an id of message" time="0.002">
+		<testcase classname="Tic Tac Toe Functionality" name="#message adds the string it&amp;apos;s passed to the div with an id of message" time="0.003">
 		</testcase>
-		<testcase classname="Tic Tac Toe Functionality" name="#checkWinner returns false if there is no winning combo on the board" time="0.002">
+		<testcase classname="Tic Tac Toe Functionality" name="#checkWinner returns false if there is no winning combo on the board" time="0.003">
 			<failure type="toEqual" message="Expected undefined to equal false.">
 stack@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1293:37
 buildExpectationResult@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1270:19
@@ -379,11 +379,11 @@ queueRunnerFactory@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-
 execute@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:548:25
 onload@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/boot.js:172:16			</failure>
 		</testcase>
-		<testcase classname="Tic Tac Toe Functionality" name="#checkWinner calls on &amp;apos;message&amp;apos; and passes it the string &amp;apos;Player X Won!&amp;apos; when player X wins vertically" time="0.006">
+		<testcase classname="Tic Tac Toe Functionality" name="#checkWinner calls on &amp;apos;message&amp;apos; and passes it the string &amp;apos;Player X Won!&amp;apos; when player X wins vertically" time="0.008">
 		</testcase>
 		<testcase classname="Tic Tac Toe Functionality" name="#checkWinner calls on &amp;apos;message&amp;apos; and passes it the string &amp;apos;Player X Won!&amp;apos; when player X wins diagonally" time="0.006">
 		</testcase>
-		<testcase classname="Tic Tac Toe Functionality" name="when there is a tie calls on &amp;apos;message&amp;apos; and passes it the string &amp;apos;Tie game&amp;apos; when there is a tie" time="0.007">
+		<testcase classname="Tic Tac Toe Functionality" name="when there is a tie calls on &amp;apos;message&amp;apos; and passes it the string &amp;apos;Tie game&amp;apos; when there is a tie" time="0.006">
 		</testcase>
 		<testcase classname="Tic Tac Toe Functionality" name="resetting the board resets the board and sets turn to zero when there is a winner" time="0.006">
 			<failure type="toEqual" message="Expected &amp;apos; &amp;apos; to equal &amp;apos;&amp;apos;.">
@@ -2376,7 +2376,7 @@ queueRunnerFactory@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-
 execute@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:548:25
 onload@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/boot.js:172:16			</failure>
 		</testcase>
-		<testcase classname="Tic Tac Toe Functionality" name="resetting the board resets the board and sets turn to zero when there is a tie" time="0.022">
+		<testcase classname="Tic Tac Toe Functionality" name="resetting the board resets the board and sets turn to zero when there is a tie" time="0.029">
 			<failure type="toEqual" message="Expected &amp;apos; &amp;apos; to equal &amp;apos;&amp;apos;.">
 stack@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1293:37
 buildExpectationResult@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1270:19
@@ -4457,7 +4457,7 @@ queueRunnerFactory@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-
 execute@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:548:25
 onload@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/boot.js:172:16			</failure>
 		</testcase>
-		<testcase classname="Tic Tac Toe Functionality" name="resetting the board allows client to play multiple game" time="0.006">
+		<testcase classname="Tic Tac Toe Functionality" name="resetting the board allows client to play multiple game" time="0.007">
 			<failure type="toEqual" message="Expected &amp;apos; &amp;apos; to equal &amp;apos;&amp;apos;.">
 stack@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1293:37
 buildExpectationResult@file:///home/pvasireddy/Desktop/repos/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1270:19
