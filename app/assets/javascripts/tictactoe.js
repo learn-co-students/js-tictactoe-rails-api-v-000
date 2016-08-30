@@ -47,31 +47,31 @@ var getTable = function() {
 }
 
 var resetGame = function() {
-  $('table tr').remove();
+  $('table td').empty();
   turn = 0;
+  boardCells = []
 }
 
-var checkWinner = function() {
-  // this function will be used to test that combos have the same elements
-  Array.prototype.sameValues = function() {
-   for (var i = 1; i < this.length; i++){
-    if (this[i] !== this[0])
+var sameValues = function(boardCombo) {
+  for (var i = 1; i < boardCombo.length; i++){
+    if (boardCombo[i] !== boardCombo[0])
       return false;
    }
    return true
-  }; 
-  
+}
+
+var checkWinner = function() {
   var resultCombo = [];
-  
   // populating boardCells using table values
+  boardCells = []; // this will make sure that the array gets updated and not added onto
   getTable();    
 
   for (var i = 0; i < win_combos.length; i++) {
     for (var x = 0; x < win_combos[i].length; x++) {
       resultCombo.push(boardCells[win_combos[i][x]]); // pushing values at win combo indeces into a resultCombo array
-      if (resultCombo.length == 3) {                        // once resultCombo has 3 elements
-        if (resultCombo[0] !== ""){                         // test for empty combos
-          if (resultCombo.sameValues()) {                   // if combos  are not empty check if they actually have the same values
+      if (resultCombo.length == 3) {                  // once resultCombo has 3 elements
+        if (resultCombo[0] !== ""){                   // test for empty combos
+          if (sameValues(resultCombo)) {             // if combos  are not empty check if they actually have the same values
             message('Player '+resultCombo[0]+' Won!');
             resetGame();
             return true;
