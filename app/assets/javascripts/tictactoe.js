@@ -5,7 +5,6 @@ $(document).ready(function(){
 var turn = 0;
 var bool = false;
 var token;
-var winner;
 
 var player = function() {
   bool  = !bool;
@@ -13,8 +12,8 @@ var player = function() {
   return token;
 }
 
-var message = function(text) {
-  $('#message').append(text);
+var message = function(player) {
+  $('#message').append(player);
 }
 
 var updateState = function(obj) {
@@ -29,77 +28,58 @@ var doTurn = function(obj) {
 }
 
 var checkWinner = function() {
-debugger
+  // this function will be used to test that combos have the same elements
   Array.prototype.sameValues = function() {
    for (var i = 1; i < this.length; i++){
     if (this[i] !== this[0])
       return false;
    }
    return true
-  };
+  }; 
+  
+  var WIN_COMBINATIONS = [
+      [0,1,2], // Top Row
+      [3,4,5], // Middle Row
+      [6,7,8], // Bottom Row
+      [0,4,8], // Diagonal Row # 1
+      [6,4,2], // Diagonal Row # 2
+      [0,3,6], // Vertical Column 1
+      [1,4,7], // Vertical Column 2
+      [2,5,8]  // Vertical Column 3
+  ];
 
-  var values = [];
-
+  var boardCells = [],
+     resultCombo = [];
+          
   $('table td').each(function() {
-    values.push($(this).text());
+    boardCells.push($(this).text());
   })
 
-  var diagRow1 = [],
-      diagRow2 = [],
-      vertCol1 = [],
-      vertCol2 = [],
-      vertCol3 = [];
-      diagRow1.push(values[0], values[4], values[8]); // diag row 1
-      diagRow2.push(values[6], values[4], values[2]); // diag row 2
-      vertCol1.push(values[0], values[3], values[6]); // vert col 1
-      vertCol2.push(values[1], values[4], values[7]); // vert col 2
-      vertCol3.push(values[2], values[5], values[8]); // vert col 3
-
-  switch (true) {
-    case (values.slice(0,3).sameValues()): // top row
-      debugger
-      (values.slice(0,3)[0] === 'X' || values.slice(0,3)[0] === 'O') ? message('Player '+values.slice(0,3)[0]+' Won!') : break;
-      return true;
-      break;
-    case (values.slice(3,6).sameValues()): // mid row
-      debugger
-      (values.slice(3,6)[0] === 'X' || values.slice(3,6)[0] === 'O') ? message('Player '+values.slice(3,6)[0]+' Won!') : break;
-      return true; 
-      break;
-    case (values.slice(6,9).sameValues()): // bot row
-      debugger
-      (values.slice(6,9)[0] === 'X' || values.slice(6,9)[0] === 'O') ? message('Player '+values.slice(6,9)[0]+' Won!') : break;
-      return true;
-      break;
-    case (diagRow1.sameValues()):
-      debugger
-      (diagRow1[0] === 'X' || diagRow1[0] === 'O') ? message('Player '+diagRow1[0]+' Won!') : break;
-      return true;
-      break;
-    case (diagRow2.sameValues()):
-      debugger
-      (diagRow2[0] === 'X' || diagRow2[0] === 'O') ? message('Player '+diagRow2[0]+' Won!') : break;
-      return true;
-      break;
-    case (vertCol1.sameValues()):
-      debugger
-      (vertCol1[0] === 'X' || vertCol1[0] === 'O') ? message('Player '+vertCol1[0]+' Won!') : break;
-      return true;
-      break;
-    case (vertCol2.sameValues()):
-      debugger
-      (vertCol2[0] === 'X' || vertCol2[0] === 'O') ? message('Player '+vertCol2[0]+' Won!') : break;
-      return true;
-      break;
-    case (vertCol3.sameValues()):
-      debugger
-      (vertCol3[0] === 'X' || vertCol3[0] === 'O') ? message('Player '+vertCol3[0]+' Won!') : break;
-      return true;
-      break;
-    default:
-      return false;
+  for (var i = 0; i < WIN_COMBINATIONS.length; i++) {
+    debugger
+    for (var x = 0; x < WIN_COMBINATIONS[i].length; x++) {
+      resultCombo.push(boardCells[WIN_COMBINATIONS[i][x]]); // pushing values at win combo indeces into a result array
+      if (resultCombo.length == 3) {      // once resultCombo has 3 elements
+        if (resultCombo[0] !== ""){       // test for empty combos
+          if (resultCombo.sameValues()) { // if combos  are not empty check if they actually have the same values
+            debugger
+            message('Player '+resultCombo[0]+' Won!');
+            return true;
+          } else {
+            resultCombo = [];
+          }          
+        } else {
+          resultCombo = [];
+        }
+      }
+    }
   }
 
+  if (turn === 8) {
+    message('Tie game');
+  } else {
+    return false;
+  }
 }
 
 var attachListeners = function() {
