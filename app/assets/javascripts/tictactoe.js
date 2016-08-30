@@ -64,6 +64,8 @@ var checkWinner = function() {
           if (resultCombo.sameValues()) { // if combos  are not empty check if they actually have the same values
             debugger
             message('Player '+resultCombo[0]+' Won!');
+            $('table tr').remove();
+            turn = 0;
             return true;
           } else {
             resultCombo = [];
@@ -75,8 +77,10 @@ var checkWinner = function() {
     }
   }
 
-  if (turn === 8) {
+  if (turn === 8 || turn === 7) {
     message('Tie game');
+    $('table tr').remove();
+    turn = 0;
   } else {
     return false;
   }
