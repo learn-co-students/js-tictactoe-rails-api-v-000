@@ -24,8 +24,8 @@ var player = function() {
   return token;
 }
 
-var message = function(player) {
-  $('#message').append(player);
+var message = function(text) {
+  $('#message').html(text);
 }
 
 var updateState = function(obj) {
@@ -48,8 +48,8 @@ var getTable = function() {
 
 var resetGame = function() {
   $('table td').empty();
+  boardCells = [];
   turn = 0;
-  boardCells = []
 }
 
 var sameValues = function(boardCombo) {
@@ -84,8 +84,8 @@ var checkWinner = function() {
       }
     }
   }
-
-  if (turn === 8 || turn === 7) {
+  // debugger
+  if (turn === 9) {
     message('Tie game');
     resetGame();
   } else {
