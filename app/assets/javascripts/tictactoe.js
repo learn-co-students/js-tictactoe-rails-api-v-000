@@ -25,7 +25,7 @@ var player = function() {
 }
 
 var message = function(text) {
-  $('#message').html(text);
+  $('#message').append(text);
 }
 
 var updateState = function(obj) {
@@ -49,7 +49,8 @@ var getTable = function() {
 var resetGame = function() {
   $('table td').empty();
   boardCells = [];
-  turn = 0;
+  turn       = 0;
+  bool       = false; // setting bool to false to reset token to 'X'
 }
 
 var sameValues = function(boardCombo) {
