@@ -66,7 +66,6 @@ var checkWinner = function() {
   // populating boardCells using table values
   boardCells = []; // this will make sure that the array gets updated and not added onto
   getTable();    
-
   for (var i = 0; i < win_combos.length; i++) {
     for (var x = 0; x < win_combos[i].length; x++) {
       resultCombo.push(boardCells[win_combos[i][x]]); // pushing values at win combo indeces into a resultCombo array
@@ -95,9 +94,30 @@ var checkWinner = function() {
 }
 
 var attachListeners = function() {
+  var count = 0;
   $('tr td').click(function(event) {
     // maybe need to pass event to function() and then to doTurn
     doTurn($(this));
+  })
+
+  $('#save').click(function(event) {
+    count ++;
+    if (count == 2) {
+      // patch request here to game/:id 
+      debugger
+      $.ajax({
+        url: '/games/:id',
+        type: "PATCH",
+        contentType: "application/json"
+      });
+
+      count = 0;
+    } else {
+      // $.post("/games", function(data) {
+      console.log(count)
+      // }) 
+    }
+
   })
 
   $('#previous').click(function(event) {
