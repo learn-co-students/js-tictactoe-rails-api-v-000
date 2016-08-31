@@ -14,20 +14,14 @@ var win_combos = [
   ];
 var turn        = 0;
 var currentGame = 0;
-// var bool        = false;
+var bool        = false;
 var token;
 var boardCells  = [];
 
 var player = function() {
-  if (turn % 2 == 0){
-    token = 'X';
-  } else {
-    // token = 'O'
-  }
-
-  // bool  = !bool;
-  // token = (bool === true) ? 'X' : 'O';
-  // return token;
+  bool  = !bool;
+  token = (bool === true) ? 'X' : 'O';
+  return token;
 }
 
 var message = function(text) {
@@ -56,7 +50,7 @@ var resetGame = function() {
   $('table td').empty();
   boardCells = [];
   turn       = 0;
-  // bool       = false; // setting bool to false to reset token to 'X'
+  bool       = false; // setting bool to false to reset token to 'X'
 }
 
 var sameValues = function(boardCombo) {
@@ -79,7 +73,7 @@ var checkWinner = function() {
       if (resultCombo.length == 3) {                  // once resultCombo has 3 elements
         if (resultCombo[0] !== ""){                   // test for empty combos
           if (sameValues(resultCombo)) {             // if combos  are not empty check if they actually have the same values
-            message('Player '+player()+' Won!');
+            message('Player '+token+' Won!');
             resetGame();
             return true;
           } else {
