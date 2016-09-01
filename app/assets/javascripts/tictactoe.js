@@ -112,6 +112,7 @@ var checkWinner = function() {
 
 var attachListeners = function() {
   var count = 0;
+  var game;
 
   $('#save').click(function(event) {
     // incrementing count on click
