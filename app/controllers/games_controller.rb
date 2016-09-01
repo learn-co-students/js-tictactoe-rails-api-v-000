@@ -6,12 +6,14 @@ class GamesController < ApplicationController
   end
 
   def create
+    # binding.pry
     @game = Game.create(state: params['state'])
+    render json: @game
   end
 
   def update
     @game = Game.find(params['id'])
-    @game.update(game_params)
+    @game.update(params['state'])
   end
 
   private

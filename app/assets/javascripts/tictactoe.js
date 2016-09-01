@@ -21,12 +21,13 @@ var boardCells  = [];
 var save = function() {
   $.ajax({
     url: '/games',
-    type: 'post',
+    method: 'post',
     dataType: 'json',
-    data: {state: JSON.stringify(boardCells)}
-  }).done(function(e){
-    debugger
-    console.log(e)
+    data: {state: JSON.stringify(boardCells)},
+    success: function(data){
+      debugger
+      console.log(data)
+    }
   });
 }
 
@@ -52,7 +53,6 @@ var doTurn = function(obj) {
 }
 
 var getTable = function() {
-  // body...
   $('table td').each(function() {
     boardCells.push($(this).text());
   })
@@ -62,7 +62,8 @@ var resetGame = function() {
   $('table td').empty();
   boardCells = [];
   turn       = 0;
-  bool       = false; // setting bool to false to reset token to 'X'
+  // setting bool to false to reset token to 'X'
+  bool       = false; 
 }
 
 var sameValues = function(boardCombo) {
@@ -75,16 +76,17 @@ var sameValues = function(boardCombo) {
 
 var checkWinner = function() {
   var resultCombo = [];
-  // populating boardCells using table values
-  boardCells = []; // this will make sure that the array gets updated and not added onto
-  getTable();    
+  // this will make sure that the array gets updated and not added onto by clearing it
+  boardCells = []; 
+  // retrieving table values and adding generating boardCells
+  getTable();  
+
   for (var i = 0; i < win_combos.length; i++) {
     for (var x = 0; x < win_combos[i].length; x++) {
       resultCombo.push(boardCells[win_combos[i][x]]); // pushing values at win combo indeces into a resultCombo array
       if (resultCombo.length == 3) {                  // once resultCombo has 3 elements
         if (resultCombo[0] !== ""){                   // test for empty combos
-          if (sameValues(resultCombo)) {             // if combos  are not empty check if they actually have the same values
-            // debugger
+          if (sameValues(resultCombo)) {              // if combos  are not empty check if they actually have the same values
             save();
             message('Player '+token+' Won!');
             resetGame();
@@ -112,9 +114,10 @@ var attachListeners = function() {
   var count = 0;
 
   $('#save').click(function(event) {
+    // incrementing count on click
     count ++;
+
     if (count == 2) {
-      // patch request here to game/:id 
       $.ajax({
         url: '/games/1',
         type: "PATCH",
@@ -122,10 +125,8 @@ var attachListeners = function() {
       }).done(function(response){
         console.log(response)
       });
-
       count = 0;
     } else {
-      // debugger
       save();
     }
 
@@ -140,7 +141,6 @@ var attachListeners = function() {
   })
 
   $('tr td').click(function(event) {
-    // maybe need to pass event to function() and then to doTurn
     doTurn($(this));
   })
 }
