@@ -18,6 +18,18 @@ var bool        = false;
 var token;
 var boardCells  = [];
 
+var save = function() {
+  $.ajax({
+    url: '/games',
+    type: 'post',
+    dataType: 'json',
+    data: {state: JSON.stringify(boardCells)}
+  }).done(function(e){
+    debugger
+    console.log(e)
+  });
+}
+
 var player = function() {
   bool  = !bool;
   token = (bool === true) ? 'X' : 'O';
@@ -72,6 +84,8 @@ var checkWinner = function() {
       if (resultCombo.length == 3) {                  // once resultCombo has 3 elements
         if (resultCombo[0] !== ""){                   // test for empty combos
           if (sameValues(resultCombo)) {             // if combos  are not empty check if they actually have the same values
+            // debugger
+            save();
             message('Player '+token+' Won!');
             resetGame();
             return true;
@@ -86,6 +100,7 @@ var checkWinner = function() {
   }
   // debugger
   if (turn === 9) {
+    save();
     message('Tie game');
     resetGame();
   } else {
@@ -95,34 +110,37 @@ var checkWinner = function() {
 
 var attachListeners = function() {
   var count = 0;
-  $('tr td').click(function(event) {
-    // maybe need to pass event to function() and then to doTurn
-    doTurn($(this));
-  })
 
   $('#save').click(function(event) {
     count ++;
     if (count == 2) {
       // patch request here to game/:id 
-      debugger
       $.ajax({
-        url: '/games/:id',
+        url: '/games/1',
         type: "PATCH",
         contentType: "application/json"
+      }).done(function(response){
+        console.log(response)
       });
 
       count = 0;
     } else {
-      // $.post("/games", function(data) {
-      console.log(count)
-      // }) 
+      // debugger
+      save();
     }
 
   })
 
   $('#previous').click(function(event) {
-    $.get('/games'), function(data) {
+    // debugger
+    $.get('/games/'+Game.last.id), function(data) {
       // get previous games here
+      console.log(data)
     }
+  })
+
+  $('tr td').click(function(event) {
+    // maybe need to pass event to function() and then to doTurn
+    doTurn($(this));
   })
 }
