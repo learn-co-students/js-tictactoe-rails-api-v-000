@@ -12,6 +12,7 @@ var win_combos = [
       [1,4,7], // Vertical Column 2
       [2,5,8]  // Vertical Column 3
   ];
+
 var turn        = 0;
 var currentGame = 0;
 var bool        = false;
@@ -25,8 +26,7 @@ var save = function() {
     dataType: 'json',
     data: {state: JSON.stringify(boardCells)},
     success: function(data){
-      debugger
-      console.log(data)
+      game = {id: data.id ,state: data.state};
     }
   });
 }
@@ -119,8 +119,9 @@ var attachListeners = function() {
     count ++;
 
     if (count == 2) {
+      debugger
       $.ajax({
-        url: '/games/1',
+        url: '/games/'+game.id,
         type: "PATCH",
         contentType: "application/json"
       }).done(function(response){
@@ -135,8 +136,8 @@ var attachListeners = function() {
 
   $('#previous').click(function(event) {
     // debugger
-    $.get('/games/'+Game.last.id), function(data) {
-      // get previous games here
+    $.get('/games'), function(data) {
+      // get previous games here and then append id to html by 
       console.log(data)
     }
   })
