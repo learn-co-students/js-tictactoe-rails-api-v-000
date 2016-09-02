@@ -7,13 +7,15 @@ class GamesController < ApplicationController
 
   def create
     # binding.pry
+    # might have to modify to reflect params['game']['state']
     @game = Game.create(state: params['state'])
     render json: @game
   end
 
   def update
+    # binding.pry
     @game = Game.find(params['id'])
-    @game.update(params['state'])
+    @game.update(state: params['game']['state'])
   end
 
   private

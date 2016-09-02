@@ -18,6 +18,8 @@ var currentGame = 0;
 var bool        = false;
 var token;
 var boardCells  = [];
+var game;
+
 
 var save = function() {
   $.ajax({
@@ -74,28 +76,32 @@ var sameValues = function(boardCombo) {
    return true
 }
 
+var checkCells = function(argument) {
+  // body...
+}
+
 var checkWinner = function() {
-  var resultCombo = [];
+  var winning_combo = [];
   // this will make sure that the array gets updated and not added onto by clearing it
   boardCells = []; 
-  // retrieving table values and adding generating boardCells
+  // retrieving table values and generating boardCells
   getTable();  
 
   for (var i = 0; i < win_combos.length; i++) {
     for (var x = 0; x < win_combos[i].length; x++) {
-      resultCombo.push(boardCells[win_combos[i][x]]); // pushing values at win combo indeces into a resultCombo array
-      if (resultCombo.length == 3) {                  // once resultCombo has 3 elements
-        if (resultCombo[0] !== ""){                   // test for empty combos
-          if (sameValues(resultCombo)) {              // if combos  are not empty check if they actually have the same values
+      winning_combo.push(boardCells[win_combos[i][x]]); // pushing values at win combo indeces into a winning_combo array
+      if (winning_combo.length == 3) {                  // once winning_combo has 3 elements
+        if (winning_combo[0] !== ""){                   // test for empty combos
+          if (sameValues(winning_combo)) {              // if combos  are not empty check if they actually have the same values
             save();
             message('Player '+token+' Won!');
             resetGame();
             return true;
           } else {
-            resultCombo = [];
+            winning_combo = [];
           }          
         } else {
-          resultCombo = [];
+          winning_combo = [];
         }
       }
     }
@@ -112,7 +118,6 @@ var checkWinner = function() {
 
 var attachListeners = function() {
   var count = 0;
-  var game;
 
   $('#save').click(function(event) {
     // incrementing count on click
