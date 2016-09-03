@@ -1,15 +1,15 @@
 class GamesController < ApplicationController
 
   def index
-    # binding.pry
+    binding.pry
     @games = Game.all
     render json: @games.as_json(:except => [:created_at, :updated_at]), status: 201
   end
 
   def show
-    # binding.pry
+    binding.pry
     @game = Game.find(params[:id])
-    render json: @game 
+    render json: @game, root: true
   end
 
   def create

@@ -152,7 +152,7 @@ var attachListeners = function() {
         var games = data.games;
         // append to div
         $.each( games, function( index, key ) {
-          $('#games').append('<li id=data-gameid>'+games[index].id+'</li>');
+          $('#games').append('<li data-gameid='+games[index].id+'>'+games[index].id+'</li>');
         });
         
       }
@@ -170,12 +170,12 @@ var attachListeners = function() {
       url: '/games/'+gameId,
       method: 'GET',
       success: function(data) {
-        // debugger
+        debugger
         var game = JSON.parse(data.state);
         // showing game requested on board
         clearGame();
         $.each(table, function( index, key ) {
-          // debugger
+          debugger
           $(this).append(game[index]);
         });
         
