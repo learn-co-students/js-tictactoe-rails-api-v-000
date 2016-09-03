@@ -20,15 +20,20 @@ var token;
 var boardCells  = [];
 var game;
 
+var getTable = function() {
+  var table = $('tr td').get();
+  return table;
+}
 
 var save = function() {
   $.ajax({
     url: '/games',
     method: 'post',
     dataType: 'json',
-    data: {state: JSON.stringify(boardCells)},
+    data: {game: {state: JSON.stringify(boardCells)}},
     success: function(data){
-      game = {id: data.id ,state: data.state};
+      // local app is not getting data.game.id
+      game = {id: data.game.id ,state: data.game.state};
     }
   });
 }
@@ -54,13 +59,13 @@ var doTurn = function(obj) {
   checkWinner();
 }
 
-var getTable = function() {
+var getCurrentBoard = function() {
   $('table td').each(function() {
     boardCells.push($(this).text());
   })
 }
 
-var resetGame = function() {
+var clearGame = function() {
   $('table td').empty();
   boardCells = [];
   turn       = 0;
@@ -76,16 +81,12 @@ var sameValues = function(boardCombo) {
    return true
 }
 
-var checkCells = function(argument) {
-  // body...
-}
-
 var checkWinner = function() {
   var winning_combo = [];
-  // this will make sure that the array gets updated and not added onto by clearing it
+  // this will make sure that the array gets upddated and not added onto by clearing it
   boardCells = []; 
   // retrieving table values and generating boardCells
-  getTable();  
+  getCurrentBoard();  
 
   for (var i = 0; i < win_combos.length; i++) {
     for (var x = 0; x < win_combos[i].length; x++) {
@@ -95,7 +96,7 @@ var checkWinner = function() {
           if (sameValues(winning_combo)) {              // if combos  are not empty check if they actually have the same values
             save();
             message('Player '+token+' Won!');
-            resetGame();
+            clearGame();
             return true;
           } else {
             winning_combo = [];
@@ -110,7 +111,7 @@ var checkWinner = function() {
   if (turn === 9) {
     save();
     message('Tie game');
-    resetGame();
+    clearGame();
   } else {
     return false;
   }
@@ -124,14 +125,15 @@ var attachListeners = function() {
     count ++;
 
     if (count == 2) {
-      debugger
+      // Ajax below works, I think?
       $.ajax({
         url: '/games/'+game.id,
-        type: "PATCH",
-        contentType: "application/json"
-      }).done(function(response){
-        console.log(response)
-      });
+        method: "PATCH",
+        data: {game: {state: JSON.stringify(boardCells)}},
+        success: function(data){
+          clearGame();
+        }
+      })
       count = 0;
     } else {
       save();
@@ -140,13 +142,48 @@ var attachListeners = function() {
   })
 
   $('#previous').click(function(event) {
-    // debugger
-    $.get('/games'), function(data) {
+    debugger
+    $.ajax({
       // get previous games here and then append id to html by 
-      console.log(data)
-    }
+      url: '/games',
+      method: 'GET',
+      success: function(data) {
+        $('#games li').remove();
+        var games = data.games;
+        // append to div
+        $.each( games, function( index, key ) {
+          $('#games').append('<li id=data-gameid>'+games[index].id+'</li>');
+        });
+        
+      }
+    });
   })
 
+
+  $('#games').delegate('li','click',function() {
+    debugger
+    var gameId = $(this).text();
+    // Grabbing table elements below to later append
+    var table  = getTable();
+
+    $.ajax({
+      url: '/games/'+gameId,
+      method: 'GET',
+      success: function(data) {
+        // debugger
+        var game = JSON.parse(data.state);
+        // showing game requested on board
+        clearGame();
+        $.each(table, function( index, key ) {
+          // debugger
+          $(this).append(game[index]);
+        });
+        
+      }
+    })
+  })
+
+  // playing per table element click
   $('tr td').click(function(event) {
     doTurn($(this));
   })
