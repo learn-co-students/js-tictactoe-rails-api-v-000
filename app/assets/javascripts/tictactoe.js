@@ -142,7 +142,7 @@ var attachListeners = function() {
   })
 
   $('#previous').click(function(event) {
-    debugger
+    // debugger
     $.ajax({
       // get previous games here and then append id to html by 
       url: '/games',
@@ -161,7 +161,7 @@ var attachListeners = function() {
 
 
   $('#games').delegate('li','click',function() {
-    debugger
+    // debugger
     var gameId = $(this).text();
     // Grabbing table elements below to later append
     var table  = getTable();
@@ -170,12 +170,12 @@ var attachListeners = function() {
       url: '/games/'+gameId,
       method: 'GET',
       success: function(data) {
-        debugger
+        // debugger
         var game = JSON.parse(data.state);
         // showing game requested on board
         clearGame();
         $.each(table, function( index, key ) {
-          debugger
+          // debugger
           $(this).append(game[index]);
         });
         
