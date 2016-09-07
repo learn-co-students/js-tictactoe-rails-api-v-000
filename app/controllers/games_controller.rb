@@ -12,7 +12,7 @@ class GamesController < ApplicationController
 
     def create
       @game = Game.create(game_params)
-      redirect_to game_path(@game)
+      render json: @game, status: 201
     end
 
     def edit
@@ -30,7 +30,7 @@ class GamesController < ApplicationController
     end
 
     def game_params
-      params.require(:game).permit(state: [])
+      params.require(:game).permit(state:[])
     end
 
 end
