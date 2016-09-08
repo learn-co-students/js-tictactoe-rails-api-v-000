@@ -22,39 +22,33 @@ function attachListeners() {
   $('#previous').click(function() {
     $.get('/games', function(data) {
       $('#games').empty();
-      $.each(data.games, function(index, game) {
-        $('#games').append($('<li>', {'data-state': game.state, text: game.id}))
+      $.each(data.games, function(i, game) {
+        $('#games').append($('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id}))
       });
     });
   });
 
   $('#save').click(function() {
-    if (currentGame) {
-      var url = `/games/${currentGame}`
-      var method = 'PATCH'
-    } else {
-      var url = '/games'
-      var method = 'POST'
-    }
-    $.ajax({
-      method: method,
-      url: url,
-      data: getState(),
-      success: function(result) {
-        console.log(result);
-        if ($('#message').text() === '') {
-          currentGame = result.game.id;
-        }
-      },
-      dataType: 'json'
+    saveBoard();
+  });
+
+  $('#games').click(function(event) {
+    turn = 0;
+    var state = $(event.target).data('state').split(',');
+    $('td').each(function(i, tableCell) {
+      $(tableCell).text(state[i])
+      if (state[i] === "X" || state[i] === "O") {
+        turn++;
+      }
     });
+    currentGame = $(event.target).data('gameid');
   });
 }
 
 function getState() {
   var state = [];
-  $('td').each(function() {
-    state.push($(this).text())
+  $('td').each(function(i, tableCell) {
+    state.push($(tableCell).text())
   });
   return {
     game: {
@@ -63,9 +57,29 @@ function getState() {
   }
 }
 
+function saveBoard() {
+  if (currentGame) {
+    var url = `/games/${currentGame}`
+    var method = 'PATCH'
+  } else {
+    var url = '/games'
+    var method = 'POST'
+  }
+  $.ajax({
+    method: method,
+    url: url,
+    data: getState(),
+    success: function(result) {
+      if ($('#message').text() === '') {
+        currentGame = result.game.id;
+      }
+    },
+    dataType: 'json'
+  });
+}
+
 function doTurn(event) {
   position = $(event.target);
-  console.log(`${position.data('x')}, ${position.data('y')}`);
   updateState(position);
   checkWinner();
   checkTie();
@@ -94,6 +108,7 @@ function checkTie() {
 }
 
 function resetBoard() {
+  saveBoard();
   turn = -1;
   $('td').text('');
   currentGame = 0;
