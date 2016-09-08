@@ -1,36 +1,54 @@
 var turn = 0;
 var game_saved = false;
-var brd = ["X","","","","","","","",""]
+var gameID = -1
 
 function attachListeners(){
 	$( "td" ).click(function() {
 	  doTurn(this);
 	});
 	$("#previous").click(function(){
+		//saveGame();
 		getAllGames();
 	});
 	$("#save").click(function(){
 		saveGame();
 	});
+	$("a").click(function(){
+		//alert($(this).attr('data-gameid'));
+		loadSave($(this).attr('data-gameid'));
+	});
 }
 
-// function turn(){
-
-// }
+function loadSave(id){
+	$.ajax({
+		url : '/games/'+id,
+		success: function(data){
+            console.log(data.game.state);
+            savedBoard = data.game.state
+            $('td').each(
+            	function(index){ 
+            		$(this).html(savedBoard[index])
+            	}
+			);
+        }
+	})
+}
 
 function getAllGames(){
 	console.log("I am in getAllGames");
 	$.ajax({url: "/games", success: function(result){
         console.log(result);
-        //$("#games").html(result);
+        $("#games").html("");
         result.games.forEach(function(game) {
-		    console.log(game);
-		    $('#games').append(game.id+'<br>')
+		    $('#games').append(
+		    	'<a href=# data-gameid='+game.id+'>'+game.id+'</a>')
 		});
+		attachListeners();
     }});
 }
 
 function saveGame(){
+	console.log('the saveGame function has been entered');
 	if(game_saved == false){
 		var values = {
 	        'game': {
@@ -39,9 +57,16 @@ function saveGame(){
 	      }
 	    $.post('/games', values)
 		    .done(function( data ) {
-			    console.log(data.id);
+			    console.log("Game "+data.game.id+" saved!!");
 			    game_saved = true;
-			    gameID = data.id;
+			    console.log("game_saved set to TRUE");
+			    gameID = data.game.id;
+
+			    turn++;
+			    //debugger;
+			    if(hasAnyoneWon()==true){
+			    	resetGame();
+				}
 		});
     } else {
     	var data = {
@@ -54,9 +79,8 @@ function saveGame(){
 		    data : data,
 		    type : 'PATCH',
 		    success: function(result){
-        		console.log(result);
+        		console.log("Game "+gameID+" patched!!");
         	}
-		    //contentType : 'application/json'
 		})
     }
 }
@@ -70,15 +94,17 @@ function doTurn(state){
 	//checkWinner();
 	if(checkWinner()==true){
 		saveGame();
-		resetGame();
+		//resetGame();
 	}
 	turn++;
 }
 
 function resetGame(){
+	console.log('the resetGame function has been entered');
 	turn = -1
 	$('td').empty();
 	game_saved = false;
+	console.log("game_saved set to FALSE");
 	//$('#message').empty();
 }
 
@@ -101,7 +127,7 @@ function boardState(){
 }
 
 function updateState(bla){
-	console.log('updateState');
+	console.log('the game state has been updated');
     $(bla).append(player());
 }
 
@@ -118,7 +144,36 @@ function checkWinner(){
 			message("Player "+player()+" Won!");
 			is_the_game_over = true;
 		}
-		if(turn == 8 && is_the_game_over == false){
+		if(turn >= 8 && is_the_game_over == false){
+			message("Tie game");
+			is_the_game_over = true;
+		}
+	}); 
+	if(is_the_game_over){
+		console.log("THE GAME IS OVER!!!");
+	}
+	return is_the_game_over;
+}
+
+function hasAnyoneWon(){
+	console.log('has anyone won has been entered');
+	is_the_game_over = false;
+    var board = boardState();
+	var winningCombos = ['012', '345', '678', '036', '147',
+	 '258', '048', '246'];
+	winningCombos.forEach(function(combo) {
+    	combo = combo.split('');
+    	if (board[parseInt(combo[0])]=='X' && 
+    		board[parseInt(combo[1])]=='X' && 
+    		board[parseInt(combo[2])]=='X'){
+			is_the_game_over = true;
+		}
+		if (board[parseInt(combo[0])]=='O' && 
+    		board[parseInt(combo[1])]=='O' && 
+    		board[parseInt(combo[2])]=='O'){
+			is_the_game_over = true;
+		}
+		if(turn >= 8 && is_the_game_over == false){
 			message("Tie game");
 			is_the_game_over = true;
 		}

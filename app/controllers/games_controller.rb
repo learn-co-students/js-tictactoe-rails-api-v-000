@@ -6,7 +6,7 @@ class GamesController < ApplicationController
   end
 
   def show
-  	render json: @game
+  	render json: @game.as_json(root: true)
   end
 
   def create
@@ -14,13 +14,14 @@ class GamesController < ApplicationController
     state = params[:game][:state]
     @game.state = state
     @game.save
-    render json: @game
+    render json: @game.as_json(root: true)
   end
 
   def update
   	state = params[:game][:state]
   	@game.update(state: state)
-  	render json: @game
+
+  	render json: @game.as_json(root: true)
   end
 
   private
