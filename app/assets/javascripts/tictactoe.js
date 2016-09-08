@@ -2,7 +2,12 @@ $(function() {
   attachListeners();
 })
 
+// ################# Game Functions ################# //
+
 var turn = 0;
+var currentGame = ["","","","","","","","",""];
+var currentGameId = undefined;
+var persisted = false;
 
 var winners = [
   [[0,0], [1,0], [2,0]],
@@ -23,6 +28,29 @@ function attachListeners() {
   $('tbody').click(function(event) {
     doTurn(event)
   });
+
+  $('#previous').click(function(event) {
+    listGames();
+  });
+
+  $('#save').click(function(event) {
+    if (persisted == false) {
+      save();
+      persisted = true
+    } else {
+      update();
+    }
+  });
+
+  $('#games').on('click', function(event) {
+    currentGameId = $(event.target).data('gameid');
+		currentGame = $(event.target).data('gamestate');
+		var i = 0;
+		$('table tr td').each(function() {
+			$(this).text(currentGame[i]);
+			i++;
+		});
+	});
 }
 
 function doTurn(event) {
@@ -32,11 +60,15 @@ function doTurn(event) {
   if (checkWinner()) {
     // resets the board and sets turn to zero when there is a winner
     // resets the board and sets turn to zero when there is a tie
+    // it should autosave at the end of the game
+    save();
     resetBoard();
   } else {
     // Increment the variable turn by one
     turn ++;
   }
+  currentGame = getBoard();
+
 }
 
 var player = function () {
@@ -90,7 +122,7 @@ function message(string) {
 }
 
 function getBoard() {
-  // Return board as an array board = ["","","","","","","","","",]
+  // Return board as an array board = ["","","","","","","","",""]
   var board = [];
   $('td').each(function(cell){
   	board.push($(this).text());
@@ -109,4 +141,57 @@ function resetBoard() {
   // Set turn to zero
   $('td').html('');
   turn = 0;
+  currentGameId = undefined
+}
+
+
+// ################# AJAX Functions ################# //
+
+function listGames() {
+  $.ajax({
+    url: '/games',
+    method: 'GET',
+    success: function(data) {
+       $('#games li').remove();
+      var games = data.games;
+      if (games.length != 0) {
+        $.each( games, function(index, game) {
+          $('#games').append('<li data-gameid=' + game.id + ' data-gamestate=' + game.state + ' id="old" >' + game.id + '</li>');
+        });
+      }
+    }
+  });
+}
+
+function save() {
+  $.ajax({
+    url:'/games',
+    method: 'post',
+    dataType: 'json',
+    data: {
+      game: {state: JSON.stringify(currentGame)}
+    },
+    success: function(data){
+      game = {
+        id: data.id ,
+        state: data.state
+      };
+      currentGameId = data.id
+    }
+  })
+}
+
+function update() {
+
+  $.ajax({
+    url: '/games/' + currentGameId,
+    method: "PATCH",
+    data: {game: {state: JSON.stringify(currentGame)}},
+    success: function(data){
+      game = {
+        id: data.id ,
+        state: data.state
+      };
+    }
+  })
 }
