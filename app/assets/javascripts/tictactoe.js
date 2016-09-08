@@ -62,9 +62,7 @@ function saveGame(){
 			    console.log("game_saved set to TRUE");
 			    gameID = data.game.id;
 
-			    turn++;
-			    //debugger;
-			    if(hasAnyoneWon()==true){
+			    if(checkWinner()==true){
 			    	resetGame();
 				}
 		});
@@ -91,17 +89,17 @@ function currentGame(){
 
 function doTurn(state){
 	updateState(state);
-	//checkWinner();
+    turn++;
 	if(checkWinner()==true){
 		saveGame();
 		//resetGame();
 	}
-	turn++;
+
 }
 
 function resetGame(){
 	console.log('the resetGame function has been entered');
-	turn = -1
+	turn = 0;
 	$('td').empty();
 	game_saved = false;
 	console.log("game_saved set to FALSE");
@@ -131,31 +129,31 @@ function updateState(bla){
     $(bla).append(player());
 }
 
-function checkWinner(){
-	is_the_game_over = false;
-    var board = boardState();
-	var winningCombos = ['012', '345', '678', '036', '147',
-	 '258', '048', '246'];
-	winningCombos.forEach(function(combo) {
-    	combo = combo.split('');
-    	if (board[parseInt(combo[0])]==player() && 
-    		board[parseInt(combo[1])]==player() && 
-    		board[parseInt(combo[2])]==player()){
-			message("Player "+player()+" Won!");
-			is_the_game_over = true;
-		}
-		if(turn >= 8 && is_the_game_over == false){
-			message("Tie game");
-			is_the_game_over = true;
-		}
-	}); 
-	if(is_the_game_over){
-		console.log("THE GAME IS OVER!!!");
-	}
-	return is_the_game_over;
-}
+// function checkWinner(){
+// 	is_the_game_over = false;
+//     var board = boardState();
+// 	var winningCombos = ['012', '345', '678', '036', '147',
+// 	 '258', '048', '246'];
+// 	winningCombos.forEach(function(combo) {
+//     	combo = combo.split('');
+//     	if (board[parseInt(combo[0])]==player() && 
+//     		board[parseInt(combo[1])]==player() && 
+//     		board[parseInt(combo[2])]==player()){
+// 			message("Player "+player()+" Won!");
+// 			is_the_game_over = true;
+// 		}
+// 		if(turn >= 8 && is_the_game_over == false){
+// 			message("Tie game");
+// 			is_the_game_over = true;
+// 		}
+// 	}); 
+// 	if(is_the_game_over){
+// 		console.log("THE GAME IS OVER!!!");
+// 	}
+// 	return is_the_game_over;
+// }
 
-function hasAnyoneWon(){
+function checkWinner(){
 	console.log('has anyone won has been entered');
 	is_the_game_over = false;
     var board = boardState();
@@ -166,11 +164,13 @@ function hasAnyoneWon(){
     	if (board[parseInt(combo[0])]=='X' && 
     		board[parseInt(combo[1])]=='X' && 
     		board[parseInt(combo[2])]=='X'){
+    		message("Player X Won!");
 			is_the_game_over = true;
 		}
 		if (board[parseInt(combo[0])]=='O' && 
     		board[parseInt(combo[1])]=='O' && 
     		board[parseInt(combo[2])]=='O'){
+			message("Player O Won!");
 			is_the_game_over = true;
 		}
 		if(turn >= 8 && is_the_game_over == false){
@@ -178,5 +178,6 @@ function hasAnyoneWon(){
 			is_the_game_over = true;
 		}
 	}); 
+	console.log(is_the_game_over);
 	return is_the_game_over;
 }
