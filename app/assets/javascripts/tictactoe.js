@@ -11,7 +11,7 @@ function attachListeners(){
 		getAllGames();
 	});
 	$("#save").click(function(){
-		saveGame();
+		saveGame(boardState());
 	});
 	$("a").click(function(){
 		//alert($(this).attr('data-gameid'));
@@ -47,12 +47,13 @@ function getAllGames(){
     }});
 }
 
-function saveGame(){
+function saveGame(board){
 	console.log('the saveGame function has been entered');
+	//debugger;
 	if(game_saved == false){
 		var values = {
 	        'game': {
-	          'state': boardState()
+	          'state': board
 	        }
 	      }
 	    $.post('/games', values)
@@ -61,15 +62,19 @@ function saveGame(){
 			    game_saved = true;
 			    console.log("game_saved set to TRUE");
 			    gameID = data.game.id;
+			    if(checkWinner2(board)==true){
+			    	game_saved = false;
+			    	console.log("game_saved set to FALSE");
+			    }
 
-			    if(checkWinner()==true){
-			    	resetGame();
-				}
+			 //    if(checkWinner()==true){
+			 //    	resetGame();
+				// }
 		});
     } else {
     	var data = {
 	        'game': {
-	          'state': boardState()
+	          'state': board
 	        }
 	      }
 	    $.ajax({
@@ -89,9 +94,10 @@ function currentGame(){
 
 function doTurn(state){
 	updateState(state);
+	board = boardState();
     turn++;
 	if(checkWinner()==true){
-		saveGame();
+		saveGame(board);
 		//resetGame();
 	}
 
@@ -103,6 +109,7 @@ function resetGame(){
 	$('td').empty();
 	game_saved = false;
 	console.log("game_saved set to FALSE");
+	//alert(turn);
 	//$('#message').empty();
 }
 
@@ -165,19 +172,47 @@ function checkWinner(){
     		board[parseInt(combo[1])]=='X' && 
     		board[parseInt(combo[2])]=='X'){
     		message("Player X Won!");
+    		resetGame();
 			is_the_game_over = true;
 		}
 		if (board[parseInt(combo[0])]=='O' && 
     		board[parseInt(combo[1])]=='O' && 
     		board[parseInt(combo[2])]=='O'){
 			message("Player O Won!");
+			resetGame();
 			is_the_game_over = true;
 		}
-		if(turn >= 8 && is_the_game_over == false){
+		if(turn >= 9 && is_the_game_over == false){
 			message("Tie game");
+			resetGame();
 			is_the_game_over = true;
 		}
 	}); 
 	console.log(is_the_game_over);
+	return is_the_game_over;
+}
+
+function checkWinner2(input){
+	console.log('has anyone won has been entered');
+	is_the_game_over = false;
+    var board = input
+	var winningCombos = ['012', '345', '678', '036', '147',
+	 '258', '048', '246'];
+	winningCombos.forEach(function(combo) {
+    	combo = combo.split('');
+    	if (board[parseInt(combo[0])]=='X' && 
+    		board[parseInt(combo[1])]=='X' && 
+    		board[parseInt(combo[2])]=='X'){
+			is_the_game_over = true;
+		}
+		if (board[parseInt(combo[0])]=='O' && 
+    		board[parseInt(combo[1])]=='O' && 
+    		board[parseInt(combo[2])]=='O'){
+			is_the_game_over = true;
+		}
+		if(turn >= 9 && is_the_game_over == false){
+			is_the_game_over = true;
+		}
+	}); 
 	return is_the_game_over;
 }
