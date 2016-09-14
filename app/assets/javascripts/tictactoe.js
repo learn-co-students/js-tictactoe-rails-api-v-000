@@ -1,19 +1,70 @@
 var turn = 0;
+let currentGame = 0;
 
-function attachListeners() {
-  $('td').on("click", function() {
-    var position = $(this);
-    doTurn(position);
-    if (turn === 9 && checkWinner() === false)
-    {
-      message('Tie game');
-      resetBoard();
-      turn = 0;
-    }
+var attachListeners = function() {
+  $('tbody').on("click", function(clicked) {
+    doTurn(clicked);
+  });
+
+  $('#previous').on("click", function() {
+    mostRecent();
+  });
+  $('#save').on("click", function() {
+    saveGame();
   });
 }
 
-function checkWinner() {
+var checkTie = function() {
+  var tie = false
+  if (turn === 9)
+  {
+    message('Tie game');
+    resetBoard();
+    turn = 0;
+    tie = true;
+  }
+  return tie;
+}
+
+var currentBoard = function() {
+  var state = new Array();
+  var cell =""
+  $('td').each(function(index, td){
+    cell = $(td.innerHTML).selector;
+    state.push(cell);
+  });
+  return state;
+}
+
+var mostRecent = function() {
+  $.get("/games", function (games) {
+    console.log(games);
+  });
+}
+
+var saveGame = function() {
+  var data = {game:{state: currentBoard()}};
+  if (currentGame === 0) {
+    var go = $.post("/games", data).done(function(response){
+      currentGame = response.game.id;
+      $('#games').append("<li data-gameid="+response.game.id+">Game " + response.game.id+"</li>");
+      message("Game Saved.");
+  });
+  } else {
+    var go = $.ajax({
+      url: '/games/'+currentGame,
+      type: 'PATCH',
+      data: data
+    }).done(function(response){
+      message("Game Updated.");
+    });
+
+  }
+console.log(currentGame);
+
+}
+
+var checkWinner = function() {
   var WINNING_POSITIONS = [
     ['{"x": "0", "y": "0"}','{"x": "1", "y": "0"}', '{"x": "2", "y": "0"}'],
     ['{"x": "0", "y": "1"}','{"x": "1", "y": "1"}', '{"x": "2", "y": "1"}'],
@@ -49,15 +100,20 @@ function checkWinner() {
       )
     )
     {
-      win = true
-      // console.log(win);
+      message("Player " + player() + " Won!");
+      saveGame();
+      turn = 0;
+      resetBoard();
+      currentGame = 0;
+      console.log(currentGame);
+      win = true;
     }
   });
 
-return win;
+  return win;
 }
 
-function player() {
+var player = function() {
   if (turn % 2 === 0) {
     return 'X';
   } else {
@@ -65,29 +121,25 @@ function player() {
   }
 }
 
-
-
-function doTurn(position) {
-    var position = position;
-    if ($(position).html() === '') {
-      updateState(position);
-      if (checkWinner() === true) {
-        var winner = player();
-        message("Player " + winner + " Won!");
-        turn = 0;
-        resetBoard();
-  } else if (turn < 9) {
-      turn += 1;
+var doTurn = function(move) {
+  if (updateState(move) === true) {
+    if (checkWinner() === false) {
+      turn +=1;
+      checkTie();
+    }
   }
 }
+
+var updateState = function(position) {
+  if ($(position.target).html() === '') {
+    $(position.target).html(player());
+    return true;
+  }
+
 }
 
-function updateState(position) {
-  var player = this.player();
-  $(position).html(player);
-}
-
-function resetBoard() {
+var resetBoard = function() {
+  currentGame = 0;
   $('td[data-x="0"][data-y="0"]').html('');
   $('td[data-x="1"][data-y="0"]').html('');
   $('td[data-x="2"][data-y="0"]').html('');
@@ -99,7 +151,7 @@ function resetBoard() {
   $('td[data-x="2"][data-y="2"]').html('');
 }
 
-function message(msg) {
+var message = function(msg) {
   $("#message").text(msg);
 }
 
