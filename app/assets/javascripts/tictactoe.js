@@ -1,5 +1,5 @@
 var turn = 0;
-let currentGame = 0;
+var currentGame = 0;
 
 var attachListeners = function() {
   $('tbody').on("click", function(clicked) {
@@ -9,6 +9,7 @@ var attachListeners = function() {
   $('#previous').on("click", function() {
     mostRecent();
   });
+
   $('#save').on("click", function() {
     saveGame();
   });
@@ -28,7 +29,7 @@ var checkTie = function() {
 
 var currentBoard = function() {
   var state = new Array();
-  var cell =""
+  var cell =
   $('td').each(function(index, td){
     cell = $(td.innerHTML).selector;
     state.push(cell);
@@ -37,19 +38,26 @@ var currentBoard = function() {
 }
 
 var mostRecent = function() {
-  $.get("/games", function (games) {
-    console.log(games);
+  $.get("/games", function (allGames) {
+    var listGames = new String;
+    $.each(allGames["games"], function(index, game){
+      listGames += "<li data-gameid="+game.id+">Game " + game.id+"</li>";
+    });
+    $('#games').html(listGames);
   });
 }
 
-var saveGame = function() {
+var saveGame = function(won) {
   var data = {game:{state: currentBoard()}};
   if (currentGame === 0) {
     var go = $.post("/games", data).done(function(response){
       currentGame = response.game.id;
-      $('#games').append("<li data-gameid="+response.game.id+">Game " + response.game.id+"</li>");
+      $('#games').append("<li data-gameid="+currentGame+">Game " + currentGame+"</li>");
       message("Game Saved.");
-  });
+      if (won === true) {
+        currentGame = 0;
+      }
+    });
   } else {
     var go = $.ajax({
       url: '/games/'+currentGame,
@@ -58,10 +66,7 @@ var saveGame = function() {
     }).done(function(response){
       message("Game Updated.");
     });
-
   }
-console.log(currentGame);
-
 }
 
 var checkWinner = function() {
@@ -101,16 +106,15 @@ var checkWinner = function() {
     )
     {
       message("Player " + player() + " Won!");
-      saveGame();
+      saveGame(true);
       turn = 0;
       resetBoard();
-      currentGame = 0;
-      console.log(currentGame);
       win = true;
     }
-  });
+  }
+);
 
-  return win;
+return win;
 }
 
 var player = function() {
@@ -135,11 +139,10 @@ var updateState = function(position) {
     $(position.target).html(player());
     return true;
   }
-
 }
 
 var resetBoard = function() {
-  currentGame = 0;
+
   $('td[data-x="0"][data-y="0"]').html('');
   $('td[data-x="1"][data-y="0"]').html('');
   $('td[data-x="2"][data-y="0"]').html('');
