@@ -14,46 +14,27 @@ const WIN_COMBINATIONS = [
   ];
   
 function setBoard(state){
-	var previousBoard = ['<table border="1" cellpadding="40">',
-		'<tr>',
-			'<td data-x="0" data-y="0">'+state[0]+'</td>',
-			'<td data-x="1" data-y="0">'+state[1]+'</td>',
-			'<td data-x="2" data-y="0">'+state[2]+'</td>',
-		'</tr>',
-		'<tr>',
-		'	<td data-x="0" data-y="1">'+state[3]+'</td>',
-		'	<td data-x="1" data-y="1">'+state[4]+'</td>',
-		'	<td data-x="2" data-y="1">'+state[5]+'</td>',
-		'</tr>',
-		'<tr>',
-		'	<td data-x="0" data-y="2">'+state[6]+'</td>',
-		'	<td data-x="1" data-y="2">'+state[7]+'</td>',
-		'	<td data-x="2" data-y="2">'+state[8]+'</td>',
-		'</tr>',
-	'</table>'].join('');  
-	$('table').replaceWith(previousBoard);
+  $('[data-x="0"][data-y="0"]').html(state[0]);
+  $('[data-x="1"][data-y="0"]').html(state[1]);
+  $('[data-x="2"][data-y="0"]').html(state[2]);
+  $('[data-x="0"][data-y="1"]').html(state[3]);
+  $('[data-x="1"][data-y="1"]').html(state[4]);
+  $('[data-x="2"][data-y="1"]').html(state[5]);
+  $('[data-x="0"][data-y="2"]').html(state[6]);
+  $('[data-x="1"][data-y="2"]').html(state[7]);
+  $('[data-x="2"][data-y="2"]').html(state[8]);
 }
 
 function reset() {
-  		var freshTable = ['<table border="1" cellpadding="40">',
-			'<tr>',
-				'<td data-x="0" data-y="0"></td>',
-				'<td data-x="1" data-y="0"></td>',
-				'<td data-x="2" data-y="0"></td>',
-			'</tr>',
-			'<tr>',
-			'	<td data-x="0" data-y="1"></td>',
-			'	<td data-x="1" data-y="1"></td>',
-			'	<td data-x="2" data-y="1"></td>',
-			'</tr>',
-			'<tr>',
-			'	<td data-x="0" data-y="2"></td>',
-			'	<td data-x="1" data-y="2"></td>',
-			'	<td data-x="2" data-y="2"></td>',
-			'</tr>',
-		'</table>'].join('');
-		debugger
-		$('table').replaceWith(freshTable);
+  $('[data-x="0"][data-y="0"]').html("");
+  $('[data-x="1"][data-y="0"]').html("");
+  $('[data-x="2"][data-y="0"]').html("");
+  $('[data-x="0"][data-y="1"]').html("");
+  $('[data-x="1"][data-y="1"]').html("");
+  $('[data-x="2"][data-y="1"]').html("");
+  $('[data-x="0"][data-y="2"]').html("");
+  $('[data-x="1"][data-y="2"]').html("");
+  $('[data-x="2"][data-y="2"]').html("");
 }
               
 function setFixtures() {
@@ -71,7 +52,8 @@ function doTurn(e) {
 
 function retrieveBoard(id) {
   $.get('/games/'+id,  function(data, status){
-      setBoard(data.game.state);
+      
+      setBoard(data.state);
     });
 }
 
@@ -115,7 +97,7 @@ function message(player) {
 function showPrevious() {
     $.get('/games', function(data, status){
       $('#list').html("");
-      $.each(data.games, function(index, game) {
+      $.each(data, function(index, game) {
         $('#list').append("<li class='previous-game' id="+game.id+">Game id: "+game.id+"</li>")
       });
     });
