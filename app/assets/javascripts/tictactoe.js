@@ -1,6 +1,9 @@
+//set a few global variables
 var turn = 0;
 var currentGame = 0;
 
+
+//create listeners
 var attachListeners = function() {
   $('tbody').on("click", function(clicked) {
     doTurn(clicked);
@@ -21,64 +24,48 @@ var attachListeners = function() {
   });
 }
 
+
+//game alerts
+var message = function(msg) {
+  $("#message").text(msg);
+}
+
+
+//game actions
+var player = function() {
+  if (turn % 2 === 0) {
+    return 'X';
+  } else {
+    return 'O';
+  }
+}
+
+var doTurn = function(move) {
+  if (updateState(move) === true) {
+    if (checkWinner() === false) {
+      turn +=1;
+      checkTie();
+    }
+  }
+}
+
+var updateState = function(position) {
+  if ($(position.target).html() === '') {
+    $(position.target).html(player());
+    return true;
+  }
+}
+
 var checkTie = function() {
   var tie = false
   if (turn === 9)
   {
     message('Tie game');
     resetBoard();
-    turn = 0;
     saveGame(true);
     tie = true;
   }
   return tie;
-}
-
-var populateBoard = function(board) {
-  $('td').each(function(index, td){
-    $(td).text(board[index]);
-  });
-}
-
-var currentBoard = function() {
-  var state = new Array();
-  var cell = $('td').each(function(index, td){
-    cell = $(td.innerHTML).selector;
-    state.push(cell);
-  });
-  return state;
-}
-
-var mostRecent = function() {
-  $.get("/games", function (allGames) {
-    var listGames = new String;
-    $.each(allGames["games"], function(index, game){
-      listGames += "<li data-gameid="+game.id+" state="+game.state+">Game " + game.id+"</li>";
-    });
-    $('#games').html(listGames);
-  });
-}
-
-var saveGame = function(won) {
-  var data = {game:{state: currentBoard()}};
-  if (currentGame === 0) {
-    var go = $.post("/games", data).done(function(response){
-      currentGame = response.game.id;
-      $('#games').append("<li data-gameid="+currentGame+">Game " + currentGame+"</li>");
-      message("Game Saved.");
-      if (won === true) {
-        currentGame = 0;
-      }
-    });
-  } else {
-    var go = $.ajax({
-      url: '/games/'+currentGame,
-      type: 'PATCH',
-      data: data
-    }).done(function(response){
-      message("Game Updated.");
-    });
-  }
 }
 
 var checkWinner = function() {
@@ -119,57 +106,72 @@ var checkWinner = function() {
     {
       message("Player " + player() + " Won!");
       saveGame(true);
-      turn = 0;
       resetBoard();
       win = true;
     }
   }
 );
-
 return win;
 }
 
-var player = function() {
-  if (turn % 2 === 0) {
-    return 'X';
-  } else {
-    return 'O';
-  }
-}
-
-var doTurn = function(move) {
-  if (updateState(move) === true) {
-    if (checkWinner() === false) {
-      turn +=1;
-      checkTie();
-    }
-  }
-}
-
-var updateState = function(position) {
-  if ($(position.target).html() === '') {
-    $(position.target).html(player());
-    return true;
-  }
-}
-
 var resetBoard = function() {
-
-  $('td[data-x="0"][data-y="0"]').html('');
-  $('td[data-x="1"][data-y="0"]').html('');
-  $('td[data-x="2"][data-y="0"]').html('');
-  $('td[data-x="0"][data-y="1"]').html('');
-  $('td[data-x="1"][data-y="1"]').html('');
-  $('td[data-x="2"][data-y="1"]').html('');
-  $('td[data-x="0"][data-y="2"]').html('');
-  $('td[data-x="1"][data-y="2"]').html('');
-  $('td[data-x="2"][data-y="2"]').html('');
+  turn = 0;
+  $('td').each(function(index, td){
+    $(td).text("");
+  });
 }
 
-var message = function(msg) {
-  $("#message").text(msg);
+
+//save or retrieve Games
+var currentBoard = function() {
+  var state = new Array();
+  var cell = $('td').each(function(index, td){
+    cell = $(td.innerHTML).selector;
+    state.push(cell);
+  });
+  return state;
 }
 
+var saveGame = function(won) {
+  var data = {game:{state: currentBoard()}};
+  if (currentGame === 0) {
+    var go = $.post("/games", data).done(function(response){
+      currentGame = response.game.id;
+      $('#games').append("<li data-gameid="+currentGame+">Game " + currentGame+"</li>");
+      message("Game Saved.");
+      if (won === true) {
+        currentGame = 0;
+      }
+    });
+  } else {
+    var go = $.ajax({
+      url: '/games/'+currentGame,
+      type: 'PATCH',
+      data: data
+    }).done(function(response){
+      message("Game Updated.");
+    });
+  }
+}
+
+var mostRecent = function() {
+  $.get("/games", function (allGames) {
+    var listGames = new String;
+    $.each(allGames["games"], function(index, game){
+      listGames += "<li data-gameid="+game.id+" state="+game.state+">Game " + game.id+"</li>";
+    });
+    $('#games').html(listGames);
+  });
+}
+
+var populateBoard = function(board) {
+  $('td').each(function(index, td){
+    $(td).text(board[index]);
+  });
+}
+
+
+//document.ready & attach lisetners
 $(document).ready(function() {
   attachListeners();
 });
