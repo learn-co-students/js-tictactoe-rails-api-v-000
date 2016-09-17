@@ -13,6 +13,12 @@ var attachListeners = function() {
   $('#save').on("click", function() {
     saveGame();
   });
+
+  $('#games').on("click", 'li', function() {
+    var board = $(this).attr("state").split(",");
+    populateBoard(board);
+    currentGame = $(this).attr("data-gameid");
+  });
 }
 
 var checkTie = function() {
@@ -22,15 +28,21 @@ var checkTie = function() {
     message('Tie game');
     resetBoard();
     turn = 0;
+    saveGame(true);
     tie = true;
   }
   return tie;
 }
 
+var populateBoard = function(board) {
+  $('td').each(function(index, td){
+    $(td).text(board[index]);
+  });
+}
+
 var currentBoard = function() {
   var state = new Array();
-  var cell =
-  $('td').each(function(index, td){
+  var cell = $('td').each(function(index, td){
     cell = $(td.innerHTML).selector;
     state.push(cell);
   });
@@ -41,7 +53,7 @@ var mostRecent = function() {
   $.get("/games", function (allGames) {
     var listGames = new String;
     $.each(allGames["games"], function(index, game){
-      listGames += "<li data-gameid="+game.id+">Game " + game.id+"</li>";
+      listGames += "<li data-gameid="+game.id+" state="+game.state+">Game " + game.id+"</li>";
     });
     $('#games').html(listGames);
   });
