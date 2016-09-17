@@ -69,38 +69,32 @@ var checkTie = function() {
 }
 
 var checkWinner = function() {
-  var WINNING_POSITIONS = [
-    ['{"x": "0", "y": "0"}','{"x": "1", "y": "0"}', '{"x": "2", "y": "0"}'],
-    ['{"x": "0", "y": "1"}','{"x": "1", "y": "1"}', '{"x": "2", "y": "1"}'],
-    ['{"x": "0", "y": "2"}','{"x": "1", "y": "2"}', '{"x": "2", "y": "2"}'],
-    ['{"x": "0", "y": "0"}','{"x": "0", "y": "1"}', '{"x": "0", "y": "2"}'],
-    ['{"x": "1", "y": "0"}','{"x": "1", "y": "1"}', '{"x": "1", "y": "2"}'],
-    ['{"x": "2", "y": "0"}','{"x": "2", "y": "1"}', '{"x": "2", "y": "2"}'],
-    ['{"x": "0", "y": "0"}','{"x": "1", "y": "1"}', '{"x": "2", "y": "2"}'],
-    ['{"x": "2", "y": "0"}','{"x": "1", "y": "1"}', '{"x": "0", "y": "2"}']
-  ];
 
   var win = false;
-  WINNING_POSITIONS.forEach(function(combo) {
-    var combo0x = JSON.parse(combo[0])["x"]
-    var combo0y = JSON.parse(combo[0])["y"]
 
-    var combo1x = JSON.parse(combo[1])["x"]
-    var combo1y = JSON.parse(combo[1])["y"]
+  var WINNING_POSITIONS = [
+    [[0,0],[1,0],[2,0]],
+    [[0,1],[1,1],[2,1]],
+    [[0,2],[1,2],[2,2]],
+    [[0,0],[0,1],[0,2]],
+    [[1,0],[1,1],[1,2]],
+    [[2,0],[2,1],[2,2]],
+    [[0,0],[1,1],[2,2]],
+    [[2,0],[1,1],[0,2]]
+  ];
 
-    var combo2x = JSON.parse(combo[2])["x"]
-    var combo2y = JSON.parse(combo[2])["y"]
+  WINNING_POSITIONS.forEach(function(winLine) {
     if
     (
       (
-        $('td[data-x="' + combo0x + '"][data-y="' + combo0y + '"]').html() !== '' &&
-        $('td[data-x="' + combo1x + '"][data-y="' + combo1y + '"]').html() !== '' &&
-        $('td[data-x="' + combo2x + '"][data-y="' + combo2y + '"]').html() !== ''
+        $('td[data-x="' + winLine[0][0] + '"][data-y="' + winLine[0][1] + '"]').html() !== '' &&
+        $('td[data-x="' + winLine[1][0] + '"][data-y="' + winLine[1][1] + '"]').html() !== '' &&
+        $('td[data-x="' + winLine[2][0] + '"][data-y="' + winLine[2][1] + '"]').html() !== ''
       )
       &&
       (
-        ($('td[data-x="' + combo0x + '"][data-y="' + combo0y + '"]').html() === $('td[data-x="' + combo1x + '"][data-y="' + combo1y + '"]').html()) &&
-        ($('td[data-x="' + combo1x + '"][data-y="' + combo1y + '"]').html() === $('td[data-x="' + combo2x + '"][data-y="' + combo2y + '"]').html())
+        ($('td[data-x="' + winLine[0][0] + '"][data-y="' + winLine[0][1] + '"]').html() === $('td[data-x="' + winLine[1][0] + '"][data-y="' + winLine[1][1] + '"]').html()) &&
+        ($('td[data-x="' + winLine[1][0] + '"][data-y="' + winLine[1][1] + '"]').html() === $('td[data-x="' + winLine[2][0] + '"][data-y="' + winLine[2][1] + '"]').html())
       )
     )
     {
