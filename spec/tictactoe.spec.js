@@ -103,6 +103,7 @@ describe('Tic Tac Toe Functionality', function() {
                     // _X_|___|___
                     //  X |   |
                     //expect(window.checkWinner).toHaveBeenCalled();
+
                     expect(window.message).toHaveBeenCalledWith("Player X Won!");
                   });
 

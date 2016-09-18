@@ -1,9 +1,11 @@
 $(document).ready(function() {
   attachListeners();
+
 }
 );
 var all = ["","","","","","","","",""];
 var turn = 0;
+var testing = "";
 var COMBOS = [
   [0,1,2],
   [3,4,5],
@@ -39,9 +41,8 @@ $('td').on('click', function(e) {
 }
 
 function doTurn(event) {
-
     updateState(event);
-    checkWinner(event);
+    checkWinner();
     turn++;
 
 }
@@ -59,42 +60,40 @@ function updateState(event) {
                   0,
                   0];
   var matrix2 = [0,0,0];
-
+  //testing = player();
   matrix1[event.target.attributes[0].value] = 1;
   matrix2[event.target.attributes[1].value] = 1;
-  all[mult(matrix1,matrix2)] = player();
+//  all[mult(matrix1,matrix2)] = player();
   $(event.target).text(player());
 
 }
 
 function checkWinner(event) {
+  var finish = false;
+  var count = 0;
   var mess = "";
-  COMBOS.forEach(function(x){
 
-      if (all[x[0]] == "X" && all[x[1]] == "X" && all[x[2]] == "X") {
-all = ["","","","","","","","",""];
-        mess = "Player X Won!";
-        turn = 0;
-        $('td').html("");
+  while (!finish && count < COMBOS.length) {
+
+    if ($('#num-' + COMBOS[count][0]).text() != "" &&  $('#num-' + COMBOS[count][0]).text() == $('#num-' + COMBOS[count][1]).text()  && $('#num-' + COMBOS[count][0]).text() == $('#num-' + COMBOS[count][2]).text() ) {
+
+          var player = $('#num-' + COMBOS[count][0]).text();
+            finish = true;
+            $('td').html("");
+
+            message("Player " + player + " Won!");
+            return true;
+
+          }
+        else {
+          count++;
+          var player2 = $('[data-x="0"][data-y="0"]').text();
+          //var player2 = $('#num-0').text();
+          message(player2);
+        }
 
       }
-      else if (all[x[0]] == "O" && all[x[1]] == "O" && all[x[2]] == "O") {
-all = ["","","","","","","","",""];
-        mess = "Player O Won!";
-        turn = 0;
-        $('td').html("");
-      } else if (turn == 9) {
-        mess = "Tie game";
-        turn = 0;
-        $('td').html("");
-      }
-  });
-  if (mess == "") {
-    return false;
-  } else {
-      message("Player X Won!");
-      return true;
-    }
+      return false;
 
 }
 
