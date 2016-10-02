@@ -68,7 +68,7 @@ function saveGame(resetCurrentGame) {
         if(resetCurrentGame) {
           currentGame = 0;
         } else {
-          currentGame = data.game.id;
+          currentGame = data.id;
         }
       }
     });
@@ -76,8 +76,9 @@ function saveGame(resetCurrentGame) {
 
 function getAllGames() {
   $.getJSON("/games").done(function(response) {
-    if (response.games.length != 0) {
-      showGames(response.games);
+    debugger;
+    if (response.length != 0) {
+      showGames(response);
     }
   })
 }
