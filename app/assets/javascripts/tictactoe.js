@@ -27,6 +27,10 @@ function attachListeners() {
   $('#games').click(function(response) {
     switchGame(response);
   })
+
+  $('#reset').click(function(){ 
+    reset();
+  })
 }
 
 function switchGame(response) {
