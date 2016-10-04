@@ -28,7 +28,7 @@ function attachListeners() {
     switchGame(response);
   })
 
-  $('#reset').click(function(){ 
+  $('#reset').click(function(){
     reset();
   })
 }
@@ -90,8 +90,19 @@ function showGames(games) {
   var dom = $()
   games.forEach(function(game) {
    dom = dom.add($('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id}));
+   dom = dom.add($(`<a href="#" data-id="${game.id}">Delete Game</a>`))
   });
   $("#games").html(dom);
+  $("#games a").click(function(response){ deleteGame(response)})
+}
+
+function deleteGame(response) {
+  var id = $(response.target).data('id')
+
+  $.ajax({
+    url: '/games/' + id,
+    method: 'DELETE'
+  })
 }
 
 function doTurn(event) {

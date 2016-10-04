@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get '/games', to: 'games#index'
   post '/games', to: 'games#create'
   patch '/games/:id', to: 'games#update'
+  delete '/games/:id', to: 'games#delete'
 
 
   # Example of regular route:
