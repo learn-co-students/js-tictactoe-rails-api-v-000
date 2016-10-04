@@ -19,6 +19,7 @@ class GamesController < ApplicationController
   def delete
     @game = Game.find(params[:id])
     @game.destroy
+    render :nothing => true
   end
 
 end
