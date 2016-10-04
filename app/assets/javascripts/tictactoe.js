@@ -32,8 +32,8 @@ function attachListeners() {
 function switchGame(response) {
   var state = $(response.target).data("state").split(",");
   var id = $(response.target).data("gameid")
+  turn = state.filter(function(token) {return token == "X" || token == "O"}).length
   currentGame = id;
-
 
   for (i = 0; i < state.length; i++) {
     var cell = state[i];
@@ -76,7 +76,6 @@ function saveGame(resetCurrentGame) {
 
 function getAllGames() {
   $.getJSON("/games").done(function(response) {
-    debugger;
     if (response.length != 0) {
       showGames(response);
     }
@@ -97,7 +96,6 @@ function doTurn(event) {
 
   if (win === true) {
     saveGame(win);
-    reset();
   } else {
     turn += 1;
   }
