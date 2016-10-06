@@ -263,10 +263,8 @@ describe('#integration tests of persistence', function() {
     attachListeners()
     jasmine.Ajax.withMock(function() {
       var data = {
-        game: {
-          id:1,
-          state: ["X","","","","","","","",""]
-        }
+        id:1,
+        state: ["X","","","","","","","",""]
       }
       var response = {
         "status": 200,
@@ -287,9 +285,7 @@ describe('#integration tests of persistence', function() {
     attachListeners()
     expect($("#games").children().length).toBe(0);
     jasmine.Ajax.withMock(function() {
-      var data = {
-        games: []
-      }
+      var data = []
       var response = {
         "status": 200,
         "contentType": 'application/json',
@@ -306,12 +302,10 @@ describe('#integration tests of persistence', function() {
     attachListeners()
     expect($("#games").children().length).toBe(0);
     jasmine.Ajax.withMock(function() {
-      var data = {
-        games: [{
-          id:1,
-          state: ["X","","","","","","","",""]
-        }]
-      }
+      var data = [{
+        id:1,
+        state: ["X","","","","","","","",""]
+      }]
       var response = {
         "status": 200,
         "contentType": 'application/json',
@@ -328,12 +322,10 @@ describe('#integration tests of persistence', function() {
     attachListeners()
     expect($("#games").children().length).toBe(0);
     jasmine.Ajax.withMock(function() {
-      var data = {
-        games: [{
-          id:1,
-          state: ["X","","","","","","","",""]
-        }]
-      }
+      var data = [{
+        id:1,
+        state: ["X","","","","","","","",""]
+      }]
       var response = {
         "status": 200,
         "contentType": 'application/json',
@@ -343,17 +335,14 @@ describe('#integration tests of persistence', function() {
       jasmine.Ajax.requests.mostRecent().respondWith(response);
       expect($("#games").children().length).toBe(1);
       $("#save").click()
-      var data = {
-        games: [{
-          id:1,
-          state: ["X","","","","","","","",""]
-        },
-        {
-          id:2,
-          state: ["","","","","","","","",""]
-        }
-        ]
-      }
+      var data = [{
+        id:1,
+        state: ["X","","","","","","","",""]
+      },
+      {
+        id:2,
+        state: ["","","","","","","","",""]
+      }]
       var response = {
         "status": 200,
         "contentType": 'application/json',
@@ -403,10 +392,8 @@ describe('#integration tests of persistence', function() {
       expect(request.url).toBe('/games');
       expect(request.method).toBe('POST');
       var data = {
-        game: {
-          id:1,
-          state: ["X","O","O","X","","","X","",""]
-        }
+        id:1,
+        state: ["X","O","O","X","","","X","",""]
       }
       var response = {
         "status": 200,
@@ -436,17 +423,14 @@ describe('#integration tests of persistence', function() {
     jasmine.Ajax.withMock(function() {
       $('[data-x="0"][data-y="0"]').click();
       $("#previous").click()
-      var data = {
-        games: [{
-          id:1,
-          state: ["X","","","","","","","",""]
-        },
-        {
-          id:2,
-          state: ["","X","O","","O","","","",""]
-        }
-        ]
-      }
+      var data = [{
+        id:1,
+        state: ["X","","","","","","","",""]
+      },
+      {
+        id:2,
+        state: ["","X","O","","O","","","",""]
+      }]
       var response = {
         "status": 200,
         "contentType": 'application/json',

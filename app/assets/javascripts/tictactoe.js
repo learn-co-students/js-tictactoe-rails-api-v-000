@@ -38,7 +38,7 @@ function resetBoard() {
 
 function attachListeners() {
   $('td').on('click', function() {
-    if(!$.text(this)) {
+    if(!$.text(this) && !checkWinner()) {
       doTurn(this);
     }
   });
@@ -82,11 +82,7 @@ function saveGame() {
     state.push(square);
   });
 
-  var gameData = {
-    game: {
-      state: state
-    }
-  };
+  var gameData = { state: state };
 
   if(currentGame) {
     $.ajax({
@@ -108,7 +104,6 @@ function saveGame() {
 function showPreviousGames() {
   $('#games').empty();
   $.get('/games', function(savedGames) {
-    console.log(savedGames);
     savedGames.forEach(function(game) {
       $('#games').append("<button id='gameid-" + game['id'] + "'>" + game['id'] + "</button><br>");
       $("#gameid-" + game['id']).on('click', function() {
@@ -119,6 +114,7 @@ function showPreviousGames() {
 }
 
 function reloadGame(gameID) {
+  $('#message').empty();
   $.get("/games/" + gameID, function(game) {
     var index = 0;
     for(var x = 0; x < 3; x++) {
@@ -129,5 +125,6 @@ function reloadGame(gameID) {
     }
     turn = $('td').text().length;
     currentGame = gameID;
+    checkWinner();
   });
 }
