@@ -38,7 +38,9 @@ function resetBoard() {
 
 function attachListeners() {
   $('td').on('click', function() {
-    doTurn(this);
+    if(!$.text(this)) {
+      doTurn(this);
+    }
   });
   $('#save').on('click', function() {
     saveGame();
@@ -79,16 +81,21 @@ function saveGame() {
   $('td').text(function(index, square) {
     state.push(square);
   });
+
+  var gameData = {
+    game: {
+      state: state
+    }
+  };
+
   if(currentGame) {
     $.ajax({
       type: "PATCH",
       url: "/games/" + currentGame,
-      data: { "game": {
-        "state": state }
-      }
+      data: gameData
     });
   } else {
-    $.post('/games', { "game": { "state": state } }, function(game) {
+    $.post('/games', gameData, function(game) {
       currentGame = game['id'];
       $('#games').append("<button id='gameid-" + game['id'] + "'>" + game['id'] + "</button><br>");
       $("#gameid-" + game['id']).on('click', function() {
