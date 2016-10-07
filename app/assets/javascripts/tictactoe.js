@@ -3,6 +3,7 @@ var winningCombos = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2
 var currentGame;
 var checkCells = function(ary) {
   for(var i = 0; i < ary.length; i++) {
+    debugger
     var winningCombo = ary[i];
     var x = winningCombo[0];
     var y = winningCombo[1];
@@ -25,6 +26,7 @@ var checkWinner = function() {
 }
 
 var player = function() {
+  debugger
   if(turn % 2 == 0) {
     return "X";
   }
