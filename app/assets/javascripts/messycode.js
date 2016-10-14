@@ -1,57 +1,31 @@
-
-
-
-
-
-
-
-
-
-
-// new rule: always always always keep anything you want to do inside of the request i.e. in success of post or patch
-// and inside function of get request
-// see messycode for old stuff
-// http://stackoverflow.com/questions/9158531/jquery-variable-becomes-undefined-for-no-reason
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 $(document).ready(function(){
   attachListeners();
 });
 
-var winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 var turn = 0, over = false, state = [], currentGame = 0;
 // board and state are the same thing, board is local variable or parameter reping state
 
-function attachListeners(){
-  $('td').on("click", function(){
-    doTurn(this);
-  });
-  $('#previous').on("click", function(){
-    seePrevious();
-  });
-  $('#save').on("click", function(){
-    saveGame();
-  });
-}
+
+// to dos //
+// save game
+// set current game
+// got to game
+
+
+var winningCombos = [
+  [0, 1, 2], 
+  [3, 4, 5], 
+  [6, 7, 8], 
+  [0, 3, 6], 
+  [1, 4, 7], 
+  [2, 5, 8], 
+  [0, 4, 8], 
+  [2, 4, 6]
+];
+
+
+
+////// tic tac toe related //////
 
 function doTurn(td_tag){
   updateState(td_tag);
@@ -96,10 +70,21 @@ function gameOver(){
     for (var count = 0; count < tds.length; count++) {
       tds[count].innerHTML = "";
     }
-    // saveGame();
+    saveGame();
   } else {
     turn ++;
   }
+}
+var checkDb; 
+
+function setCurrentGame(input){
+  $.get("/games", function(data){
+    if (data["games"].length > 0) {
+      checkDb = data["games"].pop)()["id"];
+    }
+  });
+  temp = input || currentGame || checkDb
+  return temp;
 }
 
 function player(){
@@ -114,12 +99,44 @@ function message(msg){
   $('#message').text(msg);
 }
 
+/////  persistence etc  /////
+
 function seePrevious() {
   var game_lis = ""
   $.get("/games", function(data){
     data["games"].forEach(function(obj){
       game_lis += `<li><button id="game">${obj["id"]}</button></li>`;
     });
+  }).then(function(){
     $('#games').html(game_lis);
   });
+}
+
+function saveGame() {
+  var post_data = {"game" : {"state" : state}};
+  $.ajax("/games", {
+    "type" : "GET", 
+    success : function(data){
+      var game_ids = data["games"].map(function(obj){
+        return obj["id"];
+      }) || [];
+      if (game_ids.includes(currentGame())) {
+        debugger;
+        $.ajax(`/games/${currentGame() + 1}`, {
+          "type" : "PATCH",
+          "data" : post_data
+        });
+      } else {
+        debugger;
+        $.ajax("/games", {
+          "type" : 'POST',
+          "data" : post_data 
+        });
+      }
+    }
+  })
+}
+
+function goToGame(a_tag){
+  debugger;
 }
