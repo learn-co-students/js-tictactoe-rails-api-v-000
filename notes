@@ -1,0 +1,11 @@
+views:
+
+only one in views/home/index
+each square is a tr in html and td. Each td has two data attributes x and y coordinates. top left td has an x of 0 and a y of 0. 
+
+Top Left: <td data-x="0" data-y="0"></td>
+
+Middle: <td data-x="1" data-y="1"></td>
+
+
+Lower Right: <td data-x="2" data-y="2"></td>
