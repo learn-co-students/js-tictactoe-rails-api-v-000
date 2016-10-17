@@ -114,7 +114,6 @@ function resetGame(){
 }
 
 function saveGame(){
-  alert(currentGame);
   if (games[currentGame-1] !== undefined && currentGame === games[currentGame-1].id) {
     updateGame();
   } else {
