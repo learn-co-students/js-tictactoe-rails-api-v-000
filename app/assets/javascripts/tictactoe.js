@@ -1,9 +1,6 @@
 var turn = 0;
-var currentGame = 1;
-
-function assignGameNumber(){
-  $('#currentGame').html(countGames() + 1)
-}
+var currentGame;
+var games;
 
 function cellValues(){
   var cellOne = $('[data-x="0"][data-y="0"]').html();
@@ -110,13 +107,15 @@ function message(message){
 function resetGame(){
   turn = 0;
   saveGame();
-  currentGame = 0;
+  currentGame += 1;
+  $('#currentGame').html(currentGame);
+  $('#gamesCount').html(currentGame - 1);
   $('td').html("");
 }
 
 function saveGame(){
-  debugger
-  if (currentGame) {
+  alert(currentGame);
+  if (games[currentGame-1] !== undefined && currentGame === games[currentGame-1].id) {
     updateGame();
   } else {
     var stateValues = cellValues()
@@ -137,9 +136,10 @@ function saveGame(){
 }
 
 function updateGame(){
+
   $.ajax({
     url: '/games/' + currentGame,
-    method: 'patch',
+    method: 'PATCH',
     dataType: "json",
     data: {
       game: {
@@ -160,7 +160,15 @@ function previousGame(){
     }).done(function(response){
       listGames(response.games)
     });
-  assignGameNumber();
+}
+
+function getGames(){
+  $.get('/games').done(function(response){
+     $('#currentGame').html(response.games.length + 1)
+     $('#gamesCount').html(response.games.length );
+     currentGame = response.games.length + 1;
+     games = response.games;
+  });
 }
 
 function listGames(games) {
@@ -168,11 +176,6 @@ function listGames(games) {
   for (var i = 0; i < games.length ; i++) {
     $('#games').append('<li [data-gameid="' + games[i].id +'"]>' + games[i].id + '</li>');
   }
-  assignGameNumber();
-}
-
-function countGames() {
-  return $('li').length
 }
 
 function switchGame (){
@@ -183,6 +186,7 @@ function switchGame (){
       dataType: "json",
     }).done(function(response){
       setGame(response);
+      $('#currentGame').html(response.id);
       currentGame = response.id;
     });
 }
@@ -197,11 +201,9 @@ function setGame(game){
   $('[data-x="0"][data-y="2"]').html(game.state[6]);
   $('[data-x="1"][data-y="2"]').html(game.state[7]);
   $('[data-x="2"][data-y="2"]').html(game.state[8]);
-  currentGame = game.id;
-  assignGameNumber();
 }
 
 $(document).ready(function() {
-  attachListeners() 
-  assignGameNumber()
+  attachListeners();
+  getGames();
 });
