@@ -9,7 +9,7 @@ class GamesController < ApplicationController
   end
 
   def update
-    @game = Game.find_by(params[:id])
+    @game = Game.find_by(id: params[:id])
     @game.update(state: game_params)
     render json: @game, status: 201
   end
@@ -17,6 +17,11 @@ class GamesController < ApplicationController
   def index
     @games = Game.all
     render json: {games: @games.as_json(except: [:created_at, :updated_at])}
+  end
+
+  def show
+    @game = Game.find_by(id: params[:id])
+    render json: @game
   end
 
   private
