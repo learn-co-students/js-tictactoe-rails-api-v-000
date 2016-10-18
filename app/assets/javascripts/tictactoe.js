@@ -6,8 +6,8 @@ var winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 
 var turn = 0, state = [], currentGame;
 
 function attachListeners(){
-  $('td').on("click", function(){
-    doTurn(this);
+  $('td').on("click", function(event){
+    doTurn(event);
   });
   $('#previous').on("click", function(){
     seePrevious();
@@ -20,19 +20,16 @@ function attachListeners(){
   });
 }
 
-/// needs to take in the below????
-// as in line spec 30 doTurn(myEvent);
-// myEvent = $('[data-x="0"][data-y="0"]').click();
-
-function doTurn(td_tag){
-  updateState(td_tag);
-  checkWinner();
-  checkTie();
+function doTurn(event){
+  updateState(event);
   if (over()) {
     saveGame();
     resetAndIncrementVars();
     resetHtml();
+  } else {
+    turn++;
   }
+  debugger;
 }
 
 function resetAndIncrementVars(){
@@ -48,17 +45,14 @@ function resetHtml(){
   }  
 }
 
-function updateState(td_tag){
-  if ($(td_tag).text() === "") {
-    $(td_tag).text(player())
-    var tds = $('td')
-    var board = [];
-    for (var count = 0; count < tds.length; count++) {
-      board.push(tds[count].innerHTML);
-    }
-    state = board;
-    turn++;
+function updateState(event){
+  $(event.target).text(player())
+  var tds = $('td')
+  var board = [];
+  for (var count = 0; count < tds.length; count++) {
+    board.push(tds[count].innerHTML);
   }
+  state = board;
 }
 
 function checkWinner(){
@@ -92,8 +86,7 @@ function over(){
 }
 
 function player(){
-  // debugger;
-  if (turn % 2 === 0 || turn === 0) {
+  if (turn % 2 === 0) {
     return "X"
   } else {
     return "O"
@@ -125,16 +118,12 @@ function saveGame() {
     method = "POST";
     post_data = {"game" : {"state" : state}};
   }
-  debugger;
   $.ajax({
     "url" : url,
     "type" : method,
     "data" : post_data, 
     success : function(response){
-      if (over() === true) {
-      } else {
-        currentGame = response.id;
-      }
+      currentGame = response.id;
     }
   });
 }
@@ -142,7 +131,7 @@ function saveGame() {
 function setTurn(){
   var temp_array = [];
   for (var count = 0; count < state.length; count++) {
-    if(state[count] != "") {
+    if (state[count] != "") {
       temp_array.push(state[count]);
     }
   }
@@ -155,7 +144,6 @@ function goToGame(li_tag){
     currentGame = data.id;
     state = data.state;
     setTurn();
-    debugger;
     var tds = $('td');
     for (var count = 0; count < tds.length; count++) {
       $(tds[count]).text(state[count]);
