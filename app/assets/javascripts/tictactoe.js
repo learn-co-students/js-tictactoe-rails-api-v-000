@@ -22,14 +22,13 @@ function attachListeners(){
 
 function doTurn(event){
   updateState(event);
-  if (over()) {
+  if (checkWinner()){
     saveGame();
     resetAndIncrementVars();
     resetHtml();
   } else {
     turn++;
   }
-  debugger;
 }
 
 function resetAndIncrementVars(){
@@ -62,6 +61,9 @@ function checkWinner(){
     var box2 = winningCombos[count][2];
     if (state[box0] === state[box1] && state[box1] === state[box2] && state[box2] != "") {
       message(`Player ${state[box2]} Won!`);
+      return true;
+    } else if (checkTie()) {
+      message("Tie game");
       return true;
     }
   }
