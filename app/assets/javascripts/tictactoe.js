@@ -56,6 +56,7 @@ function attachListeners() {
 function doTurn(event){
   updateState(event);
   if ( checkWinner() == true ) {
+    debugger
     resetGame();
   } else if ( checkTie() == true ) {
     resetGame();
@@ -135,7 +136,6 @@ function saveGame(){
 }
 
 function updateGame(){
-
   $.ajax({
     url: '/games/' + currentGame,
     method: 'PATCH',
