@@ -172,8 +172,21 @@ function checkWinner() {
   }
 }
 
+function newGame() {
+    method = "POST";
+    turn = 0;
+    ++currentGame;
+    $('td').each(function(){
+      $(this).html('');
+    });
+}
+
 function attachListeners() {
   var count = 0;
+
+  $("#new").on('click', function(){
+    newGame();
+  });
 
   $('#save').click(function(event) {
     count ++;
@@ -184,20 +197,20 @@ function attachListeners() {
     } else {
       save();
     }
-  })
+  });
 
   $('#previous').click(function(event) {
     showGames();
-  })
+  });
 
 
   $('#games').delegate('p','click',function() {
     var gameId = $(this).text();
     game = $(this).attr('data-gamestate').split(',');
     oldGame(gameId, game);
-  })
+  });
 
   $('tr td').click(function(event) {
     doTurn($(this));
-  })
+  });
 }
