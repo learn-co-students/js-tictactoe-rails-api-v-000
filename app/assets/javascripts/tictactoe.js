@@ -15,9 +15,25 @@ var win_combos = [
 var turn = 0;
 var currentGame = 0;
 
-function attachListeners(){}
+function attachListeners(){
+  $('#save').on('click', function(event){
+    event.preventDefault();
+    saveGame();
+  });
 
-function doTurn(){}
+  $('#newGame').on("click", function(event){
+    newGame();
+  });
+
+  $('#previous').on("click", function(event){
+    showGames();
+  });
+}
+
+function doTurn(event){
+  turn++;
+  updateState(event);
+}
 
 function updateState(){}
 
