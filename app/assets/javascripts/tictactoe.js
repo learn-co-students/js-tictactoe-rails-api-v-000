@@ -120,12 +120,13 @@ function saveGame() {
     method = "POST";
     post_data = {"game" : {"state" : state}};
   }
+  debugger;
   $.ajax({
     "url" : url,
     "type" : method,
     "data" : post_data, 
     success : function(response){
-      currentGame = response.id;
+      currentGame = response.game.id;
     }
   });
 }
