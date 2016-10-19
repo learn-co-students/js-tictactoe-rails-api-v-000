@@ -15,6 +15,14 @@ var win_combos = [
 var turn = 0;
 var currentGame = 0;
 
-function attachListeners(){
+function attachListeners(){}
 
-}
+function doTurn(){}
+
+function updateState(){}
+
+function checkWinner(){}
+
+function player(){}
+
+function message(){}
