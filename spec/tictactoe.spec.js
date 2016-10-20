@@ -430,35 +430,32 @@ describe('#integration tests of persistence', function() {
     });
   });
 
-  it("if should be able to switch to an old game", function() {
-    setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
-    attachListeners()
-    jasmine.Ajax.withMock(function() {
-      $('[data-x="0"][data-y="0"]').click();
-      $("#previous").click()
-      var data = {
-        games: [{
-          id:1,
-          state: ["X","","","","","","","",""]
-        },
-        {
-          id:2,
-          state: ["","X","O","","O","","","",""]
-        }
-        ]
-      }
-      var response = {
-        "status": 200,
-        "contentType": 'application/json',
-        "responseText" : JSON.stringify(data)
-      }
-      jasmine.Ajax.requests.mostRecent().respondWith(response);
-      // when you display the previous games you must give them a data attribute of gameid
-      $('[data-gameid="2"]').click()
-      expect($('[data-x="0"][data-y="0"]').text()).toBe("")
-      expect($('[data-x="1"][data-y="0"]').text()).toBe("X")
-      expect($('[data-x="2"][data-y="0"]').text()).toBe("O")
-      expect($('[data-x="1"][data-y="1"]').text()).toBe("O")
-    });
-  });
+  // instructed to comment out by learn expert due to open issue on repo
+
+  // it("if should be able to switch to an old game", function() {
+  //   setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
+  //   attachListeners()
+  //   jasmine.Ajax.withMock(function() {
+  //     $('[data-x="0"][data-y="0"]').click();
+  //     $("#previous").click()
+  //     var data = {
+  //       games: {
+  //         id:2,
+  //         state: ["","X","O","","O","","","",""]
+  //       }
+  //     }
+  //     var response = {
+  //       "status": 200,
+  //       "contentType": 'application/json',
+  //       "responseText" : JSON.stringify(data)
+  //     }
+  //     jasmine.Ajax.requests.mostRecent().respondWith(response);
+  //     // when you display the previous games you must give them a data attribute of gameid
+  //     $('[data-gameid="2"]').click()
+  //     expect($('[data-x="0"][data-y="0"]').text()).toBe("")
+  //     expect($('[data-x="1"][data-y="0"]').text()).toBe("X")
+  //     expect($('[data-x="2"][data-y="0"]').text()).toBe("O")
+  //     expect($('[data-x="1"][data-y="1"]').text()).toBe("O")
+  //   });
+  // });
 });
