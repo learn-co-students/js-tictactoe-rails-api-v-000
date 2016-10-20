@@ -23,7 +23,7 @@ function attachListeners(){
 function doTurn(event){
   updateState(event);
   if (checkWinner()){
-    saveGame();
+    saveGame(true);
     resetAndIncrementVars();
     resetHtml();
   } else {
@@ -60,7 +60,7 @@ function checkWinner(){
     var box1 = winningCombos[count][1];
     var box2 = winningCombos[count][2];
     if (state[box0] === state[box1] && state[box1] === state[box2] && state[box2] != "") {
-      message(`Player ${state[box2]} Won!`);
+      message("Player " + state[box2] + " Won!");
       return true;
     } else if (checkTie()) {
       message("Tie game");
@@ -100,16 +100,22 @@ function message(msg){
 }
 
 function seePrevious() {
-  var game_lis = ""
-  $.get("/games", function(data){
-    data["games"].forEach(function(obj){
-      game_lis += `<li data-gameid="${obj["id"]}">${obj["id"]}</li>`;
-    });
-    $('#games').html(game_lis);
-  });
+  var game_lis = "";
+  $.ajax({
+    "url" : "/games", 
+    "type" : "GET",
+    "dataType" : "json",
+    success : function(data){
+      var games_array = data.games;
+      for (var count = 0; count < games_array.length; count ++) {
+        game_lis += "<li data-gameid='" + games_array[count].id + "'>" + games_array[count].id + "</li>";
+      }
+      $('#games').html(game_lis);
+    }
+  })
 }
 
-function saveGame() {
+function saveGame(resetCurrentGame = false) {
   var url, method ,post_data;
   if (currentGame) {
     url = "/games/" + currentGame;
@@ -118,15 +124,19 @@ function saveGame() {
   } else {
     url = "/games";
     method = "POST";
-    post_data = {"game" : {"state" : state}};
+    post_data = {"game" : {"id" : currentGame, "state" : state}};
   }
-  debugger;
   $.ajax({
     "url" : url,
     "type" : method,
     "data" : post_data, 
-    success : function(response){
-      currentGame = response.game.id;
+    "dataType" : "json",
+    success : function(response, text, xhr){
+      if (resetCurrentGame) {
+        currentGame = undefined;
+      } else {
+        currentGame = response.game.id || response.id;
+      }
     }
   });
 }
@@ -143,13 +153,18 @@ function setTurn(){
 
 function goToGame(li_tag){
   var game_id = li_tag.innerHTML;
-  $.get("/games/" + game_id).done(function(data){
-    currentGame = data.id;
-    state = data.state;
-    setTurn();
-    var tds = $('td');
-    for (var count = 0; count < tds.length; count++) {
-      $(tds[count]).text(state[count]);
+  $.ajax({
+    "type" : "GET",
+    "dataType" : "json",
+    "url" : "/games/" + game_id,
+    success : function(data) {
+      currentGame = data.games.id;
+      state = data.games.state;
+      setTurn();
+      var tds = $('td');
+      for (var count = 0; count < tds.length; count++) {
+        $(tds[count]).text(state[count]);
+      }
     }
   })
 }
