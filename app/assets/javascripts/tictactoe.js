@@ -22,7 +22,8 @@ function doTurn(x, y){
   updateState();
   checkWinner();
 
-  console.log('clicked' + x + y);
+  console.log('clicked ' + x + y);
+  console.log('It is now turn 'turn);
 }
 
 function updateState(){
