@@ -18,7 +18,9 @@ function attachListeners(){
     var x = $(this).data("x");
     var y = $(this).data("y");
 
-    doTurn(x, y);
+    if ($("[data-x='" + x + "'][data-y='" + y + "']")[0].innerText == ''){
+      doTurn(x, y);
+    }
   });
 }
 
