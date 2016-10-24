@@ -14,6 +14,7 @@ var xs = [];
 var os = [];
 
 var gameState = ["","","","","","","","",""];
+var currentGameId = 0;
 
 function attachListeners(){
   $('td').click(function(){
@@ -103,6 +104,7 @@ function player(){
 function reset_board() {
   gameState = ["","","","","","","","",""];
   turn = 0;
+  currentGameId = 0;
   xs = [];
   os = [];
   $('td').html('');
@@ -118,12 +120,27 @@ function getAllGames(){
 
 function saveGame(){
   $('#save').click(function(){
-    $.ajax({
-      type: "POST",
-      url: "/games",
-      data: {game:{state: gameState}},
-      success: function(resp){ }
-    })
+    if(currentGameId == 0){
+      $.ajax({
+        type: "POST",
+        url: "/games",
+        data: {game:{state: gameState}},
+        success: function(response){
+          currentGameId = response['id'];
+          console.log(response['id']);
+        }
+      });
+    } else {
+      $.ajax({
+        type: "PATCH",
+        url: "/games/" + currentGameId,
+        data: {game:{state: gameState, id: currentGameId}},
+        success: function(response){
+          currentGameId = response['id'];
+          console.log(response['id']);
+        }
+      });
+    }
   });
 }
 
