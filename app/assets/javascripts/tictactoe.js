@@ -27,7 +27,9 @@ function doTurn(x, y){
 
   updateState(x, y);
   updatePlayerPositions(x, y);
-  checkWinner();
+  if(!checkWinner()){
+      checkTie();
+  }
 
   console.log('clicked ' + x + y);
   console.log('It is now turn ' + turn);
@@ -42,8 +44,6 @@ function updatePlayerPositions(x, y) {
 }
 
 function updateState(x, y){
-
-
  $("[data-x='" + x + "'][data-y='" + y + "']").html(player());
 }
 
@@ -69,14 +69,21 @@ function checkWinner() {
 
         if(winning_combo.length == 3){
           message('Player ' + player() + ' Won!');
+          reset_board();
           return true;
         }
 
       }); //combo
     }); //WIN_COMBINATIONS
   } //if played_tokens
-
   return false;
+}
+
+function checkTie(){
+  if(xs.length + os.length == 9){
+    message('Tie game');
+    reset_board();
+  }
 }
 
 function message(string){
@@ -89,6 +96,13 @@ function player(){
   } else {
     return 'O';
   }
+}
+
+function reset_board() {
+  turn = 0;
+  xs = [];
+  os = [];
+  $('td').html('');
 }
 
 $(document).ready(function(){
