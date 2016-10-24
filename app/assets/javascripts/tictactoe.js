@@ -13,11 +13,12 @@ var WIN_COMBINATIONS = [
 var xs = [];
 var os = [];
 
+var gameState = ["","","","","","","","",""];
+
 function attachListeners(){
   $('td').click(function(){
     var x = $(this).data("x");
     var y = $(this).data("y");
-
     if ($("[data-x='" + x + "'][data-y='" + y + "']")[0].innerText == ''){
       doTurn(x, y);
     }
@@ -32,9 +33,6 @@ function doTurn(x, y){
   if(!checkWinner()){
       checkTie();
   }
-
-  console.log('clicked ' + x + y);
-  console.log('It is now turn ' + turn);
 }
 
 function updatePlayerPositions(x, y) {
@@ -46,6 +44,8 @@ function updatePlayerPositions(x, y) {
 }
 
 function updateState(x, y){
+  index = getIndexFromCoords(x, y);
+  gameState[index] = player();
  $("[data-x='" + x + "'][data-y='" + y + "']").html(player());
 }
 
@@ -101,12 +101,40 @@ function player(){
 }
 
 function reset_board() {
+  gameState = ["","","","","","","","",""];
   turn = 0;
   xs = [];
   os = [];
   $('td').html('');
 }
 
+function getAllGames(){
+  $('#previous').click(function(){
+    $.get('/games', function(response){
+      console.log(response);
+    });
+  });
+}
+
+function saveGame(){
+  $('#save').click(function(){
+    $.ajax({
+      type: "POST",
+      url: "/games",
+      data: {game:{state: gameState}},
+      success: function(resp){ }
+    })
+  });
+}
+
+function getIndexFromCoords(x, y){
+  var coords = x.toString() + y;
+  var index = ['00', '10', '20', '01', '11', '21', '02', '12', '22'].indexOf(coords);
+  return index;
+}
+
 $(document).ready(function(){
   attachListeners();
+  getAllGames();
+  saveGame();
 });

@@ -1,5 +1,3 @@
-'use strict';
-
 describe('Tic Tac Toe Functionality', function() {
   beforeEach(function(){
     turn = 0;
