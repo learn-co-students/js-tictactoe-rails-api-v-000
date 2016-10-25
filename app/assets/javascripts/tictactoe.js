@@ -90,7 +90,7 @@ function checkWinner() {
         if(winning_combo.length == 3){
           message('Player ' + player() + ' Won!');
           save();
-          reset_board();
+          resetBoard();
           return true;
         }
 
@@ -107,7 +107,7 @@ function checkTie(){
   if(xs.length + os.length == 9){
     save();
     message('Tie game');
-    reset_board();
+    resetBoard();
   }
 }
 
@@ -132,7 +132,7 @@ function player(){
 
 
 
-function reset_board() {
+function resetBoard() {
   gameState = ["","","","","","","","",""];
   turn = 0;
   currentGameId = 0;
@@ -158,7 +158,6 @@ function getAllGames(){
         savedGames.push(game);
         $('#games').append(`<h4><a href="#" class="js-load" data-gameid="${game.id}">Game ${game.id}</a></h4>`);
       });
-
       loadGame();
     });
   });
@@ -203,6 +202,8 @@ function save(){
 function loadGame(){
   $('.js-load').click(function(){
     var element = this;
+    resetBoard();
+    message('Resume Previous Game');
     load(element);
   });
 }
@@ -220,17 +221,16 @@ function load(element){
   gameState.forEach(function(token, index){
     var x = MAP[index].split('')[0];
     var y = MAP[index].split('')[1];
-    //reminder these are strings
+
+    if (token == "X") {
+      xs.push(MAP[index]);
+    } else if(token == "O") {
+      os.push(MAP[index]);
+    }
 
     loadCell(token, x, y);
 
   });
-
-  console.log(turn);
-  console.log(savedGames[gameId - 1]);
-  console.log(gameState);
-
-
 }
 
 
@@ -246,10 +246,6 @@ function getIndexFromCoords(x, y){
   var coords = x.toString() + y;
   var index = MAP.indexOf(coords);
   return index;
-}
-
-function getCoordsFromIndex(){
-
 }
 
 
