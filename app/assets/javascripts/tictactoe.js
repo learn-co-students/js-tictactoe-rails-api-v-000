@@ -21,6 +21,15 @@ var savedGames = [];
 
 
 
+$(document).ready(function(){
+  attachListeners();
+  getAllGames();
+  saveGame();
+});
+
+
+
+
 function attachListeners(){
   $('td').click(function(){
     var x = $(this).data("x");
@@ -66,6 +75,11 @@ function updateState(x, y){
 
 
 
+function loadCell(token, x, y){
+  $("[data-x='" + x + "'][data-y='" + y + "']").html(token);
+}
+
+
 
 function checkWinner() {
 
@@ -85,7 +99,7 @@ function checkWinner() {
           if(token == cell){
             winning_combo.push(token);
           }
-        }); //played_tokens
+        });
 
         if(winning_combo.length == 3){
           message('Player ' + player() + ' Won!');
@@ -94,9 +108,9 @@ function checkWinner() {
           return true;
         }
 
-      }); //combo
-    }); //WIN_COMBINATIONS
-  } //if played_tokens
+      });
+    });
+  }
   return false;
 }
 
@@ -130,8 +144,7 @@ function player(){
 }
 
 
-
-
+//Below are all persistence related functions.
 function resetBoard() {
   gameState = ["","","","","","","","",""];
   turn = 0;
@@ -216,7 +229,6 @@ function load(element){
   gameState = savedGames[gameId - 1]["state"];
   turn = savedGames[gameId - 1]["state"].join("").split("").length;
 
-  //take gameState, iterate through it, place each value from it in corresponding x/y td.
 
   gameState.forEach(function(token, index){
     var x = MAP[index].split('')[0];
@@ -235,23 +247,9 @@ function load(element){
 
 
 
-function loadCell(token, x, y){
-  $("[data-x='" + x + "'][data-y='" + y + "']").html(token);
-}
-
-
-
 
 function getIndexFromCoords(x, y){
   var coords = x.toString() + y;
   var index = MAP.indexOf(coords);
   return index;
 }
-
-
-
-$(document).ready(function(){
-  attachListeners();
-  getAllGames();
-  saveGame();
-});
