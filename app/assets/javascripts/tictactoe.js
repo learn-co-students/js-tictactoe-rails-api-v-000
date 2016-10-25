@@ -1,4 +1,3 @@
-var turn = 0;
 var WIN_COMBINATIONS = [
   [00, 10, 20],
   [01, 11, 21],
@@ -10,13 +9,17 @@ var WIN_COMBINATIONS = [
   [00, 11, 22],
 ] ;
 
+var MAP = ['00', '10', '20', '01', '11', '21', '02', '12', '22'];
+
 var xs = [];
 var os = [];
-
+var turn = 0;
 var gameState = ["","","","","","","","",""];
 var currentGameId = 0;
-
 var savedGames = [];
+
+
+
 
 function attachListeners(){
   $('td').click(function(){
@@ -28,6 +31,9 @@ function attachListeners(){
   });
 }
 
+
+
+
 function doTurn(x, y){
   turn++;
 
@@ -38,6 +44,9 @@ function doTurn(x, y){
   }
 }
 
+
+
+
 function updatePlayerPositions(x, y) {
   if (player() == "O"){
     os.push(x.toString() + y);
@@ -46,11 +55,17 @@ function updatePlayerPositions(x, y) {
   }
 }
 
+
+
+
 function updateState(x, y){
   index = getIndexFromCoords(x, y);
   gameState[index] = player();
- $("[data-x='" + x + "'][data-y='" + y + "']").html(player());
+  loadCell(player(), x, y);
 }
+
+
+
 
 function checkWinner() {
 
@@ -85,6 +100,9 @@ function checkWinner() {
   return false;
 }
 
+
+
+
 function checkTie(){
   if(xs.length + os.length == 9){
     save();
@@ -93,9 +111,15 @@ function checkTie(){
   }
 }
 
+
+
+
 function message(string){
   $('#message').html(string);
 }
+
+
+
 
 function player(){
   if(turn % 2 == 0){
@@ -105,6 +129,9 @@ function player(){
   }
 }
 
+
+
+
 function reset_board() {
   gameState = ["","","","","","","","",""];
   turn = 0;
@@ -113,6 +140,9 @@ function reset_board() {
   os = [];
   $('td').html('');
 }
+
+
+
 
 function getAllGames(){
   $('#previous').click(function(){
@@ -134,11 +164,17 @@ function getAllGames(){
   });
 }
 
+
+
+
 function saveGame(){
   $('#save').click(function(){
     save();
   });
 }
+
+
+
 
 function save(){
   if(currentGameId == 0){
@@ -162,20 +198,61 @@ function save(){
   }
 }
 
-function getIndexFromCoords(x, y){
-  var coords = x.toString() + y;
-  var index = ['00', '10', '20', '01', '11', '21', '02', '12', '22'].indexOf(coords);
-  return index;
-}
+
 
 function loadGame(){
   $('.js-load').click(function(){
-    var gameId = $(this).data("gameid");
-    currentGameId = gameId;
-
-    console.log(savedGames[gameId - 1]);
+    var element = this;
+    load(element);
   });
 }
+
+
+function load(element){
+
+  var gameId = $(element).data("gameid");
+  currentGameId = gameId;
+  gameState = savedGames[gameId - 1]["state"];
+  turn = savedGames[gameId - 1]["state"].join("").split("").length;
+
+  //take gameState, iterate through it, place each value from it in corresponding x/y td.
+
+  gameState.forEach(function(token, index){
+    var x = MAP[index].split('')[0];
+    var y = MAP[index].split('')[1];
+    //reminder these are strings
+
+    loadCell(token, x, y);
+
+  });
+
+  console.log(turn);
+  console.log(savedGames[gameId - 1]);
+  console.log(gameState);
+
+
+}
+
+
+
+function loadCell(token, x, y){
+  $("[data-x='" + x + "'][data-y='" + y + "']").html(token);
+}
+
+
+
+
+function getIndexFromCoords(x, y){
+  var coords = x.toString() + y;
+  var index = MAP.indexOf(coords);
+  return index;
+}
+
+function getCoordsFromIndex(){
+
+}
+
+
 
 $(document).ready(function(){
   attachListeners();
