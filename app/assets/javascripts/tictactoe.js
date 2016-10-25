@@ -16,6 +16,8 @@ var os = [];
 var gameState = ["","","","","","","","",""];
 var currentGameId = 0;
 
+var savedGames = [];
+
 function attachListeners(){
   $('td').click(function(){
     var x = $(this).data("x");
@@ -72,6 +74,7 @@ function checkWinner() {
 
         if(winning_combo.length == 3){
           message('Player ' + player() + ' Won!');
+          save();
           reset_board();
           return true;
         }
@@ -84,6 +87,7 @@ function checkWinner() {
 
 function checkTie(){
   if(xs.length + os.length == 9){
+    save();
     message('Tie game');
     reset_board();
   }
@@ -113,41 +117,64 @@ function reset_board() {
 function getAllGames(){
   $('#previous').click(function(){
     $.get('/games', function(response){
-      console.log(response);
+
+
+      $('#games').html("");
+
+      var games = response.games;
+      savedGames = [];
+
+      games.forEach(function(game){
+        savedGames.push(game);
+        $('#games').append(`<h4><a href="#" class="js-load" data-gameid="${game.id}">Game ${game.id}</a></h4>`);
+      });
+
+      loadGame();
     });
   });
 }
 
 function saveGame(){
   $('#save').click(function(){
-    if(currentGameId == 0){
-      $.ajax({
-        type: "POST",
-        url: "/games",
-        data: {game:{state: gameState}},
-        success: function(response){
-          currentGameId = response['id'];
-          console.log(response['id']);
-        }
-      });
-    } else {
-      $.ajax({
-        type: "PATCH",
-        url: "/games/" + currentGameId,
-        data: {game:{state: gameState, id: currentGameId}},
-        success: function(response){
-          currentGameId = response['id'];
-          console.log(response['id']);
-        }
-      });
-    }
+    save();
   });
+}
+
+function save(){
+  if(currentGameId == 0){
+    $.ajax({
+      type: "POST",
+      url: "/games",
+      data: {game:{state: gameState}},
+      success: function(response){
+        currentGameId = response['id'];
+      }
+    });
+  } else {
+    $.ajax({
+      type: "PATCH",
+      url: "/games/" + currentGameId,
+      data: {game:{state: gameState, id: currentGameId}},
+      success: function(response){
+        currentGameId = response['id'];
+      }
+    });
+  }
 }
 
 function getIndexFromCoords(x, y){
   var coords = x.toString() + y;
   var index = ['00', '10', '20', '01', '11', '21', '02', '12', '22'].indexOf(coords);
   return index;
+}
+
+function loadGame(){
+  $('.js-load').click(function(){
+    var gameId = $(this).data("gameid");
+    currentGameId = gameId;
+
+    console.log(savedGames[gameId - 1]);
+  });
 }
 
 $(document).ready(function(){
