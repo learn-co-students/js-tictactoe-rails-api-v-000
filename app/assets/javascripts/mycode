@@ -1,12 +1,6 @@
-  $(function(){
-  attachListeners();
-  });
-
-
   var turn = 0;
   var winningCombos = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],[1,1],[2,2]], [[0,0],[0,1],[0,2]], [[2,0],[2,1],[2,2]], [[1,0],[1,1],[1,2]], [[2,0],[1,1],[0,2]]]
   var currentGame;
-  var counter = 0
   //I need to check the board to see if winning combos. think it through and write scenarios. 
 
    var player = function(){
@@ -37,82 +31,6 @@
     }
   }
 
-  function currentState(){
-    var state = []
-    $('td').each(function(index, td){
-      state.push($(td)[0].innerText)
-    })
-  
-    return state
-  }
-
-  function attachListeners(){
-    $("tbody").on("click", function(event){
-      doTurn(event)
-    });
-
-     $('#previous').on("click", function(){
-      showGames()
-    })
-
-     $('#save').on("click", function(){
-      if (counter === 0){
-        save()
-        counter++
-      } else {
-        update()
-      }
-     })
-
-     $('#games').on("click",  function(event){
-      load(event)
-     })
-  }
-
-  function save(){
-    $.ajax({
-      url: '/games',
-      method: 'POST',
-      dataType: 'json',
-      data: {
-        game: {
-          state: currentState()
-        }
-      },
-      success: function(data){
-        data.game.state = currentState()
-        currentGame = data.game.id
-      }
-    })
-  }
-
-   function update(){
-    $.ajax({
-      url: '/games/' + currentGame,
-      method: 'PATCH',
-      dataType: 'json',
-      data: { 
-        game: {
-          state: JSON.stringify(currentState())
-        }
-      },
-      success: function(data){
-      currentGame = data.id
-    }
-  })
-}
-
-  function load(event){
-
-    var state = $(event.target).data('gamestate')
-    var i = 0
-    $('table tr td').each(function(){
-      $(this).text(state[i])
-      i++
-    })
-    currentGame = $(event.target).data.id
-  }
-
   var tie = function(event){
     var tieVariable = true
     $("td").each(function(){
@@ -130,22 +48,15 @@
     currentGame = 0;
   }
 
-
-  function showGames (){
-    $.get('/games', function(data){
-          $('#games').text("")
-          var games = data.games
-        games.forEach(function(game){
-        $('#games').append("<li data-gameid=" + game.id + 'data-gamestate=' + game.state + '>' + game.id + "</li>")
-        })
-      })
+  function attachListeners(){
+    $("tbody").on("click", function(event){
+      doTurn(event)
+    });
   }
 
-  function updateState(event){
-    var token = player()
-    $(event.target).text(token)  
+  var updateState = function(event){
+    $(event.target).html(player());
   }
-
 
   var checkWinner = function(){
     for(var i = 0; i < winningCombos.length; i++){
@@ -181,6 +92,10 @@
   var message = function(event){
     $('#message').html(event);
   }
+
+$(function(){
+  attachListeners();
+  });
 
 
 // call checkWinner function to see if someone has won  or check tie. 
