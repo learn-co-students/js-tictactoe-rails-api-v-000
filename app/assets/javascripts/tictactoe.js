@@ -7,7 +7,6 @@
   var winningCombos = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],[1,1],[2,2]], [[0,0],[0,1],[0,2]], [[2,0],[2,1],[2,2]], [[1,0],[1,1],[1,2]], [[2,0],[1,1],[0,2]]]
   var currentGame;
   var counter = 0
-  //I need to check the board to see if winning combos. think it through and write scenarios. 
 
    var player = function(){
     if (turn % 2 == 0){
@@ -80,8 +79,8 @@
         }
       },
       success: function(data){
-        data.game.state = currentState()
         currentGame = data.game.id
+        data.game.state = currentState()
       }
     })
   }
@@ -103,7 +102,6 @@
 }
 
   function load(event){
-
     var state = $(event.target).data('gamestate')
     var i = 0
     $('table tr td').each(function(){
@@ -182,6 +180,3 @@
     $('#message').html(event);
   }
 
-
-// call checkWinner function to see if someone has won  or check tie. 
-// if they win or tie then you need to save the game and then reseet the game

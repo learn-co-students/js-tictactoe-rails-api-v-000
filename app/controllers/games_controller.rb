@@ -10,6 +10,7 @@ class GamesController < ApplicationController
   end
 
   def show
+    @game = Game.find(params[:id])
     respond_to do |f|
       f.html {render :show}
       f.json {render json: @game}
