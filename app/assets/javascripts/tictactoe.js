@@ -36,12 +36,11 @@
     }
   }
 
-  function currentState(){
+  var currentState = function(){
     var state = []
-    $('td').each(function(index, td){
-      state.push($(td)[0].innerText)
+    $('td').each(function(i){
+      state.push($(this).text())
     })
-  
     return state
   }
 
@@ -80,7 +79,6 @@
       },
       success: function(data){
         currentGame = data.game.id
-        data.game.state = currentState()
       }
     })
   }
@@ -102,12 +100,15 @@
 }
 
   function load(event){
-    var state = $(event.target).data('gamestate')
-    var i = 0
-    $('table tr td').each(function(){
-      $(this).text(state[i])
-      i++
+    var number = event.target.innerHTML
+    $.get('/games/'+ number, function(data){
     })
+    //var state = $(event.target).data('gamestate')
+    //var i = 0
+    //$('table tr td').each(function(){
+      //$(this).text(state[i])
+      //i++
+    //})
     currentGame = $(event.target).data.id
   }
 
@@ -134,7 +135,7 @@
           $('#games').text("")
           var games = data.games
         games.forEach(function(game){
-        $('#games').append("<li data-gameid=" + game.id + 'data-gamestate=' + game.state + '>' + game.id + "</li>")
+        $('#games').append("<li data-gameid=" + game.id + ' data-gamestate=' + game.state + '>' + game.id + "</li>")
         })
       })
   }
