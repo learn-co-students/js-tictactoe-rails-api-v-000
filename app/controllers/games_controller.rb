@@ -21,6 +21,12 @@ class GamesController < ApplicationController
     render json: @games
   end
 
+  def show
+    @game = Game.find(params[:id])
+    respond_to do |format|
+      format.json { render json: @game }
+    end
+  end
   private
 
   def game_params
