@@ -90,27 +90,25 @@
       dataType: 'json',
       data: { 
         game: {
-          state: JSON.stringify(currentState())
+           state: currentState()
         }
       },
       success: function(data){
-      currentGame = data.id
+      currentGame = data.game.id
     }
   })
 }
 
   function load(event){
-    var number = event.target.innerHTML
-    $.get('/games/'+ number, function(data){
+    counter++
+    var state = $(event.target).data('gamestate').split(",")
+    var i = 0
+    $('table tr td').each(function(){
+      $(this).text(state[i])
+      i++
     })
-    //var state = $(event.target).data('gamestate')
-    //var i = 0
-    //$('table tr td').each(function(){
-      //$(this).text(state[i])
-      //i++
-    //})
-    currentGame = $(event.target).data.id
-  }
+      currentGame = parseInt(event.target.innerHTML) 
+    }
 
   var tie = function(event){
     var tieVariable = true
@@ -124,9 +122,10 @@
   }
 
   var endGame = function(){
-    $("td").html("");
-    turn = 0;
-    currentGame = 0;
+    turn = 0
+    $("td").each(function(){
+      $(this).html("")
+    })
   }
 
 
