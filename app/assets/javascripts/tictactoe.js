@@ -4,6 +4,8 @@ var winCombinations = [["00","10","20"], ["01","11","21"], ["02","12","22"],
     ["00","11","22"], ["02","11","20"]
    ];
 
+var winner = "";
+
 var attachListeners = function() {
 // call to attach the click handlers to the page after the DOM has been loaded
 //When a client clicks on a cell, the function doTurn() should be called and passed a parameter of the event
@@ -24,13 +26,19 @@ var doTurn = function(turnEvent) {
   // Increment the variable turn by one
   // Should call on the function updateState() and pass it the event
   // Should call on checkWinner()
+    if (turn == 1) {
+      $('#message').text(" ");
+    }
+
     if(taken(turnEvent)){
       message("That square is taken. Please select another.");
-    } else if (!over()) {
+    } else if(!over()) {
     updateState(turnEvent);
-    checkWinner();
     turn++;
-    }
+    checkWinner();
+  } else if (over()) {
+    checkWinner();
+  }
 }
 
 var updateState = function(turnEvent) {
@@ -52,8 +60,6 @@ var player = function() {
 }
 
 var full = function() {
-  // @board.count("X") + @board.count("O") == 9 ?
-  // true : false
   return $('td').text().length > 8;
 }
 
@@ -68,12 +74,47 @@ var cat = function() {
 
 }
 
-var won = function() {
+var stateHash = function() {
+  var boardHash = {};
+  $("td").each(function() {
+    var $td = $(this)
+    var position = $td.data("x").toString() + $td.data("y").toString();
+    boardHash[position] = $td.text();
+  });
+  return boardHash;
+}
 
+var won = function() {
+  if (turn > 4) {
+    var boardHash = stateHash();
+    var saveCombo = [];
+    winCombinations.forEach(function(combo) {
+      var ohWins = boardHash[combo[0]] == "O" && boardHash[combo[1]] == "O" && boardHash[combo[2]] == "O";
+      var exWins = boardHash[combo[0]] == "X" && boardHash[combo[1]] == "X" && boardHash[combo[2]] == "X";
+      if (ohWins || exWins) {
+        saveCombo.push(true);
+      } else {
+        saveCombo.push(false);
+      }
+    });
+    var index = saveCombo.indexOf(true);
+    if (index >= 0) {
+      setWinner(boardHash[winCombinations[index][0]]);
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
+var setWinner = function(player) {
+  winner = player;
 }
 
 var over = function() {
-  if (cat() || won()){
+  if (cat() || !!won()){
     return true;
   }
   else {
@@ -90,11 +131,11 @@ var checkWinner = function() {
   //"Player X Won!" or "Player O Won!". It should then pass this string to message().
   if (over()) {
     if (won()) {
-      message("Player " + player() + " Won!");
-      resetGame();
+      message("Player " + winner + " Won!");
     } else {
       message("Tie game");
     }
+    resetGame();
   } else {
     return false;
   }
@@ -109,7 +150,6 @@ var message = function(string) {
 var resetGame = function() {
   turn = 0;
   $("td").html("");
-  $('#message').text(" ");
 }
 
 $(function() {
