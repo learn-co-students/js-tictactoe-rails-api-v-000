@@ -125,13 +125,15 @@ var over = function() {
 
 var checkWinner = function() {
   if (over()) {
-    saveGame();
     if (won()) {
       message("Player " + winner + " Won!");
+      saveGame();
+      resetGame();
     } else {
       message("Tie game");
+      saveGame();
+      resetGame();
     }
-    resetGame();
   } else {
     return false;
   }
@@ -147,32 +149,48 @@ var resetGame = function() {
   $("td").html("");
 }
 
-$(function() {
-  attachListeners();
-  $("#previous").on("click", function() {
-    getPreviousGames();
-  });
-  $("#save").on("click", function() {
-    saveGame();
-  });
-});
+
 
 var getPreviousGames = function() {
-  $.get("/games.json", function(data) {
+  $.get("/games", function(data) {
     var games = data["games"];
     var gameList = "";
-
-    games.forEach(function(game){
-
-    });
+    if (games.length == 0) {
+      $("#message").text("No games saved.")
+    } else {
+      $("#message").text("Click on the number to restore any of the following games.")
+      gameList += "<ul>";
+      games.forEach(function(game){
+        gameList += '<li class="game" data-id="' + game["id"] + '">' + game["id"] + '</li>';
+      });
+      gameList += "</ul>";
+      $("#games").html(gameList);
+    }
   });
 };
 
 var saveGame = function() {
   currentGame = current();
-  var posting = $.post('/games', {game: {state: currentGame}});
-  posting.done(function(data){
-    $("#previousHeader").text("Click on the number to restore any of the following games.")
-    console.log(data);
-  })
+  $.ajax({
+    type: "POST",
+    url: "/games",
+    data: {game: {state: currentGame}},
+  });
 }
+
+
+$(function() {
+  attachListeners();
+
+  $("#previous").on("click", function() {
+    getPreviousGames();
+  });
+
+  $("#save").on("click", function() {
+    saveGame();
+  });
+
+  $("li.game").on("click", function(event) {
+    console.log(event.target);
+  });
+});
