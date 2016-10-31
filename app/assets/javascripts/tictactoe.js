@@ -6,10 +6,9 @@ var winCombinations = [["00","10","20"], ["01","11","21"], ["02","12","22"],
 
 var winner = "";
 
-var attachListeners = function() {
-// call to attach the click handlers to the page after the DOM has been loaded
-//When a client clicks on a cell, the function doTurn() should be called and passed a parameter of the event
+var currentGame = 0;
 
+var attachListeners = function() {
   $('td').on('click', function(event) {
     doTurn(event.target);
   });
@@ -23,10 +22,7 @@ var taken = function(turnEvent) {
 }
 
 var doTurn = function(turnEvent) {
-  // Increment the variable turn by one
-  // Should call on the function updateState() and pass it the event
-  // Should call on checkWinner()
-    if (turn == 1) {
+      if (turn == 1) {
       $('#message').text(" ");
     }
 
@@ -42,16 +38,11 @@ var doTurn = function(turnEvent) {
 }
 
 var updateState = function(turnEvent) {
-//This method should call on player()
-//and add the return value of this function to the clicked cell on the table
-
   var currentPlayer = player();
   $(turnEvent).html(currentPlayer);
 }
 
 var player = function() {
-//If the turn number is even,
-//this function should return the string "X", else it should return the string "O"
   if (turn % 2 === 0) {
     return "X";
   } else {
@@ -82,6 +73,15 @@ var stateHash = function() {
     boardHash[position] = $td.text();
   });
   return boardHash;
+}
+
+var current = function() {
+  var board = [];
+  $("td").each(function() {
+    var $td = $(this)
+    board.push($td.text());
+  });
+  return board;
 }
 
 var won = function() {
@@ -123,13 +123,9 @@ var over = function() {
 }
 
 
-
-
 var checkWinner = function() {
-  //This function should evaluate the board to see if anyone has won
-  //If there is a winner, this function should make one of two strings:
-  //"Player X Won!" or "Player O Won!". It should then pass this string to message().
   if (over()) {
+    saveGame();
     if (won()) {
       message("Player " + winner + " Won!");
     } else {
@@ -143,7 +139,6 @@ var checkWinner = function() {
 
 
 var message = function(string) {
-  //This function should accept a string and add the string to the div with an id of "message"
   $('#message').text(string);
 }
 
@@ -154,4 +149,30 @@ var resetGame = function() {
 
 $(function() {
   attachListeners();
+  $("#previous").on("click", function() {
+    getPreviousGames();
+  });
+  $("#save").on("click", function() {
+    saveGame();
+  });
 });
+
+var getPreviousGames = function() {
+  $.get("/games.json", function(data) {
+    var games = data["games"];
+    var gameList = "";
+
+    games.forEach(function(game){
+
+    });
+  });
+};
+
+var saveGame = function() {
+  currentGame = current();
+  var posting = $.post('/games', {game: {state: currentGame}});
+  posting.done(function(data){
+    $("#previousHeader").text("Click on the number to restore any of the following games.")
+    console.log(data);
+  })
+}
