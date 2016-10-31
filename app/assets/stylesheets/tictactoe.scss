@@ -1,12 +1,19 @@
 @import url('https://fonts.googleapis.com/css?family=Rammetto+One');
 
-table, body {
+
+body, table {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   width: 360px;
   margin: 40px auto 0px auto;
 }
 
 .options {
   margin: 20px auto 0px auto;
+}
+
+#message {
+  font-size: 16px;
+  margin-top: 15px;
 }
 
 td {
