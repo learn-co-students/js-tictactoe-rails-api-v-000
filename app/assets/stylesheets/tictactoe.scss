@@ -1,5 +1,22 @@
-table, .footer {
+@import url('https://fonts.googleapis.com/css?family=Rammetto+One');
+
+table, body {
   width: 360px;
   margin: 40px auto 0px auto;
+}
 
+.footer {
+  margin: 20px auto 0px auto;
+}
+
+td {
+  width: 120px;
+  height: 84px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 50px;
+  color: white;
+  padding: 10px;
+  background-color: rgb(64, 84, 178);
+  font-family: 'Rammetto One', cursive;
 }
