@@ -25,7 +25,6 @@ var doTurn = function(turnEvent) {
       if (turn == 1) {
       $('#message').text(" ");
     }
-
     if(taken(turnEvent)){
       message("That square is taken. Please select another.");
     } else if(!over()) {
@@ -127,13 +126,10 @@ var checkWinner = function() {
   if (over()) {
     if (won()) {
       message("Player " + winner + " Won!");
-      saveGame();
-      resetGame();
     } else {
       message("Tie game");
-      saveGame();
-      resetGame();
     }
+    save();
   } else {
     return false;
   }
@@ -147,13 +143,26 @@ var message = function(string) {
 var resetGame = function() {
   turn = 0;
   $("td").html("");
+  currentGame = 0;
 }
 
 
 
-var getPreviousGames = function() {
-  $.get("/games", function(data) {
-    var games = data["games"];
+
+
+var save = function() {
+  var board = current();
+  $.ajax({
+    type: "POST",
+    url: "/games",
+    data: {game: {state: board}},
+  });
+  resetGame();
+}
+
+var getAllGames = function() {
+  $.getJSON("/games").done(function(response) {
+    var games = response["games"];
     var gameList = "";
     if (games.length == 0) {
       $("#message").text("No games saved.")
@@ -167,27 +176,16 @@ var getPreviousGames = function() {
       $("#games").html(gameList);
     }
   });
-};
-
-var saveGame = function() {
-  currentGame = current();
-  $.ajax({
-    type: "POST",
-    url: "/games",
-    data: {game: {state: currentGame}},
-  });
 }
-
 
 $(function() {
   attachListeners();
 
   $("#previous").on("click", function() {
-    getPreviousGames();
+    getAllGames();
   });
-
   $("#save").on("click", function() {
-    saveGame();
+    save();
   });
 
   $("li.game").on("click", function(event) {
