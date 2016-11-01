@@ -3,9 +3,7 @@ var winCombinations = [["00","10","20"], ["01","11","21"], ["02","12","22"],
     ["00","01","02"], ["10","11","12"], ["20","21","22"],
     ["00","11","22"], ["02","11","20"]
    ];
-
 var winner = "";
-
 var currentGame = 0;
 
 var attachListeners = function() {
@@ -24,7 +22,7 @@ var attachListeners = function() {
 
   $("#games").on("click", "li", function(event) {
     currentGame = $(this).text();
-    loadGame(currentGame);
+    loadGame(event);
   });
 }
 
@@ -186,8 +184,10 @@ var getGames = function() {
     } else {
       $("#message").text("Click on the number to restore any of the following games.")
       gameList += "<ul>";
+      console.log(response)
+      console.log(games)
       games.forEach(function(game){
-        gameList += "<li data-gameid=" + game["id"] + ">" + game["id"] + "</li>";
+        gameList += "<li data-gameid=" + game["id"] + " data-state=" + game["state"] + ">" + game["id"] + "</li>";
       });
       gameList += "</ul>";
       $("#games").html(gameList);
@@ -195,22 +195,19 @@ var getGames = function() {
   });
 }
 
-var loadGame = function(currentGame) {
-  $.get("/games/" + currentGame).done(function(response) {
-    var state = response["game"]["state"];
+var loadGame = function(event) {
+    var state = $(event.target).data("state").split(",");
     $("td").each(function(i) {
        $(this).text(state[i]);
      })
     turn = 0;
-       state.forEach(function(item) {
-         if(item != "") {
-           turn += 1;
-         }
-       })
-  });
+   state.forEach(function(item) {
+     if(item != "") {
+       turn += 1;
+     }
+   })
 }
 
 $(function() {
   attachListeners();
-
 });

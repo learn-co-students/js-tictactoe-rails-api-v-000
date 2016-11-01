@@ -31,7 +31,7 @@ class GamesController < ApplicationController
   end
 
   def game_params
-    params.require(:game).require(:state)
+    params.require(:game).permit(:state)
   end
 
 end
