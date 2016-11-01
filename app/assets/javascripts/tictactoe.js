@@ -158,7 +158,7 @@ var save = function() {
 } else {
   $.ajax({
     type: "PATCH",
-    url: "/games" + currentGame,
+    url: "/games/" + currentGame,
     data: {game: {state: board}},
   });
 }
@@ -183,11 +183,23 @@ var getAllGames = function() {
   });
 }
 
-var loadGame = function() {
+var loadGame = function(currentGame) {
   $.getJSON("/games/" + currentGame).done(function(response) {
-    console.log(response["game"]["state"]);
+    var state = response["game"]["state"];
+    var $squares = $('td');
+
+    $($squares[$squares.data(['x',0]['y', 0])]).text(state[0]);
+    $($squares[$squares.data(['x',1]['y', 0])]).text(state[1]);
+    $($squares[$squares.data(['x',2]['y', 0])]).text(state[2]);
+
+    $($squares[$squares.data(['x',0]['y', 1])]).text(state[3]);
+    $($squares[$squares.data(['x',1]['y', 1])]).text(state[4]);
+    $($squares[$squares.data(['x',2]['y', 1])]).text(state[5]);
+
+    $($squares[$squares.data(['x',0]['y', 2])]).text(state[6]);
+    $($squares[$squares.data(['x',1]['y', 2])]).text(state[7]);
+    $($squares[$squares.data(['x',2]['y', 2])]).text(state[8]);
   });
-  attachListeners();
 }
 
 $(function() {
@@ -202,7 +214,6 @@ $(function() {
 
   $("#games").on("click", "li", function(event) {
     currentGame = $(this).text();
-    console.log(currentGame);
-    loadGame();
+    loadGame(currentGame);
   });
 });
