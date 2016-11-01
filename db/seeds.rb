@@ -5,3 +5,11 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+Game.create(:state => ["X", "", "", "", "", "", "", "", ""])
+
+Game.create(:state => ["X", "O", "", "", "", "", "", "", ""])
+
+Game.create(:state => ["X", "O", "X", "", "", "", "", "", ""])
+
+Game.create(:state => ["", "", "", "X", "O", "", "X", "O", ""])
