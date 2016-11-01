@@ -15,6 +15,17 @@ var attachListeners = function() {
   $('#reset').on('click', function(event) {
     resetGame();
   });
+  $("#previous").on("click", function() {
+    getGames();
+  });
+  $("#save").on("click", function() {
+    save();
+  });
+
+  $("#games").on("click", "li", function(event) {
+    currentGame = $(this).text();
+    loadGame(currentGame);
+  });
 }
 
 var taken = function(turnEvent) {
@@ -175,7 +186,7 @@ var getGames = function() {
       $("#message").text("Click on the number to restore any of the following games.")
       gameList += "<ul>";
       games.forEach(function(game){
-        gameList += '<li data-id="' + game["id"] + '">' + game["id"] + '</li>';
+        gameList += "<li data-gameid=" + game["id"] + ">" + game["id"] + "</li>";
       });
       gameList += "</ul>";
       $("#games").html(gameList);
@@ -184,7 +195,7 @@ var getGames = function() {
 }
 
 var loadGame = function(currentGame) {
-  $.getJSON("/games/" + currentGame).done(function(response) {
+  $.get("/games/" + currentGame).done(function(response) {
     var state = response["game"]["state"];
     var $squares = $('td');
     $squares.each(function(index){
@@ -197,15 +208,5 @@ var loadGame = function(currentGame) {
 $(function() {
   attachListeners();
 
-  $("#previous").on("click", function() {
-    getGames();
-  });
-  $("#save").on("click", function() {
-    save();
-  });
 
-  $("#games").on("click", "li", function(event) {
-    currentGame = $(this).text();
-    loadGame(currentGame);
-  });
 });

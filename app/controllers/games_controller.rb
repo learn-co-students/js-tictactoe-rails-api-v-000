@@ -16,12 +16,12 @@ class GamesController < ApplicationController
   end
 
   def show
-    render json: @game
+    render json: @game, status: 200
   end
 
   def index
     @games = Game.all
-    render json: @games
+    render json: @games, status: 200
   end
 
   private
