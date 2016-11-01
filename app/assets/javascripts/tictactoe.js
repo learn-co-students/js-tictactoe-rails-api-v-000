@@ -141,6 +141,7 @@ var checkWinner = function() {
       message("Tie game");
     }
     save();
+    resetGame();
   } else {
     return false;
   }
@@ -164,20 +165,19 @@ var save = function() {
   $.ajax({
     type: "POST",
     url: "/games",
-    data: {game: {state: board}},
+    data: {game: {state: board}}
   });
 } else {
   $.ajax({
     type: "PATCH",
     url: "/games/" + currentGame,
-    data: {game: {state: board}},
+    data: {game: {state: board}}
   });
-}
-  resetGame();
+  }
 }
 
 var getGames = function() {
-  $.getJSON("/games").done(function(response) {
+  $.get("/games").done(function(response) {
     var games = response["games"];
     var gameList = "";
     if (games.length == 0) {
