@@ -113,7 +113,7 @@ var doTurn = function(event) {
   var win = checkWinner()
 
   if (win === true) {
-    saveGame(win);
+    reset();
   } else {
     turn += 1;
   }
