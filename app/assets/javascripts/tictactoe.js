@@ -167,5 +167,7 @@ var player = function() {
 }
 
 var message = function(string) {
-  $('#message').html(string)
+  $('#message').html(string);
+  $('#message').fadeIn(1000);
+  $('#message').fadeOut(3000);
 }

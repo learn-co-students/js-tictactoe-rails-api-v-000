@@ -1,3 +1,8 @@
+#message {
+  color:white;
+  display: none;
+}
+
 .tictactoe-border {
   width: 100%;
   background-color: green;
