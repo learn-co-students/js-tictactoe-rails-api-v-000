@@ -183,6 +183,12 @@ var getAllGames = function() {
   });
 }
 
+var loadGame = function() {
+  $.getJSON("/games/" + currentGame).done(function(response) {
+    console.log(response);
+  });
+}
+
 $(function() {
   attachListeners();
 
@@ -193,7 +199,9 @@ $(function() {
     save();
   });
 
-  $("li").on("click", function(event) {
-    console.log("test");
+  $("#games").on("click", "li", function(event) {
+    currentGame = $(this).text();
+    console.log(currentGame);
+    loadGame();
   });
 });
