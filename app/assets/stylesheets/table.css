@@ -18,3 +18,10 @@ td {
   font-size: xx-large;
   text-align: center;
 }
+
+button {
+  background: black;
+  color: white;
+  border: none;
+  font-size: 20px;
+}
