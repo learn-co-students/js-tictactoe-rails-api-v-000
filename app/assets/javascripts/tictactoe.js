@@ -165,7 +165,7 @@ var save = function() {
   resetGame();
 }
 
-var getAllGames = function() {
+var getGames = function() {
   $.getJSON("/games").done(function(response) {
     var games = response["games"];
     var gameList = "";
@@ -187,11 +187,10 @@ var loadGame = function(currentGame) {
   $.getJSON("/games/" + currentGame).done(function(response) {
     var state = response["game"]["state"];
     var $squares = $('td');
-    console.log(state);
-
     $squares.each(function(index){
       $(this).text(state[index]);
     });
+    turn = state.filter(String).length;
   });
 }
 
@@ -199,7 +198,7 @@ $(function() {
   attachListeners();
 
   $("#previous").on("click", function() {
-    getAllGames();
+    getGames();
   });
   $("#save").on("click", function() {
     save();
