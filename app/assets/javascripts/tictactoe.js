@@ -147,16 +147,21 @@ var resetGame = function() {
 }
 
 
-
-
-
 var save = function() {
   var board = current();
+  if (currentGame == 0){
   $.ajax({
     type: "POST",
     url: "/games",
     data: {game: {state: board}},
   });
+} else {
+  $.ajax({
+    type: "PATCH",
+    url: "/games" + currentGame,
+    data: {game: {state: board}},
+  });
+}
   resetGame();
 }
 
@@ -188,7 +193,7 @@ $(function() {
     save();
   });
 
-  $("li.game").on("click", function(event) {
-    console.log(event.target);
+  $("li").on("click", function(event) {
+    console.log("test");
   });
 });
