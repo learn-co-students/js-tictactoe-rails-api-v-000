@@ -11,7 +11,7 @@ var winningCombos = [
   [[2,0], [1,1], [0,2]]
 ]
 
-function attachListeners() {
+var attachListeners = function() {
   $('td').click(function(event) {
     doTurn(event);
   });
@@ -33,7 +33,7 @@ function attachListeners() {
   })
 }
 
-function switchGame(response) {
+var switchGame = function(response) {
   var state = $(response.target).data("state").split(",");
   var id = $(response.target).data("gameid")
   turn = state.filter(function(token) {return token == "X" || token == "O"}).length
@@ -46,7 +46,7 @@ function switchGame(response) {
   }
 }
 
-function saveGame(resetCurrentGame) {
+var saveGame = function(resetCurrentGame) {
     var url, method;
 
     if (currentGame === 0) {
@@ -78,7 +78,7 @@ function saveGame(resetCurrentGame) {
     });
 }
 
-function getAllGames() {
+var getAllGames = function() {
   $.getJSON("/games").done(function(response) {
     if (response.length != 0) {
       showGames(response);
@@ -86,7 +86,7 @@ function getAllGames() {
   })
 }
 
-function showGames(games) {
+var showGames = function(games) {
   var dom = $()
   games.forEach(function(game) {
    dom = dom.add($('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id}));
@@ -96,7 +96,7 @@ function showGames(games) {
   $("#games a").click(function(response){ deleteGame(response)})
 }
 
-function deleteGame(response) {
+var deleteGame = function(response) {
   var id = $(response.target).data('id')
 
   $.ajax({
@@ -105,7 +105,7 @@ function deleteGame(response) {
   })
 }
 
-function doTurn(event) {
+var doTurn = function(event) {
   updateState(event);
   var win = checkWinner()
 
@@ -116,13 +116,13 @@ function doTurn(event) {
   }
 }
 
-function reset() {
+var reset = function() {
   $("td").html('')
   turn = 0
   currentGame = 0
 }
 
-function checkWinner() {
+var checkWinner = function() {
   var returnValue = false;
   winningCombos.forEach(function(combo) {
     var xValue1 = combo[0][0];
@@ -150,11 +150,11 @@ function checkWinner() {
   return returnValue;
 }
 
-function updateState(event) {
+var updateState = function(event) {
   $(event.target).html(player());
 }
 
-function player() {
+var player = function() {
   if(turn % 2 === 0) {
     return "X";
   }
@@ -163,6 +163,6 @@ function player() {
   }
 }
 
-function message(string) {
+var message = function(string) {
   $('#message').html(string)
 }
