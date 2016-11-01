@@ -141,6 +141,7 @@ var checkWinner = function() {
       message("Tie game");
     }
     save();
+    $('#games').text('');
     resetGame();
   } else {
     return false;
@@ -165,7 +166,10 @@ var save = function() {
   $.ajax({
     type: "POST",
     url: "/games",
-    data: {game: {state: board}}
+    data: {game: {state: board}},
+    success: function(response) {
+        currentGame = response["game"]["id"];
+    }
   });
 } else {
   $.ajax({
@@ -207,6 +211,5 @@ var loadGame = function(currentGame) {
 
 $(function() {
   attachListeners();
-
 
 });
