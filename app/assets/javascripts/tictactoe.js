@@ -175,7 +175,7 @@ var getAllGames = function() {
       $("#message").text("Click on the number to restore any of the following games.")
       gameList += "<ul>";
       games.forEach(function(game){
-        gameList += '<li class="game" data-id="' + game["id"] + '">' + game["id"] + '</li>';
+        gameList += '<li data-id="' + game["id"] + '">' + game["id"] + '</li>';
       });
       gameList += "</ul>";
       $("#games").html(gameList);
