@@ -76,6 +76,7 @@ var saveGame = function(resetCurrentGame) {
         }
       }
     });
+    getAllGames();
 }
 
 var getAllGames = function() {
@@ -103,6 +104,8 @@ var deleteGame = function(response) {
     url: '/games/' + id,
     method: 'DELETE'
   })
+
+  getAllGames();
 }
 
 var doTurn = function(event) {
