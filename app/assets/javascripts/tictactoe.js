@@ -184,8 +184,6 @@ var getGames = function() {
     } else {
       $("#message").text("Click on the number to restore any of the following games.")
       gameList += "<ul>";
-      console.log(response)
-      console.log(games)
       games.forEach(function(game){
         gameList += "<li data-gameid=" + game["id"] + " data-state=" + game["state"] + ">" + game["id"] + "</li>";
       });
