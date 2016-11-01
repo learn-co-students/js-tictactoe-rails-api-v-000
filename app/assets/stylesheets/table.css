@@ -9,9 +9,8 @@ body {
 }
 
 .tictactoe-border {
-  width: 100%;
-  margin: auto auto;
   text-align: center;
+  width: 80%;
 }
 
 table, th, td {

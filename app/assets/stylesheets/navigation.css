@@ -1,0 +1,13 @@
+.wrapper {
+  width: 100%;
+}
+
+.left-navigation {
+  float: left;
+  width: 20%;
+}
+
+.right-navigation {
+  float: right;
+  width: 20%;
+}
