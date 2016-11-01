@@ -185,8 +185,9 @@ var getAllGames = function() {
 
 var loadGame = function() {
   $.getJSON("/games/" + currentGame).done(function(response) {
-    console.log(response);
+    console.log(response["game"]["state"]);
   });
+  attachListeners();
 }
 
 $(function() {
