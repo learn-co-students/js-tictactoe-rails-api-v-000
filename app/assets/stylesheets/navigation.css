@@ -4,8 +4,8 @@
 
 .left-navigation {
   float: left;
-  width: 30%;
   text-align: center;
+  width: 25%;
 }
 
 #social-icons ul {
@@ -19,5 +19,6 @@
 
 .right-navigation {
   float: right;
-  width: 30%;
+  width: 25%;
+  margin-left: 0px;
 }
