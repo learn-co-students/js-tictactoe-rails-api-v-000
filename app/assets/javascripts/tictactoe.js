@@ -21,16 +21,24 @@ function attachListeners() {
 }
 
 function doTurn(target) {
-	if($(target).is(':empty')) {
-		updateState(target);
-		checkWinner();	
+
+	updateState(target);
+	var check = checkWinner();
+	// console.log("Turn: " + turn);
+	// console.log(check);
+	if (check === true ) {
+		turn = 0;
+		$('td').text('');
 	}
-	turn += 1;
+	else {
+		turn += 1;		
+	}
+
 }
 
 function checkWinner() {
 	var currentPlayer = player();
-	console.log(currentPlayer)
+
 	if (turn > 3 && turn < 8) {
 		for (var i = 0; i < 8; i++){
 			var xWinCount = 0;
@@ -52,12 +60,14 @@ function checkWinner() {
 			if (xWinCount === 3 || oWinCount === 3) {
 				
 				message("Player " + currentPlayer + " Won!");
+				return true;
 			}
 		}
 		return false;
 	}
 	else if (turn === 8) {
 		message("Tie game");
+		return false;
 	}
 	return false;
 }
@@ -72,23 +82,23 @@ function player() {
 }
 
 function updateState(target) {
+
 	var currentPlayer = player();
-	$(target).text(currentPlayer);
-	var cells = $('tr').find('*');
-	var cellNumber = cells.index(target);
-	if(currentPlayer === "X") {
-		xPositions.push(cellNumber);
-	}
-	else {
-		oPositions.push(cellNumber);
+	if($(target).is(':empty')) {
+		$(target).html(currentPlayer);
+		var cells = $('tr').find('*');
+		var cellNumber = cells.index(target);
+		if(currentPlayer === "X") {
+			xPositions.push(cellNumber);
+		}
+		else {
+			oPositions.push(cellNumber);
+		}
 	}
 }
 
 function message(messageString) {
-	$('#message').text(messageString);
-	turn = 0;
-	$('td').text('');
-
+	$('#message').html(messageString);
 }
 
 $(document).ready(function() {
