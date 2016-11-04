@@ -13,6 +13,7 @@ class GamesController < ApplicationController
   		@game = Game.find(params[:id])
   		@game.state = params[:game][:state]
   		@game.save
+  		render json: @game, status: 200
   	end
 
 	private

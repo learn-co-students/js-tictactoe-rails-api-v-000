@@ -1,6 +1,6 @@
 
 var turn = 0;
-var currentGame = 0;
+var currentGame;
 var winningCombos = [
 	[0, 1, 2], 
 	[3, 4, 5],
@@ -27,8 +27,6 @@ function attachListeners() {
 		saveGame(true);
 	
 	});
-
-
 }
 
 function doTurn(event) {
@@ -142,7 +140,7 @@ function saveGame(reset) {
  		method: method,
  		data: data
  	}).done(function(data, textStatus, jqXHR) {
- 		// console.log(jqXHR);
+ 		console.log(jqXHR);
  		currentGame = JSON.parse(jqXHR.responseText)['game']['id'];	
  		console.log(currentGame);	
  	});
