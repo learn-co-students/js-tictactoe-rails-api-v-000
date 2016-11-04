@@ -133,7 +133,7 @@ describe('Tic Tac Toe Functionality', function() {
       // _X_|_O_|_X_
       // _O_|_O_|_X_
       //  X | X | O
-      console.log(turn);
+      debugger
       expect(window.message).toHaveBeenCalledWith("Tie game");
     });
   });
