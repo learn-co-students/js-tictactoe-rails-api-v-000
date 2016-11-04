@@ -11,12 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160212160805) do
+ActiveRecord::Schema.define(version: 20161104182841) do
 
   create_table "games", force: :cascade do |t|
     t.text     "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "zero"
+    t.string   "one"
+    t.string   "two"
+    t.string   "three"
+    t.string   "four"
+    t.string   "five"
+    t.string   "six"
+    t.string   "seven"
+    t.string   "eight"
   end
 
 end
