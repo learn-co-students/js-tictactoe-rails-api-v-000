@@ -310,7 +310,7 @@ describe('#integration tests of persistence', function() {
     expect($("#games").children().length).toBe(0);
     jasmine.Ajax.withMock(function() {
       var data = {
-        games: [{
+        game: {
           id:1,
           state: ["X","","","","","","","",""]
         }]
@@ -320,8 +320,9 @@ describe('#integration tests of persistence', function() {
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
-      $('#previous').click()
+      $('#save').click()
       jasmine.Ajax.requests.mostRecent().respondWith(response);
+      $('#previous').click()
       expect($("#games").children().length).toBe(1);
     });
   });
