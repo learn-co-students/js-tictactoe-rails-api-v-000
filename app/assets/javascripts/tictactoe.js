@@ -4,6 +4,7 @@
 // 02 12 22
 
 var turn = 0
+var game;
 
 const winCombos = [
 	[
@@ -65,8 +66,11 @@ function attachListeners() {
 
 function doTurn(event) {
 	updateState(event);
-	if (checkWinner()) {
+	if (checkWinner() || tieGame()) {
 		saveGame();
+		$('td').html('');
+		turn = 0;
+		game = 0;
 	} else {
 		turn += 1;
 	};
@@ -103,25 +107,41 @@ function previousGame() {
 
 };
 
+function tieGame() {
+	var tie = true;
+	$('td').each(function() {
+		if ($(this).html().length <= 0) {
+			tie = false;
+		};
+	});
+	if (tie === true) {
+		message('Tie game');
+		return tie;
+	};
+};
+
+function lookForWinner(winCombo) {
+	for (let i = 0; i < winCombo.length; i++) {
+		var winPositions = winCombo[i];
+		var x = winPositions[0];
+		var y = winPositions[1];
+		var cell = $('[data-x="' + x + '"][data-y="' + y + '"]');
+		if (cell.html() != player()) {
+			return false;
+		};
+	};
+	return true;
+};
+
 function checkWinner() {
 	for (let i = 0; i < winCombos.length; i++) {
 		var winCombo = winCombos[i];
-		for (let i = 0; i < winCombo.length; i++) {
-			var winPositions = winCombo[i];
-			var x = winPositions[0];
-			var y = winPositions[1];
-			var cell = $('[data-x="' + x + '"][data-y="' + y + '"]');
-			if (cell.html() != player()) {
-				return false
-			} else {
-
-			};
+		if(lookForWinner(winCombo) === true) {
+			message('Player ' + player() + ' Won!');
+			return true;
 		};
 	};
-	// If there is a winner:
-	// const msg = "Player X Won!" or "Player O Won!" or "Tie game"
-
-	message(winner);
+	return false;
 };
 
 function message(string) {
