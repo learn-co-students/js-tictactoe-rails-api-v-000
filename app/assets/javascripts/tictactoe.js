@@ -122,7 +122,7 @@ function saveGame(reset) {
 		if (reset) {
 			currentGame = undefined;
 		} else {
-			currentGame = data.id;
+			currentGame = data.game.id;
 		}
 	})
 	.error(function(data) {
