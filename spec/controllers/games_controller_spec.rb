@@ -22,7 +22,6 @@ RSpec.describe GamesController, :type => :controller do
       Game.create(:state => ["X", "O", "", "", "", "", "", "", ""])
       Game.create(:state => ["X", "O", "X", "", "", "", "", "", ""])
       get :index
-      binding.pry
       expected = 
           [{"id"=>1, "state"=>["X", "O", "", "", "", "", "", "", ""]}, 
           {"id"=>2, "state"=>["X", "O", "X", "", "", "", "", "", ""]}]
