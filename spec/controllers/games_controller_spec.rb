@@ -22,12 +22,10 @@ RSpec.describe GamesController, :type => :controller do
       Game.create(:state => ["X", "O", "", "", "", "", "", "", ""])
       Game.create(:state => ["X", "O", "X", "", "", "", "", "", ""])
       get :index
-      expected = {
-        "games"=>
+      binding.pry
+      expected = 
           [{"id"=>1, "state"=>["X", "O", "", "", "", "", "", "", ""]}, 
-          {"id"=>2, "state"=>["X", "O", "X", "", "", "", "", "", ""]}
-        ]
-      }
+          {"id"=>2, "state"=>["X", "O", "X", "", "", "", "", "", ""]}]
       expect(JSON.parse(response.body)).to eq expected
     end
   end
