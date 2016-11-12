@@ -14,3 +14,4 @@
 //= require jquery_ujs
 //= require tictactoe
 //= require gamelogic
+//= require gamestates
