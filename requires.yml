@@ -3,6 +3,10 @@ javascripts:
   files:
     - spec/lib/jquery.min.js
     - app/assets/javascripts/tictactoe.js
+    - app/assets/javascripts/gamelogic.js
+    - app/assets/javascripts/gamestates.js
+
+
   specs:
     - spec/lib/jasmine-jquery.js
     - spec/lib/mock-ajax.js
