@@ -1,25 +1,22 @@
 var turn = 0;
 var currentState = false;
 WINCOMBO = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6],[1,4,7], [2,5,8],[0,4,8], [6,4,2]];
+var board = ["", "", "", "", "", "", "", "", ""];
 
 function attachListeners() {
- $('td').each(function() {
-    var self = $(this);
-     self.click(function() {
-       if(self.html() === "" && currentState === false){
-        doTurn(self)
-      }
-    });
+ $('td').on('click', function(event){
+    doTurn(event)
   });
-  getAllGames()
-  saveGame()
 }
 
 function doTurn(event) {
-// Increment the variable turn by one
-// Should call on the function updateState() and pass it the event
-// Should call on checkWinner()
- }
+  updateState(event);
+ if (checkWinner()){
+    save(true);
+    resetGame();
+  } else {
+    turn += 1;
+  } }
 
 function player(){
 // If the turn number is even, this function should return the string "X", else it should return the string "O"
@@ -28,7 +25,10 @@ function player(){
 
 function updateState(event){
 // This method should call on player() and add the return value of this function to the clicked cell on the table
-
+  var td = event.target;
+  if (td.textContent !== "X" && td.textContent !== "O") {
+    $(td).text(player());
+  }
 }
 
 function checkWinner() {
