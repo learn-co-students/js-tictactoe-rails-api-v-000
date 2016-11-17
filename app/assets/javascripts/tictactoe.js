@@ -35,6 +35,10 @@ function attachListeners(){
 
   $('#previous').on('click', function() {
     listGames();
+  });
+
+  $("#games").on('click', 'li', function(event){
+    loadGame(event);
   })
 };
 
@@ -160,7 +164,20 @@ function listGames(){
   $.get('/games', function(data) {
     data = data.games
     $.each(data, function(index, game) {
-      $("#games").append("<li>" + game.id + "</li>");
+      $("#games").append(displayGame(game));
     })
   })
+};
+
+function displayGame(game){
+  return $("<li>", {'data-state': game.state, 'data-gameid': game.id, text: game.id});
 }
+
+function loadGame(event){
+  var state = $(event.target).data("state").split(",")
+  var i = 0;
+    $("td").each(function() {
+      $(this).html(state[i]);
+      i++;
+    })
+};
