@@ -204,6 +204,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             this.fixturesNodes_.push(style)
             $('head').append(style)
     }
+    
 
     jasmine.StyleFixtures.prototype.clearCache = jasmine.Fixtures.prototype.clearCache
     jasmine.StyleFixtures.prototype.read_ = jasmine.Fixtures.prototype.read

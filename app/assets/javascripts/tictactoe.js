@@ -29,7 +29,6 @@ function attachListeners() {
   $('#previous').click(function(event) {
     getGames();
   });
-
 }
 
 function doTurn(event) {

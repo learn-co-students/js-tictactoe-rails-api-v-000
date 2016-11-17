@@ -20,5 +20,4 @@ class GamesControllerTest < ActionController::TestCase
     get :update
     assert_response :success
   end
-
 end
