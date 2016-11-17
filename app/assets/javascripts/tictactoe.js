@@ -5,6 +5,7 @@ $(document).ready(function(){
 
 var turn = 0;
 var currentGame = 0;
+var counter = 0;
 var wins = [
   [0,1,2],
   [3,4,5],
@@ -22,9 +23,16 @@ function attachListeners(){
       doTurn(event);
     };
   });
+
   $('#save').on('click', function() {
-    saveGame();
+    if(counter === 0){
+      saveGame();
+      counter++
+    } else {
+      updateGame();
+    }
   });
+
   $('#previous').on('click', function() {
     listGames();
   })
@@ -32,8 +40,10 @@ function attachListeners(){
 
 function doTurn(event){
   updateState(event);
-  checkWinner();
+  if (checkWinner()) {
+  } else {
   turn += 1;
+  }
 };
 
 function checkWinner(){
@@ -45,18 +55,23 @@ function checkWinner(){
     var c = box_values[wins[i][2]];
     if (a == b && a == c && a != 0){
       game_status = 'Player ' + a + ' Won!';
-      message(game_status);
-      resetBoard();
+      endGame(game_status);
       }
     }
     if (gameOver()) {
       game_status = 'Tie game';
-      message(game_status);
-      resetBoard();
+      endGame(game_status);
     } else {
     return false;
   }
 };
+
+function endGame(status) {
+  message(status);
+  saveGame();
+  resetBoard();
+}
+
 
 function updateState(event){
   var move = player();
@@ -100,20 +115,10 @@ function getBoard(){
   return box_values;
 }
 
-var saveGame = function(resetCurrentGame) {
-  var url, method, data;
-  var state = getCurrentState();
-  if(currentGame) {
-    url = "/games/" + currentGame
-    method = "PATCH"
-  } else {
-    url: '/games'
-    method: 'POST'
-  }
-
-$.ajax({
-    url: url,
-    method: method,
+function saveGame() {
+  $.ajax({
+    url: '/games',
+    method: 'POST',
     dataType: "json",
     data: {
       game: {
@@ -121,13 +126,25 @@ $.ajax({
       }
     },
     success: function(data) {
-      if(resetCurrentGame) {
-        currentGame = undefined;
-      } else {
-        currentGame = data.game.id
-      }
+      currentGame = data.game.id;
     }
-  })
+  });
+};
+
+function updateGame(){
+  $.ajax({
+    url: "/games/" + currentGame,
+    method: "PATCH",
+    dataType: "json",
+    data: {
+      game: {
+        state: getCurrentState()
+      }
+    },
+    success: function(data) {
+      currentGame = data.game.id;
+    }
+  });
 };
 
 function getCurrentState() {
@@ -139,10 +156,11 @@ function getCurrentState() {
 }
 
 function listGames(){
+  $("#games").text("");
   $.get('/games', function(data) {
     data = data.games
     $.each(data, function(index, game) {
-      $("#games").append(data.id);
+      $("#games").append("<li>" + game.id + "</li>");
     })
   })
 }
