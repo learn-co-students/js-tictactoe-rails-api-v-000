@@ -74,6 +74,7 @@ function endGame(status) {
   message(status);
   saveGame();
   resetBoard();
+  counter = 0;
 }
 
 
