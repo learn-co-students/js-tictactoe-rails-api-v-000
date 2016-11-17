@@ -26,3 +26,22 @@
 		<button id="previous">Show Previous Games</button>
 	</body>
 </html>
+
+
+<script type="text/javascript" charset="utf-8">
+  $(function () {
+    $('click').submit(function(event) {
+      event.preventDefault();
+
+      var values = $(this).serialize();
+
+      var posting = $.post('/posts', values);
+
+      posting.done(function(data) {
+        var post = data["post"];
+        $("#postTitle").text(post["title"]);
+        $("#postBody").text(post["description"]);
+      });
+    });
+  });
+</script>
