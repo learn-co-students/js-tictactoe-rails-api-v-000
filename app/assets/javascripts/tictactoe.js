@@ -28,16 +28,15 @@ function doTurn(data) {
   {
     message("Player " + currentState + " Won!")
     requestGameSave()
-    resetting()
+    resetGame()
 
   }else if(!(board.includes(""))){
     message("Tie game")
-    resetting()
+    resetGame()
   }
 }
 
-
-function resetting() {
+function resetGame() {
   board = ["", "", "", "", "", "", "", "", ""];
   turn = 0;
   currentGame = 0;
@@ -45,7 +44,6 @@ function resetting() {
   $('td').each(function() {
     $(this).html("");
   });
-
 }
 
 function checkWinner() {
@@ -74,7 +72,6 @@ function updateState(data) {
 
   board[x] = player();
   $(data).html(board[x]);
-
 }
 
 
@@ -86,11 +83,9 @@ function message(data) {
   $("#message").text(data);
 }
 
-
-
 function getAllGames() {
   $('#previous').click(function() {
-      resetting()
+      resetGame()
       $.getJSON(gameUrl).done(function (data) {
         var games = data['games'];
         var html = "";
@@ -101,7 +96,6 @@ function getAllGames() {
         loadGame(games)
     });
   });
-
 }
 
 function loadGame(games) {
@@ -116,22 +110,18 @@ function loadGame(games) {
           showGame()
     });
   });
-
 }
 
 function showGame() {
     $('td').each(function(index) {
       $(this).html(board[index])
   })
-
 }
 
 function turn_count(turn, moves) {
   if(moves !== "") turn++;
   return turn;
 }
-
-
 
 function requestGameSave() {
   var data = {
