@@ -59,6 +59,7 @@ function loadBoard(save) {
 function clearBoard() {
   $('td').empty();
   turn = 0;
+  currentGame = 0;
 }
 
 function doTurn(move) {
@@ -113,10 +114,13 @@ function saveGameState() {
   // (1) "ajaxType" should be set to "POST" if game is new or set to "PATCH" if game is in progress.
   // (2) Set "ajaxUrl" to "games/id_value" if updating an existing resource.
   $.ajax({
-    type: 'POST',
-    url: '/games',
+    type: (currentGame === 0) ? 'POST' : 'PATCH',
+    url: (currentGame === 0) ? '/games' : '/games/' + currentGame,
     dataType: 'json',
-    data: { game: {state: gameState} }
+    data: { game: {id: currentGame, state: gameState} },
+    success: function(data) {
+      currentGame = data.game.id;
+    }
   });
 }
 
