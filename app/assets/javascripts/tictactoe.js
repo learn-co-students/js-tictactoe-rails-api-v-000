@@ -49,11 +49,11 @@ function save(resetCurrentGame){
 }
 
 function getTokens() {
-  var marks = [];
+  var tokens = [];
   $("td").each(function(i) {
-    marks.push($(this).text());
+    tokens.push($(this).text());
   });
-  return marks;
+  return tokens;
 }
 
 function parseState(event) {
@@ -147,14 +147,14 @@ function winner(element, index, array) {
 }
 
 function tie() {
-  var thereIsATie = true;
+  var tieGame = true;
   $("td").each(function() {
     if ($(this).html().length <= 0) {
-      thereIsATie = false;
+      tieGame = false;
     }
   });
-  if (thereIsATie) message("Tie game");
-  return thereIsATie;
+  if (tieGame) message("Tie game");
+  return tieGame;
 }
 
 function resetGame() {
