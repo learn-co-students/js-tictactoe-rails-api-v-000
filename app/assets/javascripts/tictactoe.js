@@ -18,22 +18,23 @@ function board() { // COMPLETE
 }
 
 function doTurn(move) { // COMPLETE
-  // Increment the variable turn by one
+    // Increment the variable turn by one
   // Should call on the function updateState() and pass it the event
   // Should call on checkWinner()
+  //move.taget == <td data-x="2" data-y="2"></td>
   updateState(move.target);
-
   checkWinner();
   turn++;
 }
 
 function player() {  // COMPLETE
   // If the turn number is even, this function should return the string "X", else it should return the string "O"
-  if (turn % 2 === 0) {
-    return "X";
-  } else {
-    return "O";
-  }
+  return (turn % 2 === 0) ? "X" : "O";
+  // if (turn % 2 === 0) {
+  //   return "X";
+  // } else {
+  //   return "O";
+  // }
 }
 
 function updateState(move) { // COMPLETE
@@ -73,12 +74,46 @@ function checkWinner() { // COMPLETE
 function message(string) { // COMPLETE
   // This function should accept a string and add the string to the div with an id of "message"
   $('#message').html(string);
+
+  //Saves the board/game state in a variable.
+  //Creates an ajax request where data is sent to the backend to be stored for later use.
+  saveGameState();
+
   $('td').empty();
   turn = 0;
 }
 
-
-
 $(function() {
   attachListeners();
 });
+
+
+
+
+// NOTE: may need to convert gameState value from board() if not array
+//TODO: Needs to be called on the conclusion of every game AND on a "Save Game" click event
+
+function saveGameState() {
+  var gameState = ["O", "", "", "X", "O", "X", "", "X", "O"];
+  // TODO: replace above after board() return value is reformatted
+  // var gameState = board();
+
+  $.ajax({
+    // TODO: add "PATCH" when games are saved
+    type: "POST",
+    url: "/games",
+    dataType: "json",
+    data: {
+            game: {
+              state: gameState
+            }
+          }
+    // TODO: add callback function
+    // success: function() { callback function; }
+  });
+}
+
+//Retrieves game state from backend
+function getGameState() {
+  let gameState = board();
+}
