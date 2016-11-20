@@ -164,8 +164,8 @@ $(function() {
 
     $.ajax({
       // TODO: add "PATCH" when games are saved
-      type: "POST",//ajaxMethod,//  "POST" or "PATCH"
-      url: "/games",//ajaxUrl,//  "/games" or "/games/<gameID>",
+      type: ajaxMethod,//  "POST" or "PATCH"
+      url: ajaxUrl,//  "/games" or "/games/<gameID>",
       dataType: "json",
       data: {
               game: {
