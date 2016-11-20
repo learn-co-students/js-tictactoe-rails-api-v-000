@@ -7,7 +7,8 @@ class GamesController < ApplicationController
   end
 
   def create
-    Game.create(state_params)
+    game = Game.create(state_params)
+    render json: game, status: 201
   end
 
   def show
