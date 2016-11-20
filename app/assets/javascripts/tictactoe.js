@@ -1,4 +1,5 @@
 var turn = 0;
+var currentGame = 0;
 var winningCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
 function attachListeners() {
@@ -21,7 +22,6 @@ function attachListeners() {
     $.getJSON(`/games/${id}.json`, function(response){
       // TODO: edit response below
       var gameState = response.game.state;
-      debugger
     });//end
   });//end of on()
 
@@ -31,16 +31,14 @@ function attachListeners() {
   // (2) getJSON makes a 'GET' request for all available game resources.
   // (3) The request gets processed by the #index action in games controller and returned in the response.
   $("#previous").on('click', function() {
-    $.getJSON("/games.json", function(response) {
+    $.getJSON("/games", function(response) {
 
-      var html = "<h2>Game History</h2>";
-      html += "<ul>";
+      // var html = "<h2>Game History</h2>";
+      var html = "";
       $.each(response.games, function(i, game){
         var id = game.id;
-        html += `<li><a href="#" class"js-game" data-id="${id}">Game# ${id}</a></li>`;
+        html += `<li><a href="#" class"js-game" data-id="${id}">Game #${id}</a></li>`;
       }); //end of each()
-
-      html += "</ul>";
       $("#games").html(html);
 
     });//end of get()
@@ -60,12 +58,13 @@ function loadBoard(save) {
 
 function clearBoard() {
   $('td').empty();
+  turn = 0;
 }
 
 function doTurn(move) {
   updateState(move.target);
-  checkWinner();
   turn++;
+  checkWinner();
 }
 
 function player() {
@@ -102,9 +101,8 @@ function checkWinner() {
 
 function message(string) {
   $('#message').html(string);
-
+  saveGameState();
   clearBoard();
-  turn = 0;
 }
 
 // NOTE: Saves or updates game resource to the db
@@ -118,8 +116,7 @@ function saveGameState() {
     type: 'POST',
     url: '/games',
     dataType: 'json',
-    data: { game: {state: gameState} },
-    success: clearBoard()
+    data: { game: {state: gameState} }
   });
 }
 
