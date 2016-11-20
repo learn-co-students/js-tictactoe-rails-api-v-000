@@ -1,22 +1,21 @@
 class GamesController < ApplicationController
-  before_action :set_state, only: [:update, :destroy]
+  before_action :set_state, only: [:show, :update, :destroy]
 
   def index
-    @games = Game.all
+    games = Game.all
+    render json: games
   end
 
   def create
-    binding.pry
-    game = Game.new
-    game.create(state_params)
+    Game.create(state_params)
+  end
+
+  def show
+    render json: @game
   end
 
   def update
     @game.update(state_params)
-  end
-
-  def destroy
-    @game.destory
   end
 
   private

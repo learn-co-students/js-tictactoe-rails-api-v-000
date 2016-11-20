@@ -83,37 +83,101 @@ function message(string) { // COMPLETE
   turn = 0;
 }
 
+
+
+
+
+
+
+
+
+
+// NOTE: Below are the updates I've made. Feel free to make any changes you need. I've tried to add notes to make it clear, fingers crossed lol. Realistically we probably have another 2 hours worth of work but I'll help out once I get up. May be a little late, worked later than I wanted. I'll talk to ya in a few hours.
+
+
+
 $(function() {
   attachListeners();
-});
+
+  // TODO: set gameID (unless new game). Will be used when saving a game.
+  // var gameID;
+
+
+  // NOTE: Game # Link(s)
+  // (1) Clicking on an individual (Game#) link makes an ajax call via getJSON().
+  // (2) With the data-id attribute, getJSON makes a 'GET' request for the specified game resource.
+  // (3) The request gets processed by the #show action in games controller and returned in the response.
+  // (4) TODO: Take the response variable and populate the board with those values and resume game.
+  //
+  $('#games').on('click', 'a', function(event) {
+    event.preventDefault();
+    var id = $(this).attr("data-id");
+
+    $.getJSON(`/games/${id}.json`, function(response){
+      // TODO: edit response below
+      var gameState = response
+      debugger
+    });//end
+  });//end of on()
 
 
 
+  // NOTE: "Show Previous" button
+  // Game History (clicking the "Show Previous Games")
+  // (1) Clicking on the "Show Previous" button makes an ajax call via getJSON().
+  // (2) getJSON makes a 'GET' request for all available game resources.
+  // (3) The request gets processed by the #index action in games controller and returned in the response.
+  $("#previous").on('click', function() {
+    $.getJSON("/games.json", function(response) {
 
-// NOTE: may need to convert gameState value from board() if not array
-//TODO: Needs to be called on the conclusion of every game AND on a "Save Game" click event
+      var html = "<h2>Game History</h2>";
+      html += "<ul>";
+      $.each(response.games, function(i, game){
+        var id = game.id;
+        html += `<li><a href="#" class"js-game" data-id="${id}">Game# ${id}</a></li>`;
+      })//end of each()
 
-function saveGameState() {
-  var gameState = ["O", "", "", "X", "O", "X", "", "X", "O"];
-  // TODO: replace above after board() return value is reformatted
-  // var gameState = board();
+      html += "</ul>";
+      $("#games").html(html);
 
-  $.ajax({
-    // TODO: add "PATCH" when games are saved
-    type: "POST",
-    url: "/games",
-    dataType: "json",
-    data: {
-            game: {
-              state: gameState
+    });//end of get()
+  });//end of on()
+
+
+  // NOTE: Saves or updates game resource to the db
+  function saveGameState() {
+
+    // var gameState = board();
+    var gameState = ["O", "", "", "X", "O", "X", "", "X", "O"];
+    // TODO: remove hard coded value above once board() return value has been reformatted
+
+
+    // TODO: Set "ajaxMethod" and "ajaxUrl" variables
+    // (1) Set "ajaxMethod" variable based on whether the current game is a new record or already saved in the database.
+    // (2) "ajaxMethod" should be set to "POST" if game is new or set to "PATCH" if game is in progress.
+    // (3) "ajaxUrl" variable also needs to be set based on whether or not a game is new.
+    // (4) Set "ajaxUrl" to "/games" if new resource and "games/id_value" if updating an exsisting resource.
+
+    // TODO: set
+    //var ajaxMethod;
+    //var ajaxUrl;
+
+    $.ajax({
+      // TODO: add "PATCH" when games are saved
+      type: ajaxMethod,//  "POST" or "PATCH"
+      url: ajaxUrl,//  "/games" or "/games/<gameID>",
+      dataType: "json",
+      data: {
+              game: {
+                state: gameState
+              }
             }
-          }
-    // TODO: add callback function
-    // success: function() { callback function; }
-  });
-}
+      // TODO: add callback function to set board
+      // success: function() { callback function; }
 
-//Retrieves game state from backend
-function getGameState() {
-  let gameState = board();
-}
+    });//end ajax()
+  }//end saveGameState()
+
+
+
+});//end of function()
