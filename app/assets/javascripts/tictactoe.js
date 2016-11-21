@@ -53,6 +53,7 @@ function checkWinner() {
   // if turn = 9 and nobody has won, tie game...clear the board
   $.each(winPoss, function(index, sequence) {
     // Loop through each sequence and compare with xWin and oWin
+    // See: http://stackoverflow.com/questions/7837456/how-to-compare-arrays-in-javascript
 
   });
 }
