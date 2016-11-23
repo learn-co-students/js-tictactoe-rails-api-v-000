@@ -5,6 +5,7 @@ $(function() {
 
 
 var turn = 0;
+currentGame = 0;
 
 function attachListeners() {
   $("td").click(function() {
