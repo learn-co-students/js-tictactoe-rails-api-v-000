@@ -12,7 +12,6 @@ function attachListeners() {
     var xCoord = $td.data('x');
     var yCoord = $td.data('y');
     doTurn(xCoord, yCoord);
-    console.log($("td[data-x='"+xCoord+"'][data-y='"+yCoord+"']").html(), $("td[data-x='"+xCoord+"'][data-y='"+yCoord+"']").selector)
   });
 }
 
@@ -35,6 +34,10 @@ function updateState(x, y) {
   $("td[data-x='"+x+"'][data-y='"+y+"']").text(player);
 }
 
+function message(text) {
+  $("#message").html(text)
+}
+
 function checkWinner() {
   var vertWin1 = [$("td[data-x='0'][data-y='0']").html(), $("td[data-x='0'][data-y='1']").html(), $("td[data-x='0'][data-y='2']").html()]
   var vertWin2 = [$("td[data-x='1'][data-y='0']").html(), $("td[data-x='1'][data-y='1']").html(), $("td[data-x='1'][data-y='2']").html()]
@@ -45,19 +48,31 @@ function checkWinner() {
   var diagWin1 = [$("td[data-x='0'][data-y='0']").html(), $("td[data-x='1'][data-y='1']").html(), $("td[data-x='2'][data-y='2']").html()]
   var diagWin2 = [$("td[data-x='0'][data-y='2']").html(), $("td[data-x='1'][data-y='1']").html(), $("td[data-x='2'][data-y='0']").html()]
 
-  var winPoss = [vertWin1, vertWin2, vertWin3, horizWin1, horizWin2, horizWin3, diagWin1, diagWin2]
+  var winningPossibilities = [vertWin1, vertWin2, vertWin3, horizWin1, horizWin2, horizWin3, diagWin1, diagWin2]
 
   var xWin = ["X", "X", "X"]
   var oWin = ["O", "O", "O"]
 
-  // if turn = 9 and nobody has won, tie game...clear the board
-  $.each(winPoss, function(index, sequence) {
-    // Loop through each sequence and compare with xWin and oWin
-    // See: http://stackoverflow.com/questions/7837456/how-to-compare-arrays-in-javascript
+  var result = true
 
+  $.each(winningPossibilities, function(index, setOfMoves) {
+    if (setOfMoves.join() === xWin.join()) {
+      message("Player X Won!")
+      clearBoardAndStartOver();
+    } else if (setOfMoves.join() === oWin.join()) {
+      message("Player O Won!")
+      clearBoardAndStartOver();
+    } else if (turn === 9) {
+      message("Tie game")
+      clearBoardAndStartOver();
+    } else {
+      result = false
+    }
   });
+  return result
 }
 
-function message(text) {
-  $("div#message").html(text)
+function clearBoardAndStartOver() {
+  turn = 0;
+  $("td").html("");
 }
