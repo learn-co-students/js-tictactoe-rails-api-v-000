@@ -1,12 +1,13 @@
 require 'pry'
 class GamesController < ApplicationController
   def index
-    games = Game.all
-    render json: games
+    @games = Game.all
+    render json: @games
   end
 
   def create
-    Game.create(game_params)
+    @game = Game.create(game_params)
+    render json: @game, status: 201
   end
 
   def update
