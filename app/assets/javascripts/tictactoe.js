@@ -94,23 +94,31 @@ function previousGames() {
   });
 }
 
-function currentMoves() {
+function currentMovesOnBoard() {
   return [$("td[data-x='0'][data-y='0']").html(), $("td[data-x='1'][data-y='0']").html(), $("td[data-x='2'][data-y='0']").html(), $("td[data-x='0'][data-y='1']").html(), $("td[data-x='1'][data-y='1']").html(), $("td[data-x='2'][data-y='1']").html(), $("td[data-x='0'][data-y='2']").html(), $("td[data-x='1'][data-y='2']").html(), $("td[data-x='2'][data-y='2']").html()];
 }
+
 var count = 0;
 
 function saveGame() {
   $("#save").click(function() {
-    var currentValues = currentMoves();
-    console.log(currentValues);
+    var currentValues = currentMovesOnBoard();
     if (count < 1) {
       var posting = $.post("/games", {game: {state: JSON.stringify(currentValues)}})
       posting.done(function(data) {
-        // DO SOMETHING HERE
+        currentGame = data["game"]["id"]
+        console.log(currentGame, data["game"]["state"])
       });
       count++
     } else {
-      console.log("This is the second time.")
+      currentValues = currentMovesOnBoard();
+      $.ajax({
+        method: "PATCH",
+        url: "/games/" + currentGame,
+        data: {game: {state: JSON.stringify(currentValues)}}
+      }).done(function(data) {
+        console.log("Updated game " + currentGame)
+      });
     }
   });
 }
