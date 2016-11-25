@@ -63,9 +63,11 @@ function checkWinner() {
     if (setOfMoves.join() === xWin.join()) {
       message("Player X Won!")
       clearBoardAndStartOver();
+      startNewGame();
     } else if (setOfMoves.join() === oWin.join()) {
       message("Player O Won!")
       clearBoardAndStartOver();
+      startNewGame();
     } else if (turn === 9) {
       message("Tie game")
       clearBoardAndStartOver();
@@ -81,16 +83,37 @@ function clearBoardAndStartOver() {
   $("td").html("");
 }
 
+function startNewGame() {
+  clearBoardAndStartOver();
+  timesSaveClicked = 0;
+  timesPreviousClicked = 0;
+  var currentValues = currentMovesOnBoard();
+  var posting = $.post("/games", {game: {state: JSON.stringify(currentValues)}})
+  posting.done(function(data) {
+    currentGame = data["game"]["id"]
+    console.log(currentGame, data["game"]["state"], "This is a new game.")
+  });
+}
+
 // Actions
+
+var timesPreviousClicked = 0;
 
 function previousGames() {
   $("#previous").click(function() {
     $.get("/games", function(data) {
-      var listOfGames = data["games"];
-      $.each(listOfGames, function(i, game) {
-        $("#games ul").append("<li>" +game.id+ "</li>")
-      });
-    });
+      if (data["games"].length === 0) {
+        console.log("There aren't any previous games.")
+      } else if (data["games"].length >= 1 && timesPreviousClicked === 0) {
+        timesPreviousClicked++
+        var listOfGames = data["games"];
+        $.each(listOfGames, function(i, game) {
+          $("#games").append("<li>" +game.id+ "</li>")
+        });
+      } else if (data["games"].length >= 1 && timesPreviousClicked === 1) {
+        $("#games").append("<li>" +currentGame+ "</li>")
+      }
+    })
   });
 }
 
@@ -98,20 +121,23 @@ function currentMovesOnBoard() {
   return [$("td[data-x='0'][data-y='0']").html(), $("td[data-x='1'][data-y='0']").html(), $("td[data-x='2'][data-y='0']").html(), $("td[data-x='0'][data-y='1']").html(), $("td[data-x='1'][data-y='1']").html(), $("td[data-x='2'][data-y='1']").html(), $("td[data-x='0'][data-y='2']").html(), $("td[data-x='1'][data-y='2']").html(), $("td[data-x='2'][data-y='2']").html()];
 }
 
-var count = 0;
+var timesSaveClicked = 0;
 
 function saveGame() {
   $("#save").click(function() {
     var currentValues = currentMovesOnBoard();
-    if (count < 1) {
+    if (timesSaveClicked < 1) {
       var posting = $.post("/games", {game: {state: JSON.stringify(currentValues)}})
       posting.done(function(data) {
         currentGame = data["game"]["id"]
         console.log(currentGame, data["game"]["state"])
       });
-      count++
+      timesSaveClicked++
     } else {
       currentValues = currentMovesOnBoard();
+      if (currentGame === 0) {
+        currentGame++
+      }
       $.ajax({
         method: "PATCH",
         url: "/games/" + currentGame,
