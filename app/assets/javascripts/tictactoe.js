@@ -3,13 +3,23 @@ $(function() {
 });
 
 var turn = 0;
+var winCombinations = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],[1,1],[2,2]], [[0,0],[0,1],[0,2]], [[2,0],[2,1],[2,2]], [[1,0],[1,1],[1,2]], [[2,0],[1,1],[0,2]]];
+var cells = ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="0"]', '[data-x="2"][data-y="0"]', '[data-x="0"][data-y="1"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="1"]', '[data-x="0"][data-y="2"]', '[data-x="1"][data-y="2"]', '[data-x="2"][data-y="2"]'];
+
+
 
 function attachListeners() {
-
+  $("td").click(function() {
+    var xCoord = $(this).data('x');
+    var yCoord = $(this).data('y');
+    doTurn(xCoord, yCoord);
+  });
 }
 
-function doTurn() {
-
+function doTurn(x, y) {
+  updateState(x, y);
+  turn++;
+  checkWinner();
 }
 
 function player() {
@@ -20,8 +30,37 @@ function player() {
   return move;
 }
 
-function updateState(event) {
-  $(event.target).html(player());
+function updateState(x, y) {
+  $("td[data-x='"+x+"'][data-y='"+y+"']").text(player);
+}
+
+function checkWinner() {
+  var winner = "none";
+  // for (var i = 0; i < winCombinations.length; i++) {
+  //   locA = $('[data-x="${combo[0][0]}"][data-y="${combo[0][1]}"]').html();
+  //   locB = $('[data-x="${combo[1][0]}"][data-y="${combo[1][1]}"]').html();
+  //   locC = $('[data-x="${combo[2][0]}"][data-y="${combo[2][1]}"]').html();
+  // }
+  $.each(winCombinations, function(index, combo) {
+    locA = $('[data-x="+combo[0][0]+"][data-y="+combo[0][1]+"]').html();
+    locB = $('[data-x="${combo[1][0]}"][data-y="${combo[1][1]}"]').html();
+    locC = $('[data-x="${combo[2][0]}"][data-y="${combo[2][1]}"]').html();
+    if (locA === "X" && locB === "X" && locC === "X") {
+      winner = "X";
+    } else if (locA === "O" && locB === "O" && locC === "O") {
+      winner = "O";
+    }
+  });
+
+  if (winner === "X") {
+    message("Player X Won!");
+  } else if (winner === "O") {
+    message("Player O Won!");
+  }
+}
+
+function message(string) {
+  $("#message").text(string);
 }
 
 // var turn = 0;
