@@ -42,16 +42,15 @@ function checkWinner() {
   //   locC = $('[data-x="${combo[2][0]}"][data-y="${combo[2][1]}"]').html();
   // }
   $.each(winCombinations, function(index, combo) {
-    locA = $('[data-x="+combo[0][0]+"][data-y="+combo[0][1]+"]').html();
-    locB = $('[data-x="${combo[1][0]}"][data-y="${combo[1][1]}"]').html();
-    locC = $('[data-x="${combo[2][0]}"][data-y="${combo[2][1]}"]').html();
+    locA = $('[data-x='+combo[0][0]+'][data-y='+combo[0][1]+']').html();
+    locB = $('[data-x='+combo[1][0]+'][data-y='+combo[1][1]+']').html();
+    locC = $('[data-x='+combo[2][0]+'][data-y='+combo[2][1]+']').html();
     if (locA === "X" && locB === "X" && locC === "X") {
       winner = "X";
     } else if (locA === "O" && locB === "O" && locC === "O") {
       winner = "O";
     }
   });
-
   if (winner === "X") {
     message("Player X Won!");
   } else if (winner === "O") {
