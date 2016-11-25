@@ -21,8 +21,7 @@ function player() {
 }
 
 function updateState(event) {
-  var $target = $(event.target);
-  $target.html(player());
+  $(event.target).html(player());
 }
 
 // var turn = 0;
