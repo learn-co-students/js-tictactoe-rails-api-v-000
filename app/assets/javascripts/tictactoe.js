@@ -36,12 +36,8 @@ function updateState(x, y) {
 
 function checkWinner() {
   var winner = "none";
-  // for (var i = 0; i < winCombinations.length; i++) {
-  //   locA = $('[data-x="${combo[0][0]}"][data-y="${combo[0][1]}"]').html();
-  //   locB = $('[data-x="${combo[1][0]}"][data-y="${combo[1][1]}"]').html();
-  //   locC = $('[data-x="${combo[2][0]}"][data-y="${combo[2][1]}"]').html();
-  // }
-  $.each(winCombinations, function(index, combo) {
+
+  $.each(winCombinations, function(i, combo) {
     locA = $('[data-x='+combo[0][0]+'][data-y='+combo[0][1]+']').html();
     locB = $('[data-x='+combo[1][0]+'][data-y='+combo[1][1]+']').html();
     locC = $('[data-x='+combo[2][0]+'][data-y='+combo[2][1]+']').html();
@@ -53,9 +49,27 @@ function checkWinner() {
   });
   if (winner === "X") {
     message("Player X Won!");
+    return true;
   } else if (winner === "O") {
     message("Player O Won!");
+    return true;
+  } else if (checkTie() === true) {
+    message("Tie game");
+    return true;
+  } else {
+    return false;
   }
+}
+
+function checkTie() {
+  var result = true
+  $.each(cells, function(i, cell) {
+    value = $(cell).html();
+    if (value !== "X" && value !== "O") {
+      result = false;
+    }
+  });
+  return result;
 }
 
 function message(string) {
