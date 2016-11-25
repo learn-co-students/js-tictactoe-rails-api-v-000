@@ -20,6 +20,11 @@ function player() {
   return move;
 }
 
+function updateState(event) {
+  var $target = $(event.target);
+  $target.html(player());
+}
+
 // var turn = 0;
 // var currentGame = 0;
 //
