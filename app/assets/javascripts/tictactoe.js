@@ -3,10 +3,9 @@ $(function() {
 });
 
 var turn = 0;
+var currentGame;
 var winCombinations = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],[1,1],[2,2]], [[0,0],[0,1],[0,2]], [[2,0],[2,1],[2,2]], [[1,0],[1,1],[1,2]], [[2,0],[1,1],[0,2]]];
 var cells = ['[data-x="0"][data-y="0"]', '[data-x="1"][data-y="0"]', '[data-x="2"][data-y="0"]', '[data-x="0"][data-y="1"]', '[data-x="1"][data-y="1"]', '[data-x="2"][data-y="1"]', '[data-x="0"][data-y="2"]', '[data-x="1"][data-y="2"]', '[data-x="2"][data-y="2"]'];
-
-
 
 function attachListeners() {
   $("td").click(function() {
@@ -18,8 +17,11 @@ function attachListeners() {
 
 function doTurn(x, y) {
   updateState(x, y);
-  turn++;
-  checkWinner();
+  if (checkWinner() === true) {
+    resetGame();
+  } else {
+    turn++;
+  }
 }
 
 function player() {
@@ -74,6 +76,11 @@ function checkTie() {
 
 function message(string) {
   $("#message").text(string);
+}
+
+function resetGame() {
+  turn = 0;
+  $("td").html("");
 }
 
 // var turn = 0;
