@@ -25,18 +25,18 @@ var board = [
               pos_7,
               pos_8,
               pos_9
-            ]
+            ];
 
-var winCombos = [
-              [0,1,2],
-              [3,4,5],
-              [6,7,8],
-              [0,3,6],
-              [1,4,7],
-              [2,5,8],
-              [0,4,8],
-              [6,4,2]
-]
+const winCombos = [
+                  [0,1,2],
+                  [3,4,5],
+                  [6,7,8],
+                  [0,3,6],
+                  [1,4,7],
+                  [2,5,8],
+                  [0,4,8],
+                  [6,4,2]
+            ];
 
 function win(){
   var k = 0;
@@ -66,11 +66,11 @@ function attachListeners(){
 function doTurn(event){
   updateState(event);
   checkWinner();
-  turn +=1
+  turn +=1;
 }
 
 function player(){
-  if (turn / 2 === 0){
+  if (turn % 2 === 0){
     return "X";
   }else {
     return "O";
@@ -83,7 +83,7 @@ function updateState(event){
 }
 
 function checkWinner(){
-  // win(winner);
+  win();
   var response ="";
   if (winner==="X"){
     response = "Player X Won!"
