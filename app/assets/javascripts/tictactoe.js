@@ -1,4 +1,5 @@
 var turn = 0;
+var gameIsTied;
 
 var winCombos =  [
                     [0,1,2],
@@ -31,12 +32,16 @@ function checkWinner(){
     else if(pos_1 === "O" && pos_2 === "O" && pos_3 === "O"){
       response = "Player O Won!";
     }
+    else if(board.length === 9 && pos_1 !== pos_2 && pos_2 !== pos_3 ){
+    }
   }
   if (response == undefined){
-    tieGame();
     return false;
   }
-  message(response);
+  else{
+    message(response);
+    return true;
+  }
 }
 
 //================================ MAIN FUNCTIONS ==================================
@@ -58,7 +63,13 @@ function doTurn(event){
   updateState(event);
   boardPositions(event);
   checkWinner();
-  turn +=1;
+  checkTieGame();
+
+  if(checkWinner() || gameIsTied ){
+    resetGame();
+  }else{
+    turn +=1;
+  }
 }
 
 function player(){
@@ -74,8 +85,17 @@ function updateState(event){
   $(event.target).html(value);
 }
 
-function tieGame(){
-  message("Tie game");
+function checkTieGame(){
+  if (board.length == 9 && checkWinner() === false){
+    message("Tie game");
+    gameIsTied = true;
+  }
+}
+
+function resetGame(){
+  $("td").html("");
+    turn = 0;
+    board.length = 0;
 }
 
 function message(response){
