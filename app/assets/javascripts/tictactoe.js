@@ -26,7 +26,7 @@ function checkWinner(){
         var pos_2 = board[win_index_2];
         var pos_3 = board[win_index_3];
         // console.log(pos_1, pos_2, pos_3);
-        // console.log(pos_1);
+        console.log(pos_1);
 
 
         if (pos_1 === "X" && pos_2 === "X" && pos_3 === "X"){
@@ -53,8 +53,10 @@ function attachListeners(){
 function boardPositions(event){
   var element = event.target;
   var indexVal = $("td").index(event.target);
-  board[indexVal] =  element.innerText;
-  console.log(element.innerText);
+  if(element !== undefined){
+    board[indexVal] = element.innerText;
+    // console.log(element.innerText);
+  }
 }
 
 function doTurn(event){
