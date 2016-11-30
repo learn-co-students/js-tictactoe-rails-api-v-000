@@ -16,15 +16,31 @@ function attachListeners() {
 }
 
 function doTurn(selector) {
+
   updateState(selector);
-  if(checkWinner()) {
-
-    turn =0;
-  } else {
-
-  }
-  turn++;
+  var bool = (checkWinner() || checkTied());
+  console.log(bool);
+  if (checkWinner() || checkTied()) {
+    // resetBoard();
+  };
   // console.log(turn);
+  turn++;
+}
+
+function resetBoard() {
+  alert("hello");
+  turn = 0;
+}
+
+function checkTied() {
+  if (turn == 8) {
+    message("Tie game");
+    state = ["", "", "", "", "", "", "", "", ""];
+    $('td').html("")
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function checkWinner() {
@@ -36,17 +52,30 @@ function checkWinner() {
     }
   }
   return false;
-  // if (combos.some(isThereWinningCombo)) {
-  //   return true;
-  // } else {
-  //   return false;
-  // }
-  // message('Player '+ player() +' Won!');
 }
 
+function addX(selector) {
+  if (selector.dataset.x == "1") {
+    return 1;
+  } else if (selector.dataset.x == "2") {
+    return 2;
+  } else {
+    return 0;
+  }
+}
 
 function updateState(selector) {
-  state[parseInt(selector.id)] = player();
+  var id = 0; //finding index for state array from td data-x and data-y
+  if (selector.dataset.y == "1") {
+    id += 3;
+    id += addX(selector);
+  } else if (selector.dataset.y == "2") {
+    id += 6;
+    id += addX(selector);
+  } else {
+    id += addX(selector);
+  }
+  state[id] = player();
   // console.log(state);
   $(selector).html(player());
 }
