@@ -1,5 +1,6 @@
 var turn = 0;
 var state = ["", "", "", "", "", "", "", "", ""];
+var currentGame = 0;
 
 var winningCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
@@ -13,30 +14,50 @@ function attachListeners() {
     var selector = this;
     doTurn(selector);
   });
+
+  $('#save').on('click', function(){
+    saveGame();
+  });
+  $('#previous').on("click", fucnition() {
+    previousGames();
+  }
+}
+
+function saveGame() {
+  // var data = state.serialize();
+  // console.log(data);
+  // can I use form containing input type="hidden" http://www.w3schools.com/jsref/prop_hidden_form.asp
+}
+
+function previousGames() {
+  $.get("/games.json", function(data) {
+    console.log(data);
+  })
 }
 
 function doTurn(selector) {
-
+  var triggerReset = false;
   updateState(selector);
-  var bool = (checkWinner() || checkTied());
-  console.log(bool);
   if (checkWinner() || checkTied()) {
-    // resetBoard();
+    triggerReset = true;
   };
-  // console.log(turn);
+  console.log(checkWinner() || checkTied());
   turn++;
+  if (triggerReset === true) {
+    resetBoard();
+  }
 }
 
 function resetBoard() {
-  alert("hello");
   turn = 0;
+  state = ["", "", "", "", "", "", "", "", ""];
+  $('td').html("");
 }
+
 
 function checkTied() {
   if (turn == 8) {
     message("Tie game");
-    state = ["", "", "", "", "", "", "", "", ""];
-    $('td').html("")
     return true;
   } else {
     return false;
