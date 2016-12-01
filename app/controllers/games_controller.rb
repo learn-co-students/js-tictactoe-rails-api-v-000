@@ -9,11 +9,18 @@ class GamesController < ApplicationController
   end
 
   def update
-
+    @game = Game.find(params[:id])
+    @game.state = game_params["state"]
+    @game.save
+    render json: @game
   end
 
   def destroy
 
+  end
+
+  def show
+    @game = Game.find(params[:id])
   end
 
   private

@@ -263,10 +263,10 @@ describe('#integration tests of persistence', function() {
     attachListeners()
     jasmine.Ajax.withMock(function() {
       var data = {
-        game: {
+        // game: {
           id:1,
           state: ["X","","","","","","","",""]
-        }
+        // }
       }
       var response = {
         "status": 200,

@@ -30,16 +30,14 @@ function saveGame() {
       state: state
     }
   };
-  var url = "";
-  var method = "";
 
-  if (currentGame == 0) {
+  if (currentGame === 0) {
     url = "/games";
     method = "POST";
   } else {
     url = `/games/${currentGame}`;
-    console.log(url);
     method = "PATCH";
+    console.log(url);
   }
 
   $.ajax({
@@ -49,6 +47,7 @@ function saveGame() {
     dataType: "json",
     success: function(data) {
       currentGame = data["id"];
+      console.log(currentGame);
     }
   });
 }
@@ -72,6 +71,7 @@ function doTurn(selector) {
 }
 
 function resetBoard() {
+  currentGame = 0;
   turn = 0;
   state = ["", "", "", "", "", "", "", "", ""];
   $('td').html("");
