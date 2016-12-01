@@ -18,19 +18,43 @@ function attachListeners() {
   $('#save').on('click', function(){
     saveGame();
   });
-  $('#previous').on("click", fucnition() {
+  $('#previous').on("click", function() {
     previousGames();
-  }
+  });
 }
 
 function saveGame() {
-  // var data = state.serialize();
-  // console.log(data);
-  // can I use form containing input type="hidden" http://www.w3schools.com/jsref/prop_hidden_form.asp
+
+  var values = {
+    game: {
+      state: state
+    }
+  };
+  var url = "";
+  var method = "";
+
+  if (currentGame == 0) {
+    url = "/games";
+    method = "POST";
+  } else {
+    url = `/games/${currentGame}`;
+    console.log(url);
+    method = "PATCH";
+  }
+
+  $.ajax({
+    url: url,
+    method: method,
+    data: values,
+    dataType: "json",
+    success: function(data) {
+      currentGame = data["id"];
+    }
+  });
 }
 
 function previousGames() {
-  $.get("/games.json", function(data) {
+  $.get("/games", function(data) {
     console.log(data);
   })
 }
@@ -41,7 +65,6 @@ function doTurn(selector) {
   if (checkWinner() || checkTied()) {
     triggerReset = true;
   };
-  console.log(checkWinner() || checkTied());
   turn++;
   if (triggerReset === true) {
     resetBoard();

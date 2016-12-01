@@ -4,7 +4,8 @@ class GamesController < ApplicationController
   end
 
   def create
-    
+    @game = Game.create(game_params)
+    render json: @game, status: 201
   end
 
   def update
@@ -13,6 +14,12 @@ class GamesController < ApplicationController
 
   def destroy
 
+  end
+
+  private
+
+  def game_params
+    params.require(:game).permit(:state => [])
   end
 
 end
