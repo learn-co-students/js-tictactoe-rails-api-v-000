@@ -37,7 +37,6 @@ function saveGame() {
   } else {
     url = `/games/${currentGame}`;
     method = "PATCH";
-    console.log(url);
   }
 
   $.ajax({
@@ -47,15 +46,30 @@ function saveGame() {
     dataType: "json",
     success: function(data) {
       currentGame = data["id"];
-      console.log(currentGame);
     }
   });
 }
 
 function previousGames() {
-  $.get("/games", function(data) {
-    console.log(data);
-  })
+  $.ajax({
+    url: "/games",
+    method: "GET",
+    dataType: "json",
+    success: function(data) {
+      var list = document.getElementById("games");
+      while (list.hasChildNodes()) {
+          list.removeChild(list.lastChild);
+      }
+      var prevGames = data["games"];
+      var prevText ="";
+      for (i=0; i < prevGames.length; i++) {
+        prevText += "<p>" + prevGames[i]["id"] + "</p>";
+      }
+      console.log(prevText);
+      $("#games").append(prevText);
+    }
+
+  });
 }
 
 function doTurn(selector) {

@@ -361,6 +361,7 @@ describe('#integration tests of persistence', function() {
       }
       $('#previous').click()
       jasmine.Ajax.requests.mostRecent().respondWith(response);
+      // debugger;
       expect($("#games").children().length).toBe(2);
     });
   });
