@@ -28,7 +28,7 @@ describe('Tic Tac Toe Functionality', function() {
       spyOn(window, "checkWinner");
       spyOn(window, "updateState");
       doTurn(myEvent);
-      expect(turn).toEqual(1);
+      expect(turn).toEqual(1); //doTurn does not increment turn itself but calls a method to parse the board and determine turn count, this is as a result of preventing the ability to click the same space multiple times
       expect(window.updateState).toHaveBeenCalled;
       expect(window.checkWinner).toHaveBeenCalled;
     });
@@ -276,6 +276,7 @@ describe('#integration tests of persistence', function() {
       $('#save').click()
       jasmine.Ajax.requests.mostRecent().respondWith(response);
       $('#save').click()
+      debugger;
       var request = jasmine.Ajax.requests.mostRecent();
       expect(request.url).toBe('/games/1');
       expect(request.method).toBe('PATCH');
