@@ -7,6 +7,8 @@ $(document).ready(function() {
 });
 
 var turn = 0;
+var boardId;
+
 
 function attachListeners() {
   $('td').on('click', function(event) {
@@ -15,17 +17,19 @@ function attachListeners() {
 }
 
 function doTurn(event) {
+  $('#message').html('');
   updateState(event);
+  turn+=1;
   checkWinner();
-  turn += 1;
+
+
   if (turn == 9) {
-    message("Cat's Game!");
+    message("Tie game");
   }
 }
 
 function updateState(event) {
-  var mark = player();
-    $(event.target).text(mark);
+  $(event.target).html(player());
 };
 
 
@@ -39,6 +43,7 @@ function player() {
 
 
 function checkWinner() {
+  var gameOver = false;
   for (var i=0; i<winningCombos.length;i++) {
     var one = "#" + winningCombos[i][0];
     var two = "#" + winningCombos[i][1];
@@ -50,31 +55,48 @@ function checkWinner() {
 
     if (first == "X" && second == "X" && third == "X") {
       message('Player X Won!');
+      gameOver = true;
     } else if (first == "O" && second == "O" && third == "O") {
       message('Player O Won!');
+      gameOver = true;
     }
+  }
+  if (gameOver == false) {
+    return false;
   }
 }
 
 function message(string) {
   $('#message').text(string);
-  turn = -1;
   endGame();
 }
 
 function endGame() {
   var gameData = getGameBoard();
 
+  if (boardId == undefined) {
   $.ajax({
     url: '/games',
     method: 'POST',
     dataType: 'json',
     data: { game: {state: JSON.stringify(gameData)}}
   })
-
-  $('td').each(function() {
-    $(this).text("");
+} else {
+  $.ajax({
+    url: '/games',
+    method: 'PATCH',
+    dataType: 'json',
+    data: { game: {id: boardId, state: JSON.stringify(gameData)}}
   })
+}
+  $('td').each(function() {
+    $(this).html("");
+  })
+  turn = 0;
+
+  // if ($('#message').text() == "Player X Won!" || $('#message').text() == "Player O Won!" || $('#message').text() == "Tie game") {
+    boardId = undefined;
+  // }
 }
 
 function reset() {
@@ -83,6 +105,7 @@ function reset() {
     $('td').each(function() {
       $(this).text("");
     })
+    boardId = undefined;
   })
 }
 
@@ -125,15 +148,17 @@ function oldGames() {
     $('.old').remove();
     $.get('/games', function(data) {
       for (i=0;i<data.length;i++)
-       $('.old-games').append('<li class="old" id=' + data[i]['id'] + '>' + data[i]['id'] + '</li>');
+       $('#games').append('<li class="old" id=' + data[i]['id'] + '>' + data[i]['id'] + '</li>');
     })
   })
 }
 
 function showOldGame() {
   $(document.body).on('click', '.old', function() {
+    clicked = true;
     var oldBoard = [];
     var thisId = $(this).attr('id');
+    boardId = thisId;
     $.get('/games', function(data) {
       for (var i=0; i<data.length;i++) {
         if (data[i].id == thisId) {
@@ -149,15 +174,21 @@ function showOldGame() {
       var updated = oldBoard.slice(0,9);
     keepPlaying(updated);
     })
+
+    // $('#save').on('click', function() {
+    //   pauseGame(thisId);
+    // })
   });
 }
 
 
 function saveGame() {
-  $(document.body).on('click', '#save', function() {
-    endGame();
- });
- }
+    $(document.body).on('click', '#save', function() {
+      endGame();
+    })
+  }
+
+
 
  function keepPlaying(board) {
     marks = [];
@@ -167,5 +198,23 @@ function saveGame() {
       }
     }
     turn = marks.length;
-
 }
+
+
+
+ function pauseGame(thisId) {
+   var gameData = getGameBoard();
+
+   $.ajax({
+     url: '/games',
+     method: 'PATCH',
+     dataType: 'json',
+     data: { game: {id: thisId, state: JSON.stringify(gameData)}}
+   })
+
+   $('td').each(function() {
+     $(this).html("");
+   })
+
+   boardId = undefined;
+ }
