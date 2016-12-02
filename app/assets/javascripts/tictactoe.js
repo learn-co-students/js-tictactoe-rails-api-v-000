@@ -77,6 +77,7 @@ function doTurn(selector) {
   updateState(selector);
   if (checkWinner() || checkTied()) {
     triggerReset = true;
+    saveGame();
   };
   turn++;
   if (triggerReset === true) {
