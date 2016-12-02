@@ -1,30 +1,44 @@
 // Main Tic Tac Toe functions
 
 var turn = 0;
+var currentGame = 0;
+var isNewGame = true;
 
 function attachListeners() {
   // Head of program, sets eventListeners for click events
   $('td').on('click', function(event) {
-    var x = $(this).attr("data-x");
-    var y = $(this).attr("data-y");
     doTurn(event);
   });
+  $('#games').on('click', function(event) {
+    loadGame(event);
+  });
+  $('#save').on('click', function(event) {
+    handleGameSave(event);
+  });
+  $('#previous').on('click', function(event) {
+    getPreviousGame();
+  });
+
 }
 
 function doTurn(event) {
   // Game loop, responds to event and checks for game end
   updateState(event);
-  if (!checkForGameOver()) {
-    turn += 1;
-  } else {
+  gameStatus = checkForGameOver();
+  if (gameStatus) {
+    saveGame(getGameData())
     resetBoard();
+  } else {
+    turn += 1;
   }
+
 }
 
 function checkForGameOver() {
   // Checks for game ending event, directly called by game loop
 
-  if (checkWinner() || checkForTie(getBoardState())) {
+  if (checkWinner() || checkForTie(getGameData())) {
+
     return true;
   }
   return false;
@@ -44,7 +58,7 @@ function checkWinner() {
     [0, 4, 8],
     [2, 4, 6]
   ]
-  var board = getBoardState();
+  var board = getGameData();
   for (var combo in winningCombos) {
     var position0 = winningCombos[combo][0];
     var position1 = winningCombos[combo][1];
@@ -64,29 +78,36 @@ function checkForTie(board) {
 
   for (var element in board) {
     if (board[element] === "") {
-      message("Tie game");
       return false;
     }
   }
+  message("Tie game");
   return true;
 }
 
 function resetBoard() {
   // Resets board and turn variable
-
+  $("td").html("");
   turn = 0;
-  for (var i = 0; i < 3; i++) {
-    for (var j = 0; j < 3; j++) {
-      $('[data-x="' + j + '"][data-y="' + i + '"]').text("");
-    }
-  }
+  currentGame = 0;
+  isNewGame = true;
 }
 
 function updateState(event) {
   // Writes player token to cell clicked, accepts event from
   // eventListener on board.
+  if (checkCell(event)) {
+    $(event.currentTarget).text(player());
+  }
 
-  $(event.currentTarget).text(player());
+}
+
+function checkCell(event) {
+  if ($(event.currentTarget).text() === "") {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function player() {
@@ -104,19 +125,79 @@ function message(message) {
   $("#message").text(message);
 }
 
-function getBoardState() {
+function getGameData() {
   // function grabs board state and returns that state, used
   // to check for win conditions.
 
-  var state = [];
-  for (var i = 0; i < 3; i++) {
-    for (var j = 0; j < 3; j++) {
-      state.push($('[data-x="' + j + '"][data-y="' + i + '"]').text());
-    }
-  }
-  return state;
+  var data = [];
+  $("td").each(function(index, cell) {
+    data.push($(this).text());
+  })
+  return data;
 }
 
+/////////////////
+// Persistence //
+/////////////////
+
+function getPreviousGame() {
+  $.get('/games').done(function(response) {
+    // console.log(response["games"]);
+    var games = response["games"];
+    var gamesList = "";
+    $.each(games, function(index, game) {
+      gamesList += '<li data-gameid="' + game["id"] + '" >' + game["id"] + '</li>';
+    })
+    $("#games").html(gamesList);
+  });
+}
+
+function handleGameSave() {
+  var data = getGameData();
+  if (isNewGame) {
+    saveGame(data);
+  } else {
+    updateGame(data);
+  }
+}
+
+function saveGame(data) {
+  // data = data.join(", ");
+  isNewGame = false;
+  $.post('/games', { game: { state: data } }).done(function(response) {
+    currentGame = response.game.id;
+  });
+}
+
+function loadGame(event) {
+  var gameId = $(event.target).data("gameid");
+  $.get('/games/' + gameId).done(function(data) {
+    // console.log(data);
+    var gameState = data.game.state;
+    // console.log(data.game.state);
+    $("td").each(function(index, cell) {
+
+      $(this).text(gameState[index]);
+    });
+    currentGame = gameId;
+    isNewGame = false;
+  });
+}
+
+function updateGame(data) {
+  isNewGame = false;
+  $.ajax({
+    url: '/games/' + currentGame,
+    method: 'PATCH',
+    data: {
+      game: {
+        state: data
+      }
+    }
+  }).done(function(response) {
+    currentGame = response.game.id;
+  });
+}
 
 /////////////////////////////
 // Start game on page load //
