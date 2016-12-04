@@ -1,7 +1,7 @@
 class GamesController < ApplicationController
   def index
     @games = Game.all
-    render json: @games
+    render json: @games.as_json(:only => [:id, :state])
   end
 
   def create
@@ -24,7 +24,7 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
     respond_to do |format|
       format.html { render :show }
-      format.json { render json: @game.to_json }
+      format.json { render json: @game.as_json(only: [:id, :state]) }
     end
   end
 

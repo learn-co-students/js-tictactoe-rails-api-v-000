@@ -2,6 +2,7 @@ var turn = 0;
 var state = ["", "", "", "", "", "", "", "", ""];
 var currentGame = 0;
 
+
 var winningCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
 function message(string) {
@@ -17,13 +18,44 @@ function attachListeners() {
 
   $('#save').on('click', function(){
     saveGame();
+    resetBoard();
   });
+
   $('#previous').on("click", function() {
     previousGames();
   });
+
+  $("#games").on('click', 'p', function(){
+    fillBoard(this.innerText);
+  });
 }
 
-function saveGame() {
+function fillBoard(gameId) {
+  // console.log(gameId);
+  $.ajax({
+    url: "/games/"+ gameId,
+    method: "GET",
+    dataType: "json",
+    success: function(data) {
+      var stateArray = data["state"];
+      console.log(stateArray);
+      for (i=1; i < 4; i++) {
+        $("td[data-y='0']:nth-child(" + i + ")").html(stateArray[i - 1]);
+      }
+      for (i=1; i < 4; i++) {
+        $("td[data-y='1']:nth-child(" + i + ")").html(stateArray[i + 2]);
+      }
+      for (i=1; i < 4; i++) {
+        $("td[data-y='2']:nth-child(" + i + ")").html(stateArray[i + 5]);
+      }
+      currentGame = data["id"];
+    }
+  });
+}
+
+
+
+function saveGame(resetGameNo) {
 
   var values = {
     game: {
@@ -45,7 +77,11 @@ function saveGame() {
     data: values,
     dataType: "json",
     success: function(data) {
-      currentGame = data["id"];
+      if (resetGameNo) {
+        currentGame = 0;
+      } else {
+        currentGame = data["id"];
+      }
     }
   });
 }
@@ -63,12 +99,11 @@ function previousGames() {
       var prevGames = data["games"];
       var prevText ="";
       for (i=0; i < prevGames.length; i++) {
-        prevText += "<p>" + prevGames[i]["id"] + "</p>";
+        prevText += "<p id=gameId>" + prevGames[i]["id"] + "</p>";
       }
-      console.log(prevText);
+      // console.log(prevText);
       $("#games").append(prevText);
     }
-
   });
 }
 
@@ -77,7 +112,7 @@ function doTurn(selector) {
   updateState(selector);
   if (checkWinner() || checkTied()) {
     triggerReset = true;
-    saveGame();
+    saveGame(true);
   };
   turn++;
   if (triggerReset === true) {
@@ -86,7 +121,6 @@ function doTurn(selector) {
 }
 
 function resetBoard() {
-  currentGame = 0;
   turn = 0;
   state = ["", "", "", "", "", "", "", "", ""];
   $('td').html("");
