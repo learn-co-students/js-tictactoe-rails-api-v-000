@@ -1,0 +1,32 @@
+#message {
+  color:white;
+  display: none;
+}
+
+.tictactoe-border {
+  text-align: center;
+  width: 50%;
+  margin: 0 auto;
+  display: inline;
+}
+
+table, th, td {
+  border: 3px solid white;
+  background-color: black;
+  color: yellow;
+  margin: auto auto;
+}
+
+td {
+  height: 100px;
+  width: 100px;
+  font-size: xx-large;
+  text-align: center;
+}
+
+button {
+  background: black;
+  color: white;
+  border: none;
+  font-size: 20px;
+}

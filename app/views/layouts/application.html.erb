@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Api</title>
+  <title>Tic Tac Toe</title>
   <%= stylesheet_link_tag    'application', media: 'all'%>
   <%= javascript_include_tag 'application' %>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+  <script src="https://use.fontawesome.com/9fb1499043.js"></script>
   <%= csrf_meta_tags %>
 </head>
 <body>
 
-<%= yield %>
+<div class="wrapper">
+  <div class="left-navigation">
+    <%= render 'layouts/left_navigation' %>
+  </div>
+
+  <div class="right-navigation">
+    <h1>About</h1>
+    This is one of the many projects I worked on during my time at Flatiron School Learn Verified program. You can check out the
+    code <a href="https://github.com/nscarlyon/js-tictactoe-rails-api-v-000">here</a>. I often update my portfolio items, so you
+    may see changes in the future.
+
+    <p>Feel free to contact me at natasha.carlyon@gmail.com</p>
+  </div>
+
+  <div class="tictactoe-border">
+    <%= yield %>
+  </div>
+</div>
 
 </body>
 </html>

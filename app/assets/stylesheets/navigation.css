@@ -1,0 +1,24 @@
+.wrapper {
+  width: 100%;
+}
+
+.left-navigation {
+  float: left;
+  text-align: center;
+  width: 25%;
+}
+
+#social-icons ul {
+  padding: 0;
+  margin-left: 0;
+}
+
+#social-icons li {
+  list-style-type: none;
+}
+
+.right-navigation {
+  float: right;
+  width: 25%;
+  margin-left: 0px;
+}
