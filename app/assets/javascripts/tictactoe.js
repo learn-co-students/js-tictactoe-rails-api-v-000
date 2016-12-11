@@ -4,9 +4,7 @@ var winningCombinations = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2
 
 var attachListeners = function() {
   $('td').click(function(event) {
-    if (event.target.innerText == '') {
-      doTurn(event);
-    }
+    doTurn(event);
   });
   $("#games").click(function(event) {
     var state = parseState(event)
