@@ -35,8 +35,8 @@ function attachListeners() {
 function doTurn(event) {
   updateState(event);
   if (checkWinner() || tie()) {
-    save();
-    resetGame();
+    save()
+    resetGame()
   } else {
     turn += 1;
   }
@@ -114,7 +114,7 @@ function save() {
       url: patchUrl,
       data: values,
       dataType: "JSON",
-      success: resetGame()
+      success: getAllGames()
     })
   }
 }
@@ -142,7 +142,6 @@ function printGames(games) {
 
 function changeGame(state, id) {
   implementState(state);
-  debugger
   currentGame = id;
   turn = findTurn(state);
 }
