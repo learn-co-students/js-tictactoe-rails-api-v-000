@@ -26,8 +26,8 @@ function attachListeners() {
     getAllGames();
   })
   $("#games").click(function(event) {
-    var state = parseState(event)
-    var id = parseId(event)
+    var state = $(event.target).data("state").split(",")
+    var id = $(event.target).data("id")
     changeGame(state, id)
   })
 }
@@ -105,7 +105,7 @@ function save() {
   if(currentGame == 0) {
     var post = $.post('/games', values)
     post.done(function(data) {
-    currentGame = data["id"]
+      currentGame = data["game"]["id"]
     })
   } else {
     var patchUrl = "/games/" + currentGame
@@ -140,16 +140,9 @@ function printGames(games) {
   })
 }
 
-function parseState(event) {
-  return $(event.target).data("state").split(",")
-}
-
-function parseId(event) {
-  return $(event.target).data("id")
-}
-
 function changeGame(state, id) {
   implementState(state);
+  debugger
   currentGame = id;
   turn = findTurn(state);
 }
