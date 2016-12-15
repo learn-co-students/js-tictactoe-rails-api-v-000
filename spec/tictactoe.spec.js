@@ -264,7 +264,7 @@ describe('#integration tests of persistence', function() {
     jasmine.Ajax.withMock(function() {
       var data = {
         game: {
-          id:1,
+          id: 1,
           state: ["X","","","","","","","",""]
         }
       }

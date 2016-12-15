@@ -1,4 +1,5 @@
 var turn = 0
+var currentGame = 0
 var winCombinations = [
   [[0,0], [1,0], [2,0]],
   [[0,1], [1,1], [2,1]],
@@ -16,11 +17,7 @@ $(document).ready(function() {
 
 function attachListeners() {
   $("table").click(function(event) {
-    doTurn(event)
-  });
-  $("#games").click(function(event) {
-    var state = parseState(event)
-    changeGame(state, getGameId(event))
+    doTurn(event);
   })
   $("#save").click(function() {
     save();
@@ -28,12 +25,17 @@ function attachListeners() {
   $("#previous").click(function() {
     getAllGames();
   })
+  $("#games").click(function(event) {
+    var state = parseState(event)
+    var id = parseId(event)
+    changeGame(state, id)
+  })
 }
 
 function doTurn(event) {
   updateState(event);
   if (checkWinner() || tie()) {
-    // save(true);
+    save();
     resetGame();
   } else {
     turn += 1;
@@ -97,3 +99,72 @@ function resetGame() {
 }
 
 // Persistence Functionality
+
+function save() {
+  var values = {game: {state: collectState()}}
+  if(currentGame == 0) {
+    var post = $.post('/games', values)
+    post.done(function(data) {
+    currentGame = data["id"]
+    })
+  } else {
+    var patchUrl = "/games/" + currentGame
+    $.ajax({
+      type: "PATCH",
+      url: patchUrl,
+      data: values,
+      dataType: "JSON",
+      success: resetGame()
+    })
+  }
+}
+
+function collectState() {
+  var state = []
+  $('td').each(function() {
+    state.push($(this).text())
+  })
+  return state;
+}
+
+function getAllGames() {
+  $.getJSON("/games").done(function(data) {
+    printGames(data["games"]);
+  })
+}
+
+function printGames(games) {
+  $('#games').html("")
+  games.forEach(function(game) {
+    $('#games').append('<li data-state="' + game["state"] + '" data-id="' + game["id"] + '">' + game["id"] + '</li>')
+  })
+}
+
+function parseState(event) {
+  return $(event.target).data("state").split(",")
+}
+
+function parseId(event) {
+  return $(event.target).data("id")
+}
+
+function changeGame(state, id) {
+  implementState(state);
+  currentGame = id;
+  turn = findTurn(state);
+}
+
+function findTurn(state) {
+  state.forEach(function(box) {
+    if(box != "") {
+      turn += 1;
+    }
+  })
+  return turn;
+}
+
+function implementState(state) {
+  $("td").each(function(i) {
+    $(this).text(state[i]);
+  })
+}
