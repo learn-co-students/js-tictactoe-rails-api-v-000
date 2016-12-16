@@ -82,10 +82,19 @@ function doesntMatch(selector) {
 }
 
 function tie() {
-  if(!checkWinner() && turn == 8) {
+  if(!checkWinner() && fullBoard()) {
     message("Tie game");
     return true;
   }
+}
+
+function fullBoard () {
+  var full = true
+  $("td").each(function() {
+    if($(this).html().length == 0) {
+      full = false
+  }})
+  return full
 }
 
 function message(message) {
