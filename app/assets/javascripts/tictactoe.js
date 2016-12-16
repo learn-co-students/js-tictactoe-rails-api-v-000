@@ -91,7 +91,7 @@ function tie() {
 function fullBoard () {
   var full = true
   $("td").each(function() {
-    if($(this).html().length == 0) {
+    if($(this).html() == "") {
       full = false
   }})
   return full
@@ -103,8 +103,8 @@ function message(message) {
 
 function resetGame() {
   $('td').text("");
-  turn = 0;
-  currentGame = 0;
+  turn = 0
+  currentGame = 0
 }
 
 // Persistence Functionality

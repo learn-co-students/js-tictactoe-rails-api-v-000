@@ -404,7 +404,7 @@ describe('#integration tests of persistence', function() {
       expect(request.method).toBe('POST');
       var data = {
         game: {
-          id:1,
+          id:0,
           state: ["X","O","O","X","","","X","",""]
         }
       }
