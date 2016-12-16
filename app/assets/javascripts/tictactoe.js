@@ -123,7 +123,8 @@ function save() {
       url: patchUrl,
       data: values,
       dataType: "JSON",
-      success: getAllGames()
+      success: function(){}
+      // success: getAllGames()
     })
   }
 }
