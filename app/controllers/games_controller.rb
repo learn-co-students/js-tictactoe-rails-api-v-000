@@ -20,7 +20,6 @@ class GamesController < ApplicationController
 
   private
   def game_params
-    byebug
     params.require(:game).permit(:state => [])
   end
 end

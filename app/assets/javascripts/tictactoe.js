@@ -33,7 +33,7 @@ function attachListeners() {
       var games = data["games"];
       $("#games").text("");
       data["games"].forEach(function(value){
-        $("#games").append("<p>" + value["id"] + "</p>");
+        $("#games").append("<p>Game #: " + value["id"] + ", State: " + value["state"] + "</p>");
       })
 
       console.log(games);
