@@ -1,11 +1,26 @@
 $(document).ready(function() {
   attachListeners();
+  $('.previous').hide();
 
+  $(function() {
+    $('#games').on('click', function(event) {
+        parseState($(event.target).text());
+    });
+    $('#save').on('click', function() {
+        save();
+    });
+    $('#previous').on('click', function() {
+        prev();
+    });
+
+  });
 }
 );
 var all = ["","","","","","","","",""];
 var turn = 0;
-var testing = "";
+var count = 1;
+var previousGames = [];
+var currentGame;
 var COMBOS = [
   [0,1,2],
   [3,4,5],
@@ -17,21 +32,60 @@ var COMBOS = [
   [2,4,6]
 ];
 
-
-function mult(one, two) {
-  var final = [0,0,0,0,0,0,0,0,0];
-  final[0] = one[0] * two[0];
-  final[1] = one[0] * two[1];
-  final[2] = one[0] * two[2];
-  final[3] = one[1] * two[0];
-  final[4] = one[1] * two[1];
-  final[5] = one[1] * two[2];
-  final[6] = one[2] * two[0];
-  final[7] = one[2] * two[1];
-  final[8] = one[2] * two[2];
-  return final.indexOf(1);
+function parseState(id) {
+  var url = "/games/" + id;
+  var method = "GET"
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: "json"
+  }).done(function(data) {
+    data["state"].forEach(function(x,y) {
+      $('td:eq('+y+')').text(x);
+    });
+  });
 }
 
+function prev() {
+    var url = "/";
+    var method = "GET"
+    $.ajax({
+      url: url,
+      method: method,
+      dataType: "json"
+    }).done(function(data) {
+      var all2 = [];
+      $('li').each(function() { all2.push(parseInt($(this).text())); });
+      data["home"].forEach(function(x){
+        if (!all2.includes(x["id"])) {
+          $('.previous').append("<li>" + x["id"] + "</li>").addClass("list-"+ x["id"]);
+        }
+      });
+    });
+    $('.previous').show();
+
+}
+
+function save() {
+    var url = "/games";
+    var method = "POST";
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: {
+      game: {
+        state: state()
+      }
+    }
+  });
+}
+
+function state() {
+  var test = [];
+  $('td').each(function() { test.push($(this)["0"]["textContent"])});
+  return test;
+}
 
 function attachListeners() {
 $('td').on('click', function(e) {
@@ -41,10 +95,10 @@ $('td').on('click', function(e) {
 }
 
 function doTurn(event) {
+
     updateState(event);
     checkWinner();
-    turn++;
-
+    turn++
 }
 
 function isEven(num) {
@@ -56,45 +110,37 @@ function player() {
 }
 
 function updateState(event) {
-  var matrix1 =  [0,
-                  0,
-                  0];
-  var matrix2 = [0,0,0];
-  //testing = player();
-  matrix1[event.target.attributes[0].value] = 1;
-  matrix2[event.target.attributes[1].value] = 1;
-//  all[mult(matrix1,matrix2)] = player();
   $(event.target).text(player());
 
 }
 
-function checkWinner(event) {
-  var finish = false;
-  var count = 0;
-  var mess = "";
+function reset() {
+  $('td').html("");
+  turn = 0;
+}
 
-  while (!finish && count < COMBOS.length) {
+function checkWinner() {
 
-    if ($('#num-' + COMBOS[count][0]).text() != "" &&  $('#num-' + COMBOS[count][0]).text() == $('#num-' + COMBOS[count][1]).text()  && $('#num-' + COMBOS[count][0]).text() == $('#num-' + COMBOS[count][2]).text() ) {
+  for (i=0; i < COMBOS.length; i++) {
 
-          var player = $('#num-' + COMBOS[count][0]).text();
-            finish = true;
-            $('td').html("");
+    var one = $('td:eq(' + COMBOS[i][0] + ')')["0"]["textContent"];
+    var two = $('td:eq(' + COMBOS[i][1] + ')')["0"]["textContent"];
+    var three = $('td:eq(' + COMBOS[i][2] + ')')["0"]["textContent"];
 
-            message("Player " + player + " Won!");
-            return true;
-
-          }
-        else {
-          count++;
-          var player2 = $('[data-x="0"][data-y="0"]').text();
-          //var player2 = $('#num-0').text();
-          message(player2);
-        }
-
-      }
-      return false;
-
+    if (one === two && one === three && one != "") {
+      message("Player " + player() + " Won!");
+      save();
+      reset();
+      return
+    }
+    else if (turn == 8 && i == COMBOS.length-1) {
+      message("It is a tie!");
+      save();
+      reset();
+      return
+    }
+  }
+  return false
 }
 
 function message(string) {
