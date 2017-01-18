@@ -28,6 +28,6 @@ class GamesController < ApplicationController
 
   def game_params
     # allow user to start with an empty game
-    params.require(:game).permit({state: []})
+    params.require(:game).permit(state: [])
   end
 end

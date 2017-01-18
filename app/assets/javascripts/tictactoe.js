@@ -23,11 +23,11 @@ function attachListeners() {
     saveGame();
   });
 
-  $('#previous').click(function(event){
+  $('#previous').click(function(event) {
     getAllGames();
   });
 
-  $('#games').click(function(event){
+  $('#games').click(function(event) {
     var state = parseState(event)
     changeGame(state, getGameId(event));
   });
@@ -50,7 +50,7 @@ function getAllGames() {
 function showGames(games) {
   var dom = $()
   games.forEach(function(game) {
-    dom = dom.add(showGame(game));
+    dom = dom.add(showGames(game));
   })
   $("#games").html(dom);
 }
@@ -112,7 +112,7 @@ function saveGame(resetCurrentGame) {
       if(resetCurrentGame) {
         currentGame = undefined;
       } else {
-        currentGame = data.game.id;
+        currentGame = data.game_id;
       }
     }
   })
