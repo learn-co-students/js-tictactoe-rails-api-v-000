@@ -1,17 +1,26 @@
 var turn = 0;
 
 function attachListeners() {
-  // will be called in $(document).ready to attach click handlers
+  // called in $(document).ready to attach click handlers
   // click handlers pass params of clicked cell to doTurn()
+  $("td").on("click", function() {
+    $(this).addClass("current");
+    doTurn($(this).data());
+    $(this).removeClass("current");
+  });
 }
 
-function doTurn() {
+function doTurn(cellData) {
   // turn + 1
   // calls updateState() and checkWinner()
+  turn++;
+  updateState(cellData);
+  checkWinner();
 }
 
-function updateState() {
+function updateState(cellData) {
   // calls player(), adds return (x or o) to the clicked cell
+  $(".current").html(player());
 }
 
 function checkWinner() {
@@ -35,5 +44,5 @@ function message(string) {
 }
 
 $(document).ready(function () {
-
+  attachListeners();
 });
