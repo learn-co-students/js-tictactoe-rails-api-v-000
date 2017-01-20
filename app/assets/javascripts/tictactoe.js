@@ -14,8 +14,11 @@ function doTurn(cellData) {
   // turn + 1
   // calls updateState() and checkWinner()
   updateState(cellData);
-  checkWinner();
-  turn++;
+  var checkWin = checkWinner();
+  if (checkWin === false || checkWin === undefined) {
+    turn++;
+  }
+
 }
 
 function updateState(cellData) {
@@ -30,19 +33,23 @@ function checkWinner() {
   var board = {};
   var winCombinations = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6] ];
 
-  $("td").each(function(index) {
-    // adds text value of each cell to board
-    board[index] = $(this).text();
-  });
+  if ($("td").text().length === 9) {
+    message("Tie game");
+  } else {
+    $("td").each(function(index) {
+      // adds text value of each cell to board
+      board[index] = $(this).text();
+    });
 
-  var l = winCombinations.length;
-  var wonString = "Player " + player() + " Won!";
+    var l = winCombinations.length;
+    var wonString = "Player " + player() + " Won!";
 
-  for (var i = 0; i < l; i++) {
-      if ( (board[winCombinations[i][0]] === "X") && (board[winCombinations[i][1]] === "X") && (board[winCombinations[i][2]] === "X") ) {
-        message(wonString);
-      } else if ( (board[winCombinations[i][0]] === "O") && (board[winCombinations[i][1]] === "O") && (board[winCombinations[i][2]] === "O") ) {
-        message(wonString);
+    for (var i = 0; i < l; i++) {
+        if ( (board[winCombinations[i][0]] === "X") && (board[winCombinations[i][1]] ===  "X") && (board[winCombinations[i][2]] === "X") ) {
+          message(wonString);
+        } else if ( (board[winCombinations[i][0]] === "O") &&   (board[winCombinations[i][1]] === "O") && (board[winCombinations[i][2]] === "O")  ) {
+          message(wonString);
+        }
       }
   }
 
@@ -63,6 +70,9 @@ function player() {
 function message(string) {
   // adds the given string to div#message
   $("#message").html(string);
+
+  $("td").html("");
+  turn = 0;
 }
 
 $(document).ready(function () {
