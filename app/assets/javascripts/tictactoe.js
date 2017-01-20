@@ -22,6 +22,11 @@ function checkWinner() {
 
 function player() {
   // returns x or o depending on whether turn is odd or even
+  if (turn % 2 == 0) {
+    return "o";
+  } else {
+    return "x";
+  }
 }
 
 function message() {
