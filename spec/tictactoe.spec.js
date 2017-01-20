@@ -27,7 +27,8 @@ describe('Tic Tac Toe Functionality', function() {
       attachListeners();
       spyOn(window, "checkWinner");
       spyOn(window, "updateState");
-      doTurn(myEvent);
+      $('[data-x="0"][data-y="0"]').click();
+      // debugger;
       expect(turn).toEqual(1);
       expect(window.updateState).toHaveBeenCalled;
       expect(window.checkWinner).toHaveBeenCalled;
@@ -155,6 +156,7 @@ describe('Tic Tac Toe Functionality', function() {
       // ___|___|___
       // ___|___|___
       //    |   |
+
       expect(turn).toEqual(0);
       $("td").each(function() {
         expect($(this).html()).toEqual("")
