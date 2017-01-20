@@ -94,6 +94,7 @@ describe('Tic Tac Toe Functionality', function() {
       $('[data-x="0"][data-y="1"]').click();
       $('[data-x="2"][data-y="0"]').click();
       $('[data-x="0"][data-y="2"]').click();
+      debugger;
       // _X_|_O_|_O_
       // _X_|___|___
       //  X |   |

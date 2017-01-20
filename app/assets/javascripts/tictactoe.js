@@ -1,41 +1,45 @@
 var turn = 0;
+var winCombinations = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6] ];
 
 var doTurn = function(event) {
-  // turn + 1
-  // calls updateState() and checkWinner()
+  // fires when player clicks a cell
   updateState(event);
   checkWinner();
   turn++;
-  // if (checkWinner() === false) {
-  //   turn++;
-  // }
 }
 
 var updateState = function(event) {
-  // calls player(), adds return (x or o) to the clicked cell
+  // adds X or O to the clicked-on cell
   $(event.target).html(player());
 }
 
 var endGame = function() {
-    $("td").html("");
-    turn = -1;
+  // clears board and restarts game
+  $("td").html("");
+  turn = -1;
 }
 
-var checkWinner = function() {
-  // checks to see if anyone has won
-  // if winner, calls on player to see who won
-  // and passes "Player X/O Won" to message()
-  var board = [];
-  var winCombinations = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6] ];
-
+var checkTie = function() {
+  // checks if all cells are full
   if ($("td").text().length === 9) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+var checkWinner = function() {
+  // checks to see if the game is over (tied or won)
+  // if there is a winner or tie, passes message to message()
+
+  if (checkTie()) {
     message("Tie game");
   } else {
     $("td").each(function() {
       // adds text value of each cell to board
       board.push($(this).text());
     });
-
     var l = winCombinations.length;
     var wonString = "Player " + player() + " Won!";
 
