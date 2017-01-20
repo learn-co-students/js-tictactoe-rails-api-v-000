@@ -1,28 +1,20 @@
 var turn = 0;
 
-function attachListeners() {
-  // called in $(document).ready to attach click handlers
-  // click handlers pass params of clicked cell to doTurn()
-  $("td").on("click", function(e) {
-    doTurn(e.currentTarget);
-    // debugger;
-  });
-}
-
-function doTurn(cell) {
+var doTurn = function(event) {
   // turn + 1
   // calls updateState() and checkWinner()
-  updateState(cell);
-  debugger;
+
+  updateState(event);
+  // debugger;
   if (checkWinner() === false) {
     turn++;
   }
 
 }
 
-function updateState(cell) {
+var updateState = function(event) {
   // calls player(), adds return (x or o) to the clicked cell
-  $(cell).html(player());
+  $(event.target).html(player());
 }
 
 function endGame() {
@@ -51,9 +43,11 @@ function checkWinner() {
 
     for (var i = 0; i < l; i++) {
       if ( (board[winCombinations[i][0]] === "X") && (board[winCombinations[i][1]]===  "X") && (board[winCombinations[i][2]] === "X") ) {
-        return message(wonString);
+        message(wonString);
+        return true;
       } else if ( (board[winCombinations[i][0]] === "O") &&   (board[winCombinations[i][1]] === "O") && (board[winCombinations[i][2]] === "O")  ) {
-        return message(wonString);
+        message(wonString);
+        return true;
       }
     }
     return false;
@@ -76,6 +70,16 @@ function message(string) {
 
 }
 
-$(document).ready(function () {
+var attachListeners = function() {
+  // called in $(document).ready to attach click handlers
+  // click handlers pass params of clicked cell to doTurn()
+  $("tbody").click(function(event) {
+    // debugger;
+    doTurn(event);
+    // debugger;
+  });
+}
+
+$(function() {
   attachListeners();
-});
+})
