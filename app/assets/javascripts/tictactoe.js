@@ -29,8 +29,9 @@ function player() {
   }
 }
 
-function message() {
+function message(string) {
   // adds the given string to div#message
+  $("#message").html(string);
 }
 
 $(document).ready(function () {
