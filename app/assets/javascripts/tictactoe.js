@@ -13,9 +13,9 @@ function attachListeners() {
 function doTurn(cellData) {
   // turn + 1
   // calls updateState() and checkWinner()
-  turn++;
   updateState(cellData);
   checkWinner();
+  turn++;
 }
 
 function updateState(cellData) {
@@ -35,18 +35,25 @@ function checkWinner() {
     board[index] = $(this).text();
   });
 
-  for (var i in winCombinations) {
+  var l = winCombinations.length;
+  var wonString = "Player " + player() + " Won!";
+
+  for (var i = 0; i < l; i++) {
       if ( (board[winCombinations[i][0]] === "X") && (board[winCombinations[i][1]] === "X") && (board[winCombinations[i][2]] === "X") ) {
-        message("Player " + player() + " Won");
+        message(wonString);
       } else if ( (board[winCombinations[i][0]] === "O") && (board[winCombinations[i][1]] === "O") && (board[winCombinations[i][2]] === "O") ) {
-        message("Player " + player() + " Won");
+        message(wonString);
       }
+  }
+
+  if ($("#message").text() === "") {
+    return false;
   }
 }
 
 function player() {
   // returns x or o depending on whether turn is odd or even
-  if (turn % 2 == 0) {
+  if ( turn === 0 || turn % 2 === 0 ) {
     return "X";
   } else {
     return "O";
