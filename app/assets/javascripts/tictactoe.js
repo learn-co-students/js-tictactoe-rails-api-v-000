@@ -3,13 +3,12 @@ var turn = 0;
 var doTurn = function(event) {
   // turn + 1
   // calls updateState() and checkWinner()
-
   updateState(event);
-  // debugger;
-  if (checkWinner() === false) {
-    turn++;
-  }
-
+  checkWinner();
+  turn++;
+  // if (checkWinner() === false) {
+  //   turn++;
+  // }
 }
 
 var updateState = function(event) {
@@ -17,13 +16,12 @@ var updateState = function(event) {
   $(event.target).html(player());
 }
 
-function endGame() {
+var endGame = function() {
     $("td").html("");
-    turn = 0;
+    turn = -1;
 }
 
-function checkWinner() {
-
+var checkWinner = function() {
   // checks to see if anyone has won
   // if winner, calls on player to see who won
   // and passes "Player X/O Won" to message()
@@ -54,7 +52,7 @@ function checkWinner() {
   }
 }
 
-function player() {
+var player = function() {
   // returns x or o depending on whether turn is odd or even
   if ( turn === 0 || turn % 2 === 0 ) {
     return "X";
@@ -63,7 +61,7 @@ function player() {
   }
 }
 
-function message(string) {
+var message = function(string) {
   // adds the given string to div#message
   endGame();
   return $("#message").html(string);
@@ -73,10 +71,8 @@ function message(string) {
 var attachListeners = function() {
   // called in $(document).ready to attach click handlers
   // click handlers pass params of clicked cell to doTurn()
-  $("tbody").click(function(event) {
-    // debugger;
+  $("td").click(function(event) {
     doTurn(event);
-    // debugger;
   });
 }
 
