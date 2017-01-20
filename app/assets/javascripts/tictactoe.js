@@ -28,26 +28,35 @@ var checkTie = function() {
   }
 }
 
+var getBoard = function() {
+  var board = [];
+  $("td").each(function() {
+    // adds text value of each cell to board array
+    board.push($(this).text());
+  });
+  return board;
+}
 
 var checkWinner = function() {
-  // checks to see if the game is over (tied or won)
-  // if there is a winner or tie, passes message to message()
+  // if there is a winner or tie, passes message to message(), returns true
+  // if game is not over, returns false
 
   if (checkTie()) {
+    endGame();
     message("Tie game");
+    return true;
   } else {
-    $("td").each(function() {
-      // adds text value of each cell to board
-      board.push($(this).text());
-    });
+    var gameBoard = getBoard();
     var l = winCombinations.length;
     var wonString = "Player " + player() + " Won!";
 
     for (var i = 0; i < l; i++) {
-      if ( (board[winCombinations[i][0]] === "X") && (board[winCombinations[i][1]]===  "X") && (board[winCombinations[i][2]] === "X") ) {
+      if ( (gameBoard[winCombinations[i][0]] === "X") && (gameBoard[winCombinations[i][1]]===  "X") && (gameBoard[winCombinations[i][2]] === "X") ) {
+        endGame();
         message(wonString);
         return true;
-      } else if ( (board[winCombinations[i][0]] === "O") &&   (board[winCombinations[i][1]] === "O") && (board[winCombinations[i][2]] === "O")  ) {
+      } else if ( (gameBoard[winCombinations[i][0]] === "O") &&   (gameBoard[winCombinations[i][1]] === "O") && (gameBoard[winCombinations[i][2]] === "O")  ) {
+        endGame();
         message(wonString);
         return true;
       }
@@ -58,7 +67,7 @@ var checkWinner = function() {
 
 var player = function() {
   // returns x or o depending on whether turn is odd or even
-  if ( turn === 0 || turn % 2 === 0 ) {
+  if ( turn % 2 === 0 ) {
     return "X";
   } else {
     return "O";
@@ -67,14 +76,11 @@ var player = function() {
 
 var message = function(string) {
   // adds the given string to div#message
-  endGame();
   return $("#message").html(string);
-
 }
 
 var attachListeners = function() {
-  // called in $(document).ready to attach click handlers
-  // click handlers pass params of clicked cell to doTurn()
+  // attaches a click handler to the table cell, calls doTurn()
   $("td").click(function(event) {
     doTurn(event);
   });
