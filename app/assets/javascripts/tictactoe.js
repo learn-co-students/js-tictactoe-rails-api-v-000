@@ -1,12 +1,18 @@
 var turn = 0;
 var winCombinations = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6] ];
 
+$(function() {
+  attachListeners();
+})
+var currentGame
+
 var doTurn = function(event) {
   // fires when player clicks a cell
   updateState(event);
   checkWinner();
   turn++;
 }
+
 
 var updateState = function(event) {
   // adds X or O to the clicked-on cell
@@ -17,6 +23,7 @@ var endGame = function() {
   // clears board and restarts game
   $("td").html("");
   turn = -1;
+  currentGame = null;
 }
 
 var checkTie = function() {
@@ -79,13 +86,78 @@ var message = function(string) {
   return $("#message").html(string);
 }
 
+
 var attachListeners = function() {
   // attaches a click handler to the table cell, calls doTurn()
   $("td").click(function(event) {
     doTurn(event);
   });
+  $('#save').on('click', function() {
+    saveGame()
+  });
+  displayGames();
 }
 
-$(function() {
-  attachListeners();
-})
+var displayGames = function() {
+  // returns a display of all the saved games, just returns true right now
+  $('#previous').on('click', function() {
+    $.getJSON('/games').done(function(data) {
+      $("#games").html("");
+      $.each(data.games, function(index, value) {
+        $('#games').append("<p><a href='#' class='game' data-id='" + value.id + "'>Game " + value.id + "</a></p>")
+        attachLinks()
+      })
+    })
+  })
+}
+
+var attachLinks = function() {
+  $('.game').on('click', function(event) {
+    event.preventDefault();
+    var id = $(this).attr("data-id")
+    $.getJSON('/games/' + id).done(function(data) {
+      var state = data.game.state;
+      turn = state.join("").length;
+      $("td").each(function(index) {
+        $(this).html(state[index]);
+      })
+      currentGame = id
+
+    })
+  })
+}
+
+var saveGame = function() {
+  // Uses an ajax call to /games POST to save the game to the database
+
+    saveState = getState()
+
+    if(currentGame) {
+       method = "PATCH"
+       url =  "/games/" + currentGame
+    } else {
+       method = "POST"
+       url = "/games"
+    }
+    $.ajax({
+      method: method,
+      url: url,
+      data: {
+        game: {
+          state: saveState
+        }
+      },
+      success: function(data) {
+        currentGame = data.game.id
+        message("Game Saved");
+      }
+    })
+}
+
+var getState = function() {
+  var state = []
+  $('td').each(function(s) {
+    state.push($(this).text())
+  })
+  return state
+}
