@@ -1,10 +1,10 @@
 var turn = 0;
 var winCombinations = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6] ];
+var currentGame;
 
 $(function() {
   attachListeners();
 })
-var currentGame
 
 var doTurn = function(event) {
   // fires when player clicks a cell
@@ -13,7 +13,6 @@ var doTurn = function(event) {
   turn++;
 }
 
-
 var updateState = function(event) {
   // adds X or O to the clicked-on cell
   $(event.target).html(player());
@@ -21,9 +20,9 @@ var updateState = function(event) {
 
 var endGame = function() {
   // clears board and restarts game
+  saveGame(true);
   $("td").html("");
   turn = -1;
-  currentGame = null;
 }
 
 var checkTie = function() {
@@ -50,6 +49,7 @@ var checkWinner = function() {
 
   if (checkTie()) {
     endGame();
+    currentGame = 0;
     message("Tie game");
     return true;
   } else {
@@ -93,7 +93,7 @@ var attachListeners = function() {
     doTurn(event);
   });
   $('#save').on('click', function() {
-    saveGame()
+    saveGame(false)
   });
   displayGames();
 }
@@ -121,23 +121,23 @@ var attachLinks = function() {
       $("td").each(function(index) {
         $(this).html(state[index]);
       })
-      currentGame = id
+      currentGame = parseInt(id)
 
     })
   })
 }
 
-var saveGame = function() {
+var saveGame = function(reset) {
   // Uses an ajax call to /games POST to save the game to the database
 
     saveState = getState()
 
     if(currentGame) {
-       method = "PATCH"
-       url =  "/games/" + currentGame
+      method = "PATCH"
+      url =  "/games/" + currentGame
     } else {
-       method = "POST"
-       url = "/games"
+      method = "POST"
+      url = "/games"
     }
     $.ajax({
       method: method,
@@ -148,7 +148,11 @@ var saveGame = function() {
         }
       },
       success: function(data) {
-        currentGame = data.game.id
+        if(reset) {
+          currentGame = null;
+        } else {
+          currentGame = data.game.id
+        }
         message("Game Saved");
       }
     })
