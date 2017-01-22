@@ -1,4 +1,5 @@
 var turn = 0
+var currentGame
 var winningCombos = [
   [[0,0],[1,0],[2,0]],
   [[0,1],[1,1],[2,1]],
@@ -16,16 +17,53 @@ function attachListeners() {
       doTurn(event)
     }
   })
+  $('#previous').on('click', function() {
+    $.get('/games', function(data) {
+
+    })
+  })
+  $('#save').on('click', function() {
+    saveGame()
+  })
+}
+
+function saveGame() {
+  var url, method
+  if (currentGame) {
+    url = '/games/' + currentGame
+    method = 'PATCH'
+  } else {
+    url = '/games'
+    method = 'POST'
+  }
+
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: 'json',
+    data: {
+      game: {
+        state: serializeState()
+      }
+    },
+    success: function(data) {
+      currentGame = data.game.id
+    }
+  })
+}
+
+function serializeState() {
+  var board = []
+  $('td').each(function() {
+    board.push(this.innerHTML)
+  })
+  return board
 }
 
 function doTurn(event) {
   updateState(event)
   turn ++
   checkWinner()
-}
-
-function checkWinner() {
-
 }
 
 function updateState(event) {
@@ -57,9 +95,7 @@ function checkFull() {
 }
 
 function resetGame() {
-  $('td').each(function() {
-    this.innerHTML = ""
-  })
+  $('td').html("")
   turn = 0
 }
 
@@ -69,6 +105,7 @@ function checkWinner() {
     if (checkWon(combo)) {
       var winningToken = $('td[data-x="' + combo[0][0] + '"][data-y="' + combo[0][1] + '"]').html()
       message("Player " + winningToken + " Won!")
+      saveGame()
       resetGame()
     }
   }
