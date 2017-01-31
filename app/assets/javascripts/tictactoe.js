@@ -1,4 +1,5 @@
 //pseudo code
+//new game needs to be created when one is finished
 
 var turn = 0
 var board = []
@@ -8,7 +9,9 @@ function attachListeners() {
     //append game number to #games div when #save is clicked and save game to database
     event.preventDefault();
 
-    var posting = $.post('/games', gameBoard())
+    var posting = $.post('/games', board);
+
+
   })
   $('#previous').on('click', function(event) {
     //previous games are hidden until #previous is clicked - then show them like an index
@@ -57,6 +60,7 @@ function gameBoard() {
   //iterate over to add each element as text to that cell...?
   //can also iterate through the array to check if someone has won
   $.each($("td"), function(index, cell) {
+    //does this add nil values for blank cells? ... because I need it to...
     board.push($(cell).text());
     return board
   })
