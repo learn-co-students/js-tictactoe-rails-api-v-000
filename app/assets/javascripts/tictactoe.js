@@ -1,6 +1,19 @@
 //pseudo code
 
 var turn = 0
+var gameCount = 0
+var board = []
+
+function gameBoard() {
+  //returns an array of the current board, which you can use when showing a game to
+  //iterate over to add each element as text to that cell...?
+  //can also iterate through the array to check if someone has won
+  $.each($("td"), function(index, cell) {
+    //does this add nil values for blank cells? ... because I need it to...
+    board.push($(cell).text());
+    return board
+  })
+}
 
 function player() {
   if (turn % 2 === 0) {
@@ -17,6 +30,7 @@ function updateState(cell) {
   //var xCell = $('td').find("[data-x= '" + x + "']")
   //var cell = xCell.find("[data-y]= '" + y + "']");
   $(cell).text(currentPlayer);
+  gameBoard();
 }
 
 function doTurn(cell) {
@@ -31,6 +45,19 @@ function attachListeners() {
     //grabs cell that was clicked
     doTurn(event.toElement);
   })
+
+  $('#save').on('click', function(event) {
+    event.preventDefault(); //working up to here
+    //save game to database
+    var state = JSON.stringify(board)
+    var posting = $.post('/games', state);
+    //append game number to #games div
+    //posting.done(function() {
+      //gameCount += 1;
+      //$('#games').append(gameCount.to_s);
+    //})
+  })
+
 }
 
 $(document).ready(function() {
