@@ -9,7 +9,7 @@ class GamesController < ApplicationController
   end
 
   def create
-    game = Game.create
+    game = Game.create(board)
     render json: game, status: 201
   end
 
