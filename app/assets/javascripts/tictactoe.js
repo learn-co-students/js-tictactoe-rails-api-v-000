@@ -11,7 +11,6 @@ function gameBoard() {
   $.each($("td"), function(index, cell) {
     //does this add nil values for blank cells? ... because I need it to...
     board.push($(cell).text());
-    return board
   })
 }
 
@@ -48,9 +47,10 @@ function attachListeners() {
 
   $('#save').on('click', function(event) {
     event.preventDefault(); //working up to here
+    console.log(event);
     //save game to database
-    var state = JSON.stringify(board)
-    var posting = $.post('/games', state);
+    //var state = JSON.stringify(board)
+    var posting = $.post('/games', { 'state': board });
     //append game number to #games div
     //posting.done(function() {
       //gameCount += 1;
