@@ -1,9 +1,45 @@
 //pseudo code
 
 var turn = 0;
-var gameCount = 0; //could just display game id + 1 instead of keeping track of this
 var board = [];
 var currentGame = undefined;
+var winCombos = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 4, 8],
+  [6, 4, 2],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8]
+]
+
+function message(string) {
+
+}
+
+function checkWinner() {
+  //check board to see if anyone won
+  //if someone has won, return "Player _ Won!" and pass the string to message()
+  //new game needs to be created(but not saved) when one is finished, board variable needs to be cleared
+  //return true if game has been won, false if not
+  $.each(winCombos, function(index, combo) {
+    //check combo against board variable
+    var one = combo[0]
+    var two = combo[1]
+    var three = combo[2]
+
+    if (board[one] === "X" && board[two] === "X" && board[three] === "X") {
+      message("Player X Won!")
+      return true
+    } else if (board[one] === "O" && board[two] === "O" && board[three] === "O")) {
+      message("Player O Won!")
+      return true
+    } else {
+      return false
+    }
+  })
+}
 
 function games() {
   $('#games').on('click', function(event) {
@@ -15,7 +51,6 @@ function games() {
       //display state as current board
       var array = data.state
       $.each($("td"), function(index, cell) {
-        //does this add nil values for blank cells? ... because I need it to...
         $(cell).text(array[index]);
       })
     })
@@ -64,8 +99,6 @@ function save() {
       },
       success: function(data) {
         //if game has been completed, set currentGame to undefined
-        //and clear board variable -- checkWinner() can return true if game has been won, it can also be
-        //responsible for clearing the board
         if (checkWinner()) {
           currentGame = undefined;
         } else { //if game has not been completed, set currentGame to game's id
@@ -105,10 +138,7 @@ function player() {
 
 function updateState(cell) {
   var currentPlayer = player();
-  //var x = event.getAttribute("data-x");
-  //var y = event.getAttribute("data-y");
-  //var xCell = $('td').find("[data-x= '" + x + "']")
-  //var cell = xCell.find("[data-y]= '" + y + "']");
+
   $(cell).text(currentPlayer);
   gameBoard();
 }
