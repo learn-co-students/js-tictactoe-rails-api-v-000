@@ -97,7 +97,15 @@ function attachListeners() {
     });
   })
 
-  //when the user clicks on a previous game, it loads that game - like a show view
+  $('#games').on('click', function(event) {
+    //when the user clicks on a previous game, it loads that game - like a show view
+    event.preventDefault();
+    var id = event.target.innerText
+    //console.log(event); //working up till here
+    $.get("/games/" + id, function(data) {
+      console.log(data)
+    })
+  })
 }
 
 $(document).ready(function() {
