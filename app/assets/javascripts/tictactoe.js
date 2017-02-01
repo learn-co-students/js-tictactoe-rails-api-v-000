@@ -100,10 +100,15 @@ function attachListeners() {
   $('#games').on('click', function(event) {
     //when the user clicks on a previous game, it loads that game - like a show view
     event.preventDefault();
+
     var id = event.target.innerText
-    //console.log(event); //working up till here
     $.get("/games/" + id, function(data) {
-      console.log(data)
+      //display state as current board
+      var array = data.state
+      $.each($("td"), function(index, cell) {
+        //does this add nil values for blank cells? ... because I need it to...
+        $(cell).text(array[index]);
+      })
     })
   })
 }
