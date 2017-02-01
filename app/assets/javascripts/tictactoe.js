@@ -38,6 +38,7 @@ function doTurn(cell) {
   updateState(cell);
 }
 
+//split these into separate functions once working
 function attachListeners() {
   $('td').on('click', function(event) {
     event.preventDefault();
@@ -47,7 +48,7 @@ function attachListeners() {
   })
 
   $('#save').on('click', function(event) {
-    event.preventDefault(); //working up to here
+    event.preventDefault();
 
     //save game to database if it's new, update game if not
     //how do I check if it is a new game?
@@ -69,10 +70,6 @@ function attachListeners() {
           state: board
         }
       },
-      //how do I know if the game has been completed --check for winner-- and the board and currentGame
-      //variables need to be reset? --board needs to be reset upon completion or if the user clicks on a previous game
-      //Since the game has been saved I do not need to append it to the #games div here...
-      //I can do that in the #previous function later
       success: function(data) {
         //if game has been completed, set currentGame to undefined
         //and clear board variable -- checkWinner() can return true if game has been won, it can also be
@@ -85,6 +82,30 @@ function attachListeners() {
       }
     })
   })
+
+  $('#previous').on('click', function(event) {
+    //previous games are hidden until #previous is clicked - then show them like an index
+    event.preventDefault();
+    $.get("/games", function(data) {
+      console.log(data.games)
+    });
+    //$.ajax({
+      //url: "/games",
+      //method: "GET",
+      //dataType: "json",
+      //success: function(response) {
+        //console.log(response)
+      //  var html = "<ul>"
+        //$.each(response.games, function(index, game) {
+          //html += "<li>" + game.id + "</li>"
+        //})
+        //html += "</ul>"
+        //$('#games').append(html);
+      //}
+  //  })
+  })
+
+  //when the user clicks on a previous game, it loads that game - like a show view
 }
 
 $(document).ready(function() {
