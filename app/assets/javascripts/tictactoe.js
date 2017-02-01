@@ -12,109 +12,86 @@ var winCombos = [
   [0, 3, 6],
   [1, 4, 7],
   [2, 5, 8]
-]
+];
 
 function message(string) {
   //add string to #message div
-  $('#message').append(string)
+  $('#message').html(string)
 }
+
+function checkCombo(combo){
+  if ((board[combo[0]] === "X") && (board[combo[1]] === "X") && (board[combo[2]] === "X") || (board[combo[0]] === "O") && (board[combo[1]] === "O") && (board[combo[2]] === "O")) {
+    return true;
+  }
+};
 
 function checkWinner() {
-  //check board to see if anyone won
-  //if someone has won, return "Player _ Won!" and pass the string to message()
-  //return true if game has been won, false if not
-  $.each(winCombos, function(index, combo) {
-    //check combo against board variable
-    var one = combo[0]
-    var two = combo[1]
-    var three = combo[2]
-
-    if (board[one] === "X" && board[two] === "X" && board[three] === "X") {
-      message("Player X Won!")
-      return true
-    } else if (board[one] === "O" && board[two] === "O" && board[three] === "O") {
-      message("Player O Won!")
-      return true
-    } else {
-      return false
+  for(i = 0; i < winCombos.length; i++){
+    if (checkCombo(winCombos[i])){
+      message('Player ' + player() + ' Won!')
+      return true;
     }
-  })
-}
+  }
+  return false;
+};
 
 function games() {
-  $('#games').on('click', function(event) {
-    //when the user clicks on a previous game, it loads that game - like a show view
-    event.preventDefault();
+  //when the user clicks on a previous game, it loads that game - like a show view
+  event.preventDefault();
 
-    var id = event.target.innerText
-    $.get("/games/" + id, function(data) {
-      //display state as current board
-      var array = data.state
-      $.each($("td"), function(index, cell) {
-        $(cell).text(array[index]);
-      })
+  var id = event.target.innerText
+  $.get("/games/" + id, function(data) {
+    //display state as current board
+    var array = data.state
+    $.each($("td"), function(index, cell) {
+      $(cell).text(array[index]);
     })
   })
 }
 
 function previous() {
-  $('#previous').on('click', function(event) {
-    //previous games are hidden until #previous is clicked - then show them like an index
-    event.preventDefault();
-    $.get("/games", function(data) {
-      var games = data.games
-      var html = "<ul>"
-      $.each(games, function(index, game) {
-        html += "<li>" + game.id + "</li>"
-      })
-      html += "</ul>"
-      $('#games').append(html);
-    });
-  })
+  //previous games are hidden until #previous is clicked - then show them like an index
+  $.get("/games", function(data) {
+    var games = data.games
+    var html = "<ul>"
+    $.each(games, function(index, game) {
+      html += "<li>" + game.id + "</li>"
+    })
+    html += "</ul>"
+    $('#games').append(html);
+  });
 }
 
 function save() {
-  $('#save').on('click', function(event) {
-    event.preventDefault();
+  //save game to database if it's new, update game if not
+  //set a current game id as a variable, if it is a new game, this will be undefined
+  if (currentGame === undefined) {
+    var url = "/games"
+    var method = "POST"
+  } else {
+    var url = "/games" + currentGame
+    var method = "PATCH"
+  }
 
-    //save game to database if it's new, update game if not
-    //set a current game id as a variable, if it is a new game, this will be undefined
-    if (currentGame === undefined) {
-      var url = "/games"
-      var method = "POST"
-    } else {
-      var url = "/games" + currentGame
-      var method = "PATCH"
-    }
-
-    $.ajax({
-      url: url,
-      method: method,
-      dataType: "json",
-      data: {
-        game: {
-          state: board
-        }
-      },
-      success: function(data) {
-        //if game has been completed, set currentGame to undefined
-        if (checkWinner()) {
-          currentGame = undefined;
-        } else { //if game has not been completed, set currentGame to game's id
-          currentGame = data.game.id;
-        }
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: {
+      game: {
+        state: board
       }
-    })
+    },
+    success: function(data) {
+      currentGame = data.game.id;
+    }
   })
 }
 
 function cell() {
-  $('td').on('click', function(event) {
-    event.preventDefault();
-    //passes doTurn a param of the event
-    //grabs cell that was clicked
-    doTurn(event.toElement);
-  })
+  //passes doTurn a param of the event
+  //grabs cell that was clicked
+  doTurn(event.toElement);
 }
 
 function gameBoard() {
@@ -144,6 +121,7 @@ function updateState(cell) {
 }
 
 function doTurn(cell) {
+  //check for full board but no win, means a tie display "Cat's Game!" as message
   updateState(cell);
   if (checkWinner()) {
     save();
@@ -157,13 +135,21 @@ function doTurn(cell) {
 }
 
 function attachListeners() {
-  cell();
+  $('td').on('click', function(event) {
+    cell();
+  })
 
-  save();
+  $('#save').on('click', function(event) {
+    save();
+  })
 
-  previous();
+  $('#previous').on('click', function(event) {
+    previous();
+  })
 
-  games();
+  $('#games').on('click', function(event) {
+    games();
+  })
 }
 
 $(document).ready(function() {
