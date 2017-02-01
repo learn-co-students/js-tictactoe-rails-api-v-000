@@ -1,8 +1,9 @@
 //pseudo code
 
-var turn = 0
-var gameCount = 0
-var board = []
+var turn = 0;
+var gameCount = 0; //could just display game id + 1 instead of keeping track of this
+var board = [];
+var currentGame = undefined;
 
 function gameBoard() {
   //returns an array of the current board, which you can use when showing a game to
@@ -47,10 +48,32 @@ function attachListeners() {
 
   $('#save').on('click', function(event) {
     event.preventDefault(); //working up to here
-    console.log(event);
-    //save game to database
+
+    //save game to database if it's new, update game if not
+    //how do I check if it is a new game?
+    //set a current game id as a variable, if it is a new game, this will be undefined
+    if (currentGame === "undefined") {
+      var url = "/games";
+      var method = "POST";
+    } else {
+      var url = "/games" + currentGame
+      var method = "PATCH"
+    }
+    $.ajax({
+      url: url,
+      method: method,
+      data: { game: { state: board } }
+    },
+    //how do I know if the game has been completed and the board and currentGame
+    //variables need to be reset?
+    //Since the game has been saved I do not need to append it to the #games div here...
+    //I can do that in the #previous function later
+    success: function(data) {
+
+    })
     //var state = JSON.stringify(board)
-    var posting = $.post('/games', { 'state': board });
+    //var serializedGame = {game: {state: board}};
+    //var posting = $.post('/games', serializedGame);
     //append game number to #games div
     //posting.done(function() {
       //gameCount += 1;
@@ -63,3 +86,4 @@ function attachListeners() {
 $(document).ready(function() {
   attachListeners();
 })
+//game board will need to be reset for each game
