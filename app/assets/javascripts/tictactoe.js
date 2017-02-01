@@ -1,5 +1,3 @@
-//pseudo code
-
 var turn = 0;
 var board = [];
 var currentGame = undefined;
@@ -20,20 +18,37 @@ function message(string) {
 }
 
 function checkCombo(combo){
-  if ((board[combo[0]] === "X") && (board[combo[1]] === "X") && (board[combo[2]] === "X") || (board[combo[0]] === "O") && (board[combo[1]] === "O") && (board[combo[2]] === "O")) {
-    return true;
+  //working
+  if (board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[0]] !== "") {
+    return true
+    console.log(true)
   }
+  //broken
 };
 
 function checkWinner() {
   for(i = 0; i < winCombos.length; i++){
-    if (checkCombo(winCombos[i])){
+    var combo = winCombos[i]
+    if (checkCombo(combo)){
       message('Player ' + player() + ' Won!')
       return true;
     }
   }
+  if (fullBoard()) {
+    message("Cat's Game!")
+  }
   return false;
 };
+
+function fullBoard() {
+  var full = true
+  $('td').each(function() {
+    if (this.innerHTML === "") {
+      full = false
+    }
+  })
+  return full
+}
 
 function games() {
   //when the user clicks on a previous game, it loads that game - like a show view
@@ -64,7 +79,6 @@ function previous() {
 
 function save() {
   //save game to database if it's new, update game if not
-  //set a current game id as a variable, if it is a new game, this will be undefined
   if (currentGame === undefined) {
     var url = "/games"
     var method = "POST"
@@ -89,17 +103,15 @@ function save() {
 }
 
 function cell() {
-  //passes doTurn a param of the event
-  //grabs cell that was clicked
+  //passes doTurn a param of the event - the cell that was clicked
   doTurn(event.toElement);
 }
 
 function gameBoard() {
-  //returns an array of the current board, which you can use when showing a game to
+  //creates an array of the current board, which you can use when showing a game to
   //iterate over to add each element as text to that cell...?
   //can also iterate through the array to check if someone has won
   $.each($("td"), function(index, cell) {
-    //does this add nil values for blank cells? ... because I need it to...
     board.push($(cell).text());
   })
 }
@@ -117,13 +129,11 @@ function updateState(cell) {
 
   $(cell).text(currentPlayer);
   gameBoard();
-  checkWinner();
 }
 
 function doTurn(cell) {
-  //check for full board but no win, means a tie display "Cat's Game!" as message
   updateState(cell);
-  if (checkWinner()) {
+  if (checkWinner() || fullBoard()) {
     save();
     board = [];
     turn = 0;
