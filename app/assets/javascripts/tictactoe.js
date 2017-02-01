@@ -15,13 +15,13 @@ var winCombos = [
 ]
 
 function message(string) {
-
+  //add string to #message div
+  $('#message').append(string)
 }
 
 function checkWinner() {
   //check board to see if anyone won
   //if someone has won, return "Player _ Won!" and pass the string to message()
-  //new game needs to be created(but not saved) when one is finished, board variable needs to be cleared
   //return true if game has been won, false if not
   $.each(winCombos, function(index, combo) {
     //check combo against board variable
@@ -32,7 +32,7 @@ function checkWinner() {
     if (board[one] === "X" && board[two] === "X" && board[three] === "X") {
       message("Player X Won!")
       return true
-    } else if (board[one] === "O" && board[two] === "O" && board[three] === "O")) {
+    } else if (board[one] === "O" && board[two] === "O" && board[three] === "O") {
       message("Player O Won!")
       return true
     } else {
@@ -78,7 +78,6 @@ function save() {
     event.preventDefault();
 
     //save game to database if it's new, update game if not
-    //how do I check if it is a new game?
     //set a current game id as a variable, if it is a new game, this will be undefined
     if (currentGame === undefined) {
       var url = "/games"
@@ -141,11 +140,20 @@ function updateState(cell) {
 
   $(cell).text(currentPlayer);
   gameBoard();
+  checkWinner();
 }
 
 function doTurn(cell) {
-  turn += 1;
   updateState(cell);
+  if (checkWinner()) {
+    save();
+    board = [];
+    turn = 0;
+    currentGame = undefined
+    $('td').empty();
+  } else {
+    turn += 1;
+  }
 }
 
 function attachListeners() {
