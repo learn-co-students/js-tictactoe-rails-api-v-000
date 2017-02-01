@@ -52,47 +52,41 @@ function attachListeners() {
     //save game to database if it's new, update game if not
     //how do I check if it is a new game?
     //set a current game id as a variable, if it is a new game, this will be undefined
-    if (currentGame === "undefined") {
-      var url = "/games";
-      var method = "POST";
+    if (currentGame === undefined) {
+      var url = "/games"
+      var method = "POST"
     } else {
-      var url = "/games" + currentGame;
-      var method = "PATCH";
+      var url = "/games" + currentGame
+      var method = "PATCH"
     }
+
     $.ajax({
       url: url,
       method: method,
-      data: { game: { state: board } }
-    },
-    //how do I know if the game has been completed --check for winner-- and the board and currentGame
-    //variables need to be reset? --board needs to be reset upon completion or if the user clicks on a previous game
-    //Since the game has been saved I do not need to append it to the #games div here...
-    //I can do that in the #previous function later
-    success: function(data) {
-      console.log(data);
-      //if game has been completed, set currentGame to undefined
-      //and clear board variable -- checkWinner() can return true if game has been won, it can also be
-      //responsible for clearing the board
-    //  if (checkWinner()) {
-    //    currentGame = undefined;
-    //  } else { //if game has not been completed, set currentGame to game's id
-    //    currentGame = data.game.id;
-    //  }
+      dataType: "json",
+      data: {
+        game: {
+          state: board
+        }
+      },
+      //how do I know if the game has been completed --check for winner-- and the board and currentGame
+      //variables need to be reset? --board needs to be reset upon completion or if the user clicks on a previous game
+      //Since the game has been saved I do not need to append it to the #games div here...
+      //I can do that in the #previous function later
+      success: function(data) {
+        //if game has been completed, set currentGame to undefined
+        //and clear board variable -- checkWinner() can return true if game has been won, it can also be
+        //responsible for clearing the board
+        if (checkWinner()) {
+          currentGame = undefined;
+        } else { //if game has not been completed, set currentGame to game's id
+          currentGame = data.game.id;
+        }
+      }
     })
-    //code below only creates, does not update...
-    //var state = JSON.stringify(board)
-    //var serializedGame = {game: {state: board}};
-    //var posting = $.post('/games', serializedGame);
-    //append game number to #games div
-    //posting.done(function() {
-      //gameCount += 1;
-      //$('#games').append(gameCount.to_s);
-    //})
   })
-
 }
 
 $(document).ready(function() {
   attachListeners();
 })
-//game board will need to be reset for each game
