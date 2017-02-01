@@ -87,22 +87,14 @@ function attachListeners() {
     //previous games are hidden until #previous is clicked - then show them like an index
     event.preventDefault();
     $.get("/games", function(data) {
-      console.log(data.games)
+      var games = data.games
+      var html = "<ul>"
+      $.each(games, function(index, game) {
+        html += "<li>" + game.id + "</li>"
+      })
+      html += "</ul>"
+      $('#games').append(html);
     });
-    //$.ajax({
-      //url: "/games",
-      //method: "GET",
-      //dataType: "json",
-      //success: function(response) {
-        //console.log(response)
-      //  var html = "<ul>"
-        //$.each(response.games, function(index, game) {
-          //html += "<li>" + game.id + "</li>"
-        //})
-        //html += "</ul>"
-        //$('#games').append(html);
-      //}
-  //  })
   })
 
   //when the user clicks on a previous game, it loads that game - like a show view
