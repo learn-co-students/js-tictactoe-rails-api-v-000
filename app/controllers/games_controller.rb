@@ -1,12 +1,10 @@
 class GamesController < ApplicationController
 
   def index
-    @games = Game.all
+    games = Game.all
+    #need to use as_json instead of to_json
+    @games = {"games" => games.as_json(only: [:id, :state])}
     render json: @games
-  end
-
-  def new
-    game = Game.new
   end
 
   def create
@@ -16,6 +14,12 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
+    render json: @game
+  end
+
+  def update
+    @game = Game.find(params[:id])
+    @game.update(game_params)
     render json: @game
   end
 
