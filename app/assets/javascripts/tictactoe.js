@@ -15,7 +15,7 @@ var currentGame = 0
 $(document).ready(function() {
   attachListeners();
  });
- 
+
 var attachListeners = function () {
   $('td').click(function(event) {
     doTurn(event)
@@ -39,4 +39,8 @@ function player() {
 
 function updateState(event){
   $(event.target).html(message);
+}
+
+function checkWinner() {
+
 }
