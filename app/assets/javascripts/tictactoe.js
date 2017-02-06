@@ -82,8 +82,8 @@ function fullBoard(turn) {
 }
 
 
-function checkCombo(combo, tdArr){
-  if (tdArr[combo[0]] === tdArr[combo[1]] && tdArr[combo[1]] === tdArr[combo[2]] && tdArr[combo[0]] !== "") {
+function checkCombo(combo, board){
+  if (board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[0]] !== "") {
     return true
   }
 };
