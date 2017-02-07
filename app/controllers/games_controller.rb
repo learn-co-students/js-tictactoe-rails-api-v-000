@@ -19,6 +19,7 @@ class GamesController < ApplicationController
     render json: @game
   end
 
+
 private
 
   def set_game
