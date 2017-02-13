@@ -1,106 +1,145 @@
-var currentGame;
+var currentGame = 0;
 var turn = 0;
-var boardState;
+var boardState = ["", "", "", "", "", "", "", "", ""];
 var cellNumber;
-var cell;
-// var win_combos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [2, 4, 7], [0, 3, 6], [1, 4, 7], [2, 5, 8]]
+var winCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [2, 4, 6], [0, 3, 6], [1, 4, 7], [2, 5, 8]]
+var variable;
+
+$(document).ready(function(){
+	turn = 0;
+	attachListeners();
+})
+
+function saveGame(callback){
+		console.log('currentgame: ' + currentGame);
+		if (currentGame === 0){
+			$.post('/games', {state: boardState}, function(response){
+				currentGame = response["game"]["id"];
+				console.log('currentgame: ' + currentGame);
+				if ($('#games').children().length != 0){
+					$('#games').append('<li>' + currentGame + '</li>')
+				}
+				callback(response);
+			});
+			
+		}else{
+			var url = '/games/' + currentGame
+			$.ajax({
+				type: "PATCH",
+				url: url,
+				data: {id: currentGame, game: {state: boardState}}
+			});
+		}
+}
+
 function attachListeners(){
+	//listeners for the table cells
 	$('table').click(function(event){
 		doTurn(event);
 	})
-}
 
-$(document).ready(function(){
-	$.post('/games');
-	attachListeners();
-	$.get("/games", function(data){
-		currentGame = (parseInt($(data).filter('#current_game_id')["0"].innerHTML));
+	//listener for save button
+	$('#save').click(function(event){
+		saveGame(function(response) {
+			currentGame = response["game"]["id"]
+		});
+		
+	});
+
+	//listener for get previous games button
+	$("#previous").click(function(event){
+		$.get('/games', function(callback){
+			var data = callback["games"].map(function(element){
+				// $('#games').append('<li>' + element["id"] + '</li>')
+				return '<li>' + element["id"] + '</li>'
+			})
+			$('#games').html(data)
+		})
+		
 	})
-})
+	
+	$('#games').click(function(event){
+		currentGame = event.target.textContent;
+		$.get('/games', function(data){
+			state = data["games"][currentGame]["state"]
+			state.forEach(function(element, index){
+				$('table > tbody > tr > td')[index].innerText = element;
+			})
+		})
+	})
+	
+}
 
 
 function updateState(event){
 	$(event.target).text(player());
-	cell = $(event.target).data();
-	if(cell["x"] === 0){
-		if(cell["y"] === 0){
-			cellNumber = 0;
-		}
-		if(cell["y"] === 1){
-			cellNumber = 1;
-		}
-		if(cell["y"] === 2){
-			cellNumber = 2;
-		}
-	}else if(cell["x"] === 1){
-		if(cell["y"] === 0){
-			cellNumber = 3;
-		}
-		if(cell["y"] === 1){
-			cellNumber = 4;
-		}
-		if(cell["y"] === 2){
-			cellNumber = 5;
-		}
-	}else if(cell["x"] === 2){
-		if(cell["y"] === 0){
-			cellNumber = 6;
-		}
-		if(cell["y"] === 1){
-			cellNumber = 7;
-		}
-		if(cell["y"] === 2){
-			cellNumber = 8;
-		}
-	}
 	//get current board
 	boardState = $('table > tbody > tr > td').map(function(index, element){
 		return element.innerText;
 	})
-
-	
-		$.ajax({
-			type: "PUT",
-			url: '/games/' + currentGame,
-			data: {state: boardState.toArray()}
-		})
-		// $.post('/games/#{parseInt($("input").val())}', {id: parseInt($("input").val()), cellNumber: cellNumber, player: player()})
+	boardState = boardState.toArray();	
 }
 
 function message(msg){
 	$("#message").text(msg);
 }
 
-function checkWinner(){
-	// array = $('table > tbody > tr > td').map(function(index, element){
-	// 	return element.innerText;
-	// })
-	// array.every(x => x === "")
-	// var msg;
-	// win_combos.forEach(function(element){
-	// var combo = element.map(function(item){
-	// 		return board[item];
-	// 	})
-	// if(combo.every(x => x === "X")){
-	// 	msg = "Player X Won!";
-	// }else if(combo.every(x => x === "O")){
-	// 	msg = "Player O Won!";
-	// }
+function resetBoard(){
+	$('table > tbody > tr > td').empty();
+	turn = 0;
+	console.log('currentgame: ' + currentGame)
+	// below is a function to clear message, but it makes the tests fail
+	// $('table').click(function(){
+	// 	$('#message').replaceWith('<div id="message"><div>');
 	// });
-	// message(msg);
+}	
+
+function checkWinner(){
+	//check for winning combinations
+	winCombos.forEach(function(element){
+		combo = element.map(function(item){
+			return boardState[item];
+		});
+		if (combo.every(x => x === "X")){
+			saveGame(function() {
+				currentGame = 0;
+			});
+			resetBoard();
+			message("Player X Won!");
+
+		}else if (combo.every(x => x === "O")){
+			saveGame(function() {
+				currentGame = 0;
+			});	
+			resetBoard();
+			message("Player O Won!");
+		}
+	});
+	//check if the game if there is a tie
+	if (turn === 9){
+		saveGame(function() {
+				currentGame = 0;
+			});	
+		resetBoard();
+		message("Tie game");
+	}else{
+		return false;
+	}
+	
 }
 
 function player(){
-	if(turn % 2 === 0){
+	if( turn % 2 == 0 || turn === 0){
 		return "X"
-	}else{
+	}else if ( turn % 2 != 0 ){
 		return "O"
 	}
 }
 
 function doTurn(event){
-	checkWinner();
 	updateState(event);
-	return turn = turn + 1;
+	turn = turn + 1;
+	checkWinner();
 }
+
 

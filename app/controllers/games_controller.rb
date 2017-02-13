@@ -1,14 +1,17 @@
 class GamesController < ApplicationController
 	def index 
+		games = Game.all
+		render json: games
 	end
 
 	def create
-		game = Game.create(state: ["", "", "", "", "", "", "", "", ""])
+		game = Game.create(state: params[:state])
+		render json: game
 	end
 
 	def update
 		game = Game.find(params[:id])
-		game.state = params[:state]
+		game.state = params[:game][:state]
 		game.save
 	end
 

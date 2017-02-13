@@ -1,3 +1,7 @@
 <h1>Games#index</h1>
 <p>Find me in app/views/games/index.html.erb</p>
-<div id="current_game_id"><%= Game.last.id %></div>
+<ul>
+	<% Game.all.each do |game| %>
+		<li> <%= game.id %> </li>
+	<% end %>
+</ul>
