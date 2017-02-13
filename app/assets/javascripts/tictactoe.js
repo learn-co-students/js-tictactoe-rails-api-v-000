@@ -1,165 +1,155 @@
+$(document).ready(function() {
+  attachListeners();
+})
+
+
 var turn = 0;
-var currentGame;
-var winningCombos = [
-  [[0,0], [1,0], [2,0]],
-  [[0,1], [1,1], [2,1]],
-  [[0,2], [1,2], [2,2]],
-  [[0,0], [1,1], [2,2]],
-  [[2,0], [1,1], [0,2]],
-  [[0,0], [0,1], [0,2]],
-  [[1,0], [1,1], [1,2]],
-  [[2,0], [2,1], [2,2]]
-  ];
+var currentGame = undefined;
+var combos = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 4, 8],
+  [6, 4, 2],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8]
+];
 
-function board(winningCombos) {
-  for(var i = 0; i < winningCombos.length; i++) {
-    var winningCombo = winningCombos[i];
-    var x = winningCombo[0];
-    var y = winningCombo[1];
-    var selector = $('[data-x="' + x + '"][data-y="' + y + '"]')
-    if (noMatches(selector)) {
-      return false;
-    }
-  }
-  return true;
-};
-
-function noMatches(selector) {
-  return (selector.html() != player())
-}
 
 function attachListeners() {
+
   $("td").click(function(event) {
-    var square = ($(this).text());
-    if (square != "O" && square != "X") {
-    doTurn(event);
-  }
-  })
-  $("#previous").click(function() {
-    getAllGames();
-  })
-  $("#save").click(function() {
+    doTurn(event.target)
+  });
+
+  $('#previous').click(function(event) {
+    previous();
+  });
+
+  $('#save').click(function(event) {
     save();
+  });
+};
+
+
+function doTurn(cell) {
+  updateState(cell);
+  if(checkWinner()) {
+    save(true)
+    resetBoard();
+  } else if(fullBoard(turn)) {
+    save(true)
+    resetBoard();
+    message('Tie game')
+  } else {
+    turn += 1;
+  }
+};
+
+
+var updateState = function(cell) {
+  $(cell).html(player());
+};
+
+
+function player() {
+  if (turn % 2 == 0) {
+    return 'X'
+  } else {
+    return 'O'
+  };
+};
+
+
+function gameBoard() {
+  var board = []
+   $("td").each(function(i) {
+     board.push($(this).text())
+   })
+  return board;
+};
+
+
+function fullBoard(turn) {
+  var full = true
+  $('td').each(function() {
+    if (this.innerHTML === "") {
+      full = false
+    }
   })
-  $("#games").click(function(event) {
-    var state = parseState(event);
-    changeGame(state, getGameId(event));
-  })
+  return full
 }
 
-function doTurn(event) {
-  updateState(event);
-  if (checkTie() || checkWinner()) {
-    save(true);
-    reset();
-  } else {
-    turn += 1
-    console.log(`Turn ${turn} completed.`)
+
+function checkCombo(combo, board){
+  if (board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[0]] !== "") {
+    return true
   }
-}
+};
+
 
 function checkWinner() {
-  for(var i = 0; i < winningCombos.length; i++) {
-    if (board(winningCombos[i]) == true) {
-      message("Player " + player() + " Won!");
+  for(i = 0; i < combos.length; i++){
+    if (checkCombo(combos[i], gameBoard())){
+      message('Player ' + player() + ' Won!')
       return true;
     }
   }
   return false;
-}
-
-function checkTie() {
-  if (!checkWinner() && turn == 8) {
-    message("Tie game");
-    console.log("it's a tie");
-    return true;
-  }
-}
-
-function updateState(event) {
-  $(event.target).html(player());
-}
-
-function player() {
-  if (turn % 2 == 0){
-    return "X";
-  } else {
-    return "O"
-  }
-}
-
-function message(string) {
-  $('#message').html(string);
-}
-
-function reset() {
-  $('td').html("")
-  turn = 0
-}
-
-function parseState(event) {
-  return $(event.target).data("state").split(",")
 };
 
-function getGameId(event) {
-  return $(event.target).data("gameid")
+
+var resetBoard = function() {
+  turn = 0;
+  currentGame = 0;
+  $('td').empty();
+}
+
+
+function gameBoard() {
+  //creates an array of the current board, which you can use when showing a game to
+  //iterate over to add each element as text to that cell...?
+  //can also iterate through the array to check if someone has won
+  var board = []
+   $("td").each(function(i) {
+     board.push($(this).text())
+   })
+  return board;
 };
 
-function getAllGames() {
-  $.getJSON("/games").done(function(response) {
-    showGames(response.games);
-  });
-};
 
-function showGames(games) {
-  var dom = $();
+function previous() {
+  //previous games are hidden until #previous is clicked - then show them like an index
+  $.getJSON("/games", function(data) {
+    indexGames(data.games)
+  })
+}
+
+
+function indexGames(games) {
+  var dom = $()
   games.forEach(function(game) {
     dom = dom.add(showGame(game));
-  });
+  })
   $("#games").html(dom);
-};
+}
+
 
 function showGame(game) {
   return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
-};
+}
 
-function changeGame(state, id) {
-  placeMarks(state);
-  currentGame = id;
-  turn = findTurn(state);
-};
 
-function findTurn(state) {
-  var turn = 0;
-  state.forEach(function(item) {
-    if(item != "") {
-      turn += 1;
-    }
-  })
-  return turn;
-};
-
-function placeMarks(marks) {
-  $("td").each(function(i) {
-    $(this).text(marks[i]);
-  })
-};
-
-function getMarks() {
-  var marks = []
-  $("td").each(function(i) {
-    marks.push($(this).text())
-  })
-  return marks;
-};
-
-function save(resetCurrentGame) {
+function save(reset) {
+  //save game to database if it's new, update game if not
+  var url, method;
   if(currentGame) {
-    var url = "/games/" + currentGame;
-    var method = "PATCH";
+    url = "/games/" + currentGame
+    method = "PATCH"
   } else {
-    var url = "/games";
-    var method = "POST";
+    url = "/games"
+    method = "POST"
   }
 
   $.ajax({
@@ -168,12 +158,12 @@ function save(resetCurrentGame) {
     dataType: "json",
     data: {
       game: {
-        state: getMarks()
+        state: gameBoard()
       }
     },
     success: function(data) {
-      if(resetCurrentGame) {
-        currentGame = 0;
+      if(reset) {
+        currentGame = undefined;
       } else {
         currentGame = data.game.id;
       }
@@ -181,6 +171,8 @@ function save(resetCurrentGame) {
   })
 };
 
-$(document).ready(function(){
-  attachListeners();
-});
+
+var message = function(string) {
+  //add string to #message div
+  $('#message').html(string);
+}
