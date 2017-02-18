@@ -36,17 +36,17 @@ function updateState(selector){
 }
 
 function checkWinner(){
-  if (horizontalCheck() === "true" || verticalCheck() == "true" || diagnolCheck() == "true" ){
-    if (player() === "O"){
-      var winner = "Player X Won!"
-      message(winner);
-    } else {
-      var winner = "Player O Won!"
-      message(winner);
-    }
+ if (horizontalCheck() === "false" && verticalCheck() === "false" && diagnolCheck()=== "false" && fullBoard() === "true"){
+    message("Tie game") }
+ else if (horizontalCheck() === "true" || verticalCheck() === "true" || diagnolCheck()=== "true") {
+   if (player() === "X") {
+    message("Player O Won!")
   } else {
-  return false 
+    message("Player X Won!")
   }
+ } else {
+  return false
+ }
 }
 
 function horizontalCheck(){
@@ -93,10 +93,10 @@ function diagnolCheck(){
 }
 
 function fullBoard() {
-  if ( $('td')[0].innerHTML === "" && $('td')[1].innerHTML === "" &&
-       $('td')[2].innerHTML === "" && $('td')[3].innerHTML === "" &&
-       $('td')[4].innerHTML === "" && $('td')[5].innerHTML === "" &&
-       $('td')[6].innerHTML === "" && $('td')[7].innerHTML === "" &&
+  if ( $('td')[0].innerHTML === "" || $('td')[1].innerHTML === "" ||
+       $('td')[2].innerHTML === "" || $('td')[3].innerHTML === "" ||
+       $('td')[4].innerHTML === "" || $('td')[5].innerHTML === "" ||
+       $('td')[6].innerHTML === "" || $('td')[7].innerHTML === "" ||
        $('td')[8].innerHTML === "" ){
     return "false"
   } else {
