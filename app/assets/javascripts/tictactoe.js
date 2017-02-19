@@ -1,7 +1,11 @@
 $( document ).ready(function() {
     attachListeners();
+    currentGame();
 });
 
+
+
+/// begin tic tac toe game logic 
 var turn = 0 
 
 function attachListeners(){
@@ -120,3 +124,39 @@ function boardWipe(){
     ($(this).html("")
   )});
 }
+
+//// end tic tac toe game logic 
+
+
+//// begin persistence logic 
+
+function currentGame(){
+  $('#previous').on("click", function(){
+    getGamesHistory()
+  });
+}
+
+function getGamesHistory(){
+ $.ajax({
+    url: '/games',
+    type: 'GET',
+    success: mostRecent()
+ });
+}
+
+function mostRecent(){
+  
+}
+
+
+
+//// end persistence logic 
+
+
+
+
+
+
+
+
+
