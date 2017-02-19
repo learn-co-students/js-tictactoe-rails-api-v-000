@@ -1,12 +1,12 @@
 $( document ).ready(function() {
     attachListeners();
-    currentGame();
 });
 
 
 
 /// begin tic tac toe game logic 
 var turn = 0 
+var game_number = 1
 
 function attachListeners(){
   //get the data-x and data-y values of the clicked square 
@@ -22,7 +22,6 @@ function attachListeners(){
 function doTurn(selector){
   updateState(selector);
   turn += 1 ;
-  console.log(turn)
   checkWinner();
 }
 
@@ -123,26 +122,21 @@ function boardWipe(){
   $("td").each(function() {
     ($(this).html("")
   )});
+    ($('#games').append(`<li>Game ${game_number}</li>`))
+  game_number += 1 
 }
 
 //// end tic tac toe game logic 
 
 
+
+
+
 //// begin persistence logic 
 
 function currentGame(){
-  $('#previous').on("click", function(){
-     $.get( "/games", function( data ) {
-    console.log(data);
-  });
-  });
+  
 }
-
-// function mostRecent(data){
-//   $.get( "/games", function( data ) {
-//     console.log(data);
-//   });
-// }
 
 
 
