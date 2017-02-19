@@ -18,32 +18,36 @@ function attachListeners(){
 function doTurn(selector){
   updateState(selector);
   turn += 1 ;
+  console.log(turn)
   checkWinner();
 }
 
 
 function player(){
-  if (turn % 2 === 0 || turn === 0 ){
+  // even turns are 0, 2, 4....game starts on zero and an X
+  if (isEven(turn)) {
     return "X"
-  } 
+  } else {
     return "O"
   }
+
+}
+
+function isEven(turn) {
+   return turn % 2 == 0;
+}
 
 function updateState(selector){
   var selector = selector
   $(selector).html(player());
-  checkWinner(); 
 }
 
 function checkWinner(){
  if (horizontalCheck() === "false" && verticalCheck() === "false" && diagnolCheck()=== "false" && fullBoard() === "true"){
     message("Tie game") }
  else if (horizontalCheck() === "true" || verticalCheck() === "true" || diagnolCheck()=== "true") {
-   if (player() === "X") {
-    message("Player O Won!")
-  } else {
-    message("Player X Won!")
-  }
+    turn -= 1   // de-crementing the last turn so we can get the winning mark 
+    message("Player " + player() + " Won!")
  } else {
   return false
  }
@@ -105,12 +109,14 @@ function fullBoard() {
 }
 
 
-function turn (){
-
+function message(comment){
+  $("#message").html(comment)
+  boardWipe();
 }
 
-
-
-function message(winner){
-  $("#message").html(winner)
+function boardWipe(){ 
+  turn = 0
+  $("td").each(function() {
+    ($(this).html("")
+  )});
 }
