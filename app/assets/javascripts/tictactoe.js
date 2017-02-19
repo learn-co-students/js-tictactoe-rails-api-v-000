@@ -132,21 +132,17 @@ function boardWipe(){
 
 function currentGame(){
   $('#previous').on("click", function(){
-    getGamesHistory()
+     $.get( "/games", function( data ) {
+    console.log(data);
+  });
   });
 }
 
-function getGamesHistory(){
- $.ajax({
-    url: '/games',
-    type: 'GET',
-    success: mostRecent()
- });
-}
-
-function mostRecent(){
-  
-}
+// function mostRecent(data){
+//   $.get( "/games", function( data ) {
+//     console.log(data);
+//   });
+// }
 
 
 
