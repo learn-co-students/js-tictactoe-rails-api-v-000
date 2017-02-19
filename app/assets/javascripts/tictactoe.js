@@ -4,9 +4,9 @@ $( document ).ready(function() {
 
 
 
-/// begin tic tac toe game logic 
 var turn = 0 
-var game_number = 1
+var currentGame = 1 
+var gameState = board();
 
 function attachListeners(){
   //get the data-x and data-y values of the clicked square 
@@ -17,7 +17,25 @@ function attachListeners(){
     var selector =  `[data-x=${x_value}][data-y=${y_value}]`  // per spec format
       doTurn(selector);
     });
-};
+
+  // save your current game 
+  $('#save').click(saveGameState);
+
+  // checkout a previous game 
+  $("#previous").click(function() {
+    $.getJSON("/games", function(response) {
+
+      var html = "";
+      $.each(response.games, function(i, game){
+        var id = game.id;
+        html += `<li><a href="#" class"js-game" data-id="${id}">Game #${id}</a></li>`;
+      });
+
+      $("#games").html(html);
+    });
+  });
+
+  }
 
 function doTurn(selector){
   updateState(selector);
@@ -113,7 +131,15 @@ function fullBoard() {
 
 
 function message(comment){
-  $("#message").html(comment)
+  $("#message").html(comment);
+
+  $.ajax({
+    type: 'POST',
+    url: '/games',
+    dataType: 'json',
+    data: { game: {id: currentGame, state: gameState} },
+  });
+
   boardWipe();
 }
 
@@ -122,30 +148,28 @@ function boardWipe(){
   $("td").each(function() {
     ($(this).html("")
   )});
-    ($('#games').append(`<li>Game ${game_number}</li>`))
-  game_number += 1 
+    // ($('#games').append(`<li id>Game ${currentGame}</li>`))
+  currentGame = 0
 }
 
-//// end tic tac toe game logic 
-
-
-
-
-
-//// begin persistence logic 
-
-function currentGame(){
-  
+function saveGameState() {
+  $.ajax({
+    type: (currentGame === 0) ? 'POST' : 'PATCH',
+    url: (currentGame === 0) ? '/games' : '/games/' + currentGame,
+    dataType: 'json',
+    data: { game: {id: currentGame, state: gameState} },
+    success: function(data) {
+      currentGame = data.game.id;
+    }
+  });
 }
 
-
-
-//// end persistence logic 
-
-
-
-
-
+function board() {
+  allTd = $('td').map(function(index, square) {
+    return square.innerHTML;
+  });
+  return $.makeArray(allTd);
+}
 
 
 
