@@ -5,7 +5,7 @@ $( document ).ready(function() {
 
 
 var turn = 0 
-var currentGame = 1 
+var currentGame = 0
 var gameState = board();
 
 function attachListeners(){
@@ -19,21 +19,24 @@ function attachListeners(){
     });
 
   // save your current game 
-  $('#save').click(saveGameState);
-
-  // checkout a previous game 
-  $("#previous").click(function() {
-    $.getJSON("/games", function(response) {
-
-      var html = "";
-      $.each(response.games, function(i, game){
-        var id = game.id;
-        html += `<li><a href="#" class"js-game" data-id="${id}">Game #${id}</a></li>`;
-      });
-
-      $("#games").html(html);
-    });
+  $('#save').click(function(event) {
+    save();
   });
+
+  // checkout previous game history
+
+    $("#previous").click(function(){
+      $.getJSON("/games").success(function(json_games){
+        var html = ""
+        $.each(json_games.games, function(index, game){
+         var id = game.id
+         html += `<li><a href="#" class"js-game" data-id="${id}">Game #${id}</a></li>`;
+      });
+        $("#games").html(html);
+      })
+    })
+
+
 
   }
 
@@ -65,10 +68,15 @@ function updateState(selector){
 
 function checkWinner(){
  if (horizontalCheck() === "false" && verticalCheck() === "false" && diagnolCheck()=== "false" && fullBoard() === "true"){
-    message("Tie game") }
+    message("Tie game") 
+    save(true)
+    boardWipe()
+  }
  else if (horizontalCheck() === "true" || verticalCheck() === "true" || diagnolCheck()=== "true") {
     turn -= 1   // de-crementing the last turn so we can get the winning mark 
     message("Player " + player() + " Won!")
+    save(true)
+    boardWipe()
  } else {
   return false
  }
@@ -130,39 +138,51 @@ function fullBoard() {
 }
 
 
-function message(comment){
-  $("#message").html(comment);
-
-  $.ajax({
-    type: 'POST',
-    url: '/games',
-    dataType: 'json',
-    data: { game: {id: currentGame, state: gameState} },
-  });
-
-  boardWipe();
-}
-
 function boardWipe(){ 
   turn = 0
   $("td").each(function() {
     ($(this).html("")
   )});
     // ($('#games').append(`<li id>Game ${currentGame}</li>`))
-  currentGame = 0
+  currentGame = 0 
 }
 
-function saveGameState() {
-  $.ajax({
-    type: (currentGame === 0) ? 'POST' : 'PATCH',
-    url: (currentGame === 0) ? '/games' : '/games/' + currentGame,
-    dataType: 'json',
-    data: { game: {id: currentGame, state: gameState} },
-    success: function(data) {
-      currentGame = data.game.id;
-    }
-  });
+
+function message(comment){
+  $("#message").html(comment);
 }
+
+
+var save = function(resetCurrentGame) {
+  var url, method;
+  if(currentGame) {
+    url = "/games/" + currentGame
+    method = "PATCH"
+  } else {
+    url = "/games"
+    method = "POST"
+  }
+
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: {
+      game: {
+        state: board()
+      }
+    },
+    success: function(data) {
+      if(resetCurrentGame) {
+        currentGame = undefined;
+      } else {
+        currentGame = data.game.id;
+      }
+    }
+  })
+};
+
+
 
 function board() {
   allTd = $('td').map(function(index, square) {
