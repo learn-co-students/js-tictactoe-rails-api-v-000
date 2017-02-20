@@ -35,10 +35,15 @@ function attachListeners(){
         $("#games").html(html);
       })
     })
-
-
-
   }
+
+function board() {
+  allTd = $('td').map(function(index, square) {
+    return square.innerHTML;
+  });
+  return $.makeArray(allTd);
+}
+
 
 function doTurn(selector){
   updateState(selector);
@@ -97,47 +102,6 @@ function horizontalCheck(){
   }
 }
 
-function verticalCheck(){
-  if ( $('td')[0].innerHTML === "X" && $('td')[3].innerHTML === "X" && $('td')[6].innerHTML === "X" ||
-       $('td')[1].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[7].innerHTML === "X" || 
-       $('td')[2].innerHTML === "X" && $('td')[5].innerHTML === "X" && $('td')[8].innerHTML === "X" ||
-       // check the O's for the same 
-       $('td')[0].innerHTML === "O" && $('td')[3].innerHTML === "O" && $('td')[6].innerHTML === "O" ||
-       $('td')[1].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[7].innerHTML === "O" || 
-       $('td')[2].innerHTML === "O" && $('td')[5].innerHTML === "O" && $('td')[8].innerHTML === "O" )
-  {
-       return "true"
-  } else {
-       return "false"
-  }
-}
-
-function diagnolCheck(){
-  if ( $('td')[0].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[8].innerHTML === "X" || 
-       $('td')[2].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[6].innerHTML === "X" ||
-       // check the O's for the same
-       $('td')[0].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[8].innerHTML === "O" || 
-       $('td')[2].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[6].innerHTML === "O" )
-  {
-      return "true"
-  } else {
-      return "false"
-  }
-}
-
-function fullBoard() {
-  if ( $('td')[0].innerHTML === "" || $('td')[1].innerHTML === "" ||
-       $('td')[2].innerHTML === "" || $('td')[3].innerHTML === "" ||
-       $('td')[4].innerHTML === "" || $('td')[5].innerHTML === "" ||
-       $('td')[6].innerHTML === "" || $('td')[7].innerHTML === "" ||
-       $('td')[8].innerHTML === "" ){
-    return "false"
-  } else {
-    return "true"
-  }
-}
-
-
 function boardWipe(){ 
   turn = 0
   $("td").each(function() {
@@ -183,13 +147,47 @@ var save = function(resetCurrentGame) {
 };
 
 
-
-function board() {
-  allTd = $('td').map(function(index, square) {
-    return square.innerHTML;
-  });
-  return $.makeArray(allTd);
+/// combos for potential wins
+function verticalCheck(){
+  if ( $('td')[0].innerHTML === "X" && $('td')[3].innerHTML === "X" && $('td')[6].innerHTML === "X" ||
+       $('td')[1].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[7].innerHTML === "X" || 
+       $('td')[2].innerHTML === "X" && $('td')[5].innerHTML === "X" && $('td')[8].innerHTML === "X" ||
+       // check the O's for the same 
+       $('td')[0].innerHTML === "O" && $('td')[3].innerHTML === "O" && $('td')[6].innerHTML === "O" ||
+       $('td')[1].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[7].innerHTML === "O" || 
+       $('td')[2].innerHTML === "O" && $('td')[5].innerHTML === "O" && $('td')[8].innerHTML === "O" )
+  {
+       return "true"
+  } else {
+       return "false"
+  }
 }
+
+function diagnolCheck(){
+  if ( $('td')[0].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[8].innerHTML === "X" || 
+       $('td')[2].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[6].innerHTML === "X" ||
+       // check the O's for the same
+       $('td')[0].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[8].innerHTML === "O" || 
+       $('td')[2].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[6].innerHTML === "O" )
+  {
+      return "true"
+  } else {
+      return "false"
+  }
+}
+
+function fullBoard() {
+  if ( $('td')[0].innerHTML === "" || $('td')[1].innerHTML === "" ||
+       $('td')[2].innerHTML === "" || $('td')[3].innerHTML === "" ||
+       $('td')[4].innerHTML === "" || $('td')[5].innerHTML === "" ||
+       $('td')[6].innerHTML === "" || $('td')[7].innerHTML === "" ||
+       $('td')[8].innerHTML === "" ){
+    return "false"
+  } else {
+    return "true"
+  }
+}
+
 
 
 
