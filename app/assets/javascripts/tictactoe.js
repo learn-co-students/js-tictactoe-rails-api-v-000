@@ -35,7 +35,16 @@ function attachListeners(){
         $("#games").html(html);
       })
     })
+
+
+    // load an old game 
+    $('a .js-game').click(function(){
+      console.log("test")
+    })
+    // <a href="#" class"js-game"="" data-id="3">Game #3</a>
   }
+
+
 
 function board() {
   allTd = $('td').map(function(index, square) {
@@ -137,6 +146,7 @@ var save = function(resetCurrentGame) {
       }
     },
     success: function(data) {
+
       if(resetCurrentGame) {
         currentGame = undefined;
       } else {
