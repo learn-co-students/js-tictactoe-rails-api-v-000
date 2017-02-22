@@ -26,12 +26,12 @@ function attachListeners() {
 function doTurn() {
 
   updateState(event);
-  //checkWinner();
+  checkWinner();
     turn++;
 }
 
 function player() {
-  return (turn % 2 === 0) ? "x" : "O";
+  return (turn % 2 === 0) ? "X" : "O";
 }
 
 function updateState(event) {
@@ -39,8 +39,16 @@ function updateState(event) {
 }
 
 function checkWinner() {
+  var board = selections();
 
-}
+  for (var i = 0; i < winning.length; i++) {
+    if( (board[winning[i][0]] === "X") && (board[winning[i][1]] ===  "X") && (board[winning[i][2]] === "X")){
+      console.log("Player 1 wins");
+    }else if ((board[winning[i][0]] === "O") && (board[winning[i][1]] ===  "O") && (board[winning[i][2]] === "O")) {
+      console.log("Player 2 wins");
+    }
+  }//for end
+}//checkwinner end
 
 //get all the inputs
 function selections() {
