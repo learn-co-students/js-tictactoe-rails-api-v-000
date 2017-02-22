@@ -45,9 +45,11 @@ function checkWinner() {
     if( (board[winning[i][0]] === "X") && (board[winning[i][1]] ===  "X") && (board[winning[i][2]] === "X")){
       console.log("Player 1 wins");
       message(`Player ${player()} wins`);
+      resetGame();
     }else if ((board[winning[i][0]] === "O") && (board[winning[i][1]] ===  "O") && (board[winning[i][2]] === "O")) {
       console.log("Player 2 wins");
       message(`Player ${player()} wins`);
+      resetGame()
     }
   }//for end
 }//checkwinner end
