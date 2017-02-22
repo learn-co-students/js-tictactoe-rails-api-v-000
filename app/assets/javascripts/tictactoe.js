@@ -19,3 +19,10 @@ function attachListeners() {
     getAllGames();
   });
 }
+
+function doTurn() {
+  let turn = 0;
+  updateState(event);
+  checkWinner();
+  turn ++;
+}
