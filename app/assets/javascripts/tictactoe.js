@@ -2,6 +2,7 @@ $(function() {
     attachListeners();
 });
 
+var currentGame;
 var turn = 0;
 var winning = [
     [0, 1, 2],
@@ -24,11 +25,11 @@ function attachListeners() {
     });
 
     $('#save').click(function(event) {
-        save();
+        saveGame(false);
     });
 
-    $('#previous').click(function(event) {
-        getAllGames();
+    $('#games').click(function(event) {
+        getGame(event);
     });
 }
 
@@ -96,11 +97,56 @@ function checkTie() {
 }
 
 function listGames() {
-  var html = '';
-  $.getJSON('/games', function (data) {
-    data.forEach(function(game){
-      html += `<li class ="game" data-id="${game.id}" data-state="${game.state}">${game.id}</li>`;
+    var html = '';
+    $.getJSON('/games', function(data) {
+        data.forEach(function(game) {
+            html += `<li class ="game" data-id="${game.id}" data-state="${game.state}">${game.id}</li>`;
+        });
+        $('#games').html(html);
     });
-    $('#games').html(html);
-  });
+}
+
+function getGame(event) {
+    currentGame = event.currentTarget.dataset.id;
+    var gameState = event.currentTarget.dataset.state.split(',');
+    $('td').each(function(index, element) {
+        $(this).context.innerTEst = gameState[index];
+    });
+}
+
+function boardState() {
+  state = [];
+	$('td').each(function() {
+		state.push($(this).context.innerText);
+	});
+	return state;
+}
+function saveGame(boolean) {
+    var url;
+    var method;
+    if (currentGame) {
+        url = `/games/${currentGame}`
+        method = "PATCH"
+    } else {
+        url = "/games"
+        method = "POST"
+    }
+    //debugger
+    $.ajax({
+        url: url,
+        method: method,
+        dataType: "json",
+        data: {
+            game: {
+                state: boardState()
+            }
+        },
+        success: function(data) {
+            if (boolean) {
+                currentGame = undefined;
+            } else {
+                currentGame = data.game.id;
+            }
+        }
+    });
 }
