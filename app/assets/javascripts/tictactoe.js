@@ -4,6 +4,7 @@ $(function() {
 
 var turn = 0;
 var winning = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+
 function attachListeners() {
   $('tbody').click(function(event){
     doTurn(event);
@@ -39,4 +40,13 @@ function updateState(event) {
 
 function checkWinner() {
 
+}
+
+//get all the inputs
+function selections() {
+  var board = [];
+  $('td').each(function() {
+    board.push($(this).text());
+  });
+  return board;
 }
