@@ -2,7 +2,7 @@ $(function() {
     attachListeners();
 });
 
-var currentGame;
+var currentGame = 0;
 var turn = 0;
 var winning = [
     [0, 1, 2],
@@ -25,7 +25,6 @@ function attachListeners() {
     });
 
     $('#save').click(function(event) {
-      debugger
         saveGame(false);
     });
 
@@ -93,6 +92,7 @@ function message(str) {
 function resetGame() {
     $('td').empty();
     turn = -1;
+    currentGame = 0;
 
 }
 
@@ -127,10 +127,10 @@ function boardState() {
 	return state;
 }
 function saveGame(boolean) {
-  //debugger
+  debugger
     var url;
     var method;
-    if (currentGame) {
+    if (currentGame !== 0) {
         url = `/games/${currentGame}`
         method = "PATCH"
     } else {
@@ -148,8 +148,9 @@ function saveGame(boolean) {
             }
         },
         success: function(data) {
+          debugger
             if (boolean) {
-                currentGame = undefined;
+                currentGame = 0;
             } else {
               //debugger
                 currentGame = data.id;
