@@ -114,7 +114,7 @@ function getGame(event) {
     currentGame = event.target.dataset.id;
     var gameState = event.target.dataset.state.split(',');
     $('td').each(function(index, element) {
-      //debugger
+
         $(this).context.innerText = gameState[index];
     });
 }
@@ -127,7 +127,7 @@ function boardState() {
 	return state;
 }
 function saveGame(boolean) {
-  debugger
+
     var url;
     var method;
     if (currentGame !== 0) {
@@ -137,7 +137,7 @@ function saveGame(boolean) {
         url = "/games"
         method = "POST"
     }
-    //debugger
+
     $.ajax({
         url: url,
         method: method,
@@ -148,11 +148,11 @@ function saveGame(boolean) {
             }
         },
         success: function(data) {
-          debugger
+
             if (boolean) {
                 currentGame = 0;
             } else {
-              //debugger
+
                 currentGame = data.id;
             }
         }
