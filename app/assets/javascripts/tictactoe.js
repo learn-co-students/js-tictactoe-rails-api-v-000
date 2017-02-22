@@ -44,8 +44,10 @@ function checkWinner() {
   for (var i = 0; i < winning.length; i++) {
     if( (board[winning[i][0]] === "X") && (board[winning[i][1]] ===  "X") && (board[winning[i][2]] === "X")){
       console.log("Player 1 wins");
+      message("Player 1 wins");
     }else if ((board[winning[i][0]] === "O") && (board[winning[i][1]] ===  "O") && (board[winning[i][2]] === "O")) {
       console.log("Player 2 wins");
+      message("Player 2 wins");
     }
   }//for end
 }//checkwinner end
@@ -57,4 +59,8 @@ function selections() {
     board.push($(this).text());
   });
   return board;
+}
+
+function message(str) {
+ $('#message').text(str);
 }
