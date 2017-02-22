@@ -41,17 +41,25 @@ function updateState(event) {
 function checkWinner() {
   var board = selections();
 
+  if (checkTie()) {
+    resetGame();
+    message("Tie game");
+    return false;
+  }
+
   for (var i = 0; i < winning.length; i++) {
     if( (board[winning[i][0]] === "X") && (board[winning[i][1]] ===  "X") && (board[winning[i][2]] === "X")){
       console.log("Player 1 wins");
-      message(`Player ${player()} wins`);
+      message(`Player ${player()} Won!`);
       resetGame();
+      return true;
     }else if ((board[winning[i][0]] === "O") && (board[winning[i][1]] ===  "O") && (board[winning[i][2]] === "O")) {
       console.log("Player 2 wins");
-      message(`Player ${player()} wins`);
-      resetGame()
+      message(`Player ${player()} Won!`);
+      resetGame();
+      return true;
     }
-  }//for end
+  }return false; //for end
 }//checkwinner end
 
 //get all the inputs
@@ -70,4 +78,8 @@ function message(str) {
 function resetGame() {
   turn = 0;
   $('td').empty();
+}
+
+function checkTie() {
+  return turn === 8 ? true : false ;
 }
