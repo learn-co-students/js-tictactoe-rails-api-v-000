@@ -99,7 +99,7 @@ function checkTie() {
 function listGames() {
     var html = '';
     $.getJSON('/games', function(data) {
-        data.forEach(function(game) {
+        data.games.forEach(function(game) {
             html += `<li class ="game" data-id="${game.id}" data-state="${game.state}">${game.id}</li>`;
         });
         $('#games').html(html);
