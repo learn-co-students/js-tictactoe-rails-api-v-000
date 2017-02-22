@@ -76,8 +76,9 @@ function message(str) {
 }
 
 function resetGame() {
-  turn = 0;
   $('td').empty();
+  turn = -1;
+
 }
 
 function checkTie() {
