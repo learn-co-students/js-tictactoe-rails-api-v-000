@@ -25,6 +25,7 @@ function attachListeners() {
     });
 
     $('#save').click(function(event) {
+      debugger
         saveGame(false);
     });
 
@@ -107,10 +108,11 @@ function listGames() {
 }
 
 function getGame(event) {
-    currentGame = event.currentTarget.dataset.id;
-    var gameState = event.currentTarget.dataset.state.split(',');
+    currentGame = event.target.dataset.id;
+    var gameState = event.target.dataset.state.split(',');
     $('td').each(function(index, element) {
-        $(this).context.innerTEst = gameState[index];
+      //debugger
+        $(this).context.innerText = gameState[index];
     });
 }
 
@@ -122,6 +124,7 @@ function boardState() {
 	return state;
 }
 function saveGame(boolean) {
+  //debugger
     var url;
     var method;
     if (currentGame) {
@@ -145,7 +148,8 @@ function saveGame(boolean) {
             if (boolean) {
                 currentGame = undefined;
             } else {
-                currentGame = data.game.id;
+              //debugger
+                currentGame = data.id;
             }
         }
     });
