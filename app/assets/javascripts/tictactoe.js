@@ -26,3 +26,7 @@ function doTurn() {
   checkWinner();
   turn ++;
 }
+
+function player(turn) {
+  return  (turn % 2 === 0) ? "x" : "O";
+}
