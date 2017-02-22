@@ -20,7 +20,7 @@ function attachListeners() {
     });
 
     $('#previous').click(function(event) {
-        getAllGames();
+        listGames();
     });
 
     $('#save').click(function(event) {
@@ -93,4 +93,16 @@ function resetGame() {
 
 function checkTie() {
     return turn === 8 ? true : false;
+}
+
+function listGames() {
+  var html = '';
+  $.getJSON('/games', function (data) {
+    data.forEach(function(game){
+      html += `<li class ="game" data-id="${game.id}" data-state="${game.state}">${game.id}</li>`;
+
+
+
+    })
+  })
 }
