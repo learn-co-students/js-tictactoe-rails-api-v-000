@@ -2,6 +2,7 @@ $(function() {
     attachListeners();
 });
 
+var turn = 0;
 function attachListeners() {
   $('tbody').click(function(event){
     doTurn(event);
@@ -21,12 +22,17 @@ function attachListeners() {
 }
 
 function doTurn() {
-  let turn = 0;
+
   updateState(event);
-  checkWinner();
-  turn ++;
+  //checkWinner();
+    turn++;
 }
 
-function player(turn) {
-  return  (turn % 2 === 0) ? "x" : "O";
+function player() {
+  debugger
+  return (turn % 2 === 0) ? "x" : "O";
+}
+
+function updateState(event) {
+  $(event.target).html(player())
 }
