@@ -5,8 +5,8 @@ $( document ).ready(function() {
 
 
 var turn = 0 
-var currentGame = 0
-var gameState = board();
+var currentGame 
+
 
 function attachListeners(){
   //get the data-x and data-y values of the clicked square 
@@ -19,40 +19,19 @@ function attachListeners(){
     });
 
   // save your current game 
-  $('#save').click(function(event) {
+$("#save").click(function() {
     save();
-  });
-
-  // checkout previous game history
-
-    $("#previous").click(function(){
-      $.getJSON("/games").success(function(json_games){
-        var html = ""
-        $.each(json_games.games, function(index, game){
-         var id = game.id
-         html += `<li><a href="#" class"js-game" data-id="${id}">Game #${id}</a></li>`;
-      });
-        $("#games").html(html);
-      })
-    })
-
-
-    // load an old game 
-    $('a .js-game').click(function(){
-      console.log("test")
-    })
+  })
+  $("#previous").click(function() {
+    getAllGames();
+  })
+  // load an old game 
+  $("#games").click(function(event) {
+    var state = parseState(event)
+    swapGame(state, getGameId(event))
+  })
     // <a href="#" class"js-game"="" data-id="3">Game #3</a>
   }
-
-
-
-function board() {
-  allTd = $('td').map(function(index, square) {
-    return square.innerHTML;
-  });
-  return $.makeArray(allTd);
-}
-
 
 function doTurn(selector){
   updateState(selector);
@@ -83,33 +62,17 @@ function updateState(selector){
 function checkWinner(){
  if (horizontalCheck() === "false" && verticalCheck() === "false" && diagnolCheck()=== "false" && fullBoard() === "true"){
     message("Tie game") 
-    save(true)
     boardWipe()
   }
  else if (horizontalCheck() === "true" || verticalCheck() === "true" || diagnolCheck()=== "true") {
     turn -= 1   // de-crementing the last turn so we can get the winning mark 
     message("Player " + player() + " Won!")
-    save(true)
     boardWipe()
  } else {
   return false
  }
 }
 
-function horizontalCheck(){
-  if ( $('td')[0].innerHTML === "X" && $('td')[1].innerHTML === "X" && $('td')[2].innerHTML === "X" ||
-       $('td')[3].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[5].innerHTML === "X" || 
-       $('td')[6].innerHTML === "X" && $('td')[7].innerHTML === "X" && $('td')[8].innerHTML === "X" ||
-       // check the O's for the same 
-       $('td')[0].innerHTML === "O" && $('td')[1].innerHTML === "O" && $('td')[2].innerHTML === "O" ||
-       $('td')[3].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[5].innerHTML === "O" || 
-       $('td')[6].innerHTML === "O" && $('td')[7].innerHTML === "O" && $('td')[8].innerHTML === "O" )
-  {
-       return "true"
-  } else {
-       return "false"
-  }
-}
 
 function boardWipe(){ 
   turn = 0
@@ -121,40 +84,21 @@ function boardWipe(){
 }
 
 
+
 function message(comment){
   $("#message").html(comment);
 }
 
 
-var save = function(resetCurrentGame) {
-  var url, method;
-  if(currentGame) {
-    url = "/games/" + currentGame
-    method = "PATCH"
-  } else {
-    url = "/games"
-    method = "POST"
-  }
 
-  $.ajax({
-    url: url,
-    method: method,
-    dataType: "json",
-    data: {
-      game: {
-        state: board()
-      }
-    },
-    success: function(data) {
 
-      if(resetCurrentGame) {
-        currentGame = undefined;
-      } else {
-        currentGame = data.game.id;
-      }
-    }
-  })
-};
+// var getMarks = function() {
+//   var marks = []
+//   $("td").each(function(i) {
+//     marks.push($(this).text())
+//   })
+//   return marks;
+// }
 
 
 /// combos for potential wins
@@ -185,6 +129,22 @@ function diagnolCheck(){
       return "false"
   }
 }
+
+function horizontalCheck(){
+  if ( $('td')[0].innerHTML === "X" && $('td')[1].innerHTML === "X" && $('td')[2].innerHTML === "X" ||
+       $('td')[3].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[5].innerHTML === "X" || 
+       $('td')[6].innerHTML === "X" && $('td')[7].innerHTML === "X" && $('td')[8].innerHTML === "X" ||
+       // check the O's for the same 
+       $('td')[0].innerHTML === "O" && $('td')[1].innerHTML === "O" && $('td')[2].innerHTML === "O" ||
+       $('td')[3].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[5].innerHTML === "O" || 
+       $('td')[6].innerHTML === "O" && $('td')[7].innerHTML === "O" && $('td')[8].innerHTML === "O" )
+  {
+       return "true"
+  } else {
+       return "false"
+  }
+}
+
 
 function fullBoard() {
   if ( $('td')[0].innerHTML === "" || $('td')[1].innerHTML === "" ||
