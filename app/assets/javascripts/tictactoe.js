@@ -3,14 +3,13 @@ $( document ).ready(function() {
 });
 
 
-
 var turn = 0 
 var currentGame 
 
 
 function attachListeners(){
-  //get the data-x and data-y values of the clicked square 
-
+  
+  //get the data-x and data-y values of the clicked square  - this is a move
   $('td').on("click", function() {
     var x_value = ($(this).data('x'));
     var y_value = ($(this).data('y'));
@@ -18,37 +17,111 @@ function attachListeners(){
       doTurn(selector);
     });
 
-  // save your current game 
+  // save your current game event listener
 $("#save").click(function() {
     save();
   })
+
+  // get all the old games event listener
   $("#previous").click(function() {
     getAllGames();
   })
-  // load an old game 
-  $("#games").click(function(event) {
-    var state = parseState(event)
-    swapGame(state, getGameId(event))
+
+  //load an old game to the dom if the old games button was clicked - step 1 
+   $("#games").click(function(clicked_game) {
+    
+    var game = $(clicked_game.target).data("state").split(",")
+    var id = $(clicked_game.target).data("gameid")
+    
+    swapGames(game, id)
   })
-    // <a href="#" class"js-game"="" data-id="3">Game #3</a>
-  }
 
-function doTurn(selector){
-  updateState(selector);
-  turn += 1 ;
-  checkWinner();
+ }
+
+
+// just gets the current state of the board
+var getMarks = function() {
+  var marks = []
+  $("td").each(function(i) {
+    marks.push($(this).text())
+  })
+  return marks;
 }
 
 
-function player(){
-  // even turns are 0, 2, 4....game starts on zero and an X
-  if (isEven(turn)) {
-    return "X"
+function save(resetCurrentGame) {
+  var url, method;
+  if(currentGame) {
+    url = "/games/" + currentGame
+    method = "PATCH"
   } else {
-    return "O"
+    url = "/games"
+    method = "POST"
   }
 
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: {
+      game: {
+        state: getMarks()
+      }
+    },
+    success: function(data) {
+      if(resetCurrentGame) {
+        currentGame = undefined;
+      } else {
+        currentGame = data.game.id;
+      }
+    }
+  })
 }
+
+// this fires an ajax get request to pull all the game json
+function getAllGames(){
+  $.get( "/games", function(data) {
+    displayGames(data.games)
+  });
+}
+
+// opens the list of games up for selecting and adds them to the OM
+var displayGames = function(games) {
+  $.each(games, function( index, game ) {
+    $("#games").append(gameData(game));
+  });
+}
+
+// displays the json of the game board if the specific list item is clicked
+  var gameData = function(game) {
+  return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
+}
+
+function swapGames(gameboard, id) {
+  placeMarks(gameboard);
+  currentGame = id;
+  turn = findTurn(gameboard);
+}
+
+function placeMarks(gameboard){
+ $("td").each(function(i) {
+    $(this).text(gameboard[i]);
+  })
+}
+
+function findTurn(gameboard){
+  var turnCount = 0;
+  gameboard.forEach(function(el){
+    if (el != ""){
+      turnCount += 1 
+    }
+  })
+return turnCount
+}
+
+
+
+/// TIC TAC TOE GAME LOGIC
 
 function isEven(turn) {
    return turn % 2 == 0;
@@ -73,16 +146,22 @@ function checkWinner(){
  }
 }
 
+function player(){
+  // even turns are 0, 2, 4....game starts on zero and an X
+  if (isEven(turn)) {
+    return "X"
+  } else {
+    return "O"
+  }
 
-function boardWipe(){ 
-  turn = 0
-  $("td").each(function() {
-    ($(this).html("")
-  )});
-    // ($('#games').append(`<li id>Game ${currentGame}</li>`))
-  currentGame = 0 
 }
 
+
+function doTurn(selector){
+  updateState(selector);
+  turn += 1 ;
+  checkWinner();
+}
 
 
 function message(comment){
@@ -90,18 +169,17 @@ function message(comment){
 }
 
 
+function boardWipe(){ 
+  save()  // save the state of the board - need this to save state of the winning board
+  $("td").each(function() {
+    ($(this).html("")
+  )});
+  turn = 0
+  currentGame = 0 
+}
 
 
-// var getMarks = function() {
-//   var marks = []
-//   $("td").each(function(i) {
-//     marks.push($(this).text())
-//   })
-//   return marks;
-// }
-
-
-/// combos for potential wins
+// GAME WINNING COMBOS
 function verticalCheck(){
   if ( $('td')[0].innerHTML === "X" && $('td')[3].innerHTML === "X" && $('td')[6].innerHTML === "X" ||
        $('td')[1].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[7].innerHTML === "X" || 
