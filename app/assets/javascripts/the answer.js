@@ -144,6 +144,7 @@ var getMarks = function() {
 var save = function(resetCurrentGame) {
   var url, method;
   if(currentGame) {
+    debugger
     url = "/games/" + currentGame
     method = "PATCH"
   } else {

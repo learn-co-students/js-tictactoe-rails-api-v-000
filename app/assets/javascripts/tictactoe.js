@@ -28,15 +28,19 @@ $("#save").click(function() {
   })
 
   //load an old game to the dom if the old games button was clicked - step 1 
-   $("#games").click(function(clicked_game) {
-    
-    var game = $(clicked_game.target).data("state").split(",")
-    var id = $(clicked_game.target).data("gameid")
-    
-    swapGames(game, id)
+  $("#games").click(function(event) {
+    var state = parseState(event)
+    swapGame(state, getGameId(event))
   })
 
  }
+
+ var parseState = function(event) {
+  return $(event.target).data("state").split(",")
+}
+var getGameId = function(event) {
+  return $(event.target).data("gameid")
+}
 
 
 // just gets the current state of the board
@@ -49,7 +53,7 @@ var getMarks = function() {
 }
 
 
-function save(resetCurrentGame) {
+var save = function(resetCurrentGame) {
   var url, method;
   if(currentGame) {
     url = "/games/" + currentGame
@@ -79,47 +83,54 @@ function save(resetCurrentGame) {
 }
 
 // this fires an ajax get request to pull all the game json
-function getAllGames(){
-  $.get( "/games", function(data) {
-    displayGames(data.games)
-  });
+var getAllGames = function() {
+  $.getJSON("/games").done(function(response) {
+    showGames(response.games)
+  })
 }
 
 // opens the list of games up for selecting and adds them to the OM
-var displayGames = function(games) {
-  $.each(games, function( index, game ) {
-    $("#games").append(gameData(game));
-  });
+var showGames = function(games) {
+  var dom = $()
+  games.forEach(function(game) {
+    dom = dom.add(showGame(game));
+  })
+  $("#games").html(dom);
 }
 
 // displays the json of the game board if the specific list item is clicked
-  var gameData = function(game) {
+var showGame = function(game) {
   return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
 }
 
-function swapGames(gameboard, id) {
-  placeMarks(gameboard);
+var swapGame = function(state, id) {
+  placeMarks(state);
   currentGame = id;
-  turn = findTurn(gameboard);
+  turn = findTurn(state);
 }
 
-function placeMarks(gameboard){
- $("td").each(function(i) {
-    $(this).text(gameboard[i]);
-  })
-}
-
-function findTurn(gameboard){
-  var turnCount = 0;
-  gameboard.forEach(function(el){
-    if (el != ""){
-      turnCount += 1 
+var findTurn = function(state) {
+  var turn = 0;
+  state.forEach(function(item) {
+    if(item != "") {
+      turn += 1;
     }
   })
-return turnCount
+  return turn;
+}
+
+var placeMarks = function(marks) {
+  $("td").each(function(i) {
+    $(this).text(marks[i]);
+  })
 }
 
 
+
+
+
+
+/////////////////////////////////////////////////////////////////////////
 
 /// TIC TAC TOE GAME LOGIC
 
