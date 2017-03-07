@@ -4,7 +4,7 @@ SyntaxError: Parse error
 Started
 
 
-[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m
+[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m
 
 
 
@@ -1814,9 +1814,756 @@ Tic Tac Toe Functionality resetting the board allows client to play multiple gam
 
 
 
-14 specs, 14 failures
+#integration tests of persistence if i click the getAllGames button it should send a get request to /games
 
 
-Finished in 0.097 seconds
+  ReferenceError: Can't find variable: attachListeners
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/spec/tictactoe.spec.js:241
+      at attemptSync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1510)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1498
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1696
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+
+
+
+
+#integration tests of persistence if i click the save game button it should post to /games
+
+
+  ReferenceError: Can't find variable: attachListeners
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/spec/tictactoe.spec.js:252
+      at attemptSync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1510)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1498
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1696
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+
+
+
+
+#integration tests of persistence if i click the save game button a second time it should send a PATCH to /games/:id
+
+
+  ReferenceError: Can't find variable: attachListeners
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/spec/tictactoe.spec.js:263
+      at attemptSync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1510)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1498
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1696
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+
+
+
+
+#integration tests of persistence if i click the previous game button and no games have been saved i should get no games in the DOM
+
+
+  ReferenceError: Can't find variable: attachListeners
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/spec/tictactoe.spec.js:287
+      at attemptSync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1510)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1498
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1696
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+
+
+
+
+#integration tests of persistence if i click the previous game button and a game has already been saved it should add the previous game to the DOM
+
+
+  ReferenceError: Can't find variable: attachListeners
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/spec/tictactoe.spec.js:306
+      at attemptSync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1510)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1498
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1696
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+
+
+
+
+#integration tests of persistence if i click save it should persist the game so that when i asked for previous games i should get one more in the DOM
+
+
+  ReferenceError: Can't find variable: attachListeners
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/spec/tictactoe.spec.js:328
+      at attemptSync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1510)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1498
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1696
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+
+
+
+
+#integration tests of persistence if i play a game it should autosave at the end of the game
+
+
+  ReferenceError: Can't find variable: attachListeners
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/spec/tictactoe.spec.js:370
+      at attemptSync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1510)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1498
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1696
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+
+
+
+
+#integration tests of persistence if i play a game it should autosave and start a new game
+
+
+  ReferenceError: Can't find variable: attachListeners
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/spec/tictactoe.spec.js:390
+      at attemptSync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1510)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1498
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1696
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+
+
+
+
+#integration tests of persistence if should be able to switch to an old game
+
+
+  ReferenceError: Can't find variable: attachListeners
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/spec/tictactoe.spec.js:435
+      at attemptSync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1510)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1498
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1696
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1703)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+      at clearStack (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:506)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1505
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1485
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:518
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:309
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1708
+      at attemptAsync (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1520)
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1496
+      at file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:1517
+      at complete (file:///home/luciaadam-32229/code/labs/js-tictactoe-rails-api-v-000/tmpTestSupport/jasmine.js:333)
+
+
+
+
+23 specs, 23 failures
+
+
+Finished in 0.208 seconds
 
 

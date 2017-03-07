@@ -2,14 +2,15 @@ var turn = 0;
 var winCombos = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],[1,1],[2,2]], [[0,0],[0,1],[0,2]], [[1,0],[1,1],[1,2]], [[2,0],[2,1],[2,2]], [[2,0],[1,1],[0,2]]];
 var currentGame;
 
-function attachListeners() {
+var attachListeners = function() {
   $("table td").on('click', function (event) {
     doTurn(event);
   });
 
-  $("#games div").on("click", function (event) {
-    debugger
-    var state = event.target.data("state")
+  $("#games").on("click", function (event) {
+    var state = $(event.target).data("state").split(",");
+    var id = $(event.target).data("id")
+    loadGame(id, state);
   })
 
   $("button#previous").on("click", showPrevious);
@@ -18,9 +19,11 @@ function attachListeners() {
 }
 
 function doTurn(event) {
+
   updateState(event);
   if (checkWinner() || checkTie()) {
     saveGame();
+    resetBoard();
   } else {
     turn += 1;
   }
@@ -79,9 +82,15 @@ function message(string) {
 
 function showPrevious() {
   $.getJSON("/games").done(function (response) {
-    debugger
     response.games.forEach(function (game) {
-      $("#games").appendChild(`<div data-state="#{game.state}" data-id="#{game.id}">#{game.id}</div>`)
+      debugger
+      var domElement = $('<div data-state="' + game.state + '" data-id="' + game.id + '">' + game.id + '</div>')
+      if ($(`#games div[data-id="${game.id}"]`).data("id") === undefined) {
+        $("#games").append(domElement)
+      } else {
+        debugger
+        $(`#games div[data-id="${game.id}"]`).data("state") = game.state;
+      }
     })
   })
 }
@@ -103,7 +112,7 @@ function parseBoard() {
 function getTurn(state) {
   var turn = 0;
   state.forEach(function (position) {
-    if (item != "") {
+    if (position != "") {
       turn += 1;
     }
   })
@@ -111,7 +120,6 @@ function getTurn(state) {
 }
 
 function saveGame() {
-  debugger
   var url = "/games";
   var method;
 
@@ -130,7 +138,7 @@ function saveGame() {
       game: { state: parseBoard() }
     },
     success: function (data) {
-      if (checkWinner() || tie()) {
+      if (checkWinner() || checkTie()) {
         currentGame = undefined
       } else {
         currentGame = data.game.id;
@@ -142,7 +150,7 @@ function saveGame() {
 
 function loadGame(id, state) {
   currentGame = id;
-  turn = getTurn();
+  turn = getTurn(state);
   fillBoard(state);
 }
 

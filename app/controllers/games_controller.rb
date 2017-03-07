@@ -10,7 +10,6 @@ class GamesController < ApplicationController
 
   def create
     #create game with json params, passed here
-    binding.pry
     @game = Game.create(game_params)
     render json: @game, status: 201
   end

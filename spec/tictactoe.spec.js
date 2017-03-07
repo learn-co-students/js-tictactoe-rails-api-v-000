@@ -230,236 +230,236 @@ describe('Tic Tac Toe Functionality', function() {
   });
 });
 
-//
-// describe('#integration tests of persistence', function() {
-//   beforeEach(function(){
-//     turn = 0;
-//     currentGame = 0;
-//   });
-//   it("if i click the getAllGames button it should send a get request to /games", function() {
-//     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
-//     attachListeners()
-//     jasmine.Ajax.withMock(function() {
-//       $('#previous').click()
-//       var request = jasmine.Ajax.requests.mostRecent();
-//       expect(request.url).toBe('/games');
-//       expect(request.method).toBe('GET');
-//     });
-//   });
-//
-//   it("if i click the save game button it should post to /games", function() {
-//     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
-//     attachListeners()
-//     jasmine.Ajax.withMock(function() {
-//       $('#save').click()
-//       var request = jasmine.Ajax.requests.mostRecent();
-//       expect(request.url).toBe('/games');
-//       expect(request.method).toBe('POST');
-//     });
-//   });
-//
-//   it("if i click the save game button a second time it should send a PATCH to /games/:id", function() {
-//     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
-//     attachListeners()
-//     jasmine.Ajax.withMock(function() {
-//       var data = {
-//         game: {
-//           id:1,
-//           state: ["X","","","","","","","",""]
-//         }
-//       }
-//       var response = {
-//         "status": 200,
-//         "contentType": 'application/json',
-//         "responseText" : JSON.stringify(data)
-//       }
-//       $('#save').click()
-//       jasmine.Ajax.requests.mostRecent().respondWith(response);
-//       $('#save').click()
-//       var request = jasmine.Ajax.requests.mostRecent();
-//       expect(request.url).toBe('/games/1');
-//       expect(request.method).toBe('PATCH');
-//     });
-//   });
-//
-//   it("if i click the previous game button and no games have been saved i should get no games in the DOM", function() {
-//     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
-//     attachListeners()
-//     expect($("#games").children().length).toBe(0);
-//     jasmine.Ajax.withMock(function() {
-//       var data = {
-//         games: []
-//       }
-//       var response = {
-//         "status": 200,
-//         "contentType": 'application/json',
-//         "responseText" : JSON.stringify(data)
-//       }
-//       $('#previous').click()
-//       jasmine.Ajax.requests.mostRecent().respondWith(response);
-//       expect($("#games").children().length).toBe(0);
-//     });
-//   });
-//
-//   it("if i click the previous game button and a game has already been saved it should add the previous game to the DOM", function() {
-//     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
-//     attachListeners()
-//     expect($("#games").children().length).toBe(0);
-//     jasmine.Ajax.withMock(function() {
-//       var data = {
-//         games: [{
-//           id:1,
-//           state: ["X","","","","","","","",""]
-//         }]
-//       }
-//       var response = {
-//         "status": 200,
-//         "contentType": 'application/json',
-//         "responseText" : JSON.stringify(data)
-//       }
-//       $('#previous').click()
-//       jasmine.Ajax.requests.mostRecent().respondWith(response);
-//       expect($("#games").children().length).toBe(1);
-//     });
-//   });
-//
-//   it("if i click save it should persist the game so that when i asked for previous games i should get one more in the DOM", function() {
-//     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
-//     attachListeners()
-//     expect($("#games").children().length).toBe(0);
-//     jasmine.Ajax.withMock(function() {
-//       var data = {
-//         games: [{
-//           id:1,
-//           state: ["X","","","","","","","",""]
-//         }]
-//       }
-//       var response = {
-//         "status": 200,
-//         "contentType": 'application/json',
-//         "responseText" : JSON.stringify(data)
-//       }
-//       $('#previous').click()
-//       jasmine.Ajax.requests.mostRecent().respondWith(response);
-//       expect($("#games").children().length).toBe(1);
-//       $("#save").click()
-//       var data = {
-//         games: [{
-//           id:1,
-//           state: ["X","","","","","","","",""]
-//         },
-//         {
-//           id:2,
-//           state: ["","","","","","","","",""]
-//         }
-//         ]
-//       }
-//       var response = {
-//         "status": 200,
-//         "contentType": 'application/json',
-//         "responseText" : JSON.stringify(data)
-//       }
-//       $('#previous').click()
-//       jasmine.Ajax.requests.mostRecent().respondWith(response);
-//       expect($("#games").children().length).toBe(2);
-//     });
-//   });
-//
-//   it("if i play a game it should autosave at the end of the game", function() {
-//     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
-//     attachListeners()
-//     expect($("#games").children().length).toBe(0);
-//     jasmine.Ajax.withMock(function() {
-//
-//       $('[data-x="0"][data-y="0"]').click();
-//       $('[data-x="1"][data-y="0"]').click();
-//       $('[data-x="0"][data-y="1"]').click();
-//       $('[data-x="2"][data-y="0"]').click();
-//       $('[data-x="0"][data-y="2"]').click();
-//       //     // _X_|_O_|_O_
-//       //     // _X_|___|___
-//       //     //  X |   |
-//       var request = jasmine.Ajax.requests.mostRecent();
-//       expect(request.url).toBe('/games');
-//       expect(request.method).toBe('POST');
-//     });
-//   });
-//
-//   it("if i play a game it should autosave and start a new game", function() {
-//     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
-//     attachListeners()
-//     expect($("#games").children().length).toBe(0);
-//     jasmine.Ajax.withMock(function() {
-//
-//       $('[data-x="0"][data-y="0"]').click();
-//       $('[data-x="1"][data-y="0"]').click();
-//       $('[data-x="0"][data-y="1"]').click();
-//       $('[data-x="2"][data-y="0"]').click();
-//       $('[data-x="0"][data-y="2"]').click();
-//       //     // _X_|_O_|_O_
-//       //     // _X_|___|___
-//       //     //  X |   |
-//       var request = jasmine.Ajax.requests.mostRecent();
-//       expect(request.url).toBe('/games');
-//       expect(request.method).toBe('POST');
-//       var data = {
-//         game: {
-//           id:1,
-//           state: ["X","O","O","X","","","X","",""]
-//         }
-//       }
-//       var response = {
-//         "status": 200,
-//         "contentType": 'application/json',
-//         "responseText" : JSON.stringify(data)
-//       }
-//       jasmine.Ajax.requests.mostRecent().respondWith(response);
-//       $('[data-x="0"][data-y="0"]').click();
-//       $('[data-x="1"][data-y="0"]').click();
-//       $('[data-x="0"][data-y="1"]').click();
-//       $('[data-x="2"][data-y="0"]').click();
-//       //     // _X_|_O_|_O_
-//       //     // _X_|___|___
-//       //     //    |   |
-//       expect(jasmine.Ajax.requests.count()).toBe(1)
-//       $("#save").click()
-//       expect(jasmine.Ajax.requests.count()).toBe(2)
-//       var request = jasmine.Ajax.requests.mostRecent();
-//       expect(request.url).toBe('/games');
-//       expect(request.method).toBe('POST');
-//     });
-//   });
-//
-//   it("if should be able to switch to an old game", function() {
-//     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
-//     attachListeners()
-//     jasmine.Ajax.withMock(function() {
-//       $('[data-x="0"][data-y="0"]').click();
-//       $("#previous").click()
-//       var data = {
-//         games: [{
-//           id:1,
-//           state: ["X","","","","","","","",""]
-//         },
-//         {
-//           id:2,
-//           state: ["","X","O","","O","","","",""]
-//         }
-//         ]
-//       }
-//       var response = {
-//         "status": 200,
-//         "contentType": 'application/json',
-//         "responseText" : JSON.stringify(data)
-//       }
-//       jasmine.Ajax.requests.mostRecent().respondWith(response);
-//       // when you display the previous games you must give them a data attribute of gameid
-//       $('[data-gameid="2"]').click(function(){
-//         expect($('[data-x="0"][data-y="0"]').text()).toBe("")
-//         expect($('[data-x="1"][data-y="0"]').text()).toBe("X")
-//         expect($('[data-x="2"][data-y="0"]').text()).toBe("O")
-//         expect($('[data-x="1"][data-y="1"]').text()).toBe("O")
-//       });
-//     });
-//   });
-// });
+
+describe('#integration tests of persistence', function() {
+  beforeEach(function(){
+    turn = 0;
+    currentGame = 0;
+  });
+  it("if i click the getAllGames button it should send a get request to /games", function() {
+    setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
+    attachListeners()
+    jasmine.Ajax.withMock(function() {
+      $('#previous').click()
+      var request = jasmine.Ajax.requests.mostRecent();
+      expect(request.url).toBe('/games');
+      expect(request.method).toBe('GET');
+    });
+  });
+
+  it("if i click the save game button it should post to /games", function() {
+    setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
+    attachListeners()
+    jasmine.Ajax.withMock(function() {
+      $('#save').click()
+      var request = jasmine.Ajax.requests.mostRecent();
+      expect(request.url).toBe('/games');
+      expect(request.method).toBe('POST');
+    });
+  });
+
+  it("if i click the save game button a second time it should send a PATCH to /games/:id", function() {
+    setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
+    attachListeners()
+    jasmine.Ajax.withMock(function() {
+      var data = {
+        game: {
+          id:1,
+          state: ["X","","","","","","","",""]
+        }
+      }
+      var response = {
+        "status": 200,
+        "contentType": 'application/json',
+        "responseText" : JSON.stringify(data)
+      }
+      $('#save').click()
+      jasmine.Ajax.requests.mostRecent().respondWith(response);
+      $('#save').click()
+      var request = jasmine.Ajax.requests.mostRecent();
+      expect(request.url).toBe('/games/1');
+      expect(request.method).toBe('PATCH');
+    });
+  });
+
+  it("if i click the previous game button and no games have been saved i should get no games in the DOM", function() {
+    setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
+    attachListeners()
+    expect($("#games").children().length).toBe(0);
+    jasmine.Ajax.withMock(function() {
+      var data = {
+        games: []
+      }
+      var response = {
+        "status": 200,
+        "contentType": 'application/json',
+        "responseText" : JSON.stringify(data)
+      }
+      $('#previous').click()
+      jasmine.Ajax.requests.mostRecent().respondWith(response);
+      expect($("#games").children().length).toBe(0);
+    });
+  });
+
+  it("if i click the previous game button and a game has already been saved it should add the previous game to the DOM", function() {
+    setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
+    attachListeners()
+    expect($("#games").children().length).toBe(0);
+    jasmine.Ajax.withMock(function() {
+      var data = {
+        games: [{
+          id:1,
+          state: ["X","","","","","","","",""]
+        }]
+      }
+      var response = {
+        "status": 200,
+        "contentType": 'application/json',
+        "responseText" : JSON.stringify(data)
+      }
+      $('#previous').click()
+      jasmine.Ajax.requests.mostRecent().respondWith(response);
+      expect($("#games").children().length).toBe(1);
+    });
+  });
+
+  it("if i click save it should persist the game so that when i asked for previous games i should get one more in the DOM", function() {
+    setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
+    attachListeners()
+    expect($("#games").children().length).toBe(0);
+    jasmine.Ajax.withMock(function() {
+      var data = {
+        games: [{
+          id:1,
+          state: ["X","","","","","","","",""]
+        }]
+      }
+      var response = {
+        "status": 200,
+        "contentType": 'application/json',
+        "responseText" : JSON.stringify(data)
+      }
+      $('#previous').click()
+      jasmine.Ajax.requests.mostRecent().respondWith(response);
+      expect($("#games").children().length).toBe(1);
+      $("#save").click()
+      var data = {
+        games: [{
+          id:1,
+          state: ["X","","","","","","","",""]
+        },
+        {
+          id:2,
+          state: ["","","","","","","","",""]
+        }
+        ]
+      }
+      var response = {
+        "status": 200,
+        "contentType": 'application/json',
+        "responseText" : JSON.stringify(data)
+      }
+      $('#previous').click()
+      jasmine.Ajax.requests.mostRecent().respondWith(response);
+      expect($("#games").children().length).toBe(2);
+    });
+  });
+
+  it("if i play a game it should autosave at the end of the game", function() {
+    setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
+    attachListeners()
+    expect($("#games").children().length).toBe(0);
+    jasmine.Ajax.withMock(function() {
+
+      $('[data-x="0"][data-y="0"]').click();
+      $('[data-x="1"][data-y="0"]').click();
+      $('[data-x="0"][data-y="1"]').click();
+      $('[data-x="2"][data-y="0"]').click();
+      $('[data-x="0"][data-y="2"]').click();
+      //     // _X_|_O_|_O_
+      //     // _X_|___|___
+      //     //  X |   |
+      var request = jasmine.Ajax.requests.mostRecent();
+      expect(request.url).toBe('/games');
+      expect(request.method).toBe('POST');
+    });
+  });
+
+  it("if i play a game it should autosave and start a new game", function() {
+    setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
+    attachListeners()
+    expect($("#games").children().length).toBe(0);
+    jasmine.Ajax.withMock(function() {
+
+      $('[data-x="0"][data-y="0"]').click();
+      $('[data-x="1"][data-y="0"]').click();
+      $('[data-x="0"][data-y="1"]').click();
+      $('[data-x="2"][data-y="0"]').click();
+      $('[data-x="0"][data-y="2"]').click();
+      //     // _X_|_O_|_O_
+      //     // _X_|___|___
+      //     //  X |   |
+      var request = jasmine.Ajax.requests.mostRecent();
+      expect(request.url).toBe('/games');
+      expect(request.method).toBe('POST');
+      var data = {
+        game: {
+          id:1,
+          state: ["X","O","O","X","","","X","",""]
+        }
+      }
+      var response = {
+        "status": 200,
+        "contentType": 'application/json',
+        "responseText" : JSON.stringify(data)
+      }
+      jasmine.Ajax.requests.mostRecent().respondWith(response);
+      $('[data-x="0"][data-y="0"]').click();
+      $('[data-x="1"][data-y="0"]').click();
+      $('[data-x="0"][data-y="1"]').click();
+      $('[data-x="2"][data-y="0"]').click();
+      //     // _X_|_O_|_O_
+      //     // _X_|___|___
+      //     //    |   |
+      expect(jasmine.Ajax.requests.count()).toBe(1)
+      $("#save").click()
+      expect(jasmine.Ajax.requests.count()).toBe(2)
+      var request = jasmine.Ajax.requests.mostRecent();
+      expect(request.url).toBe('/games');
+      expect(request.method).toBe('POST');
+    });
+  });
+
+  it("if should be able to switch to an old game", function() {
+    setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
+    attachListeners()
+    jasmine.Ajax.withMock(function() {
+      $('[data-x="0"][data-y="0"]').click();
+      $("#previous").click()
+      var data = {
+        games: [{
+          id:1,
+          state: ["X","","","","","","","",""]
+        },
+        {
+          id:2,
+          state: ["","X","O","","O","","","",""]
+        }
+        ]
+      }
+      var response = {
+        "status": 200,
+        "contentType": 'application/json',
+        "responseText" : JSON.stringify(data)
+      }
+      jasmine.Ajax.requests.mostRecent().respondWith(response);
+      // when you display the previous games you must give them a data attribute of gameid
+      $('[data-gameid="2"]').click(function(){
+        expect($('[data-x="0"][data-y="0"]').text()).toBe("")
+        expect($('[data-x="1"][data-y="0"]').text()).toBe("X")
+        expect($('[data-x="2"][data-y="0"]').text()).toBe("O")
+        expect($('[data-x="1"][data-y="1"]').text()).toBe("O")
+      });
+    });
+  });
+});
