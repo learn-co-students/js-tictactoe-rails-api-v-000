@@ -8,6 +8,7 @@ var attachListeners = function() {
   });
 
   $("#games").on("click", function (event) {
+    debugger
     var state = $(event.target).data("state").split(",");
     var id = $(event.target).data("id")
     loadGame(id, state);
@@ -22,7 +23,7 @@ function doTurn(event) {
 
   updateState(event);
   if (checkWinner() || checkTie()) {
-    saveGame();
+    saveGame(true);
     resetBoard();
   } else {
     turn += 1;
@@ -119,11 +120,11 @@ function getTurn(state) {
   return turn;
 }
 
-function saveGame() {
+function saveGame(boolArg) {
   var url = "/games";
   var method;
   debugger
-  if (currentGame !== 0) {
+  if (currentGame) {
     url += "/" + currentGame
     method = "PATCH";
   } else {
@@ -138,7 +139,7 @@ function saveGame() {
       game: { state: parseBoard() }
     },
     success: function (data) {
-      if (checkWinner() || checkTie()) {
+      if (boolArg === true) {
         currentGame = 0;
       } else {
         currentGame = data.game.id;

@@ -10,16 +10,17 @@ class GamesController < ApplicationController
 
   def create
     #create game with json params, passed here
+    binding.pry
     @game = Game.create(game_params)
     render json: @game, status: 201
   end
 
-  def destroy
-    #destroy game with params
-    @game = Game.find_by(id: params[:id])
-    @game.destroy
-    redirect_to games_path
-  end
+  # def destroy
+  #   #destroy game with params
+  #   @game = Game.find_by(id: params[:id])
+  #   @game.destroy
+  #   redirect_to games_path
+  # end
 
   def update
     #if game exists, pass here to update state
