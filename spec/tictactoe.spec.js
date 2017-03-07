@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';
 
 describe('Tic Tac Toe Functionality', function() {
   beforeEach(function(){
@@ -185,7 +185,7 @@ describe('Tic Tac Toe Functionality', function() {
         expect($(this).html()).toEqual("")
       });
     });
-  
+
     it("allows client to play multiple game", function() {
       setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="message"></div><button id="lastGame">Show Me Last Games Results!</button><div id="lastGameBox"></div></body>');
       attachListeners();

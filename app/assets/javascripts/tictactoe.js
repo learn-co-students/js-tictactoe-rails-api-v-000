@@ -8,11 +8,12 @@ function attachListeners() {
   });
 
   $("#games div").on("click", function (event) {
+    debugger
     var state = event.target.data("state")
   })
-  
+
   $("button#previous").on("click", showPrevious);
-  
+
   $("button#save").on("click", saveGame);
 }
 
@@ -20,7 +21,6 @@ function doTurn(event) {
   updateState(event);
   if (checkWinner() || checkTie()) {
     saveGame();
-    resetBoard();
   } else {
     turn += 1;
   }
@@ -79,6 +79,7 @@ function message(string) {
 
 function showPrevious() {
   $.getJSON("/games").done(function (response) {
+    debugger
     response.games.forEach(function (game) {
       $("#games").appendChild(`<div data-state="#{game.state}" data-id="#{game.id}">#{game.id}</div>`)
     })
@@ -102,7 +103,7 @@ function parseBoard() {
 function getTurn(state) {
   var turn = 0;
   state.forEach(function (position) {
-    if (item !== "") {
+    if (item != "") {
       turn += 1;
     }
   })
@@ -110,6 +111,7 @@ function getTurn(state) {
 }
 
 function saveGame() {
+  debugger
   var url = "/games";
   var method;
 
@@ -128,8 +130,8 @@ function saveGame() {
       game: { state: parseBoard() }
     },
     success: function (data) {
-      if (checkWinner() || checkTie()) {
-        currentGame = undefined;
+      if (checkWinner() || tie()) {
+        currentGame = undefined
       } else {
         currentGame = data.game.id;
       }
