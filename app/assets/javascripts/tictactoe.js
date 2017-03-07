@@ -1,6 +1,6 @@
 var turn = 0;
 var winCombos = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],[1,1],[2,2]], [[0,0],[0,1],[0,2]], [[1,0],[1,1],[1,2]], [[2,0],[2,1],[2,2]], [[2,0],[1,1],[0,2]]];
-var currentGame;
+var currentGame = 0;
 
 var attachListeners = function() {
   $("table td").on('click', function (event) {
@@ -85,11 +85,11 @@ function showPrevious() {
     response.games.forEach(function (game) {
       debugger
       var domElement = $('<div data-state="' + game.state + '" data-id="' + game.id + '">' + game.id + '</div>')
-      if ($(`#games div[data-id="${game.id}"]`).data("id") === undefined) {
+      if ($('#games div[data-id="' + game.id + '"]').data("id") === undefined) {
         $("#games").append(domElement)
       } else {
         debugger
-        $(`#games div[data-id="${game.id}"]`).data("state") = game.state;
+        $('#games div[data-id="' + game.id + '"]').data("state", game.state);
       }
     })
   })
@@ -122,8 +122,8 @@ function getTurn(state) {
 function saveGame() {
   var url = "/games";
   var method;
-
-  if (currentGame) {
+  debugger
+  if (currentGame !== 0) {
     url += "/" + currentGame
     method = "PATCH";
   } else {
@@ -139,7 +139,7 @@ function saveGame() {
     },
     success: function (data) {
       if (checkWinner() || checkTie()) {
-        currentGame = undefined
+        currentGame = 0;
       } else {
         currentGame = data.game.id;
       }
