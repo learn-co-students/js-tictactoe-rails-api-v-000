@@ -1,8 +1,5 @@
-$(document).ready(function() {
-  attachListeners();
-});
-var turn = 1;
-var currentGame = 0;
+var turn = 0;
+var currentGame;
 
 var attachListeners = function() {
 
@@ -24,7 +21,7 @@ var doTurn = function(event) {
   if($(cell).text() === "") {
     updateState(event);
     checkWinner();
-    turn++;
+    turn += 1;
   }
 }
 
@@ -34,11 +31,11 @@ var updateState = function(event) {
 }
 
 var player = function() {
-  var token = "X"
   if(turn % 2 === 0) {
-    token = "O"
+    return "X"
+  } else {
+    return "O"
   }
-  return token;
 }
 
 var checkWinner = function() {
@@ -82,7 +79,7 @@ function message(string) {
 var resetGame = function() {
   saveGame();
   resetBoard();
-  turn = 0;
+  turn = -1;
   currentGame = 0;
 }
 
@@ -98,7 +95,9 @@ var getAllGames = function() {
     if(data["games"].length !== 0) {
       var gamesHTML = '';
       data["games"].forEach(function(game){
-        gamesHTML += '<li onclick="loadGame(this);">';
+        gamesHTML += '<li data-gameid="';
+        gamesHTML += game["id"];
+        gamesHTML += '" onclick="loadGame(this);">';
         gamesHTML += game["id"].toString();
         gamesHTML += '</li>';
       });
@@ -116,8 +115,7 @@ var saveGame = function() {
                return $(td).text()
              }).toArray();
   currentGame = $("#id").text();
-  console.log(currentGame);
-  if(currentGame == 0){
+  if(currentGame == ""){
     var posting = $.post("/games", {"game": { "state": state }}, function(data) {
        $("#id").text(data["game"]["id"])
     });
@@ -139,10 +137,14 @@ var loadGame = function(listItem) {
     $("td").each(function(index, cell){
       cell.innerHTML = game["state"][index];
     })
-    $("#id").text(data["game"]["id"]);
+    $("#id").text(data["games"]["id"]);
     var numOfBlankCells = $("td").toArray().filter(function(cell){
       return cell.innerHTML === "";
     }).length
     turn = 10 - numOfBlankCells;
   })
 }
+
+$(document).ready(function() {
+  attachListeners();
+});
