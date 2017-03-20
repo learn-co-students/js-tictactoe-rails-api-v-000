@@ -2,7 +2,7 @@
 
 describe('Tic Tac Toe Functionality', function() {
   beforeEach(function(){
-    turn = 0;
+    turn = 1;
   });
 
   describe( "#attachListeners", function() {
@@ -28,7 +28,7 @@ describe('Tic Tac Toe Functionality', function() {
       spyOn(window, "checkWinner");
       spyOn(window, "updateState");
       doTurn(myEvent);
-      expect(turn).toEqual(1);
+      expect(turn).toEqual(2);
       expect(window.updateState).toHaveBeenCalled;
       expect(window.checkWinner).toHaveBeenCalled;
     });
@@ -36,10 +36,11 @@ describe('Tic Tac Toe Functionality', function() {
 
   describe( "#player", function() {
     it("should return the mark of the current player when player is X", function() {
+      turn = 1;
       expect(player()).toEqual("X");
     });
     it("should return the mark of the current player when player is O", function() {
-      turn = 1;
+      turn = 2;
       expect(player()).toEqual("O");
     });
   });
@@ -139,7 +140,7 @@ describe('Tic Tac Toe Functionality', function() {
 
   describe("resetting the board", function() {
 
-    it("resets the board and sets turn to zero when there is a winner", function() {
+    it("resets the board and sets turn to one when there is a winner", function() {
       setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="message"></div><button id="lastGame">Show Me Last Games Results!</button><div id="lastGameBox"></div></body>');
       attachListeners();
       $('[data-x="1"][data-y="2"]').click();
@@ -155,13 +156,13 @@ describe('Tic Tac Toe Functionality', function() {
       // ___|___|___
       // ___|___|___
       //    |   |
-      expect(turn).toEqual(0);
+      expect(turn).toEqual(1);
       $("td").each(function() {
         expect($(this).html()).toEqual("")
       });
     });
 
-    it("resets the board and sets turn to zero when there is a tie", function() {
+    it("resets the board and sets turn to one when there is a tie", function() {
       setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="message"></div><button id="lastGame">Show Me Last Games Results!</button><div id="lastGameBox"></div></body>');
       attachListeners();
       $('[data-x="0"][data-y="0"]').click();
@@ -180,13 +181,13 @@ describe('Tic Tac Toe Functionality', function() {
       // ___|___|___
       // ___|___|___
       //    |   |
-      expect(turn).toEqual(0);
+      expect(turn).toEqual(1);
       $("td").each(function() {
         expect($(this).html()).toEqual("")
       });
     });
 
-    it("allows client to play multiple game", function() {
+    it("allows client to play multiple games", function() {
       setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="message"></div><button id="lastGame">Show Me Last Games Results!</button><div id="lastGameBox"></div></body>');
       attachListeners();
       $('[data-x="0"][data-y="0"]').click();
@@ -205,7 +206,7 @@ describe('Tic Tac Toe Functionality', function() {
       // ___|___|___
       // ___|___|___
       //    |   |
-      expect(turn).toEqual(0);
+      expect(turn).toEqual(1);
       $("td").each(function() {
         expect($(this).html()).toEqual("")
       });
@@ -222,7 +223,7 @@ describe('Tic Tac Toe Functionality', function() {
       // ___|___|___
       // ___|___|___
       //    |   |
-      expect(turn).toEqual(0);
+      expect(turn).toEqual(1);
       $("td").each(function() {
         expect($(this).html()).toEqual("")
       });
@@ -231,7 +232,7 @@ describe('Tic Tac Toe Functionality', function() {
 });
 
 
-describe('#integration tests of persistence', function() {
+ describe('#integration tests of persistence', function() {
   beforeEach(function(){
     turn = 0;
     currentGame = 0;
@@ -462,4 +463,4 @@ describe('#integration tests of persistence', function() {
       });
     });
   });
-});
+ });
