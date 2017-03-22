@@ -31,12 +31,11 @@ var checkWinner = function() {
       var x2 = winCombinations[i][2][0];
       var y2 = winCombinations[i][2][1];
       query2 = $('[data-x="' + x2 + '"][data-y="' + y2 + '"]');
-      // debugger;
+
       if((query0[0].innerHTML == query1[0].innerHTML) &&
           query1[0].innerHTML == query2[0].innerHTML &&
           query0[0].innerHTML != "") {
         message(`Player ${player()} Won!`)
-        resetBoard();
         return true
       }
   }
@@ -53,7 +52,6 @@ var checkTie = function () {
 
   if(returnVal == true) {
     message("Tie game");
-    resetBoard();
   }
   return returnVal
 }
@@ -70,7 +68,7 @@ var updateState = function(event) {
   if(($(event.target).html() == "X") || ($(event.target).html() == "O")) {
    return false;
  }
- $(event.target).html(player());
+ $(event.target).text(player());
  return true;
 }
 
@@ -85,9 +83,11 @@ var doTurn = function(event) {
   }
   if(checkWinner() || checkTie()) {
     save();
+    resetBoard();
     console.log("winner or tie");
   } else {
     turn++;
+    console.log(turn);
   }
 }
 
@@ -145,7 +145,9 @@ var save = function() {
       }
     },
     success: function(data) {
-      currentGame = data.game.id;
+      if(currentGame != null){
+        currentGame = data.game.id;
+      }
     }
   })
 }
@@ -161,11 +163,11 @@ var getGames = function() {
       }
       //Otherwise create a new list item with each game id
       else {
-        HTMLString = "<ul>";
+        HTMLString = "";
         for(let i=0; i<data.games.length; i++) {
           HTMLString += `<li>${data.games[i].id}</li>`;
         }
-        HTMLString += "</ul>";
+        HTMLString += "";
       }
       $("#games").html(HTMLString);
     }
