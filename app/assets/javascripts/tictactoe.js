@@ -24,8 +24,9 @@ var checkWinner = function() {
       var y2 = winCombinations[i][2][1];
       query2 = $('[data-x="' + x2 + '"][data-y="' + y2 + '"]');
       // debugger;
-      if(query0[0].innerHTML == query1[0].innerHTML == query2[0].innerHTML != '') {
-        console.log("Calling message function")
+      if((query0[0].innerHTML == query1[0].innerHTML) &&
+          query1[0].innerHTML == query2[0].innerHTML &&
+          query0[0].innerHTML != "") {
         message(`Player ${player()} Won!`)
         return true
       }
@@ -42,7 +43,12 @@ var player = function() {
 }
 
 var updateState = function(event) {
-   $(event.target).html(player());
+  debugger;
+  if(($(event.target).html() == "X") || ($(event.target).html() == "O")) {
+   return false;
+ }
+ $(event.target).html(player());
+ return true;
 }
 
 var message = function(message) {
@@ -50,11 +56,15 @@ var message = function(message) {
 }
 
 var doTurn = function(event) {
+  if(!updateState(event)) {
+    message("Invalid move try again.");
+    attachListeners();
+  }
   if(checkWinner()) {
+    save();
     console.log("winner or tie");
   } else {
     turn++;
-    updateState(event);
   }
 }
 
