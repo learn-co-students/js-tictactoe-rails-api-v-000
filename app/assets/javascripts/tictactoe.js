@@ -76,7 +76,6 @@ function superSave () {
 
 function attachListeners() {
 	$('td').click(function(e){
-		e.stopPropagation();
 		doTurn(e);
 	})
 
