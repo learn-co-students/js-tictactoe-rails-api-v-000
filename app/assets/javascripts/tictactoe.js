@@ -127,7 +127,7 @@ function doTurn(e) {
 	var over = checkWinner();
 	if (turn == 8 && !checkWinner()) {
 		message('Tie game')
-		saveGame();
+		superSave();
 		resetBoard();
 
 	} else {
@@ -145,7 +145,7 @@ function checkWinner() {
  		 (current_board[value[0]] == "O" && current_board[value[1]] == "O" && current_board[value[2]] == "O") ) {
  		var winning_token = current_board[value[0]]
  		message('Player ' + winning_token + ' Won!');
- 		saveGame();
+ 		superSave();
  		resetBoard();
  		answer = true
  	}
