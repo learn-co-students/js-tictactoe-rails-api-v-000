@@ -1,7 +1,5 @@
 var turn = 0;
 var currentGame = 0;
-var game_over = false
-
 
 var winningCombos = [
 						[0, 1, 2],
