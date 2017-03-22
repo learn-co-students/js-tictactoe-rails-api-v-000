@@ -34,6 +34,21 @@ var checkWinner = function() {
   return false;
 }
 
+var checkTie = function () {
+  returnVal = true
+  $("td").each(function(){
+    debugger;
+    if(this.innerHTML == ""){
+      returnVal =  false;
+    }
+  });
+
+  if(returnVal == true) {
+    message("Tie game");
+  }
+  return returnVal
+}
+
 var player = function() {
   if(turn % 2 == 0) {
     return 'X';
@@ -43,7 +58,6 @@ var player = function() {
 }
 
 var updateState = function(event) {
-  debugger;
   if(($(event.target).html() == "X") || ($(event.target).html() == "O")) {
    return false;
  }
@@ -60,7 +74,7 @@ var doTurn = function(event) {
     message("Invalid move try again.");
     attachListeners();
   }
-  if(checkWinner()) {
+  if(checkWinner() || checkTie()) {
     save();
     console.log("winner or tie");
   } else {
