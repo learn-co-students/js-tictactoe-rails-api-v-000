@@ -24,11 +24,7 @@ function getGame() {
 }
 
 function player() {
-	if (turn % 2 == 0) {
-		return "X"
-	} else {
-		return "O"
-	}
+	return (turn % 2 == 0) ? "X" : "O"
 }
 
 function resetBoard () {
@@ -87,12 +83,7 @@ function attachListeners() {
 	})
 
 	$('#save').click(function(e){
-		if (currentGame == 0) {
-			saveGame();
-		} else {
-			updateGame();
-		}
-		
+		superSave();
 	})
 
 	$('#previous').click(function(e){
@@ -129,7 +120,6 @@ function doTurn(e) {
 		message('Tie game')
 		superSave();
 		resetBoard();
-
 	} else {
 		if (!over) {
 			turn++;
