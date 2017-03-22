@@ -11,7 +11,15 @@ var winCombinations = [
                         [[2,0],[1,1],[0,2]]
                       ];
 
-//TODO: work out checkWinner logic
+
+var resetBoard = function() {
+  $("td").each(function(){
+    this.innerHTML = ""
+  });
+  turn = 0;
+  currentGame = null;
+}
+
 var checkWinner = function() {
   for(let i=0; i<winCombinations.length; i++){
       var x0 = winCombinations[i][0][0];
@@ -28,6 +36,7 @@ var checkWinner = function() {
           query1[0].innerHTML == query2[0].innerHTML &&
           query0[0].innerHTML != "") {
         message(`Player ${player()} Won!`)
+        resetBoard();
         return true
       }
   }
@@ -37,7 +46,6 @@ var checkWinner = function() {
 var checkTie = function () {
   returnVal = true
   $("td").each(function(){
-    debugger;
     if(this.innerHTML == ""){
       returnVal =  false;
     }
@@ -45,6 +53,7 @@ var checkTie = function () {
 
   if(returnVal == true) {
     message("Tie game");
+    resetBoard();
   }
   return returnVal
 }
@@ -106,7 +115,7 @@ $(function() {
 //Returns array containing board representation
 var getBoard = function() {
   board = [];
-  $("td").each(function(i){
+  $("td").each(function(){
     board.push($(this).text());
   })
   return board;
