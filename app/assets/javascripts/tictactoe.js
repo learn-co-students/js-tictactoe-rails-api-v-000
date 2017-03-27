@@ -96,7 +96,9 @@ var checkWinner = function() {
 }
 
 var updateState = function(e) {
-  $(e.target).html(player());  
+  if (isEmpty($(e.target).html()) ) {
+    $(e.target).html(player()); 
+  }
 }
 
 var player = function() {
