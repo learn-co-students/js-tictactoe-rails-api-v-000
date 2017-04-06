@@ -1,17 +1,19 @@
+//var token = player();
+
 $(function() {
   attachListeners();
 })
 
 function attachListeners() {
-  $("td").click(function(event) {
-    doTurn(event);
-  })
+$(document).on("click","td", function(e){
+    console.log($(this).attr('data-x'))
+    //yes! this works!
+});
 }
-
+/*
 function doTurn() {
-  var turn = 0;
-  // check for validity of move then update game state
-  // check for winner
+  turn = 0;
+  updateState();
   turn++;
 }
 
@@ -20,7 +22,11 @@ function checkWinner() {
 }
 
 function updateState() {
-
+  if ($(target).value() === "") {
+    $(target).html = token;
+  } else {
+    message();
+  }
 }
 
 function player() {
@@ -34,3 +40,4 @@ function player() {
 function message() {
 
 }
+*/
