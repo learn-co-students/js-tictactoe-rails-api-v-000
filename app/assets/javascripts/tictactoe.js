@@ -6,8 +6,9 @@ $(function() {
 
 function attachListeners() {
 $(document).on("click","td", function(e){
-    console.log($(this).attr('data-x'))
+  coordinate = [$(this).attr('data-x'), $(this).attr('data-y')]
     //yes! this works!
+    console.log(coordinate)
 });
 }
 /*
