@@ -23,6 +23,14 @@ $(document).on("click","td", function(e){
   potentialSpot = $(this)
   doTurn(potentialSpot);
   });
+
+$("#save").on("click", function(e) {
+
+})
+
+$("previous").on("click", function(e) {
+
+})
 }
 
 //bind click listener to square
@@ -57,5 +65,5 @@ var player = function player() {
 }
 
 function message(input) {
-  console.log(messageHash[input]);
+  $("#message").append((messageHash[input]));
 }
