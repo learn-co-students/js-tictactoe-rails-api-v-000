@@ -1,4 +1,6 @@
-tryAgain = "That move is not available. Please pick an open spot."
+messageHash = {
+  tryAgain: "That move is not available. Please pick an open spot."
+}
 
 var winningCombinations = [
    [[0,0], [1,0], [2,0]],
@@ -10,8 +12,6 @@ var winningCombinations = [
    [[0,0], [1,1], [2,2]],
    [[2,0], [1,1], [0,2]]
 ]
-
-
 
 $(function() {
   attachListeners();
@@ -56,6 +56,6 @@ var player = function player() {
   }
 }
 
-function message(inputString) {
-  console.log(inputString);
+function message(input) {
+  console.log(messageHash[input]);
 }
