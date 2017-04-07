@@ -1,5 +1,8 @@
-messageHash = {
-  tryAgain: "That move is not available. Please pick an open spot."
+messages = {
+  tryAgain: "That move is not available. Please pick an open spot.",
+  tieGame: "Tie game",
+  xWon: "Player X Won!",
+  yWon: "Player Y Won!"
 }
 
 var winningCombinations = [
@@ -58,12 +61,12 @@ function updateState() {
 
 var player = function player() {
   if (turn % 2 == 0) {
-    return 'X'; //X is first player
+    token = 'X';
   } else {
-    return 'O';
+    token ='O';
   }
 }
 
 function message(input) {
-  $("#message").append((messageHash[input]));
+  $("#message").append((messages[input]));
 }
