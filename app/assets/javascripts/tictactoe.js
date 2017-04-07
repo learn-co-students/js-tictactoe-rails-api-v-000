@@ -1,4 +1,17 @@
-//var token = player();
+tryAgain = "That move is not available. Please pick an open spot."
+
+var winningCombinations = [
+   [[0,0], [1,0], [2,0]],
+   [[0,1], [1,1], [2,1]],
+   [[0,2], [1,2], [2,2]],
+   [[0,0], [0,1], [0,2]],
+   [[1,0], [1,1], [1,2]],
+   [[2,0], [2,1], [2,2]],
+   [[0,0], [1,1], [2,2]],
+   [[2,0], [1,1], [0,2]]
+]
+
+
 
 $(function() {
   attachListeners();
@@ -6,16 +19,25 @@ $(function() {
 
 function attachListeners() {
 $(document).on("click","td", function(e){
-  coordinate = [$(this).attr('data-x'), $(this).attr('data-y')]
-    //yes! this works!
-    console.log(coordinate)
-});
+//  coordinate = [$(this).attr('data-x'), $(this).attr('data-y')]
+  potentialSpot = $(this)
+  doTurn(potentialSpot);
+  });
 }
-/*
-function doTurn() {
+
+//bind click listener to square
+//call doTurn
+//if space value is nil or an empty string 
+//update value to player token
+
+function doTurn(potentialSpot) {
   turn = 0;
-  updateState();
-  turn++;
+  if (potentialSpot.val() === "" || !potentialSpot) {
+    updateState();
+    turn++;
+  } else {
+    message(tryAgain);
+  }
 }
 
 function checkWinner() {
@@ -23,14 +45,10 @@ function checkWinner() {
 }
 
 function updateState() {
-  if ($(target).value() === "") {
-    $(target).html = token;
-  } else {
-    message();
-  }
+  potentialSpot.val() = player(); 
 }
 
-function player() {
+var player = function player() {
   if (turn % 2 == 0) {
     return 'X'; //X is first player
   } else {
@@ -38,7 +56,6 @@ function player() {
   }
 }
 
-function message() {
-
+function message(inputString) {
+  console.log(inputString);
 }
-*/
