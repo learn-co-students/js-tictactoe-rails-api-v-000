@@ -1,14 +1,16 @@
 var turn = 0;
-var winningCombos = [
-  [$('td')[0], $('td')[1], $('td')[2]],
-  [$('td')[3], $('td')[4], $('td')[5]],
-  [$('td')[6], $('td')[7], $('td')[8]],
-  [$('td')[0], $('td')[3], $('td')[6]],
-  [$('td')[1], $('td')[4], $('td')[7]],
-  [$('td')[2], $('td')[5], $('td')[8]],
-  [$('td')[0], $('td')[4], $('td')[8]],
-  [$('td')[2], $('td')[4], $('td')[6]],
-]
+var state = ["", "", "", "", "", "", "", "", ""];
+
+var winningStates = [
+  [0, 1, 2], 
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
 
 $(document).ready( function() {
    attachListeners();
@@ -17,7 +19,8 @@ $(document).ready( function() {
 function attachListeners() {
   $("table").on("click", "td",  function(e){
     target = e.target
- //   console.log(target);
+    xCoord = parseInt(target.attributes['data-x']['nodeValue']);
+    yCoord = parseInt(target.attributes['data-y']['nodeValue']);
     doTurn(target)
   });
 
@@ -45,28 +48,24 @@ function doTurn(target) {
   } else {
     alert("That spot is occupied.")
   }
-//  checkWinner(state);
-  //check for tie
+  checkWinner(state);
 }
 
 function updateState(target) {
   target.innerHTML = player();
+  var i = yCoord * 3 + xCoord;
+  state[i] = player();
+
 }
 
-/*
-function checkWinner() {
-  for (var i = 0; i < 9; i++) {
-    if (winningCombos[i][0].innerHTML !== "") {
-      if (winningCombos[i][0].innerHTML === winningCombos[i][1] && winningCombos[i][1] === winningCombos[i][2]) {
-        token = winningCombos[i][0].innerHTML
-        message(`Player ${token} has won!`);
-        break;
-      }
-    }
-  }
-  return false; 
+function checkWinner(state) {
+
 }
-*/
+
+function message(input) {
+  $('#message').html(input)
+}
+
 
 
 
