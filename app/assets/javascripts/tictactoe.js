@@ -1,13 +1,13 @@
 var turn = 0;
 var winningCombos = [
-  [[0,0],[1,0],[2,0]],
-  [[0,1],[1,1],[2,1]],
-  [[0,2],[1,2],[2,2]],
-  [[0,0],[0,1],[0,2]],
-  [[1,0],[1,1],[1,2]],
-  [[2,0],[2,1],[2,2]],
-  [[0,0],[1,1],[2,2]],
-  [[2,0],[1,1],[0,2]]
+  [$('td')[0], $('td')[1], $('td')[2]],
+  [$('td')[3], $('td')[4], $('td')[5]],
+  [$('td')[6], $('td')[7], $('td')[8]],
+  [$('td')[0], $('td')[3], $('td')[6]],
+  [$('td')[1], $('td')[4], $('td')[7]],
+  [$('td')[2], $('td')[5], $('td')[8]],
+  [$('td')[0], $('td')[4], $('td')[8]],
+  [$('td')[2], $('td')[4], $('td')[6]],
 ]
 
 $(document).ready( function() {
@@ -17,9 +17,11 @@ $(document).ready( function() {
 function attachListeners() {
   $("table").on("click", "td",  function(e){
     target = e.target
+    //xCoord = $(target).attr('data-x');
+    //yCoord = $(target).attr('data-y');
+    //point = [parseInt(xCoord), parseInt(yCoord)]
+    console.log(target);
     doTurn(target)
-    //console.log(e.target); 
-    //=> returns clicked cell with data-x and data-y properties
   });
 
   $('#save').on("click", function() {
@@ -40,8 +42,8 @@ function player() {
 }
 
 function doTurn(target) {
-  //check that game is not over and that space is not filled, then pass target to updateState
-  if ($(target).html() === "" || !$(target).html()) {
+  checkWinner();
+  if ($(target).html() === "") {
     updateState(target);
     turn++;
   } else {
@@ -50,10 +52,19 @@ function doTurn(target) {
 }
 
 function updateState(target) {
-  $(target).html() = player();
+//  $(target).html() = player();
 }
 
 function checkWinner() {
-
+  for (var i = 0; i < 9; i++) {
+    if (winningCombos[i][0].innerHTML != "") {
+      if (winningCombos[i][0].innerHTML === winningCombos[i][1] && winningCombos[i][1] === winningCombos[i][2]) {
+        token = winningCombos[i][0].innerHTML
+        message(`Player ${token} has won!`);
+        break;
+      }
+    }
+  }
+  return false; 
 }
 
