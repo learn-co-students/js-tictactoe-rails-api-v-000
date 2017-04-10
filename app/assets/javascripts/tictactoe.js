@@ -17,10 +17,7 @@ $(document).ready( function() {
 function attachListeners() {
   $("table").on("click", "td",  function(e){
     target = e.target
-    //xCoord = $(target).attr('data-x');
-    //yCoord = $(target).attr('data-y');
-    //point = [parseInt(xCoord), parseInt(yCoord)]
-    console.log(target);
+ //   console.log(target);
     doTurn(target)
   });
 
@@ -42,22 +39,24 @@ function player() {
 }
 
 function doTurn(target) {
-  checkWinner();
-  if ($(target).html() === "") {
+  if (target.innerHTML === "") {
     updateState(target);
     turn++;
   } else {
     alert("That spot is occupied.")
   }
+//  checkWinner(state);
+  //check for tie
 }
 
 function updateState(target) {
-//  $(target).html() = player();
+  target.innerHTML = player();
 }
 
+/*
 function checkWinner() {
   for (var i = 0; i < 9; i++) {
-    if (winningCombos[i][0].innerHTML != "") {
+    if (winningCombos[i][0].innerHTML !== "") {
       if (winningCombos[i][0].innerHTML === winningCombos[i][1] && winningCombos[i][1] === winningCombos[i][2]) {
         token = winningCombos[i][0].innerHTML
         message(`Player ${token} has won!`);
@@ -67,4 +66,23 @@ function checkWinner() {
   }
   return false; 
 }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
