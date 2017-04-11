@@ -22,6 +22,8 @@ var attachListeners = function() {
   $("table").click(function(event) {
     xCoord = parseInt(event.target.attributes['data-x']['nodeValue']);
     yCoord = parseInt(event.target.attributes['data-y']['nodeValue']);
+    //at this point in the program execution the event exists and so do x and y coordinates
+    //debugger; 
     doTurn(event);
   });
   $("#games").click(function(event) {
@@ -71,6 +73,8 @@ var updateState = function(event) {
   $(event.target).html(player());
   var i = yCoord * 3 + xCoord;
   state[i] = player();
+  //at this point in program execution the event exists, and the state has been updated
+  //debugger; 
 }
 
 //////////////////////////////consolidate into one checkWinner method and one tie method//////////
@@ -87,13 +91,14 @@ var updateState = function(event) {
   return false;
 }
 */
-function checkWinner(state){
+function checkWinner(){
   if(state === undefined){
     return false;
   }
  for (var i = 0; i < winStates.length; i++) {
     if (state[winStates[i][0]] !== "" && state[winStates[i][0]] === state[winStates[i][1]] && state[winStates[i][1]] === state[winStates[i][2]]) {
         message("Player " + player() + " Won!");
+        debugger; 
         return true;
     }
   }
@@ -122,8 +127,8 @@ var resetGame = function() {
   currentGame = 0;
 }
 
-var message = function(message) {
-  $("#message").html(message);
+function message(input) {
+  $("#message").html(input);
 }
 
 var parseState = function(event) {
