@@ -1,7 +1,7 @@
 var turn = 0;
 var state = ["", "", "", "", "", "", "", "", ""];
 
-var winningStates = [
+var winStates = [
   [0, 1, 2], 
   [3, 4, 5],
   [6, 7, 8],
@@ -48,6 +48,7 @@ function doTurn(target) {
   } else {
     alert("That spot is occupied.")
   }
+  debugger;
   checkWinner(state);
 }
 
@@ -59,22 +60,29 @@ function updateState(target) {
 }
 
 function checkWinner(state) {
-  if (state === undefined) {
+  //debugger;
+  if (state === undefined || state === ["", "", "", "", "", "", "", "", ""]) {
     return false; 
   }
-  /* these lines break everything and I don't know why
- for (var i = 0; i < 8; i++) {
+ // debugger;
+ // these lines break everything and I don't know why
+ // [0,1,2]
+ //that does make sense - so I thought the way I had it written was checking if the state was a win State?
+ for (var i = 0; i < winStates.length; i++) {
     if (state[winStates[i][0]] !== "" && state[winStates[i][0]] === state[winStates[i][1]] && state[winStates[i][1]] === state[winStates[i][2]]) {
-        message(`Player ${state[winStates[i][0]]} has won!`);
+        message("Player " + player() + " Won!");
+        return true; // return breaks out of loops and just returns the value, no more code will  be executed within the function
     }
   }
-  */
+  return false;
 }
 
 function message(input) {
   $('#message').html(input)
 }
 
+//it does make sense but i'm not sure why it's still broken, because I think I 
+//am iterating through the win states combo on the states variable?
 
 
 
