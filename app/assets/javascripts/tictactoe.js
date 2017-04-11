@@ -59,13 +59,21 @@ function updateState(target) {
 }
 
 function checkWinner(state) {
-
+  if (state === undefined) {
+    return false; 
+  }
+  /* these lines break everything and I don't know why
+ for (var i = 0; i < 8; i++) {
+    if (state[winStates[i][0]] !== "" && state[winStates[i][0]] === state[winStates[i][1]] && state[winStates[i][1]] === state[winStates[i][2]]) {
+        message(`Player ${state[winStates[i][0]]} has won!`);
+    }
+  }
+  */
 }
 
 function message(input) {
   $('#message').html(input)
 }
-
 
 
 
