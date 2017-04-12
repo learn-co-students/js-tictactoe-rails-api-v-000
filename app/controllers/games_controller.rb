@@ -2,25 +2,31 @@ class GamesController < ApplicationController
 
   def index
     games = Game.all
-    render json: games
+    #need to use as_json instead of to_json
+    @games = {"games" => games.as_json(only: [:id, :state])}
+    render json: @games
   end
 
-  def new
-  end 
-
   def create
-    game = Game.new(state: params[:state])
-    game.save
-    render json: game 
-  end 
+    @game = Game.create(game_params)
+    render json: @game, status: 201
+  end
+
+  def show
+    @game = Game.find(params[:id])
+    render json: @game
+  end
 
   def update
-    game = Game.find_by(id: params[:id])
-    game.update(game_params)
-  end 
-  
+    @game = Game.find(params[:id])
+    @game.update(game_params)
+    render json: @game
+  end
+
   private
-    def game_params
-      params.require(:game).permit(:state => [])
-    end 
+
+  def game_params
+    params.require(:game).permit(state: [])
+  end
+
 end

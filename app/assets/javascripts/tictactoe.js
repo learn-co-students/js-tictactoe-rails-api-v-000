@@ -1,192 +1,133 @@
+//starting conditions
 var turn = 0;
-var state = ["", "", "", "", "", "", "", "", ""];
-var currentGame;
-var endGame = false;
+var currentGame = undefined;
 
-var winStates = [
-  [0, 1, 2], 
+//collection of winning indices
+var combos = [
+  [0, 1, 2],
   [3, 4, 5],
   [6, 7, 8],
+  [0, 4, 8],
+  [6, 4, 2],
   [0, 3, 6],
   [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
+  [2, 5, 8]
 ];
 
-$(document).ready( function() {
-   attachListeners();
-});
+$(document).ready(function() {
+  attachListeners();
+})
 
-var attachListeners = function() {
-  $("table").click(function(event) {
-    xCoord = parseInt(event.target.attributes['data-x']['nodeValue']);
-    yCoord = parseInt(event.target.attributes['data-y']['nodeValue']);
-    //at this point in the program execution the event exists and so do x and y coordinates
-    //debugger; 
-    doTurn(event);
+function attachListeners() {
+  $("td").click(function(event) {
+    cell = event.target
+    doTurn(cell)
   });
-  $("#games").click(function(event) {
-    var state = parseState(event);
-    swapGame(state, getGameId(event))
+  $('#previous').click(function(event) {
+    previous();
   });
-  $("#save").click(function() {
+  $('#save').click(function(event) {
     save();
   });
-  $("#previous").click(function() {
-    getAllGames();
-  });
+};
+
+function player() {
+  if (turn % 2 == 0) {
+    return 'X'
+  } else {
+    return 'O'
+  };
+};
+
+var message = function(input) {
+  $('#message').html(input);
 }
 
-var cellIsAvailable = function(event) {
-  if ($(event.target).html() === "") {
+function state() {
+  var board = []
+   $("td").each(function(i) {
+     board.push($(this).text())
+   })
+  return board;
+};
+
+var updateState = function(cell) {
+  if ($(cell).html() === "") {
+    $(cell).html(player());
+  } else {
+    message("That space is taken. Please choose another.")
+  }
+};
+
+function doTurn(cell) {
+  updateState(cell);
+  if(checkWinner()) {
+    save(true)
+    resetBoard();
+  } else if(fullBoard()) {
+    save(true)
+    resetBoard();
+    message('Tie game')
+  } else {
+    turn += 1;
+  }
+};
+
+//functions related to checking if the game is over or has been won////
+function fullBoard() {
+  var full = true
+  $('td').each(function() {
+    if (this.innerHTML === "") {
+      return full = false;
+    }
+  })
+  return full
+}
+
+function checkState(combo, board){
+  if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
     return true;
-  } else {
-    return false;
   }
-}
+};
 
-var player = function() {
-  if (turn % 2 === 0) {
-    return "X"
-  } else {
-    return "O"
-  }
-}
-
-var doTurn = function(event) {
-  if(cellIsAvailable(event)) {
-      updateState(event);
-      message("");
-    } else {
-      message("This cell is taken. Please choose another.");
-    }
-  if(checkWinner() || checkTie(turn)) {
-    save(true);
-    resetGame();
-  } else {
-    turn ++;
-  }
-}
-
-var updateState = function(event) {
-  $(event.target).html(player());
-  var i = yCoord * 3 + xCoord;
-  state[i] = player();
-  //at this point in program execution the event exists, and the state has been updated
-  //debugger; 
-}
-
-//////////////////////////////consolidate into one checkWinner method and one tie method//////////
-/*var checkWinner(state) {
-   if (state === undefined || state === ["", "", "", "", "", "", "", "", ""]) {
-    return false; 
-  }
- for (var i = 0; i < winStates.length; i++) {
-    if (state[winStates[i][0]] !== "" && state[winStates[i][0]] === state[winStates[i][1]] && state[winStates[i][1]] === state[winStates[i][2]]) {
-        message("Player " + player() + " Won!");
-        return true;
+function checkWinner() {
+  for(i = 0; i < combos.length; i++){
+    if (checkState(combos[i], state())){
+      message('Player ' + player() + ' Won!')
+      return true;
     }
   }
   return false;
-}
-*/
-function checkWinner(){
-  if(state === undefined){
-    return false;
-  }
- for (var i = 0; i < winStates.length; i++) {
-    if (state[winStates[i][0]] !== "" && state[winStates[i][0]] === state[winStates[i][1]] && state[winStates[i][1]] === state[winStates[i][2]]) {
-        message("Player " + player() + " Won!");
-        debugger; 
-        return true;
-    }
-  }
-  return false;
+};
 
-  if(endGame === true){
-    saveGame(endGame);
-    reset();
-  }
-}
+/////++++++++++++++++++++++++++++++++//////////
+//methods related to making the AJAX calls
 
-function checkTie(turn){
-    if(turn === 9){
-    message("Tie game");
-    endGame = true;
-    saveGame(endGame);
-    reset();
-  }
-}
-
-//////////////////////////////
-
-var resetGame = function() {
-  $("td").html("");
+var resetBoard = function() {
   turn = 0;
-  currentGame = 0;
+  currentGame = undefined;
+  $('td').empty();
 }
 
-function message(input) {
-  $("#message").html(input);
+function previous() {
+  $.getJSON("/games", function(data) {
+    index(data.games)
+  })
 }
 
-var parseState = function(event) {
-  return $(event.target).data("state").split(",");
-}
-
-var getGameId = function(event) {
-  return $(event.target).data("gameid");
-}
-
-var getAllGames = function() {
-  $.getJSON("/games").done(function(response) {
-    showGames(response.games);
-  });
-}
-
-var showGames = function(games) {
-  var dom = $()
+function index(games) {
+  var doc = $()
   games.forEach(function(game) {
-    dom = dom.add(showGame(game));
-  });
-  $("#games").html(dom);
+    doc = doc.add(show(game));
+  })
+  $("#games").html(doc);
 }
 
-var showGame = function(game) {
+function show(game) {
   return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
 }
 
-var swapGame = function(state, id) {
-  placeMarks(state);
-  currentGame = id;
-  turn = findTurn(state);
-}
-
-var findTurn = function(state) {
-  var turn = 0;
-  state.forEach(function(item) {
-    if(item != "") {
-      turn += 1;
-    }
-  })
-  return turn;
-}
-
-var placeMarks = function(marks) {
-  $("td").each(function(i) {
-    $(this).text(marks[i]);
-  })
-}
-var getMarks = function() {
-  var marks = []
-  $("td").each(function(i) {
-    marks.push($(this).text())
-  })
-  return marks;
-}
-
-var save = function(resetCurrentGame) {
+function save(reset) {
   var url, method;
   if(currentGame) {
     url = "/games/" + currentGame
@@ -202,16 +143,15 @@ var save = function(resetCurrentGame) {
     dataType: "json",
     data: {
       game: {
-        state: getMarks()
+        state: state()
       }
     },
     success: function(data) {
-      if(resetCurrentGame) {
+      if(reset) {
         currentGame = undefined;
       } else {
         currentGame = data.game.id;
       }
     }
-  });
-}
-
+  })
+};
