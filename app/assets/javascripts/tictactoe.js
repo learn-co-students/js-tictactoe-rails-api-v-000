@@ -23,8 +23,11 @@ var doTurn = e => {
   if (e.currentTarget.innerText == '') {
     updateState(e)
     checkWinner()
-
     turn++
+    if (turn === 9) {
+      message('Tie game')
+      resetBoard()
+    }
   } else {
     message('That cell is already taken')
   }
@@ -59,7 +62,6 @@ var resetBoard = () => {
 var message = (msg) => {
   $('#message').text(msg)
 }
-
 
 $(() => {
   attachListeners()
