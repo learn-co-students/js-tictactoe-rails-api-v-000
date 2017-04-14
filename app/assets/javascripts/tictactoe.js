@@ -11,28 +11,45 @@ const winCombos = [
     [2,4,6]
   ]
 
-const player = () => {
+var player = () => {
   return (turn % 2 == 0)? 'X' : 'O'
 }
 
-const attachListeners = () => {
+var attachListeners = () => {
   $('td').click(function (e) {
     doTurn(e)
   })
 } 
 
-const doTurn = e => {
-  updateState(e)
-  checkWinner()
-  turn++
+var doTurn = e => {
+  if (e.currentTarget.innerText == '') {
+    updateState(e)
+    checkWinner()
+    turn++
+  } else {
+    message('That cell is already taken')
+  }
 }
 
-const updateState = e => {
+var updateState = e => {
   return e.currentTarget.innerText = player()
 }
 
-const checkWinner = () => {
-  debugger
+var checkWinner = () => {
+  var $state = []
+  var result = false
+  var current = player()
+  $('td').each((idx, val) => {$state.push(val.innerText)})
+  $.each(winCombos, (idx, val) => {
+     if ($state[val[0]] == current && $state[val[1]] == current && $state[val[2]] == current) {
+       let winner = $state[val[0]]
+       message('Player ' + winner + ' Won!')
+     }
+  })
+}
+
+var message = (msg) => {
+  $('#message').text(msg)
 }
 
 $(() => {
