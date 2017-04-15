@@ -73,12 +73,10 @@ var message = (msg) => {
 var saveGame = () => {
   let obj = {}
   obj.state = getState()
-  // $.post('/games', $gameState)
-  $.ajax( {
-		url: "/games",
-		data: obj,
-		type: "post"
-	})
+  let post = $.post('/games', obj)
+  // post.done(data => {
+  //   console.log(data)
+  // })
 }
 
 $(() => {
