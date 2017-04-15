@@ -17,14 +17,19 @@ var attachListeners = () => {
   $('td').click(e => {
     doTurn(e)
   })
+
   $('#previous').click(e => {
     $.get('/games', resp => {
       $.each(resp.games, (idx, val) => {
-        $('#games').append()
+        $('#games').append("<li class='game' id=" + val["id"] +"> Game: "+ val["id"] + "</li>")
       })
     })
   })
-} 
+
+  $('.game').click(e => {
+    
+  })
+}
 
 var doTurn = e => {
   if (checkWinner()) {e => {e.preventDefault}}
