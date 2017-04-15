@@ -6,9 +6,10 @@ class GamesController < ApplicationController
   end
 
   def create
-    # binding.pry
     @game = Game.new
-
+    @game.state = params[:state]
+    @game.save
+    render json: @game
   end
 
 end
