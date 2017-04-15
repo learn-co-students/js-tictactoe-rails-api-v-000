@@ -14,19 +14,26 @@ const winCombos = [
 var player = () => {return (turn % 2 == 0)? 'X' : 'O'}
 
 var attachListeners = () => {
-  $('td').click(function (e) {
+  $('td').click(e => {
     doTurn(e)
+  })
+  $('#previous').click(e => {
+    $.get('/games', resp => {
+      $.each(resp.games, (idx, val) => {
+        $('#games').append()
+      })
+    })
   })
 } 
 
 var doTurn = e => {
+  if (checkWinner()) {e => {e.preventDefault}}
   if (e.currentTarget.innerText == '') {
     updateState(e)
     checkWinner()
     turn++
     if (turn === 9) {
       message('Tie game')
-      saveGame()
       resetBoard()
     }
   } else {
@@ -73,10 +80,8 @@ var message = (msg) => {
 var saveGame = () => {
   let obj = {}
   obj.state = getState()
+  obj.turn = turn
   let post = $.post('/games', obj)
-  // post.done(data => {
-  //   console.log(data)
-  // })
 }
 
 $(() => {
