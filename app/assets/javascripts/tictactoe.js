@@ -4,6 +4,7 @@ $(document).ready(function() {
 
 var turn = 0
 var gameSaved = false
+var gameID = 0
 
 const winningCombinations = [
     [0,1,2],
@@ -37,12 +38,28 @@ var getAllGames = () => {
   })
 }
 
-var saveGame = () => {  //savegame function is only responsible for posting game data
+var saveGame = () => {  //savegame function is only responsible for posting game data, listener is bound seperately
   var boardState = getBoardArray()
   var game = {}
   game.state = boardState
   game.turn = turn
-  $.post("/games", game)
+  gameSaved = true
+  $.post("/games", game).done(function(data) {
+    gameID = data['id'] //set current gameID to the saved object's ID
+  })
+}
+
+var updateGame = () => { //updategame function is only responsible for patching game data, listener is bound seperately
+  var boardState = getBoardArray()
+  var game = {}
+  game.state = boardState
+  game.turn = turn
+  gameSaved = true
+  $.ajax({
+    url: `/games/${gameID}`,
+    type: `PATCH`,
+    data: game
+  })
 }
 
 var saveGameListener = () => { //listener function for hijacking save button
@@ -104,6 +121,7 @@ var getBoardArray = () => { // function to arrayify-board state
 
 var resetGame = () => { // resets game state to blank
     turn = 0
+    gameID = 0
     gameSaved = false
     $('td').each(function(index, value) {
       value.innerText = ""
