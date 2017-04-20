@@ -3,32 +3,70 @@ $(document).ready(function() {
 })
 
 var turn = 0
+var gameSaved = false
 
 const winningCombinations = [
-    [$(`td[data-x=0][data-y=0]`), $(`td[data-x=1][data-y=0]`), $(`td[data-x=2][data-y=0]`)],
-    [$(`td[data-x=0][data-y=1]`), $(`td[data-x=1][data-y=1]`), $(`td[data-x=2][data-y=1]`)],
-    [$(`td[data-x=0][data-y=2]`), $(`td[data-x=1][data-y=2]`), $(`td[data-x=2][data-y=2]`)],
-    [$(`td[data-x=0][data-y=0]`), $(`td[data-x=0][data-y=1]`), $(`td[data-x=0][data-y=2]`)],
-    [$(`td[data-x=1][data-y=0]`), $(`td[data-x=1][data-y=1]`), $(`td[data-x=1][data-y=2]`)],
-    [$(`td[data-x=2][data-y=0]`), $(`td[data-x=2][data-y=1]`), $(`td[data-x=2][data-y=2]`)],
-    [$(`td[data-x=0][data-y=0]`), $(`td[data-x=1][data-y=1]`), $(`td[data-x=2][data-y=2]`)],
-    [$(`td[data-x=2][data-y=0]`), $(`td[data-x=1][data-y=1]`), $(`td[data-x=0][data-y=2]`)],
-]
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6]
+  ]
+
 
 var attachListeners = () => {
   $("td").on("click", function(e) {
     doTurn(e)
   })
+  getAllGames()
+  saveGameListener()
 }
 
-var doTurn = (e) => {
-  updateState(e)
-  checkWinner()
-  turn++
-
+var getAllGames = () => {
+  $("#previous").on("click", function() {
+    $.get("/games", function(data) {
+      $("#games").text("")
+      $.each(data, function(index, value) {
+        var line = `<div data-game-id=${value["id"]}">Game | #${index+1}</div>`
+        $("#games").append(line)
+      })
+    })
+  })
 }
 
-var player = () => {
+var saveGame = () => {  //savegame function is only responsible for posting game data
+  var boardState = getBoardArray()
+  var game = {}
+  game.state = boardState
+  game.turn = turn
+  $.post("/games", game)
+}
+
+var saveGameListener = () => { //listener function for hijacking save button
+  $("#save").on("click", function(e) {
+    saveGame()
+  })
+}
+
+var doTurn = e => {
+  if (checkWinner()) {}
+  if (e.currentTarget.innerText == '') {
+    updateState(e)
+    if (!checkWinner()) { turn += 1 }
+    if (turn === 9) {
+      message('Tie game')
+      saveGame()
+      resetGame()
+    }
+  } else {
+    alert('Spot is taken, please try another.')
+  }
+}
+
+var player = () => { // player by turn count
   if (turn % 2 === 0) {
     return "X"
   } else {
@@ -36,30 +74,37 @@ var player = () => {
   }
 }
 
-var updateState = (e) => {
-  return e.currentTarget.innerText = player()
+var updateState = (e) => { // uses player() to write X or O to selected boxes
+  e.currentTarget.innerText = player()
 }
-
 
 var checkWinner = () => {
-  var currentPlayer = player()
-  var gameWon = false
+  var currentPlayer = player() // save current player value X or O
+  var outcome = false // determine if game is won or lost
 
-  for(var i = 0; i < winningCombinations.length; i++) {
-      var winCombo = winningCombinations[i]
-      if($(winCombo[0].selector).text() === currentPlayer && $(winCombo[1].selector).text() === currentPlayer && $(winCombo[2].selector).text() === currentPlayer) {
-        var gratz = `Player ${currentPlayer} won!`
-        message(gratz)
-        gameWon = true
-        resetGame()
-      }
+  $.each(winningCombinations, (index, value) => { // iterate over each winning combination
+    var boardState = getBoardArray() // get board state for this turn
+    if (boardState[value[0]] == currentPlayer && boardState[value[1]] == currentPlayer && boardState[value[2]] == currentPlayer) {
+      message('Player ' + `${boardState[value[0]]}`+ ' Won!')
+      outcome = true
+      saveGame()
+      resetGame()
     }
-    
-  return gameWon
+  })
+  return outcome //return TRUE/FALSE depending on board state
 }
 
-var resetGame = () => {
+var getBoardArray = () => { // function to arrayify-board state
+  var array = []
+  $('td').each(function(index, value) {
+    array.push(value.innerText)
+  })
+  return array
+}
+
+var resetGame = () => { // resets game state to blank
     turn = 0
+    gameSaved = false
     $('td').each(function(index, value) {
       value.innerText = ""
     })
