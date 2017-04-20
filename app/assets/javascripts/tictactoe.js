@@ -4,7 +4,7 @@ $(document).ready(function() {
 
 var turn = 0
 var gameSaved = false
-var gameID = 0
+var gameId = 0
 
 const winningCombinations = [
     [0,1,2],
@@ -18,57 +18,58 @@ const winningCombinations = [
   ]
 
 
+///LISTENERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 var attachListeners = () => {
   $("td").on("click", function(e) {
     doTurn(e)
   })
-  getAllGames()
+  getAllGamesListener()
   saveGameListener()
 }
 
-var getAllGames = () => {
+var getAllGamesListener = () => { //binds previous button to show all old games
   $("#previous").on("click", function() {
     $.get("/games", function(data) {
       $("#games").text("")
       $.each(data, function(index, value) {
-        var line = `<div data-game-id=${value["id"]}">Game | #${index+1}</div>`
+        var line = `<div class="gameLink" data-game-id=${value["id"]}">Game | #${index+1}</div>`
         $("#games").append(line)
       })
+    }).done(function(data){setGameLinkListeners()}) //set gameLink listeners after you finish this
     })
-  })
-}
-
-var saveGame = () => {  //savegame function is only responsible for posting game data, listener is bound seperately
-  var boardState = getBoardArray()
-  var game = {}
-  game.state = boardState
-  game.turn = turn
-  gameSaved = true
-  $.post("/games", game).done(function(data) {
-    gameID = data['id'] //set current gameID to the saved object's ID
-  })
-}
-
-var updateGame = () => { //updategame function is only responsible for patching game data, listener is bound seperately
-  var boardState = getBoardArray()
-  var game = {}
-  game.state = boardState
-  game.turn = turn
-  gameSaved = true
-  $.ajax({
-    url: `/games/${gameID}`,
-    type: `PATCH`,
-    data: game
-  })
-}
+  }
 
 var saveGameListener = () => { //listener function for hijacking save button
   $("#save").on("click", function(e) {
-    saveGame()
+    if (gameId === 0) {
+      saveGame()
+    } else {
+      updateGame()
+    }
   })
 }
 
-var doTurn = e => {
+var setGameLinkListeners = () => {
+	$('.gameLink').click(function(e){
+		var game_id = $(this).data("game-id")
+		var loading = $.get(`games/${game_id}`)
+		loading.done(function(data){
+			gameId = data['id']
+			$.each($('td'), function(index, value){
+				value.innerHTML = data["state"][index]
+			})
+			var getTurn = data["state"].filter(n => { return n != ""})
+			turn = getTurn.length
+		})
+	})
+}
+
+
+
+///GAME FUNCTIONALITY AND CALLBACKS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var doTurn = e => { //primary turn taking engine. check if winner, otherwise make moves on board or report tie game
   if (checkWinner()) {}
   if (e.currentTarget.innerText == '') {
     updateState(e)
@@ -130,4 +131,31 @@ var resetGame = () => { // resets game state to blank
 
 var message = (string) => {
   $("#message").text(string)
+}
+
+///DATA STORAGE AND MANIPULATION FUNCTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var saveGame = () => {  //savegame function is only responsible for posting game data, listener is bound seperately
+  var boardState = getBoardArray()
+  var game = {}
+  game.state = boardState
+  game.turn = turn
+  gameSaved = true
+  var posting = $.post("/games", game)
+  posting.done(function(data) {
+    gameId = data['id']
+  })
+}
+
+var updateGame = () => { //updategame function is only responsible for patching game data, listener is bound seperately
+  var boardState = getBoardArray()
+  var game = {}
+  game.state = boardState
+  game.turn = turn
+  gameSaved = true
+  $.ajax({
+    url: `/games/${gameId}`,
+    type: `PATCH`,
+    data: game
+  })
 }
