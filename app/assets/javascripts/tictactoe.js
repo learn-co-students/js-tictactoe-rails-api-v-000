@@ -20,7 +20,7 @@ const winningCombinations = [
 
 ///LISTENERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-var attachListeners = () => {
+var attachListeners = function() {
   $("td").on("click", function(e) {
     doTurn(e)
   })
@@ -28,7 +28,7 @@ var attachListeners = () => {
   saveGameListener()
 }
 
-var getAllGamesListener = () => { //binds previous button to show all old games
+var getAllGamesListener = function() { //binds previous button to show all old games
   $("#previous").on("click", function() {
     $.get("/games", function(data) {
       $("#games").text("")
@@ -40,7 +40,7 @@ var getAllGamesListener = () => { //binds previous button to show all old games
     })
   }
 
-var saveGameListener = () => { //listener function for hijacking save button
+var saveGameListener = function() { //listener function for hijacking save button
   $("#save").on("click", function(e) {
     if (gameId === 0) {
       saveGame()
@@ -50,7 +50,7 @@ var saveGameListener = () => { //listener function for hijacking save button
   })
 }
 
-var setGameLinkListeners = () => {
+var setGameLinkListeners = function() {
 	$('.gameLink').click(function(e){
 		var game_id = $(this).data("game-id")
 		var loading = $.get(`games/${game_id}`)
@@ -59,7 +59,7 @@ var setGameLinkListeners = () => {
 			$.each($('td'), function(index, value){
 				value.innerHTML = data["state"][index]
 			})
-			var getTurn = data["state"].filter(n => { return n != ""})
+			var getTurn = data["state"].filter(function(n) { return n != ""})
 			turn = getTurn.length
 		})
 	})
@@ -69,7 +69,7 @@ var setGameLinkListeners = () => {
 
 ///GAME FUNCTIONALITY AND CALLBACKS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-var doTurn = e => { //primary turn taking engine. check if winner, otherwise make moves on board or report tie game
+var doTurn = function(e) { //primary turn taking engine. check if winner, otherwise make moves on board or report tie game
   if (checkWinner()) {}
   if (e.currentTarget.innerText == '') {
     updateState(e)
@@ -84,7 +84,7 @@ var doTurn = e => { //primary turn taking engine. check if winner, otherwise mak
   }
 }
 
-var player = () => { // player by turn count
+var player = function() { // player by turn count
   if (turn % 2 === 0) {
     return "X"
   } else {
@@ -92,15 +92,15 @@ var player = () => { // player by turn count
   }
 }
 
-var updateState = (e) => { // uses player() to write X or O to selected boxes
+var updateState = function(e) { // uses player() to write X or O to selected boxes
   e.currentTarget.innerText = player()
 }
 
-var checkWinner = () => {
+var checkWinner = function() {
   var currentPlayer = player() // save current player value X or O
   var outcome = false // determine if game is won or lost
 
-  $.each(winningCombinations, (index, value) => { // iterate over each winning combination
+  $.each(winningCombinations, function(index, value) { // iterate over each winning combination
     var boardState = getBoardArray() // get board state for this turn
     if (boardState[value[0]] == currentPlayer && boardState[value[1]] == currentPlayer && boardState[value[2]] == currentPlayer) {
       message('Player ' + `${boardState[value[0]]}`+ ' Won!')
@@ -112,7 +112,7 @@ var checkWinner = () => {
   return outcome //return TRUE/FALSE depending on board state
 }
 
-var getBoardArray = () => { // function to arrayify-board state
+var getBoardArray = function() { // function to arrayify-board state
   var array = []
   $('td').each(function(index, value) {
     array.push(value.innerText)
@@ -120,7 +120,7 @@ var getBoardArray = () => { // function to arrayify-board state
   return array
 }
 
-var resetGame = () => { // resets game state to blank
+var resetGame = function() { // resets game state to blank
     turn = 0
     gameID = 0
     gameSaved = false
@@ -129,13 +129,13 @@ var resetGame = () => { // resets game state to blank
     })
 }
 
-var message = (string) => {
+var message = function(string) {
   $("#message").text(string)
 }
 
 ///DATA STORAGE AND MANIPULATION FUNCTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-var saveGame = () => {  //savegame function is only responsible for posting game data, listener is bound seperately
+var saveGame = function() {  //savegame function is only responsible for posting game data, listener is bound seperately
   var boardState = getBoardArray()
   var game = {}
   game.state = boardState
@@ -147,7 +147,7 @@ var saveGame = () => {  //savegame function is only responsible for posting game
   })
 }
 
-var updateGame = () => { //updategame function is only responsible for patching game data, listener is bound seperately
+var updateGame = function() { //updategame function is only responsible for patching game data, listener is bound seperately
   var boardState = getBoardArray()
   var game = {}
   game.state = boardState
