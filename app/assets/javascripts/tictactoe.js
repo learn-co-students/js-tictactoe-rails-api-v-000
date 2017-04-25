@@ -1,18 +1,23 @@
 var turn = 0;
+var currentGame = 0;
 
 $().ready(function() {
   attachListeners();
 });
 
 function attachListeners() {
-  $('td').on('click', function(event) {
-
-    doTurn(event);
-  });
+  $('td').on('click', (e) => doTurn(e));
+  $('#previous').on('click', (e) => getAllGames(e));
+  $('#save').on('click', (e) => saveCurrentGame(e));
 };
 
 function doTurn(event) {
   updateState(event);
+
+  if (turn === 0) {
+    currentGame = 0;
+  }
+
   if (!checkWinner()) {
     turn += 1;
   }
@@ -46,10 +51,12 @@ function checkWinner() {
 function isDone(winners) {
   if (winners.some((e) => e === true)) {
     message(`Player ${player()} Won!`);
+    saveCurrentGame();
     reset();
     return true;
   } else if (board().every((e) => e === "X" || e === "O")) {
     message("Tie game");
+    saveCurrentGame();
     reset();
     return true;
   } else {
@@ -82,5 +89,35 @@ function player() {
 
 function message(message) {
   $("#message").text(message);
+}
+
+function getAllGames(event) {
+  $.get("/games", function(data) {
+    if (data.games.length > 0) {
+      let result = data.games.map((e) => {
+        return `<div>${e.id}</div>`;
+      }).join("");
+      $('#games').html(result);
+    }
+  });
+}
+
+function saveCurrentGame(event) {
+  let boardArray = board();
+
+  if (currentGame === 0) {
+    $.post("/games", { game: { state: boardArray } } ).done(function(data) {
+      currentGame = data.game.id;
+    });
+  } else {
+    $.ajax({
+      type: "PATCH",
+      url:  `/games/${currentGame}`,
+      data: { id: currentGame, game: { state: boardArray } },
+      success: function(data) {
+        currentGame = data.game.id;
+      }
+    });
+  }
 }
 
