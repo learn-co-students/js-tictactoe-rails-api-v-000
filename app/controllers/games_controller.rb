@@ -1,30 +1,27 @@
 class GamesController < ApplicationController
+  # Lists all games
   def index
-    @games = Game.all
-    render json: @games
+    games = Game.all
+    response = {games: games}
+    render json: response.as_json(except: [:created_at, :updated_at])
   end
 
-  def show
-    @game = Game.find_by(id: params[:id])
-    render json: @game
-  end
-
+  # Creates a new game
   def create
-    @game = Game.new(game_params)
-    if @game.save
-      render json: @game
-    end
+    @game = Game.create(game_params)
+    render json: @game, status: 201
   end
 
+  # Updates an existing game
   def update
-    @game = Game.find_by(id: params[:id])
-    if @game.update(game_params)
-      render json: @game
-    end
+    @game = Game.find(params[:id])
+    @game.update(state: params["game"]["state"])
+    render json: @game, status: 201
   end
 
   private
-    def game_params
-      params.require(:game).permit(:state => [])
-    end
+
+  def game_params
+    params.require(:game).permit(:state)
+  end
 end
