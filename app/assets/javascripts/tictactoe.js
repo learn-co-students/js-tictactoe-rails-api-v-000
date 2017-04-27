@@ -36,7 +36,7 @@ function attachListenersForPreviousGames(){
 var doTurn = function(event){
   updateState(event);
   if(checkWinner() || checkTie() ) {
-    save(resetGame);
+    save(true);
     resetGame();
   } else {
     turn += 1;
@@ -118,14 +118,13 @@ function checkTie(){
 
 function message(msg){
   $("#message").text(msg);
-  save(resetGame);
   resetGame();
 }
 
 var resetGame = function(){
   $("td").html("");
   turn = 0;
-  currentGame = undefined;
+  currentGame = 0;
 }
 
 function showPreviousGames(){
@@ -185,41 +184,9 @@ function save(resetGame){
       } else {
         currentGame = data.game.id;
       }
-      // currentGame = data.game.id;
     }
   })
 }
-
-
-
-// var save = function(resetGame) {
-//   var url, method;
-//   if(currentGame) {
-//     url = "/games/" + currentGame
-//     method = "PATCH"
-//   } else {
-//     url = "/games"
-//     method = "POST"
-//   }
-
-//   $.ajax({
-//     url: url,
-//     method: method,
-//     dataType: "json",
-//     data: {
-//       game: {
-//         state: currentState()
-//       }
-//     },
-//     success: function(data) {
-//       if(resetGame) {
-//         currentGame = undefined;
-//       } else {
-//         currentGame = data.game.id;
-//       }
-//     }
-//   })
-// }
 
 $(function(){
   attachListeners();
