@@ -1,15 +1,15 @@
 var turn = 0;
-var currentGame;
+var currentGame; 
 
-// function turns(){
-//   var cells = $("td")
-//   for (var i = 8; i >= 0; i--){
-//     if (cells[i].innerText !== ""){
-//       turn+=1;
-//     }
-//   $("#turns").text(turn);
-//   }
-// }
+function turns(){
+  var cells = $("td")
+  for (var i = 8; i >= 0; i--){
+    if (cells[i].innerText !== ""){
+      turn+=1;
+    }
+  $("#turns").text(turn);
+  }
+}
 
 function attachListeners(){ 
   $("td").click(function(event) {
@@ -43,7 +43,7 @@ function player(){
 function updateState(event){
   var token = player();
   $(event).html(token);
-  // saveGame();
+  saveGame();
 }
   
 function checkWinner(){
@@ -126,7 +126,7 @@ function showPreviousGames(){
   });
 }
 
-function loadPreviousGame(event) {
+function loadPreviousGame() {
   $(".load_previous_game").on("click", function(data){
     let game_id = $(this)[0].innerText;
     $.get('/games/' + game_id, function(previous_game){
@@ -135,16 +135,9 @@ function loadPreviousGame(event) {
       let cell = $("td")[i];
       cell.innerText = (state[i]);
       }
-    }
+    })
   })
 }
-
-// function attachPreviousGameListeners(){
-//   $(".previous_game").click(function(event){
-//     debugger  ;
-//   loadPreviousGame(event);
-//   });
-// }
 
 var currentState = function() {
   var state = []
