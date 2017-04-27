@@ -16,7 +16,7 @@ function attachListeners(){
     doTurn(event.target);
   });
   $("#save").click(function(event){
-    saveGame()
+    saveGame();
   });
   $("#previous").click(function(event){
     showPreviousGames(event)
@@ -116,7 +116,7 @@ function resetCurrentGame(){
 }
 
 function showPreviousGames(){
-  // $("#games").html("");
+  $("#games").html("");
   $.getJSON("/games", function(response) {
   let games = response.games
     for(var l = games.length, i = 0; i < l; i++) {
