@@ -167,11 +167,12 @@ function saveGame(){
       }
     },
     success: function(data) {
-      if(resetBoard) {
-        currentGame = undefined;
-      } else {
-        currentGame = data.game.id;
-      }
+      currentGame = data.game.id;
+      // if(resetBoard) {
+      //   currentGame = undefined;
+      // } else {
+      //   currentGame = data.game.id;
+      // }
     }
   })
 }
