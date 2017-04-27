@@ -1,12 +1,11 @@
-var turn, currentGame;
-resetGame();
+var turn = 0;
+var currentGame; 
 
 function turns(){
   var cells = $("td")
-  turn = 0;
   for (var i = 8; i >= 0; i--){
     if (cells[i].innerText !== ""){
-      turn++;
+      turn+=1;
     }
   $("#turns").text(turn);
   }
@@ -16,10 +15,12 @@ function attachListeners(){
   $("td").click(function(event) {
     doTurn(event.target);
   });
-  $("#save").click(function(){
+  $("#save").click(function(event){
     saveGame()
   });
-  $("#previous").click(getAllGames());
+  $("#previous").click(function(event){
+    showPreviousGames(event)
+  });
 };
 
 function doTurn(event){
@@ -28,23 +29,20 @@ function doTurn(event){
   checkTie();
   turn += 1;
   $("#turns").text(turn);
+  saveGame();
 };
 
 function player(){ 
   if (turn %2 === 0){
-    $("#last").text("X");
-    $("#next").text("O");
     return "X";
-  } else {
-    $("#last").text("O");
-    $("#next").text("X");    
+  } else { 
     return "O";
   }
 }
 
 function updateState(event){
   var token = player();
-  $(event).text(token);
+  $(event).html(token);
   saveGame();
 }
   
@@ -55,30 +53,36 @@ function checkWinner(){
     b.push(board[i].innerText)
   }
   if (b[0] === b[1] && b[0] === b[2] && b[0] !== ""){
-     message("Player " + b[0] + " Won!");
+    message("Player " + b[0] + " Won!");
+    return true;
   }  
   if (b[3] === b[4] && b[3] === b[5] && b[3] !== ""){
-     message("Player " + b[3] + " Won!");
+    message("Player " + b[3] + " Won!");
+    return true;
   } 
   if (b[6] === b[7] && b[6] === b[8] && b[6] !== ""){
-     message("Player " + b[6] + " Won!");
+    message("Player " + b[6] + " Won!");
+    return true;
   }
   if (b[0] === b[3] && b[0] === b[6] && b[0] !== ""){
-     message("Player " + b[0] + " Won!");
+    message("Player " + b[0] + " Won!");
+    return true;
   }
   if (b[1] === b[4] && b[1] === b[7] && b[1] !== ""){
-     message("Player " + b[1] + " Won!");
+    message("Player " + b[1] + " Won!");
+    return true;
   }
   if (b[2] === b[5] && b[2] === b[8] && b[2] !== ""){
-     message("Player " + b[2] + " Won!");
+    message("Player " + b[2] + " Won!");
+    return true;
   }
   if (b[0] === b[4] && b[0] === b[8] && b[0] !== ""){
-     message("Player " + b[0] + " Won!");
+    message("Player " + b[0] + " Won!");
+    return true;
   }
   if (b[2] === b[4] && b[2] === b[6] && b[2] !== ""){
-     message("Player " + b[2] + " Won!");
-    resetGame();
-    saveGame();
+    message("Player " + b[2] + " Won!");
+    return true;
   } else {
     return false;
   }
@@ -87,28 +91,37 @@ function checkWinner(){
 function checkTie(){
   if(turn === 8 && checkWinner() === false){
     message("Tie game");
-    saveGame();
-    resetGame();
+    return true;
    }
 }
 
 function message(msg){
   $("#message").text(msg);
+  resetTurn();
+  resetBoard();
+  resetCurrentGame()
+  saveGame();
 }
 
-function resetGame() {
+function resetBoard() {
   $("td").html("");
-  turn = 0;
-  currentGame = 0
 }
 
-function getAllGames(){
-  $("#games").html("");
-  $.getJSON("/games").done(function(response) {
-    for(var l = response.length, i = 0; i < l; i++) {
-      var id = response[i].id
+function resetTurn(){
+  turn = 0;
+}
+
+function resetCurrentGame(){
+  currentGame = undefined;
+}
+
+function showPreviousGames(){
+  // $("#games").html("");
+  $.getJSON("/games", function(response) {
+  let games = response.games
+    for(var l = games.length, i = 0; i < l; i++) {
+      var id = games[i].id
       $("#games").append("<li><button class='load_previous_game '>" + id + "</button></li>");
-    loadPreviousGame(id);
     };
   });
 }
@@ -154,7 +167,7 @@ function saveGame(){
       }
     },
     success: function(data) {
-      if(resetGame) {
+      if(resetBoard) {
         currentGame = undefined;
       } else {
         currentGame = data.game.id;
