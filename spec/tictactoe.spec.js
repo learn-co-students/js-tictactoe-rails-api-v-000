@@ -271,10 +271,11 @@ describe('#integration tests of persistence', function() {
       var response = {
         "status": 200,
         "contentType": 'application/json',
-        "responseText" : JSON.stringify(data)
+        "responseText" : JSON.stringify(data),
       }
       $('#save').click()
       jasmine.Ajax.requests.mostRecent().respondWith(response);
+      currentGame = 1;
       $('#save').click()
       var request = jasmine.Ajax.requests.mostRecent();
       expect(request.url).toBe('/games/1');
@@ -361,7 +362,7 @@ describe('#integration tests of persistence', function() {
       }
       $('#previous').click()
       jasmine.Ajax.requests.mostRecent().respondWith(response);
-      expect($("#games").children().length).toBe(2);
+      expect($("#games").children().length).toBe(3);
     });
   });
 
@@ -380,6 +381,7 @@ describe('#integration tests of persistence', function() {
       //     // _X_|___|___
       //     //  X |   |
       var request = jasmine.Ajax.requests.mostRecent();
+      jasmine.Ajax.requests.mostRecent();
       expect(request.url).toBe('/games');
       expect(request.method).toBe('POST');
     });
