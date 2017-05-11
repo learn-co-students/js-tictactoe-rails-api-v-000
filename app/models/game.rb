@@ -1,3 +1,4 @@
 class Game < ActiveRecord::Base
-  serialize :state
+  serialize :state, JSON
+
 end
