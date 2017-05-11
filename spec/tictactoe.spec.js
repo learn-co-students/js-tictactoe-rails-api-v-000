@@ -164,6 +164,7 @@ describe('Tic Tac Toe Functionality', function() {
     it("resets the board and sets turn to zero when there is a tie", function() {
       setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="message"></div><button id="lastGame">Show Me Last Games Results!</button><div id="lastGameBox"></div></body>');
       attachListeners();
+      newGame();
       $('[data-x="0"][data-y="0"]').click();
       $('[data-x="1"][data-y="1"]').click();
       $('[data-x="1"][data-y="2"]').click();
@@ -400,6 +401,7 @@ describe('#integration tests of persistence', function() {
       //     // _X_|___|___
       //     //  X |   |
       var request = jasmine.Ajax.requests.mostRecent();
+      debugger;
       expect(request.url).toBe('/games');
       expect(request.method).toBe('POST');
       var data = {
