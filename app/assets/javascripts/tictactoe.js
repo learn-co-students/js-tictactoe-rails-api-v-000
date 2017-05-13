@@ -31,14 +31,14 @@ function doTurn(e) {
 }
 
 function player() {
-  if (turn % 2 === 0) { //if no remainder then the turn is even
-    return "X"; //return terminates the function, so the "O" return value will not get executed
-  }
-  return "O"; //returns "O" if the if statement was false 
+  // if (turn % 2 === 0) { //if no remainder then the turn is even
+  //   return "X"; //return terminates the function, so the "O" return value will not get executed
+  // }
+  // return "O"; //returns "O" if the if statement was false 
+  return (turn % 2 === 0) ? "X" : "O"
 }
 
-function updateState(cell) {
-
+function updateState(e) { 
 }
 
 function checkWinner() {
