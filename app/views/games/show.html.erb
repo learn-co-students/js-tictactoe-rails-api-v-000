@@ -1,4 +1,8 @@
 <html>
+<script>
+attachListeners();
+</script>
+
 	<head>
 		<title>jQuery Tic Tac Toe</title>
 	</head>
@@ -20,13 +24,15 @@
 				<td data-x="2" data-y="2"></td>
 			</tr>
 		</table>
+		<div id="current_game" data-id="<%= @game.id %>"></div>
 		<div id="games"></div>
 		<div id="message"></div>
 		<button id="save">Save Game</button>
 		<button id="previous">Show Previous Games</button>
 	</body>
-</html>
 
 <script>
 attachListeners();
+showPreviousOnBoard(gameId);
 </script>
+</html>
