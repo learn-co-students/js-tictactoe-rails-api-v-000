@@ -20,7 +20,7 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    active_model_serializers (0.9.3)
+    active_model_serializers (0.9.4)
       activemodel (>= 3.2)
     activejob (4.2.5.1)
       activesupport (= 4.2.5.1)
@@ -171,7 +171,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active_model_serializers
+  active_model_serializers (= 0.9.4)
   byebug
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)
@@ -189,4 +189,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.10.6
+   1.13.6
