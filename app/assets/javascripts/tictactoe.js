@@ -77,10 +77,11 @@ function checkWinner() {
 //
 // function clearBoard() {
 //   $("td").html("");
+//   turn = 0; //restarts games
 // }
 //
 function message(string) {
-  $("div#message").append(string)
+  $("div#message").text(string) //edited to replace text instead of append
 }
 //
 // var winner = function() {
