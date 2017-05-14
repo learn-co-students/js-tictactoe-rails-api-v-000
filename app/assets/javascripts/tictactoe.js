@@ -49,6 +49,7 @@ function checkWinner() {
       message("Player " + currentPlayer + " Won!"); //calls message() based on current player
       clearBoard();
     } else if (turn === 9) {
+      clearBoard();
       message("Tie game")
     }
   })
