@@ -27,14 +27,9 @@ function attachListeners() {
   })
 }
 
-var player = function() {
-  return (turn % 2 === 0) ? "O" : "X";
-  console.log("I am A function.")
+function player() {
+  return (turn % 2 === 0) ? "X" : "O"; //if no remainder then x
 }
-
-// function player() {
-//   return (turn % 2 === 0) ? "X" : "O"; //if no remainder then x
-// }
 
 function doTurn(e) {
   turn += 1
@@ -54,7 +49,7 @@ function checkWinner() { //I started building this - not sure it's on the right 
     if ((board[combo[0]] == "X" && board[combo[1]] == "X" && board[combo[2]] == "X") || (board[combo[0]] == "O" && board[combo[1]] == "O" && board[combo[2]] == "O")) {
       message("Player " + player() + " Won!"); //calls message() based on current player
       clearBoard();
-    } else if (boardFull()){
+    } else if (boardFull(board)){
       message("Tie game")
     }
   })
@@ -70,8 +65,7 @@ function getBoard() {
   return board;
 }
 
-function boardFull() {
-  var board = getBoard();
+function boardFull(board) {
   if (board.includes("")) {
     return false
   } else {
