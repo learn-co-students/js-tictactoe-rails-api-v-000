@@ -42,7 +42,16 @@ var updateState = function(e) {
 }
 
 function checkWinner() {
-
+  var currentPlayer = player()
+  var board = getBoard();
+  winningCombos.forEach(function(combo) { //iterates over Combos array
+    if (board[combo[0]] == currentPlayer && board[combo[1]] == currentPlayer && board[combo[2]] == currentPlayer) {
+      message("Player " + currentPlayer + " Won!"); //calls message() based on current player
+      clearBoard();
+    } else if (turn === 9) {
+      message("Tie game")
+    }
+  })
 }
 
 // function checkWinner() { //I started building this - not sure it's on the right track yet
@@ -57,15 +66,15 @@ function checkWinner() {
 //   })
 // }
 //
-// function getBoard() {
-//   var board = [];
-//   $td = $("td");
-//   for (var i=0; i < 9; i++) {
-//     var cell = $td[i];
-//     board.push(cell.innerHTML);
-//     }
-//   return board;
-// }
+function getBoard() {
+  var board = [];
+  $td = $("td");
+  for (var i=0; i < 9; i++) {
+    var cell = $td[i];
+    board.push(cell.innerHTML);
+    }
+  return board;
+}
 //
 // function boardFull(board) {
 //   if (board.includes("")) {
@@ -75,10 +84,10 @@ function checkWinner() {
 //   }
 // }
 //
-// function clearBoard() {
-//   $("td").html("");
-//   turn = 0; //restarts games
-// }
+function clearBoard() {
+  $("td").html("");
+  turn = 0; //restarts games
+}
 //
 function message(string) {
   $("div#message").text(string) //edited to replace text instead of append
