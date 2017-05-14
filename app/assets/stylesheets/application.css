@@ -13,3 +13,11 @@
  *= require_tree .
  *= require_self
  */
+
+/*
+ * Make cells a fixed size so resizing during game doesn't happen.
+ */
+td {
+  height: 18px;
+  width: 12px;
+}
