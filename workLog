@@ -1,0 +1,5 @@
+log
+
+Something wrong with save game trigger,
+
+in Reset Game, may be that gameId is set to false before saveGame action.
