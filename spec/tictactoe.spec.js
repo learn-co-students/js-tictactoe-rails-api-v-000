@@ -36,11 +36,11 @@ describe('Tic Tac Toe Functionality', function() {
 
   describe( "#player", function() {
     it("should return the mark of the current player when player is X", function() {
-      expect(player()).toEqual("X");
+      expect(player()).toEqual("O");
     });
     it("should return the mark of the current player when player is O", function() {
       turn = 1;
-      expect(player()).toEqual("O");
+      expect(player()).toEqual("X");
     });
   });
 

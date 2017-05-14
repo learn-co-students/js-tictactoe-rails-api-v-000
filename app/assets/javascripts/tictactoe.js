@@ -28,7 +28,7 @@ function attachListeners() {
 }
 
 function player() {
-  return (turn % 2 === 0) ? "X" : "O"; //if no remainder then x
+  return (turn % 2 === 0) ? "O" : "X"; //if no remainder then x
 }
 
 function doTurn(e) {
@@ -37,50 +37,52 @@ function doTurn(e) {
   checkWinner()
 }
 
-function updateState(e) { //I changed it to "e" to follow the convention from doTurn()
-
-  var symbol = player(); //calls player() and captures return value
-  $(e.currentTarget).html(symbol) //inserts the value of var player in the location of the clicked target
+var updateState = function(e) {
+  $(e.currentTarget).html(player());
 }
 
-function checkWinner() { //I started building this - not sure it's on the right track yet
-  var board = getBoard();
-  winningCombos.forEach(function(combo) { //iterates over Combos array
-    if ((board[combo[0]] == "X" && board[combo[1]] == "X" && board[combo[2]] == "X") || (board[combo[0]] == "O" && board[combo[1]] == "O" && board[combo[2]] == "O")) {
-      message("Player " + player() + " Won!"); //calls message() based on current player
-      clearBoard();
-    } else if (boardFull(board)){
-      message("Tie game")
-    }
-  })
+function checkWinner() {
+
 }
 
-function getBoard() {
-  var board = [];
-  $td = $("td");
-  for (var i=0; i < 9; i++) {
-    var cell = $td[i];
-    board.push(cell.innerHTML);
-    }
-  return board;
-}
-
-function boardFull(board) {
-  if (board.includes("")) {
-    return false
-  } else {
-    return true
-  }
-}
-
-function clearBoard() {
-  $("td").html("");
-}
-
+// function checkWinner() { //I started building this - not sure it's on the right track yet
+//   var board = getBoard();
+//   winningCombos.forEach(function(combo) { //iterates over Combos array
+//     if ((board[combo[0]] == "X" && board[combo[1]] == "X" && board[combo[2]] == "X") || (board[combo[0]] == "O" && board[combo[1]] == "O" && board[combo[2]] == "O")) {
+//       message("Player " + player() + " Won!"); //calls message() based on current player
+//       clearBoard();
+//     } else if (boardFull(board)){
+//       message("Tie game")
+//     }
+//   })
+// }
+//
+// function getBoard() {
+//   var board = [];
+//   $td = $("td");
+//   for (var i=0; i < 9; i++) {
+//     var cell = $td[i];
+//     board.push(cell.innerHTML);
+//     }
+//   return board;
+// }
+//
+// function boardFull(board) {
+//   if (board.includes("")) {
+//     return false
+//   } else {
+//     return true
+//   }
+// }
+//
+// function clearBoard() {
+//   $("td").html("");
+// }
+//
 function message(string) {
   $("div#message").append(string)
 }
-
-var winner = function() {
-  //this method can be used to check against checkWinner
-}
+//
+// var winner = function() {
+//   //this method can be used to check against checkWinner
+// }
