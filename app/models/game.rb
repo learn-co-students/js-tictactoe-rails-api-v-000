@@ -1,3 +1,3 @@
 class Game < ActiveRecord::Base
-  serialize :state
+  serialize :state, Array
 end

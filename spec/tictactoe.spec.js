@@ -50,6 +50,7 @@ describe('Tic Tac Toe Functionality', function() {
       attachListeners();
       var selector = '[data-x="0"][data-y="0"]';
       $(selector).click();
+
       expect($(selector).html()).toEqual("X");
     });
 
