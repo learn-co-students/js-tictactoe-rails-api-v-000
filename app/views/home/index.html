@@ -3,26 +3,37 @@
 		<title>jQuery Tic Tac Toe</title>
 	</head>
 	<body>
-		<table border="1" cellpadding="40">
-			<tr>
-				<td data-x="0" data-y="0"></td>
-				<td data-x="1" data-y="0"></td>
-				<td data-x="2" data-y="0"></td>
-			</tr>
-			<tr>
-				<td data-x="0" data-y="1"></td>
-				<td data-x="1" data-y="1"></td>
-				<td data-x="2" data-y="1"></td>
-			</tr>
-			<tr>
-				<td data-x="0" data-y="2"></td>
-				<td data-x="1" data-y="2"></td>
-				<td data-x="2" data-y="2"></td>
-			</tr>
-		</table>
-		<div id="games"></div>
-		<div id="message"></div>
-		<button id="save">Save Game</button>
-		<button id="previous">Show Previous Games</button>
+		<div class='board'>
+			<h2>Tic Tac Toe</h2>
+			<table border="1" cellpadding="40">
+				<tr>
+					<td data-x="0" data-y="0"></td>
+					<td data-x="1" data-y="0"></td>
+					<td data-x="2" data-y="0"></td>
+				</tr>
+				<tr>
+					<td data-x="0" data-y="1"></td>
+					<td data-x="1" data-y="1"></td>
+					<td data-x="2" data-y="1"></td>
+				</tr>
+				<tr>
+					<td data-x="0" data-y="2"></td>
+					<td data-x="1" data-y="2"></td>
+					<td data-x="2" data-y="2"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="controls">
+			<div id="games"></div>
+			<div id="message"></div>
+			<button id="save">Save Game</button>
+			<br><br>
+			<button id="previous">Show Previous Games</button>
+			<br><br>
+			<button id="reset">Reset Board</button>
+			<br><br>
+			<p id="saved">Saved: false</p>
+			<p id="data"></p>
+		</div>
 	</body>
 </html>

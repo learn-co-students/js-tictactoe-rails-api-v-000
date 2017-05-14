@@ -1,4 +1,6 @@
 source 'https://rubygems.org'
+
+gem 'learn-co'
 gem 'pry'
 gem 'pry-nav'
 gem 'active_model_serializers'
