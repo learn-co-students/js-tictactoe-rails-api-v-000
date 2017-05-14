@@ -52,6 +52,7 @@ function checkWinner() {
       message("Tie game")
     }
   })
+  return false
 }
 
 // function checkWinner() { //I started building this - not sure it's on the right track yet
