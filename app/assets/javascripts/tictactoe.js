@@ -1,18 +1,18 @@
-$(function() {
-  attachListeners();
-})
+// $(function() {
+//   attachListeners();
+// })
 
 var turn = 0
-// const winningCombos = {
-//   [0, 1, 2], //top row
-//   [3, 4, 5], //middle row
-//   [6, 7, 8], //bottom row
-//   [0, 3, 6], //column 1
-//   [1, 4, 7], //column 2
-//   [2, 5, 8], //column 3
-//   [0, 4, 8], //diagonal 1
-//   [2, 4, 6] //diagonal 2
-// }
+const winningCombos = [ //these combos are for x, y coordinates in the readme - there may be a better way
+  [[0,0],[1,0],[2,0]], //this is the combo for the top row - 0, 0 = top left; 1, 0 = top center; 2, 0 = top right 
+  [[0,1],[1,1],[2,1]],
+  [[0,2],[1,2],[2,2]], 
+  [[0,0],[1,1],[2,2]], 
+  [[0,0],[0,1],[0,2]], 
+  [[2,0],[2,1],[2,2]], 
+  [[1,0],[1,1],[1,2]], 
+  [[2,0],[1,1],[0,2]]
+  ]
 
 
 //GAME FUNCTIONALITY
@@ -31,20 +31,26 @@ function doTurn(e) {
 }
 
 function player() {
-  // if (turn % 2 === 0) { //if no remainder then the turn is even
-  //   return "X"; //return terminates the function, so the "O" return value will not get executed
-  // }
-  // return "O"; //returns "O" if the if statement was false 
-  return (turn % 2 === 0) ? "X" : "O"
+  return (turn % 2 === 0) ? "X" : "O"; //if no remainder then x 
 }
 
-function updateState(e) { 
+function updateState(e) { //I changed it to "e" to follow the convention from doTurn()
+  var player = player() //calls player() and captures return value
+  $(e.target).html(player) //inserts the value of var player in the location of the clicked target
 }
 
-function checkWinner() {
-
+function checkWinner() { //I started building this - not sure it's on the right track yet
+  winningCombos.forEach(function(combo) { //iterates over Combos array
+    if (winner(combo) == true) { //checks combo against function 
+      message("Player " + player() + " Won!") //calls message() based on current player
+    }
+  })
 }
 
 function message() {
 
+}
+
+var winner = function() {
+  //this method can be used to check against checkWinner
 }
