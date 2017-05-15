@@ -3,7 +3,7 @@ $(function() {
 })
 
 var turn = 0
-
+// var gameId = 0
 const winningCombos = [ [0, 1, 2], [3, 4, 5],[6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6] ]
 
 
@@ -61,16 +61,6 @@ function getBoard() {
   return board;
 }
 
-//
-// function boardFull(board) {
-//   if (board.includes("")) {
-//     return false
-//   } else {
-//     return true
-//   }
-// }
-//
-
 function clearBoard() {
   $("td").html("");
   turn = 0; //restarts games
@@ -80,13 +70,28 @@ function message(string) {
   $("div#message").text(string) //edited to replace text instead of append
 }
 
-// var winner = function() {
-//   //this method can be used to check against checkWinner
-// }
-
-function getAllGames() {
-}
-
 function save() {
-
+  // if (gameId == 0) {
+  //    	  $.ajax ({
+  //         url: "/games", 
+  //         method: "POST", 
+  //         dataType: "json", 
+  //         data: { game: { state: getBoard() }}, 
+  //         success: function(data) { gameId = data.game.id }
+  //      });
+  //   } else {
+  //       $.ajax ({
+  //         url: "/games/" + gameId, 
+  //         method: "PATCH", 
+  //         dataType: "json", 
+  //         data: { game: { state: getBoard() }}, 
+  //         success: function(data) { gameId = data.game.id }
+  //      });
 }
+     
+    
+
+
+
+
+
