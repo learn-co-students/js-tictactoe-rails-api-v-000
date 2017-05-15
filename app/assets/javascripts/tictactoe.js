@@ -14,10 +14,10 @@ function attachListeners() {
     e.preventDefault();
     doTurn(e)
   })
-  $('#previous').on('click', function() { //if id previous is clicked, call getAllGames function
-    getAllGames(); 
+  $('#previous').on('click', function(e) { //if id previous is clicked, call getAllGames function
+    getAllGames(e); 
   })
-  $('#save').on('click', function() { //if id save is clicked, call save function
+  $('#save').on('click', function(e) { //if id save is clicked, call save function
     save(); 
   })
 }
