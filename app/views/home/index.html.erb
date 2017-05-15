@@ -3,6 +3,10 @@
 		<title>jQuery Tic Tac Toe</title>
 	</head>
 	<body>
+		<div>
+			<p>Games Played: <span id="gamesCount"></span></p>
+			<p>Current Game: <span id="currentGame"></span></p>
+		</div>
 		<table border="1" cellpadding="40">
 			<tr>
 				<td data-x="0" data-y="0"></td>
@@ -20,7 +24,8 @@
 				<td data-x="2" data-y="2"></td>
 			</tr>
 		</table>
-		<div id="games"></div>
+		<div id="games">
+		</div>
 		<div id="message"></div>
 		<button id="save">Save Game</button>
 		<button id="previous">Show Previous Games</button>
