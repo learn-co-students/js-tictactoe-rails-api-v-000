@@ -133,6 +133,7 @@ describe('Tic Tac Toe Functionality', function() {
       // _X_|_O_|_X_
       // _O_|_O_|_X_
       //  X | X | O
+      console.log(turn);
       expect(window.message).toHaveBeenCalledWith("Tie game");
     });
   });
@@ -236,7 +237,7 @@ describe('#integration tests of persistence', function() {
     turn = 0;
     currentGame = 0;
   });
-  it("if i click the getAllGames button it should send a get request to /games", function() {
+  it("if i click the Show Previous Games button it should send a get request to /games", function() {
     setFixtures('<body><table border="1" cellpadding="40"><tr><td data-x="0", data-y="0"></td><td data-x="1", data-y="0"></td><td data-x="2", data-y="0"></td></tr><tr><td data-x="0", data-y="1"></td><td data-x="1", data-y="1"></td><td data-x="2", data-y="1"></td></tr><tr><td data-x="0", data-y="2"></td><td data-x="1", data-y="2"></td><td data-x="2", data-y="2"></td></tr></table><div id="games"></div><div id="message"></div><button id="save">Save Game</button><button id="previous">Show Previous Games</button></body>');
     attachListeners()
     jasmine.Ajax.withMock(function() {
@@ -275,8 +276,10 @@ describe('#integration tests of persistence', function() {
       }
       $('#save').click()
       jasmine.Ajax.requests.mostRecent().respondWith(response);
+
       $('#save').click()
       var request = jasmine.Ajax.requests.mostRecent();
+      console.log(currentGame);
       expect(request.url).toBe('/games/1');
       expect(request.method).toBe('PATCH');
     });
@@ -307,7 +310,7 @@ describe('#integration tests of persistence', function() {
     expect($("#games").children().length).toBe(0);
     jasmine.Ajax.withMock(function() {
       var data = {
-        games: [{
+        game: {
           id:1,
           state: ["X","","","","","","","",""]
         }]
@@ -317,8 +320,9 @@ describe('#integration tests of persistence', function() {
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
-      $('#previous').click()
+      $('#save').click()
       jasmine.Ajax.requests.mostRecent().respondWith(response);
+      $('#previous').click()
       expect($("#games").children().length).toBe(1);
     });
   });
