@@ -3,7 +3,7 @@ $(function() {
 })
 
 var turn = 0
-// var gameId = 0
+var gameId = 0
 const winningCombos = [ [0, 1, 2], [3, 4, 5],[6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6] ]
 
 
@@ -19,6 +19,9 @@ function attachListeners() {
   })
   $('#save').on('click', function() { //if id save is clicked, call save function
     save(); 
+  })
+   $("#games").click(function() {
+    //placeholder for now, but can be used to navigate amongst saved games
   })
 }
 
@@ -70,26 +73,18 @@ function message(string) {
   $("div#message").text(string) //edited to replace text instead of append
 }
 
-function save() {
-  // if (gameId == 0) {
-  //    	  $.ajax ({
-  //         url: "/games", 
-  //         method: "POST", 
-  //         dataType: "json", 
-  //         data: { game: { state: getBoard() }}, 
-  //         success: function(data) { gameId = data.game.id }
-  //      });
-  //   } else {
-  //       $.ajax ({
-  //         url: "/games/" + gameId, 
-  //         method: "PATCH", 
-  //         dataType: "json", 
-  //         data: { game: { state: getBoard() }}, 
-  //         success: function(data) { gameId = data.game.id }
-  //      });
+function save() { //a good resource for this function is here -> https://stackoverflow.com/questions/14762775/ajax-if-condition
+  $.ajax({
+      type: (gameId == 0) ? "POST"  : "PATCH",
+      url: (gameId == 0) ? "/games" : "/games/" + gameId,
+      data: { game: { state: getBoard() }},
+      success: function(data) { gameId = data.game.id },
+      dataType: "json",
+  });
 }
-     
-    
+
+
+
 
 
 
