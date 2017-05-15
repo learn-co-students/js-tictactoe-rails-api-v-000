@@ -99,11 +99,16 @@ function getAllGames() {
 }
 
 function showAllGames(games) {
-  gamesHtml = '<ul>'
-  games.forEach(function(game) { //should add games to games id in DOM
-    gamesHtml += showGame(game)
-  })
-  $("#games").html(gamesHtml)
+  if (games.length > 0) {
+    debugger
+    gamesHtml = '<ul>'
+    games.forEach(function(game) { //should add games to games id in DOM
+      gamesHtml += showGame(game)
+    })
+    $("#games").html(gamesHtml)
+  } else {
+    $("#games").html()
+  }
 }
 
 function showGame(game) {
