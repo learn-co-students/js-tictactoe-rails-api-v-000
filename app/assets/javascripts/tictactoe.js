@@ -83,6 +83,17 @@ function save() { //a good resource for this function is here -> https://stackov
   });
 }
 
+function getAllGames() { 
+  $.getJSON("/games").done(function(game) { //searches index for all games 
+    allGames(game.games) //calls allGames function
+  })
+}
+
+function allGames(games) {
+  games.forEach(function(game) { //should add games to games id in DOM
+    $("#games").html(game) 
+  })
+}
 
 
 
