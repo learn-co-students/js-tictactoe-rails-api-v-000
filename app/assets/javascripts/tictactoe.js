@@ -17,6 +17,9 @@ function attachListeners() {
   $('#previous').on('click', function() { //if id previous is clicked, call getAllGames function
     getAllGames(); 
   })
+  $('#save').on('click', function() { //if id save is clicked, call save function
+    save(); 
+  })
 }
 
 function player() {
@@ -57,6 +60,7 @@ function getBoard() {
     }
   return board;
 }
+
 //
 // function boardFull(board) {
 //   if (board.includes("")) {
@@ -79,3 +83,7 @@ function message(string) {
 // var winner = function() {
 //   //this method can be used to check against checkWinner
 // }
+
+function getAllGames() {
+
+}
