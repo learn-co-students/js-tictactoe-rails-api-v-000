@@ -89,8 +89,12 @@ function save() { //a good resource for this function is here -> https://stackov
 }
 
 function getAllGames() {
-  $.getJSON("/games").done(function(response) { //searches index for all games
-    showAllGames(response.games) //calls allGames function
+  $.ajax({
+    type: "GET",
+    url: '/games',
+    dataType: 'json'
+  }).done(function(response) {
+    showAllGames(response.games);
   })
 }
 
