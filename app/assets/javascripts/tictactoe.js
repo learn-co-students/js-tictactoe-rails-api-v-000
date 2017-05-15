@@ -45,6 +45,7 @@ function checkWinner() {
   winningCombos.forEach(function(combo) { //iterates over Combos array
     if (board[combo[0]] == currentPlayer && board[combo[1]] == currentPlayer && board[combo[2]] == currentPlayer) {
       message("Player " + currentPlayer + " Won!"); //calls message() based on current player
+      save();
       clearBoard();
 
     } else if (turn === 9) {
