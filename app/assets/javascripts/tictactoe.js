@@ -15,10 +15,10 @@ function attachListeners() {
     doTurn(e)
   })
   $('#previous').on('click', function() { //if id previous is clicked, call getAllGames function
-    getAllGames(); 
+    getAllGames();
   })
   $('#save').on('click', function() { //if id save is clicked, call save function
-    save(); 
+    save();
   })
    $("#games").click(function() {
     //placeholder for now, but can be used to navigate amongst saved games
@@ -46,6 +46,7 @@ function checkWinner() {
     if (board[combo[0]] == currentPlayer && board[combo[1]] == currentPlayer && board[combo[2]] == currentPlayer) {
       message("Player " + currentPlayer + " Won!"); //calls message() based on current player
       clearBoard();
+
     } else if (turn === 9) {
       clearBoard();
       message("Tie game")
@@ -83,21 +84,20 @@ function save() { //a good resource for this function is here -> https://stackov
   });
 }
 
-function getAllGames() { 
-  $.getJSON("/games").done(function(game) { //searches index for all games 
-    allGames(game.games) //calls allGames function
+function getAllGames() {
+  $.getJSON("/games").done(function(response) { //searches index for all games
+    showAllGames(response.games) //calls allGames function
   })
 }
 
-function allGames(games) {
+function showAllGames(games) {
+  gamesHtml = '<ul>'
   games.forEach(function(game) { //should add games to games id in DOM
-    $("#games").html(game) 
+    gamesHtml += showGame(game)
   })
+  $("#games").html(gamesHtml)
 }
 
-
-
-
-
-
-
+function showGame(game) {
+  return '<li><a href="#" data-id=' + game.id + '>' + game.id + '</a></li>'
+}
