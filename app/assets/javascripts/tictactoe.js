@@ -44,13 +44,15 @@ function checkWinner() {
   var board = getBoard();
   winningCombos.forEach(function(combo) { //iterates over Combos array
     if (board[combo[0]] == currentPlayer && board[combo[1]] == currentPlayer && board[combo[2]] == currentPlayer) {
+
       message("Player " + currentPlayer + " Won!"); //calls message() based on current player
       save();
       clearBoard();
 
     } else if (turn === 9) {
+      message("Tie game");
+      save();
       clearBoard();
-      message("Tie game")
     }
   })
   return false
@@ -69,6 +71,7 @@ function getBoard() {
 function clearBoard() {
   $("td").html("");
   turn = 0; //restarts games
+  gameId = 0;
 }
 
 function message(string) {
