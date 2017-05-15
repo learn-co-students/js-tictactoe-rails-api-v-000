@@ -5,7 +5,7 @@ class GamesController < ApplicationController
   end
 
   def update
-    Game.update(params[:id], game_params)
+    @game = Game.update(params[:id], game_params)
     render json: @game
   end
 
