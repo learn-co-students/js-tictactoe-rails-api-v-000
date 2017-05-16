@@ -2,7 +2,6 @@ $(document).ready(function() {
   attachListeners()
 })
 
-var gameState = []
 var currentGame = 0
 var turn = 0
 const winCombinations = [
@@ -20,6 +19,9 @@ var attachListeners = function() {
   $('td').on('click', function(event) {
     doTurn(event)
   })
+  $('#save').on('click', function() {
+    saveGame()
+  })
 }
 
 function player() {
@@ -33,25 +35,36 @@ function message(string) {
 function doTurn(event) {
   updateState(event)
   turn += 1
-  checkWinner(event)
+  checkWinner()
 }
 
 function updateState(event) {
-  event.toElement.innerText = player()
+  event.currentTarget.innerText = player()
 }
 
-function checkWinner(event) {
+function checkWinner() {
   winCombinations.forEach(function(combo) {
-    debugger
-    if (readBoard(combo[0]) != '') {
-       if (readBoard(combo[0]) === readBoard(combo[1]) &&
+    if (readBoard(combo[0]) != '' &&
+       readBoard(combo[0]) === readBoard(combo[1]) &&
        readBoard(combo[0]) === readBoard(combo[2])) {
-       return message(`Player ${readBoard(combo[0])} Won!`)
-     } else {
-       return false
+       var winner = readBoard(combo[0])
+       resetBoard()
+       return message(`Player ${winner} Won!`)
      }
-    }
   })
+  if (turn === 9) {
+    resetBoard()
+    return message(`Tie game`)
+  } else {
+    return false
+  }
+}
+
+function resetBoard() {
+  $('td').each(function() {
+    this.innerText = ''
+  })
+  turn = 0
 }
 
 function readBoard(position) {
@@ -60,6 +73,25 @@ function readBoard(position) {
   return $("td[data-x='" + x +"'][data-y='" + y +"']")[0].innerText;
 }
 
-function toXY(data) {
-  return [event.toElement.dataset.x, event.toElement.dataset.y]
+function saveGame() {
+  var gameState = []
+  $('td').each(function() {
+    gameState.push(this.innerText)
+  })
+
+  $.post(
+    '/games',
+    {'game[state]': gameState},
+    function(data) {
+      var currentGame = $(data).filter('#game-id')[0].innerText
+    })
+}
+
+function updateGame() {
+  var gameState = []
+  $('td').each(function() {
+    gameState.push(this.innerText)
+  })
+  debugger
+  $.patch('/games/')
 }
