@@ -3,10 +3,9 @@ $(function() {
 })
 
 var turn = 0
-var gameId = 0
+var currentGame = 0
 var gameOver = false
 const winningCombos = [ [0, 1, 2], [3, 4, 5],[6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6] ]
-
 
 //GAME FUNCTIONALITY
 
@@ -86,8 +85,8 @@ function message(string) {
 
 function save() { //a good resource for this function is here -> https://stackoverflow.com/questions/14762775/ajax-if-condition
   $.ajax({
-      type: (gameId === 0) ? "POST"  : "PATCH",
-      url: (gameId === 0) ? "/games" : "/games/" + gameId,
+      type: (currentGame === 0) ? "POST"  : "PATCH",
+      url: (currentGame === 0) ? "/games" : "/games/" + currentGame,
       data: { game: { state: getBoard() }},
       success: function(data) { callback(data) },
       dataType: "json",
@@ -96,9 +95,9 @@ function save() { //a good resource for this function is here -> https://stackov
 
 function callback(data) {
   if ( gameOver === true ) {
-    gameId = 0;
+    currentGame = 0;
   } else {
-    gameId = data.game.id
+    currentGame = data.game.id
   }
 }
 
@@ -141,7 +140,7 @@ function updateBoard(game) {
     var cell = $td[i];
     cell.innerHTML = state[i];
     }
-  gameId = game.id;
+  currentGame = game.id;
   setTurn();
 }
 
