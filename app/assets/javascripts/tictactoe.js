@@ -142,10 +142,18 @@ function updateBoard(game) {
     cell.innerHTML = state[i];
     }
   gameId = game.id;
+  setTurn();
 }
 
 function setTurn() {
-  
+  var board = getBoard();
+  count = 0;
+  for (var i = 0; i < 9; i++) {
+    if (board[i] === "X" || board[i] === "O") {
+      count++
+    }
+  }
+  turn = count;
 }
 
 function showGame(game) {
