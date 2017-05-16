@@ -156,5 +156,5 @@ function setTurn() {
 }
 
 function showGame(game) {
-  return '<li><a href="#" id="game-' + game.id + '">' + game.id + '</a></li>'
+  return '<a href="#" id="game-' + game.id + '">' + game.id + '</a><br>'
 }
