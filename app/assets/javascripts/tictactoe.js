@@ -88,7 +88,7 @@ function save() { //a good resource for this function is here -> https://stackov
       type: (currentGame === 0) ? "POST"  : "PATCH",
       url: (currentGame === 0) ? "/games" : "/games/" + currentGame,
       data: { game: { state: getBoard() }},
-      success: function(data) { callback(data) },
+      success: callback,
       dataType: "json",
   })
 }
@@ -156,5 +156,5 @@ function setTurn() {
 }
 
 function showGame(game) {
-  return '<li><a href="#" id="game-' + game.id + '">' + game.id + '</a></li>'
+  return '<div id="game-' + game.id + '">' + game.id + '</div>'
 }
