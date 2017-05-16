@@ -96,6 +96,7 @@ function save() { //a good resource for this function is here -> https://stackov
 function callback(data) {
   if ( gameOver === true ) {
     currentGame = 0;
+    gameOver = false;
   } else {
     currentGame = data.game.id
   }
