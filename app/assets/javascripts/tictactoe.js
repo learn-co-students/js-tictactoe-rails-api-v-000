@@ -113,11 +113,10 @@ function getAllGames() {
 
 function showAllGames(games) {
   if (games.length > 0) {
-    gamesHtml = '<ul>'
+    var gamesHtml =''
     games.forEach(function(game) { //should add games to games id in DOM
       gamesHtml += showGame(game)
     })
-    gamesHtml += '</ul>'
     $("#games").html(gamesHtml)
   } else {
     $("#games").html()
