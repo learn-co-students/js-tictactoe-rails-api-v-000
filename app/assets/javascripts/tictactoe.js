@@ -1,3 +1,15 @@
+var attachListeners = function() {
+  $('td').on('click', function(event) {
+    doTurn(event)
+  })
+  $('#save').on('click', function() {
+    saveGame()
+  })
+  $('#previous').on('click', function() {
+    loadGames()
+  })
+}
+
 $(document).ready(function() {
   attachListeners()
 })
@@ -14,15 +26,6 @@ const winCombinations = [
   [[0,0],[1,1],[2,2]],
   [[2,0],[1,1],[0,2]],
 ];
-
-var attachListeners = function() {
-  $('td').on('click', function(event) {
-    doTurn(event)
-  })
-  $('#save').on('click', function() {
-    saveGame()
-  })
-}
 
 function player() {
   return turn % 2 === 0 ? "X" : "O"
@@ -48,11 +51,13 @@ function checkWinner() {
        readBoard(combo[0]) === readBoard(combo[1]) &&
        readBoard(combo[0]) === readBoard(combo[2])) {
        var winner = readBoard(combo[0])
+       saveGame(true)
        resetBoard()
        return message(`Player ${winner} Won!`)
      }
   })
   if (turn === 9) {
+    saveGame(true)
     resetBoard()
     return message(`Tie game`)
   } else {
@@ -65,6 +70,7 @@ function resetBoard() {
     this.innerText = ''
   })
   turn = 0
+  currentGame = 0
 }
 
 function readBoard(position) {
@@ -73,25 +79,60 @@ function readBoard(position) {
   return $("td[data-x='" + x +"'][data-y='" + y +"']")[0].innerText;
 }
 
-function saveGame() {
-  var gameState = []
-  $('td').each(function() {
-    gameState.push(this.innerText)
-  })
-
-  $.post(
+function loadGames() {
+  $('#games')[0].innerHTML =''
+  $.get(
     '/games',
-    {'game[state]': gameState},
     function(data) {
-      var currentGame = $(data).filter('#game-id')[0].innerText
-    })
+      $.each(data['games'], function(k, v) {
+        $('#games')[0].innerHTML += `<li><a href='#' class="load-game" onclick="loadGame(this)">${v.id}</a></li>`
+      })
+    }
+  )
+
+  //Was going to add the click events with jquery but simply adding it when the HTML is already being generated seemed to make more sense.
+  // $('.load-game').each(function(index) {
+  //   $(this).on('click', function() {
+  //   })
+  // })
 }
 
-function updateGame() {
+function loadGame(thing) {
+  $.get(
+    '/games/' + thing.innerText,
+    function(data) {
+      currentGame = data.game.id
+      var gameState = data.game.state
+      for (let i = 0; i < gameState.length; i++) {
+        $('td')[i].innerText = gameState[i]
+      }
+    }
+  )
+}
+
+function saveGame(gameOver = false) {
   var gameState = []
+  var requestType = currentGame === 0 ? "POST" : "PATCH"
+  var requestURL = currentGame === 0 ? '/games' : '/games/' + currentGame
+
+
   $('td').each(function() {
     gameState.push(this.innerText)
   })
-  debugger
-  $.patch('/games/')
+
+  $.ajax({
+    url: requestURL,
+    data: {
+        'game[state]': gameState
+    },
+    type: requestType,
+
+    success: function(data) {
+      if (gameOver) {
+        currentGame = 0
+        } else {
+        currentGame = data.game.id
+      }
+    }
+  })
 }

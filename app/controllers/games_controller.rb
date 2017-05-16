@@ -7,19 +7,18 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
-    respond_to do |f|
-      f.html { render :show }
-      f.json { render json: @game}
-    end
+    render json: @game
   end
 
   def create
     @game = Game.create(game_params)
+    render json: @game
   end
 
   def update
     @game = Game.find(params[:id])
     @game.update(game_params)
+    render json: @game
   end
 
   private
