@@ -117,6 +117,7 @@ function showAllGames(games) {
     games.forEach(function(game) { //should add games to games id in DOM
       gamesHtml += showGame(game)
     })
+    gamesHtml += '</ul>'
     $("#games").html(gamesHtml)
   } else {
     $("#games").html()
