@@ -4,6 +4,7 @@ $(function() {
 
 var turn = 0
 var gameId = 0
+var gameOver = false
 const winningCombos = [ [0, 1, 2], [3, 4, 5],[6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6] ]
 
 
@@ -20,8 +21,11 @@ function attachListeners() {
   $('#save').on('click', function() { //if id save is clicked, call save function
     save();
   })
-   $("#games").click(function() {
+   $("#games").on('click', function(e) {
     //placeholder for now, but can be used to navigate amongst saved games
+    var id = e.target.id.slice(5);
+    findGame(id);
+    e.preventDefault();
   })
 }
 
@@ -42,20 +46,23 @@ var updateState = function(e) {
 function checkWinner() {
   var currentPlayer = player()
   var board = getBoard();
+
   winningCombos.forEach(function(combo) { //iterates over Combos array
     if (board[combo[0]] == currentPlayer && board[combo[1]] == currentPlayer && board[combo[2]] == currentPlayer) {
-
-      message("Player " + currentPlayer + " Won!"); //calls message() based on current player
+      //calls message() based on current player
       save();
       clearBoard();
+      message("Player " + currentPlayer + " Won!");
+      gameOver = true;
 
     } else if (turn === 9) {
-      message("Tie game");
       save();
       clearBoard();
+      message("Tie game");
+      gameOver = true
     }
   })
-  return false
+  return gameOver
 }
 
 function getBoard() {
@@ -69,9 +76,8 @@ function getBoard() {
 }
 
 function clearBoard() {
+  turn = 0;
   $("td").html("");
-  turn = 0; //restarts games
-  gameId = 0;
 }
 
 function message(string) {
@@ -80,12 +86,20 @@ function message(string) {
 
 function save() { //a good resource for this function is here -> https://stackoverflow.com/questions/14762775/ajax-if-condition
   $.ajax({
-      type: (gameId == 0) ? "POST"  : "PATCH",
-      url: (gameId == 0) ? "/games" : "/games/" + gameId,
+      type: (gameId === 0) ? "POST"  : "PATCH",
+      url: (gameId === 0) ? "/games" : "/games/" + gameId,
       data: { game: { state: getBoard() }},
-      success: function(data) { gameId = data.game.id },
+      success: function(data) { callback(data) },
       dataType: "json",
-  });
+  })
+}
+
+function callback(data) {
+  if ( gameOver === true ) {
+    gameId = 0;
+  } else {
+    gameId = data.game.id
+  }
 }
 
 function getAllGames() {
@@ -100,7 +114,6 @@ function getAllGames() {
 
 function showAllGames(games) {
   if (games.length > 0) {
-    debugger
     gamesHtml = '<ul>'
     games.forEach(function(game) { //should add games to games id in DOM
       gamesHtml += showGame(game)
@@ -111,6 +124,30 @@ function showAllGames(games) {
   }
 }
 
+function findGame(id) {
+  $.ajax({
+    type: "GET",
+    url: '/games/' + id,
+    dataType: 'json'
+  }).done(function(response) {
+    updateBoard(response.game);
+  })
+}
+
+function updateBoard(game) {
+  var state = game.state
+  $td = $("td");
+  for (var i=0; i < 9; i++) {
+    var cell = $td[i];
+    cell.innerHTML = state[i];
+    }
+  gameId = game.id;
+}
+
+function setTurn() {
+  
+}
+
 function showGame(game) {
-  return '<li><a href="#" data-id=' + game.id + '>' + game.id + '</a></li>'
+  return '<li><a href="#" id="game-' + game.id + '">' + game.id + '</a></li>'
 }
