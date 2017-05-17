@@ -80,7 +80,7 @@ describe('Tic Tac Toe Functionality', function() {
       spyOn(window, "updateState");
       var selector = '[data-x="0"][data-y="0"]'
       $(selector).click()
-      var selector = '[data-x="0"][data-y="1"]'
+      selector = '[data-x="0"][data-y="1"]'
       $(selector).click()
       expect(checkWinner()).toEqual(false)
     });
