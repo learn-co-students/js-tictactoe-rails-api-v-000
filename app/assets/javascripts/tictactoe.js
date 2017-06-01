@@ -1,4 +1,6 @@
 var turn = 0;
+var currentGame = 0;
+var state = [];
 
 function attachListeners() {
   for (let x = 0; x <= 2; x++)
@@ -8,6 +10,20 @@ function attachListeners() {
         doTurn({selector});
       });
     }
+  $('#previous').click(function(){
+    $.get("/games")
+  });
+  
+  if (currentGame === 0) {  
+    $('#save').click(function(){
+      $.ajax({ type: "POST", url: "/games"});
+    });
+  }
+  else {  
+    $('#save').click(function(){
+      $.ajax({ type: "PATCH", url: "/games/1"});
+    });
+  }
 }
 
 function doTurn(event) {
@@ -39,11 +55,11 @@ function updateState(event) {
   return false;
 }
 
-function checkWinner() {
+function getState() {
   s0 = { selector: '[data-x="0"][data-y="0"]' };
   s0text = $( Object.values(s0)[0] ).text();
-  s2 = { selector: '[data-x="1"][data-y="0"]' };
-  s2text = $( Object.values(s1)[0] ).text();
+  s1 = { selector: '[data-x="1"][data-y="0"]' };
+  s1text = $( Object.values(s1)[0] ).text();
   s2 = { selector: '[data-x="2"][data-y="0"]' };
   s2text = $( Object.values(s2)[0] ).text();
   s3 = { selector: '[data-x="0"][data-y="1"]' };
@@ -58,19 +74,52 @@ function checkWinner() {
   s7text = $( Object.values(s7)[0] ).text();
   s8 = { selector: '[data-x="2"][data-y="2"]' };
   s8text = $( Object.values(s8)[0] ).text();
+  
+  return [s0text, s1text, s2text, s3text, s4text, s5text, s6text, s7text, s8text];
+}
+
+function checkWinner() {
+  ////s0 = { selector: '[data-x="0"][data-y="0"]' };
+  ////s0text = $( Object.values(s0)[0] ).text();
+  ////s2 = { selector: '[data-x="1"][data-y="0"]' };
+  ////s2text = $( Object.values(s1)[0] ).text();
+  ////s2 = { selector: '[data-x="2"][data-y="0"]' };
+  ////s2text = $( Object.values(s2)[0] ).text();
+  ////s3 = { selector: '[data-x="0"][data-y="1"]' };
+  ////s3text = $( Object.values(s3)[0] ).text();
+  ////s4 = { selector: '[data-x="1"][data-y="1"]' };
+  ////s4text = $( Object.values(s4)[0] ).text();
+  ////s5 = { selector: '[data-x="2"][data-y="1"]' };
+  ////s5text = $( Object.values(s5)[0] ).text();
+  ////s6 = { selector: '[data-x="0"][data-y="2"]' };
+  ////s6text = $( Object.values(s6)[0] ).text();
+  ////s7 = { selector: '[data-x="1"][data-y="2"]' };
+  ////s7text = $( Object.values(s7)[0] ).text();
+  ////s8 = { selector: '[data-x="2"][data-y="2"]' };
+  //s8text = $( Object.values(s8)[0] ).text();
   //console.log(s1text, s2text, s3text, s4text, s5text, s6text, s7text, s8text, s9text);
+  let currentState = getState();
   let result = false;
   let winner;
   ["X", "O"].forEach(function(l) {
     if (
-      (s0text === l && s1text === l && s2text === l) ||
-      (s3text === l && s4text === l && s5text === l) ||
-      (s6text === l && s7text === l && s8text === l) ||
-      (s0text === l && s3text === l && s6text === l) ||
-      (s1text === l && s4text === l && s7text === l) ||
-      (s2text === l && s5text === l && s8text === l) ||
-      (s0text === l && s4text === l && s8text === l) ||
-      (s2text === l && s4text === l && s6text === l) )
+      //(s0text === l && s1text === l && s2text === l) ||
+      //(s3text === l && s4text === l && s5text === l) ||
+      //(s6text === l && s7text === l && s8text === l) ||
+      //(s0text === l && s3text === l && s6text === l) ||
+      //(s1text === l && s4text === l && s7text === l) ||
+      //(s2text === l && s5text === l && s8text === l) ||
+      //(s0text === l && s4text === l && s8text === l) ||
+      //(s2text === l && s4text === l && s6text === l) )
+      (currentState[0] === l && currentState[1] === l && currentState[2] === l) ||
+      (currentState[3] === l && currentState[4] === l && currentState[5] === l) ||
+      (currentState[6] === l && currentState[7] === l && currentState[8] === l) ||
+      (currentState[0] === l && currentState[3] === l && currentState[6] === l) ||
+      (currentState[1] === l && currentState[4] === l && currentState[7] === l) ||
+      (currentState[2] === l && currentState[5] === l && currentState[8] === l) ||
+      (currentState[0] === l && currentState[4] === l && currentState[8] === l) ||
+      (currentState[2] === l && currentState[4] === l && currentState[6] === l) )
+
     { result = true;
       winner = l;
     }
