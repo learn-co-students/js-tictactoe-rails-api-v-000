@@ -19,4 +19,9 @@ class GamesController < ApplicationController
     @game.update(state: params[:state]);
   end
   
+  def show
+    @game = Game.fine(params[:id]);
+    binding.pry
+  end
+  
 end

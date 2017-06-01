@@ -39,13 +39,14 @@ function show() {
   var response = $.ajax({ type: "GET", url: "/games" });
   response.done(function(data) {
     arr = JSON.parse(data);
-    arr.forEach((element) => $("#games").append("<p><a href=/games/" + element + ">" + element + "</a>" + "</p>"));
+    //arr.forEach((element) => $("#games").append("<p><a href=/games/" + element + ">" + element + "</a>" + "</p>"));
+    arr.forEach(function(element) {
+      $("#games").append("<a id = 'element" + element + "' href=/games/" + element + ">" + element + "</a><br>");
+    })
   })
 }
 
 function doTurn(event) {
-    //console.log(event);
-    //console.log(turn);
     if (updateState(event)) {
       checkWinner();
       turn += 1;
@@ -62,9 +63,6 @@ function player() {
 function updateState(event) {
   //console.log(event);
   test = $( Object.values(event)[0] ).text();
-  //console.log($( Object.values(event)[0] ));
-  //console.log(test)
-  //console.log(!test);
   if (!test) {
     $( Object.values(event)[0] ).text(player());
     return true
@@ -125,7 +123,6 @@ function checkWinner() {
     else
       message("Player " + winner + " Won!")
  return result;
-  //console.log($( Object.values(s1)[0] ).text())
 }
 
 function message(string) {
