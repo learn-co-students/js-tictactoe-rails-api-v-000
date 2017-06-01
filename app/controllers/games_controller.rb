@@ -1,6 +1,11 @@
 class GamesController < ApplicationController
   def index
-    #binding.pry
+    @games = []
+    Game.all.each do |game|
+      @games << game.id
+    end
+#    binding.pry
+    render text: @games;
   end
 
   def create
@@ -10,7 +15,8 @@ class GamesController < ApplicationController
   end
 
   def update
-    binding.pry
+    @game = Game.find(params[:id]);
+    @game.update(state: params[:state]);
   end
   
 end
