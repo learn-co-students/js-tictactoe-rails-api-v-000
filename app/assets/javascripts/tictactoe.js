@@ -1,6 +1,7 @@
 var turn = 0;
-var currentGame = 1;
+//var currentGame = 1;
 //var state = [];
+var currentGame = 0;
 $(document).ready(attachListeners);
 
 function attachListeners() {
@@ -15,14 +16,33 @@ function attachListeners() {
     $.get("/games")
   });
   
-  if (currentGame === 0) {  
+  ////if (currentGame === 0) {  
     $('#save').click(function(){
-      $.ajax({ type: "POST", url: "/games"});
+      event.preventDefault();
+      save();
+      //var newGame = $.ajax({ type: "POST", url: "/games", data: { state: getState()} });
+      //newGame.done(function(data) {
+      //  currentGame = Number(data);
+      //});
     });
+//  }
+  ////else {  
+  ////  $('#save').click(function(){
+  ////    //$.ajax({ type: "PATCH", url: "/games/" + currentGame, data: { state: JSON.stringify(getState())} });
+  ////    $.ajax({ type: "PATCH", url: "/games/" + currentGame, data: { state: getState()} });
+  ////  });
+  ////}
+}
+
+function save() {
+  if (currentGame === 0) {
+    var newGame = $.ajax({ type: "POST", url: "/games", data: { state: getState()} });
+    newGame.done(function(data) {
+      currentGame = Number(data);
+      });
   }
-  else {  
-    $('#save').click(function(){
-      //$.ajax({ type: "PATCH", url: "/games/" + currentGame, data: { state: JSON.stringify(getState())} });
+  else {
+    $('#save').click(function() {
       $.ajax({ type: "PATCH", url: "/games/" + currentGame, data: { state: getState()} });
     });
   }
