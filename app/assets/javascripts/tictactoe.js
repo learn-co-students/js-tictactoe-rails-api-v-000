@@ -1,6 +1,7 @@
 var turn = 0;
-var currentGame = 0;
-var state = [];
+var currentGame = 1;
+//var state = [];
+$(document).ready(attachListeners);
 
 function attachListeners() {
   for (let x = 0; x <= 2; x++)
@@ -21,7 +22,8 @@ function attachListeners() {
   }
   else {  
     $('#save').click(function(){
-      $.ajax({ type: "PATCH", url: "/games/1"});
+      //$.ajax({ type: "PATCH", url: "/games/" + currentGame, data: { state: JSON.stringify(getState())} });
+      $.ajax({ type: "PATCH", url: "/games/" + currentGame, data: { state: getState()} });
     });
   }
 }
@@ -43,7 +45,7 @@ function player() {
 }
 
 function updateState(event) {
-  console.log(event);
+  //console.log(event);
   test = $( Object.values(event)[0] ).text();
   //console.log($( Object.values(event)[0] ));
   //console.log(test)
@@ -99,6 +101,7 @@ function checkWinner() {
   //s8text = $( Object.values(s8)[0] ).text();
   //console.log(s1text, s2text, s3text, s4text, s5text, s6text, s7text, s8text, s9text);
   let currentState = getState();
+  console.log(currentState);
   let result = false;
   let winner;
   ["X", "O"].forEach(function(l) {
