@@ -1,8 +1,20 @@
 var turn = 0;
 var board = [];
 const board_length = 9;
-//var xWon = false;
-//var yWon = false;
+var xWon = false;
+var yWon = false;
+var draw = false;
+
+const win_combos = [
+  [0,1,2],
+  [3,4,5],
+  [6,7,8],
+  [0,3,6],
+  [1,4,7],
+  [2,5,8],
+  [0,4,8],
+  [2,4,6]
+];
 
 $(document).ready(function() {
     attachListeners();
@@ -16,7 +28,7 @@ var player = function() {
   }
 }
 
-function updateState (event) {
+function updateState(event) {
   const token = player();
   $(event.target).text(token);
 }
@@ -34,21 +46,44 @@ function updateBoard() {
 }
 
 function checkBoardForWinner() {
-  
-}
-function evaluateBoard() {
-  updateBoard();
-  console.log(board)
-  //checkBoardForWinner();
+  const token = player();
+  for (let combo in win_combos) {
+    pos_1 = combo[0];
+    pos_2 = combo[1];
+    pos_3 = combo[2];
+    if (board[pos_1] === token && board[pos_2] === token && board[pos_3] === token ) {
+      return token === "X" ? xWon = true : yWon = true;
+    }
+  }
 }
 
-function checkWinner () {
+function checkForDraw() {
+  for (var i=0; i < board.length; i++) {
+    if (board[i] === "") {
+      draw = false;
+      return;
+    }
+  }
+  draw = true;
+}
+
+function evaluateBoard() {
+  updateBoard();
+  checkBoardForWinner();
+  if (xWon === false OR yWon === false) {
+    checkForDraw();
+  }
+}
+
+function checkWinner() {
   evaluateBoard();
-//  if (xWon) {
-//    message("Player X Won!");
-//  } else if (yWon) {
-//    message("Player O Won!");
-//  }
+  if (xWon === true) {
+    message("Player X Won!");
+  } else if (yWon === true) {
+    message("Player O Won!");
+  } else if (draw === true) {
+    message("It's a Draw!")
+  }
 }
 
 function doTurn(event) {
@@ -57,12 +92,12 @@ function doTurn(event) {
   checkWinner();
 }
 
-function attachListeners () {
+function attachListeners() {
   $('td').on('click', function(event) {
     doTurn(event);
   });
 }
 
-//var message = function(message) {
-  //$("#message").text("message")
-//}
+var message = function(msg) {
+  $("#message").text(msg);
+}
