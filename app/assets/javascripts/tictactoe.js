@@ -41,7 +41,7 @@ function show() {
   var response = $.ajax({ type: "GET", url: "/games" });
   response.done(function(data) {
     arr = JSON.parse(data);
-    //arr.forEach((element) => $("#games").append("<p><a href=/games/" + element + ">" + element + "</a>" + "</p>"));
+    $("#games").html("");
     arr.forEach(function(element) {
       $("#games").append("<a id = 'element" + element + "' href=/games/" + element + ">" + element + "</a><br>");
     })
