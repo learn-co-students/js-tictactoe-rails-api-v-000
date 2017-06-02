@@ -49,7 +49,7 @@ function show() {
 function doTurn(event) {
     if (updateState(event)) {
       checkWinner();
-      turn += 1;
+        turn += 1;
     }
 }
 
@@ -68,6 +68,27 @@ function updateState(event) {
     return true
   }
   return false;
+}
+
+function resetBoard() {
+  s0 = { selector: '[data-x="0"][data-y="0"]' };
+  $( Object.values(s0)[0] ).text("");
+  s1 = { selector: '[data-x="1"][data-y="0"]' };
+  $( Object.values(s1)[0] ).text("");
+  s2 = { selector: '[data-x="2"][data-y="0"]' };
+  $( Object.values(s2)[0] ).text("");
+  s3 = { selector: '[data-x="0"][data-y="1"]' };
+  $( Object.values(s3)[0] ).text("");
+  s4 = { selector: '[data-x="1"][data-y="1"]' };
+  $( Object.values(s4)[0] ).text("");
+  s5 = { selector: '[data-x="2"][data-y="1"]' };
+  $( Object.values(s5)[0] ).text("");
+  s6 = { selector: '[data-x="0"][data-y="2"]' };
+  $( Object.values(s6)[0] ).text("");
+  s7 = { selector: '[data-x="1"][data-y="2"]' };
+  $( Object.values(s7)[0] ).text("");
+  s8 = { selector: '[data-x="2"][data-y="2"]' };
+  $( Object.values(s8)[0] ).text("");
 }
 
 function getState() {
