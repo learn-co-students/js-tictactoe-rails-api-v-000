@@ -1,5 +1,6 @@
 var turn = 0;
 var currentGame = 0;
+
 $(document).ready(attachListeners);
 
 function attachListeners() {
@@ -24,15 +25,16 @@ function attachListeners() {
 function save() {
   if (currentGame === 0) {
     var newGame = $.ajax({ type: "POST", url: "/games", data: { state: getState()} });
-    newGame.done(function(data) {
+    newGame.success(function(data) {
       currentGame = Number(data);
-      });
+    });
   }
   else {
     $('#save').click(function() {
       $.ajax({ type: "PATCH", url: "/games/" + currentGame, data: { state: getState()} });
     });
   }
+  
 }
 
 function show() {
@@ -48,8 +50,10 @@ function show() {
 
 function doTurn(event) {
     if (updateState(event)) {
-      checkWinner();
+      if (!checkWinner())
         turn += 1;
+      else
+        gameOver();
     }
 }
 
@@ -91,6 +95,10 @@ function resetBoard() {
   $( Object.values(s8)[0] ).text("");
 }
 
+function resetGameNumber() {
+    currentGame = 0;
+}
+
 function getState() {
   s0 = { selector: '[data-x="0"][data-y="0"]' };
   s0text = $( Object.values(s0)[0] ).text();
@@ -114,9 +122,23 @@ function getState() {
   return [s0text, s1text, s2text, s3text, s4text, s5text, s6text, s7text, s8text];
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function gameOver() {
+  save();
+  resetBoard();
+  turn = 0;
+  while (currentGame < 1) {
+    await sleep(1000);
+  }
+  currentGame = 0;
+}
+
 function checkWinner() {
   let currentState = getState();
-  console.log(currentState);
+  //console.log(currentState);
   let result = false;
   let winner;
   ["X", "O"].forEach(function(l) {
@@ -138,12 +160,13 @@ function checkWinner() {
     result = true;
     winner = "tie";
   }
-  if (result)
+  if (result) {
     if (winner == "tie")
       message("Tie game");
     else
       message("Player " + winner + " Won!")
- return result;
+  }
+  return result;
 }
 
 function message(string) {
