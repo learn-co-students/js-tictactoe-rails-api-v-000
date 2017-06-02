@@ -1,9 +1,9 @@
 var turn = 0;
-var board = [];
-const board_length = 9;
+var board = new Array(9);
 var xWon = false;
 var yWon = false;
 var draw = false;
+let gameOver = false;
 
 const win_combos = [
   [0,1,2],
@@ -15,10 +15,6 @@ const win_combos = [
   [0,4,8],
   [2,4,6]
 ];
-
-$(document).ready(function() {
-    attachListeners();
-});
 
 var player = function() {
   if (turn % 2 === 0) {
@@ -47,10 +43,10 @@ function updateBoard() {
 
 function checkBoardForWinner() {
   const token = player();
-  for (let combo in win_combos) {
-    pos_1 = combo[0];
-    pos_2 = combo[1];
-    pos_3 = combo[2];
+  for (let i=0; i < win_combos.length; i++) {
+    pos_1 = win_combos[i][0];
+    pos_2 = win_combos[i][1];
+    pos_3 = win_combos[i][2];
     if (board[pos_1] === token && board[pos_2] === token && board[pos_3] === token ) {
       return token === "X" ? xWon = true : yWon = true;
     }
@@ -60,8 +56,7 @@ function checkBoardForWinner() {
 function checkForDraw() {
   for (var i=0; i < board.length; i++) {
     if (board[i] === "") {
-      draw = false;
-      return;
+      return draw = false;
     }
   }
   draw = true;
@@ -70,7 +65,7 @@ function checkForDraw() {
 function evaluateBoard() {
   updateBoard();
   checkBoardForWinner();
-  if (xWon === false OR yWon === false) {
+  if (xWon === false || yWon === false) {
     checkForDraw();
   }
 }
@@ -93,11 +88,22 @@ function doTurn(event) {
 }
 
 function attachListeners() {
-  $('td').on('click', function(event) {
-    doTurn(event);
-  });
+    $('td').on('click', function(event) {
+      if (!gameOver) {
+        if ($(event.target).html() === "") {
+          doTurn(event);
+        } else {
+          alert("That space is occupied. Try again.")
+        }
+      }
+    });
 }
 
-var message = function(msg) {
+function message(msg) {
   $("#message").text(msg);
+  gameOver = true;
 }
+
+$(document).ready(function() {
+    attachListeners();
+});
