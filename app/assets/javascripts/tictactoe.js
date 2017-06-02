@@ -44,8 +44,41 @@ function show() {
     $("#games").html("");
     arr.forEach(function(element) {
       $("#games").append("<a id = 'element" + element + "' href=/games/" + element + ">" + element + "</a><br>");
+      $('#element'+element).click(function(){
+        event.preventDefault();
+        load(element);
+      });
     })
   })
+}
+
+function load(element) {
+  var game = $.ajax({ type: "GET", url: "/games/" + element });
+  game.success(function(data) {
+      let state = JSON.parse(data);
+      var count = 0;
+      s0 = { selector: '[data-x="0"][data-y="0"]' };
+      $( Object.values(s0)[0] ).text(state[0]);
+      s1 = { selector: '[data-x="1"][data-y="0"]' };
+      $( Object.values(s1)[0] ).text(state[1]);
+      s2 = { selector: '[data-x="2"][data-y="0"]' };
+      $( Object.values(s2)[0] ).text(state[2]);
+      s3 = { selector: '[data-x="0"][data-y="1"]' };
+      $( Object.values(s3)[0] ).text(state[3]);
+      s4 = { selector: '[data-x="1"][data-y="1"]' };
+      $( Object.values(s4)[0] ).text(state[4]);
+      s5 = { selector: '[data-x="2"][data-y="1"]' };
+      $( Object.values(s5)[0] ).text(state[5]);
+      s6 = { selector: '[data-x="0"][data-y="2"]' };
+      $( Object.values(s6)[0] ).text(state[6]);
+      s7 = { selector: '[data-x="1"][data-y="2"]' };
+      $( Object.values(s7)[0] ).text(state[7]);
+      s8 = { selector: '[data-x="2"][data-y="2"]' };
+      $( Object.values(s8)[0] ).text(state[8]);
+      state.forEach((element) => { if (element == "X" || element == "O") count += 1 })
+      turn = count;
+      currentGame = element;
+    });
 }
 
 function doTurn(event) {

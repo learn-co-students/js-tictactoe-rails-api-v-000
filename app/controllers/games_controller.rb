@@ -20,8 +20,9 @@ class GamesController < ApplicationController
   end
   
   def show
-    @game = Game.fine(params[:id]);
-    binding.pry
+    @game = Game.find(params[:id]);
+    render text: @game.state
+    #binding.pry
   end
   
 end
