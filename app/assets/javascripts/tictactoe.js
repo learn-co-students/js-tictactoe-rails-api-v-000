@@ -35,14 +35,17 @@ function attachListeners(){
 
 
 function doTurn(){
-  if(turn < 9 && !HasTheGameBeenWon()){
-    updateState.call(this);
-    // if(numberTokensOnTheBoard(board) === tokens+1){
-    //   turn ++ ;
-    // }
-    console.log("current turn is ...", turn)
+  turn = numberTokensOnTheBoard(board);
+  var gameIsWon = hasTheGameBeenWon()
+  // debugger
+  if (gameIsWon){
+    resetGame();
+  }
+  else{
+    updateState.call(this)
+    // console.log("current turn is ...", turn)
     turn ++ ;
-    console.log("you just played, current turn is...", turn)
+    // console.log("you just played, current turn is...", turn)
     checkWinner();
   }
 }
@@ -61,33 +64,70 @@ function updateState(){
 
 
 function checkWinner(){
-  switch (true){
-    case (numberTokensOnTheBoard(board) === 9 && !HasTheGameBeenWon()):
-      return tieGame();
-    case (turn >= 4):
-      return HasTheGameBeenWon();
-    default:
-      return false;
+  // debugger
+  if(numberTokensOnTheBoard(board) < 4){
+    return false ;
+  } else {
+    var gameIsWon = hasTheGameBeenWon()
+// debugger
+    switch (true){
+      case (numberTokensOnTheBoard(board) >= 9 && !gameIsWon):
+        return tieGame();
+      case (turn >= 4):
+        return gameIsWon;
+    }
   }
 }
 
 
-function HasTheGameBeenWon(){
+function hasTheGameBeenWon(){
   var lastMove = lastToken();
-  winningCombo.forEach( combo => {
+  // debugger
+  // forEach(winningCombo, combo => {
+  //   var result = 0;
+  //   forEach(combo, position => {
+  //     if(board[position] === lastMove){
+  //       result ++;
+  //     }
+  //   });
+  for (let i = 0, l = winningCombo.length; i < l; i++){
     var result = 0;
-    combo.forEach( position => {
-      if(board[position] === lastMove){
+    var combo = winningCombo[i];
+
+    for (let j = 0, k = combo.length; j < k; j++){
+      if(board[combo[j]] === lastMove){
         result ++;
       }
-    });
+    }
 
-    if(result === 3){
+    if(result === 3 && currentGame){
+      // debugger
+      resetGameId();
+      // debugger
+      saveGame();
+      message(`Player ${lastMove} Won!`);
+      return true;
+    }
+    else if(result === 3){
       saveGame();
       resetGame();
-      return message(`Player ${lastMove} Won!`);
+      message(`Player ${lastMove} Won!`);
+      return true;
     }
-  });
+  }
+  // });
+  return false;
+}
+
+
+// function forEach(array, callback){
+//   for (let i = 0, l = array.length; i < l; i++){
+//     callback(array[i]);
+//   }
+// }
+
+function resetGameId(){
+  currentGame = 0;
 }
 
 
@@ -106,10 +146,12 @@ function loadAPreviousGame(){
   $("#games li").on("click", function(e){
     var gameId = $(this).data("id")
     $.get("/games/" + gameId, function(data){
-      var boardArray = data.state
+      var boardArray = data.game.state
       resetGrid();
       displayBoardOnGrid(boardArray)
       loadGameParams(boardArray, gameId)
+      // debugger
+      // checkWinner()
     });
   });
 }
@@ -143,18 +185,21 @@ function numberTokensOnTheBoard(board){
 
 
 function saveGame(){
-  var id = currentGame;
+  // debugger
+  var GameId = currentGame;
   var data = {
-    game: {
-      // id: currentGame,
-      state: board
-    }
+      game: {
+        // id: currentGame,
+        state: board
+      }
   }
-  if(currentGame === 0){
+  if(GameId === 0){
     // delete data.game.id;
+    debugger
     jsSave(data);
   } else {
-    jsUpdate(data, id);
+    debugger
+    jsUpdate(data, GameId);
   }
 }
 
@@ -163,13 +208,11 @@ function jsSave(gameInfo){
   $.ajax({
     type: 'POST',
     url: '/games',
-    data: gameInfo
+    data: gameInfo,
   }).success(function(data){
-    currentGame = data.id;
+    // console.log(data)
+    currentGame = data.game.id;
   });
-  // $.post('/games', gameInfo).done(function(data){
-  //   currentGame = data.id;
-  // });
 }
 
 
@@ -178,7 +221,10 @@ function jsUpdate(gameInfo, gameId){
     type: 'PATCH',
     url: '/games/' + gameId,
     data: gameInfo
-  }).success(function(data){});
+  }).success(function(data){
+    // debugger
+
+  });
 }
 
 
@@ -209,11 +255,13 @@ function resetGrid(){
 }
 
 function lastToken(){
+  // return numberTokensOnTheBoard(board) % 2 === 0 ? "O" : "X"
   return turn % 2 === 0 ? "O" : "X"
 }
 
 
 function player(){
+  // return numberTokensOnTheBoard(board) % 2 === 0 ? "X" : "O"
   return turn % 2 === 0 ? "X" : "O"
 }
 

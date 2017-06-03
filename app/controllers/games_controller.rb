@@ -1,28 +1,30 @@
 class GamesController < ApplicationController
 
   def index
+    # binding.pry
     @games = Game.all
-    render json: @games
+    # render json: @games
+    render json: GameSerializer.serializer_all(@games)
   end
 
   def create
     @game = Game.new(game_params)
-    if @game.save
-      # render layout: false
-      render json: @game
-    end
+    @game.save
+    render json: GameSerializer.serializer(@game)
+    # render json: @game
   end
 
   def show
     @game = Game.find(params[:id])
-    render json: @game
+    render json: GameSerializer.serializer(@game)
+    # render json: @game
   end
 
   def update
     @game = Game.find(params[:id])
-    # binding.pry
     @game.update(game_params)
-    render json: @game
+    render json: GameSerializer.serializer(@game)
+    # render json: @game
   end
 
 
