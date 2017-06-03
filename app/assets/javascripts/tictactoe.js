@@ -98,7 +98,7 @@ function cell(item1) {
 
 
 function ajaxResponse(method, url) {
-  var id = "";
+
   $.ajax({
     url: url,
     method: method,
@@ -106,7 +106,7 @@ function ajaxResponse(method, url) {
     data: { game: { state: createBoard() }}
   }).success(function(response){
     // console.log("this is the response" + response.game.id);
-    id = response.game.id
+    var id = response.game.id
 
   }).error(function(error){
     console.log(error);
