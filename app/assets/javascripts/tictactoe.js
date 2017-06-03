@@ -17,6 +17,17 @@ const win_combos = [
   [2,4,6]
 ];
 
+function resetBoard() {
+  turn = -1;
+  board = new Array(9);
+  xWon = false;
+  oWon = false;
+  tie = false;
+  gameOver = false;
+  msg = "";
+  $('td').text("");
+}
+
 var player = function() {
   if (turn % 2 === 0) {
    return "X"
@@ -78,13 +89,13 @@ function message(msg) {
   $("#message").text(msg);
 }
 
-function checkWinner() {
+checkWinner = function() {
   evaluateBoard();
   if (xWon === true || oWon === true || tie === true) {
     message(msg);
-  } else {
-    return false;
+    resetBoard();
   }
+  return false;
 }
 
 function doTurn(event) {
