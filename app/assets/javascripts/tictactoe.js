@@ -47,14 +47,14 @@ function doTurn(event) {
     save(currentGame); // save the board state using json
     console.log(currentGame + " inside doTurn, checkWinner");
     resetBoard(); // resets the board
-    currentGame = undefined;
+    // currentGame = undefined;
 
   } else if (tieGame()) { // check to see if the game is tied.
       save(currentGame);
       console.log(currentGame + "inside doTurn, tieGame");
       message("Tie game");
       resetBoard();
-      currentGame = undefined;
+      // currentGame = undefined;
 
   } else {
 
@@ -111,6 +111,7 @@ function ajaxResponse(method, url) {
   }).error(function(error){
     console.log(error);
   });
+
   console.log("this is the currentGame" + id);
   return id;
 }
@@ -122,12 +123,13 @@ function save(currentGame) {
   if(currentGame) {
     var url = "/games/" + currentGame;
     console.log("url = " + url);
-    // console.log(ajaxResponse('PATCH', url));
-    ajaxResponse('PATCH', url)
+
+    currentGame = ajaxResponse('PATCH', url)
   } else {
     currentGame = ajaxResponse('POST', '/games');
-
   }
+
+
 }
 
 
@@ -177,7 +179,6 @@ function loadGame(state) {
 }
 
 function previousGames() {
-  $("#games").html("");
 
   $.ajax({
     method: "GET",
@@ -186,6 +187,7 @@ function previousGames() {
   }).success(function(data) {
     var games = data["games"];
     if(games.length >0) {
+      // $("#games").html("");
       $("#games").append("<ul></ul>");
       for(var key in games) {
         $("#games ul").append("<li data-id=" + games[key]["id"] + ">" + games[key]["id"] + "</li>");
