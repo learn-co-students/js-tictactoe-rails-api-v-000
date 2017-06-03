@@ -33,23 +33,19 @@ function attachListeners(){
   });
 }
 
-
 function doTurn(){
   turn = numberTokensOnTheBoard(board);
   var gameIsWon = hasTheGameBeenWon()
-  // debugger
+
   if (gameIsWon){
     resetGame();
   }
   else{
     updateState.call(this)
-    // console.log("current turn is ...", turn)
     turn ++ ;
-    // console.log("you just played, current turn is...", turn)
     checkWinner();
   }
 }
-
 
 function updateState(){
   var x = parseInt($(this).data("x"))
@@ -62,14 +58,11 @@ function updateState(){
   }
 }
 
-
 function checkWinner(){
-  // debugger
   if(numberTokensOnTheBoard(board) < 4){
     return false ;
   } else {
     var gameIsWon = hasTheGameBeenWon()
-// debugger
     switch (true){
       case (numberTokensOnTheBoard(board) >= 9 && !gameIsWon):
         return tieGame();
@@ -79,17 +72,9 @@ function checkWinner(){
   }
 }
 
-
 function hasTheGameBeenWon(){
   var lastMove = lastToken();
-  // debugger
-  // forEach(winningCombo, combo => {
-  //   var result = 0;
-  //   forEach(combo, position => {
-  //     if(board[position] === lastMove){
-  //       result ++;
-  //     }
-  //   });
+
   for (let i = 0, l = winningCombo.length; i < l; i++){
     var result = 0;
     var combo = winningCombo[i];
@@ -101,9 +86,6 @@ function hasTheGameBeenWon(){
     }
 
     if(result === 3 && currentGame){
-      // debugger
-      resetGameId();
-      // debugger
       saveGame();
       message(`Player ${lastMove} Won!`);
       return true;
@@ -115,21 +97,8 @@ function hasTheGameBeenWon(){
       return true;
     }
   }
-  // });
   return false;
 }
-
-
-// function forEach(array, callback){
-//   for (let i = 0, l = array.length; i < l; i++){
-//     callback(array[i]);
-//   }
-// }
-
-function resetGameId(){
-  currentGame = 0;
-}
-
 
 function displayListOfPreviousGames(){
   $.get("/games", function(data){
@@ -141,7 +110,6 @@ function displayListOfPreviousGames(){
   });
 }
 
-
 function loadAPreviousGame(){
   $("#games li").on("click", function(e){
     var gameId = $(this).data("id")
@@ -150,12 +118,9 @@ function loadAPreviousGame(){
       resetGrid();
       displayBoardOnGrid(boardArray)
       loadGameParams(boardArray, gameId)
-      // debugger
-      // checkWinner()
     });
   });
 }
-
 
 function displayBoardOnGrid(boardArray){
   board = boardArray;
@@ -165,13 +130,11 @@ function displayBoardOnGrid(boardArray){
   }
 }
 
-
 function loadGameParams(boardArray, gameId){
   board = boardArray;
   currentGame = gameId;
   turn = numberTokensOnTheBoard(board);
 }
-
 
 function numberTokensOnTheBoard(board){
   var tokens = 0;
@@ -185,24 +148,18 @@ function numberTokensOnTheBoard(board){
 
 
 function saveGame(){
-  // debugger
   var GameId = currentGame;
   var data = {
       game: {
-        // id: currentGame,
         state: board
       }
   }
   if(GameId === 0){
-    // delete data.game.id;
-    debugger
     jsSave(data);
   } else {
-    debugger
     jsUpdate(data, GameId);
   }
 }
-
 
 function jsSave(gameInfo){
   $.ajax({
@@ -210,23 +167,17 @@ function jsSave(gameInfo){
     url: '/games',
     data: gameInfo,
   }).success(function(data){
-    // console.log(data)
     currentGame = data.game.id;
   });
 }
-
 
 function jsUpdate(gameInfo, gameId){
   $.ajax({
     type: 'PATCH',
     url: '/games/' + gameId,
     data: gameInfo
-  }).success(function(data){
-    // debugger
-
-  });
+  }).success(function(data){});
 }
-
 
 function tieGame(){
   message("Tie game");
@@ -234,14 +185,12 @@ function tieGame(){
   return false;
 }
 
-
 function resetGame(){
   turn = 0;
   currentGame = 0;
   board = ["", "", "", "", "", "", "", "", ""];
   resetGrid();
 }
-
 
 function resetGrid(){
   var $rows = $("tbody")[0].children
@@ -255,13 +204,11 @@ function resetGrid(){
 }
 
 function lastToken(){
-  // return numberTokensOnTheBoard(board) % 2 === 0 ? "O" : "X"
   return turn % 2 === 0 ? "O" : "X"
 }
 
 
 function player(){
-  // return numberTokensOnTheBoard(board) % 2 === 0 ? "X" : "O"
   return turn % 2 === 0 ? "X" : "O"
 }
 
