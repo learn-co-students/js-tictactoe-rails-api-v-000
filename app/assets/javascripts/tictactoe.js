@@ -23,15 +23,18 @@ function attachListeners() {
 }
 
 function save() {
+  var values = { game: { id: currentGame, state: getState() } };
   if (currentGame === 0) {
-    var newGame = $.ajax({ type: "POST", url: "/games", data: { state: getState()} });
+    //var newGame = $.ajax({ type: "POST", url: "/games", data: { state: getState()} });
+    var newGame = $.ajax({ type: "POST", url: "/games", data: values });
     newGame.success(function(data) {
       currentGame = Number(data);
     });
   }
   else {
     $('#save').click(function() {
-      $.ajax({ type: "PATCH", url: "/games/" + currentGame, data: { state: getState()} });
+     // $.ajax({ type: "PATCH", url: "/games/" + currentGame, data: { state: getState()} });
+      $.ajax({ type: "PATCH", url: "/games/" + currentGame, data: values });
     });
   }
   
@@ -40,13 +43,11 @@ function save() {
 function show() {
   var response = $.ajax({ type: "GET", url: "/games" });
   response.done(function(data) {
-    arr = JSON.parse(data);
-    $("#games").html("");
-    arr.forEach(function(element) {
-      $("#games").append("<a id = 'element" + element + "' href=/games/" + element + ">" + element + "</a><br>");
-      $('#element'+element).click(function(){
+    data.games.forEach(function(game) {
+      $("#games").append("<a id = 'game" + game.id + "' href=/games/" + game.id + ">" + game.id + "</a><br>");
+      $('#game'+ game.id).click(function(){
         event.preventDefault();
-        load(element);
+        load(game.id);
       });
     })
   })
