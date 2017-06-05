@@ -1,0 +1,25 @@
+{
+  "name": "package.json",
+  "version": "1.0.0",
+  "description": "## Note: This lab does not work on the Learn IDE (we are in the process of upgrading it!). You can skip it for now and come back to it when it's upgraded OR you can [switch to a local environment](http://help.learn.co/workflow-tips/local-environment/setting-up-a-local-environment):",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivanpilot/js-tictactoe-rails-api-v-000.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivanpilot/js-tictactoe-rails-api-v-000/issues"
+  },
+  "homepage": "https://github.com/ivanpilot/js-tictactoe-rails-api-v-000#readme"
+}
