@@ -11,7 +11,7 @@ class GamesController < ApplicationController
   end
 
   def show
-    render plain: @game.state, :layout => false
+    render json: @game.to_json, :layout => false
   end
 
   def create
@@ -21,6 +21,7 @@ class GamesController < ApplicationController
 
   def update
     @game.update(game_params)
+    render json: @game.to_json, :layout => false
   end
 
   private

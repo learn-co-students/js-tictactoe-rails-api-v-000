@@ -108,14 +108,14 @@ function attachListeners (){
   });
   $('button#save').on('click', function(event) {
     event.preventDefault();
-    //event.stopImmediatePropagation();
+    event.stopImmediatePropagation();
     saveGame();
   });
   $('li').on('click', function(event){
-    event.preventDefault();
-    loadGame(event.currentTarget.id);
+    loadGame(event.currentTarget.dataset.gameid);
     loadTable();
     analyzePreviousGame();
+    event.preventDefault();
   });
 };
 
@@ -129,9 +129,9 @@ function getPreviousGames() {
   var line_items = ""
   $.getJSON('/games').done(function(response){
     $.each(response, function(index, value){
-      line_items += "<li id='" + value.id + "'>" + value.id + "</li>"
+      line_items += "<li data-gameid='" + value.id + "'>" + value.id + "</li>"
     });
-    $('#games').html(line_items)
+    $('#games').html(line_items);
     attachListeners();
   });
 };
@@ -156,11 +156,18 @@ function saveGame(reset) {
 };
 
 function loadGame(id) {
-  $.ajax({
-    url: "/games/" + id,
-    method: "GET",
-    success: function(response){
-      board = JSON.parse(response);
-    }
-  });
+  //$.ajax({
+    //url: "/games/" + id,
+    //method: "GET",
+    //success: function(response){
+      //board = JSON.parse(response.state);
+      //debugger
+    //}
+  //});
+  //currentGame = id;
+  $.get("/games/" + id, function(response){
+      board = JSON.parse(response.state);
+    });
+  currentGame = id;
+  debugger;
 };
