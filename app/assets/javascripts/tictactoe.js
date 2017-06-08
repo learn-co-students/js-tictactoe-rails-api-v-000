@@ -40,8 +40,7 @@ var player = function() {
 };
 
 function updateState(event){
-  const token = player();
-  $(event.target).text(token);
+  $(event.target).text(player());
   updateBoard();
 };
 
@@ -50,7 +49,7 @@ function checkWinner(token){
     pos_1 = win_combos[i][0];
     pos_2 = win_combos[i][1];
     pos_3 = win_combos[i][2];
-    if (board[pos_1] === token && board[pos_2] === token && board[pos_3] === token) {
+    if (board[pos_1] == token && board[pos_2] == token && board[pos_3] == token) {
       message("Player " + token + " Won!");
       return true;
     };
@@ -115,6 +114,8 @@ function attachListeners (){
   $('li').on('click', function(event){
     event.preventDefault();
     loadGame(event.currentTarget.id);
+    loadTable();
+    analyzePreviousGame();
   });
 };
 
@@ -150,6 +151,16 @@ function saveGame(reset) {
     data: { game: {state: JSON.stringify(board)} },
     success: function(response) {
       reset ? currentGame = undefined : currentGame = response.id;
+    }
+  });
+};
+
+function loadGame(id) {
+  $.ajax({
+    url: "/games/" + id,
+    method: "GET",
+    success: function(response){
+      board = JSON.parse(response);
     }
   });
 };
