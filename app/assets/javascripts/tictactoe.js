@@ -14,7 +14,6 @@ const win_combos = [
 ];
 
 function resetBoard() {
-  //currentGame = undefined;
   turn = 0;
   board = [];
   $('td').text("");
@@ -46,8 +45,7 @@ function updateState(event){
   updateBoard();
 }
 
-function checkWinner(){
-  const token = player();
+function checkWinner(token){
   for (let i=0; i < win_combos.length; i++) {
     pos_1 = win_combos[i][0];
     pos_2 = win_combos[i][1];
@@ -57,18 +55,6 @@ function checkWinner(){
       return true;
     }
   }
-  //Tie Game
-//  var emptyCellDetected = false
-  //for (var i=0; i < board.length; i++) {
-    //if (board[i] == "") {
-      //emptyCellDetected = true
-    //}
-  //}
-  //if (emptyCellDetected == false) {
-    //message("Tie game");
-    //return true;
-  //}
-  //returns false if no winner
   return false;
 }
 
@@ -83,20 +69,9 @@ function checkTie(){
 
 function analyzePreviousGame(){
   turn = board.filter(String).length;
-  const tokens = ["X","O"]
-  for (let i=0; i < tokens.length; i++) {
-    for (let j=0; j < win_combos.length; j++) {
-      pos_1 = win_combos[j][0];
-      pos_2 = win_combos[j][1];
-      pos_3 = win_combos[j][2];
-      if (board[pos_1] === tokens[i] && board[pos_2] === tokens[i] && board[pos_3] === tokens[i]) {
-        return message("Player " + tokens[i] + " Won!");
-      }
-    }
-  }
-  //if (turn == 9) {
-    //return message("Tie game");
-  //}
+  checkWinner("X");
+  checkWinner("O");
+  checkTie();
 }
 
 function loadTable() {
@@ -113,7 +88,7 @@ function loadTable() {
 
 function doTurn(event) {
   updateState(event);
-  if (checkWinner() || checkTie()) {
+  if (checkWinner(player()) || checkTie()) {
     saveGame(true);
     resetBoard();
   } else {
