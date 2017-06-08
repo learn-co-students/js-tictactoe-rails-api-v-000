@@ -112,10 +112,8 @@ function attachListeners (){
     saveGame();
   });
   $('li').on('click', function(event){
-    loadGame(event.currentTarget.dataset.gameid);
-    loadTable();
-    analyzePreviousGame();
     event.preventDefault();
+    loadGame(event.currentTarget.dataset.gameid);
   });
 };
 
@@ -133,7 +131,7 @@ function getPreviousGames() {
     });
     $('#games').html(line_items);
     attachListeners();
-  });
+  })
 };
 
 function saveGame(reset) {
@@ -150,24 +148,21 @@ function saveGame(reset) {
     dataType: "JSON",
     data: { game: {state: JSON.stringify(board)} },
     success: function(response) {
-      reset ? currentGame = undefined : currentGame = response.id;
+      if (reset) {
+        resetBoard();
+        currentGame = undefined;
+      } else {
+        currentGame = response.id;
+      }
     }
-  });
+  })
 };
 
 function loadGame(id) {
-  //$.ajax({
-    //url: "/games/" + id,
-    //method: "GET",
-    //success: function(response){
-      //board = JSON.parse(response.state);
-      //debugger
-    //}
-  //});
-  //currentGame = id;
-  $.get("/games/" + id, function(response){
-      board = JSON.parse(response.state);
-    });
-  currentGame = id;
-  debugger;
+  $.getJSON("/games/" + id).done(function(response){
+    board = JSON.parse(response.state)
+    currentGame = response.id
+    loadTable();
+    analyzePreviousGame();
+  });
 };
