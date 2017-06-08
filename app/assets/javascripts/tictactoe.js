@@ -1,6 +1,6 @@
 var turn = 0;
-var board = new Array(9);
-var currentGame = 0;
+var board = [];
+var currentGame = undefined;
 
 const win_combos = [
   [0,1,2],
@@ -14,9 +14,9 @@ const win_combos = [
 ];
 
 function resetBoard() {
-  currentGame = 0;
+  //currentGame = undefined;
   turn = 0;
-  board = new Array(9);
+  board = [];
   $('td').text("");
 }
 
@@ -37,11 +37,7 @@ function updateBoard() {
 }
 
 var player = function() {
-  if (turn % 2 === 0) {
-   return "X"
-  } else {
-   return "O"
-  }
+  return (turn % 2 === 0) ? "X" : "O";
 }
 
 function updateState(event){
@@ -57,28 +53,35 @@ function checkWinner(){
     pos_2 = win_combos[i][1];
     pos_3 = win_combos[i][2];
     if (board[pos_1] === token && board[pos_2] === token && board[pos_3] === token) {
-
       message("Player " + token + " Won!");
       return true;
     }
   }
   //Tie Game
-  var emptyCellDetected = false
-  for (var i=0; i < board.length; i++) {
-    if (board[i] == "") {
-      emptyCellDetected = true
-    }
-  }
-  if (emptyCellDetected == false) {
-
-    message("Tie game");
-    return true;
-  }
+//  var emptyCellDetected = false
+  //for (var i=0; i < board.length; i++) {
+    //if (board[i] == "") {
+      //emptyCellDetected = true
+    //}
+  //}
+  //if (emptyCellDetected == false) {
+    //message("Tie game");
+    //return true;
+  //}
   //returns false if no winner
   return false;
 }
 
-function analyzedPreviousGame(){
+function checkTie(){
+  if (turn >= 8) {
+    message("Tie game");
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function analyzePreviousGame(){
   turn = board.filter(String).length;
   const tokens = ["X","O"]
   for (let i=0; i < tokens.length; i++) {
@@ -91,12 +94,12 @@ function analyzedPreviousGame(){
       }
     }
   }
-  if (turn == 9) {
-    return message("Tie game");
-  }
+  //if (turn == 9) {
+    //return message("Tie game");
+  //}
 }
 
-function loadBoard() {
+function loadTable() {
   $('td[data-x="0"][data-y="0"]').text(board[0]);
   $('td[data-x="1"][data-y="0"]').text(board[1]);
   $('td[data-x="2"][data-y="0"]').text(board[2]);
@@ -106,13 +109,12 @@ function loadBoard() {
   $('td[data-x="0"][data-y="2"]').text(board[6]);
   $('td[data-x="1"][data-y="2"]').text(board[7]);
   $('td[data-x="2"][data-y="2"]').text(board[8]);
-  analyzedPreviousGame();
 }
 
 function doTurn(event) {
   updateState(event);
-  if (checkWinner()) {
-    saveGame();
+  if (checkWinner() || checkTie()) {
+    saveGame(true);
     resetBoard();
   } else {
     turn += 1;
@@ -122,18 +124,21 @@ function doTurn(event) {
 function attachListeners (){
   $('td').on('click', function(event) {
     if ($(event.target).html() == "") {
+      event.preventDefault();
       doTurn(event);
     };
   });
-  $('button#previous').on('click', function() {
+  $('button#previous').on('click', function(event) {
+    event.preventDefault();
     getPreviousGames();
   });
   $('button#save').on('click', function(event) {
     event.preventDefault();
-    event.stopImmediatePropagation();
+    //event.stopImmediatePropagation();
     saveGame();
   });
-  $("li").on('click', function(event){
+  $('li').on('click', function(event){
+    event.preventDefault();
     loadGame(event.currentTarget.id);
   });
 };
@@ -155,32 +160,33 @@ function getPreviousGames() {
   });
 };
 
-function saveGame() {
+function saveGame(reset) {
+  debugger
   if (!currentGame) {
-    var res;
     $.ajax({
       url: "/games",
-      method: 'POST',
+      method: "POST",
       dataType: "JSON",
       data: { game: {state: JSON.stringify(board)} },
       success: function(response) {
-        currentGame = response.id;
+        reset ? currentGame = undefined : currentGame = response.id;
       }
     });
   } else {
     $.ajax({
       url: "/games/" + currentGame,
-      method: 'PATCH',
+      method: "PATCH",
       dataType: "JSON",
       data: { game: {state: JSON.stringify(board)} }
     });
   };
-};
+}
 
 function loadGame(id) {
   const url = "/games/" + id
   $.get(url).success(function(response){
     board = JSON.parse(response)
-    loadBoard();
-  })
+    loadTable();
+    analyzePreviousGame();
+  });
 }
