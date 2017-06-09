@@ -1,5 +1,6 @@
 var turn = 0
 var currentGame = 0
+
 const winningCombos = [
   [0,1,2],
   [3,4,5],
@@ -61,6 +62,7 @@ var resetBoard = () => {
   currentGame = 0
   $('td').each((index, value) => {value.innerText = ''})
 }
+
 
 var message = (message) => {
   $('#message').text(message)
