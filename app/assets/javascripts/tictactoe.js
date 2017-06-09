@@ -26,6 +26,10 @@ var doTurn = e => {
     updateState(e)
     checkWinner()
     turn += 1
+    if (turn === 9){
+      message('Tie game')
+      resetBoard()
+    }
   }
   else {
     message('This cell is taken')
@@ -44,9 +48,9 @@ var checkWinner = () => {
   $.each(winningCombos, (index, value) => {
     if ($state[value[0]] == current && $state[value[1]] == current && $state[value[2]] == current) {
       let winner = $state[value[0]]
-      message('Player ' + winner + ' won!')
-      result = true
+      message('Player ' + winner + ' Won!')
       resetBoard()
+      result = true
     }
   })
   return result
