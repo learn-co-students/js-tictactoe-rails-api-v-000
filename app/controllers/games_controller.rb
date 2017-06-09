@@ -1,5 +1,11 @@
 class GamesController < ApplicationController
 
+  def index 
+    binding.pry
+    @games = Game.all
+    render json: '{"games"=> {[' + @games.to_json(only: [:id, :state]) + ']}'
+  end
+
   def new
     @game = Game.new(["", "", "", "", "", "", "", "", ""])
   end
