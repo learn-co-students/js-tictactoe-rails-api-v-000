@@ -29,6 +29,7 @@ var doTurn = e => {
     turn += 1
     if (turn === 9){
       message('Tie game')
+      saveGame()
       resetBoard()
     }
   }
@@ -41,11 +42,16 @@ var updateState = e => {
   return e.currentTarget.innerText = player()
 }
 
-var checkWinner = () => {
+var getState = () => {
   var $state = []
+  $('td').each((index, value) => {$state.push(value.innerText)})
+  return $state
+}
+
+var checkWinner = () => {
   var result = false
   var current = player()
-  $('td').each((index, value) => {$state.push(value.innerText)})
+  var $state = getState()
   $.each(winningCombos, (index, value) => {
     if ($state[value[0]] == current && $state[value[1]] == current && $state[value[2]] == current) {
       let winner = $state[value[0]]
@@ -57,12 +63,22 @@ var checkWinner = () => {
   return result
 }
 
+var saveGame = () => {
+  let game = {}
+  game.state = getState()
+  // post ('/games', $gameState
+  // let post = $.post('/games, game')
+  $.ajax({
+    url: '/games', data: game, type: 'post'
+  })
+}
+
 var resetBoard = () => {
+  saveGame()
   turn = 0
   currentGame = 0
   $('td').each((index, value) => {value.innerText = ''})
 }
-
 
 var message = (message) => {
   $('#message').text(message)
