@@ -1,9 +1,9 @@
 class GamesController < ApplicationController
 
-  def index 
-    binding.pry
+  def index
     @games = Game.all
-    render json: '{"games"=> {[' + @games.to_json(only: [:id, :state]) + ']}'
+    render json: @games.to_json
+    #(only: [:id, :state])
   end
 
   def new
