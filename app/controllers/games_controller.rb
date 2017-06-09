@@ -2,8 +2,7 @@ class GamesController < ApplicationController
 
   def index
     @games = Game.all
-    render json: @games.to_json
-    #(only: [:id, :state])
+    render json: @games
   end
 
   def new
