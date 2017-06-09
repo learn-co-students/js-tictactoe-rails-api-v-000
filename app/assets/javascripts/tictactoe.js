@@ -153,15 +153,15 @@ function saveGame(reset) {
         currentGame = undefined;
       } else {
         currentGame = response.id;
-      }
+      };
     }
-  })
+  });
 };
 
 function loadGame(id) {
   $.getJSON("/games/" + id).done(function(response){
     board = JSON.parse(response.state)
-    currentGame = response.id
+    currentGame = response.id;
     loadTable();
     analyzePreviousGame();
   });
