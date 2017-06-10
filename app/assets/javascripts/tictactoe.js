@@ -24,7 +24,7 @@ function checkWinner() {
 }
 
 function updateState(event) {
-	
+
 	event.target.innerHTML = player()
 }
 
@@ -34,4 +34,8 @@ function player() {
 	} else {
 		return 'O'
 	}
+}
+
+function message() {
+  
 }
