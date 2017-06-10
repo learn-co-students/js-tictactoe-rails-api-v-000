@@ -23,19 +23,17 @@ var attachListeners = () => {
 }
 
 var doTurn = e => {
-  if (e.currentTarget.innerText == '') {
+  //if (e.currentTarget.innerText == '') {
     updateState(e)
     checkWinner()
     turn += 1
-    if (turn === 9){
+  if (turn === 9){
       message('Tie game')
       saveGame()
       resetBoard()
-    }
-  }
-  else {
-    message('This cell is taken')
-  }
+  } //else {
+  //  message('This cell is taken')
+  //}
 }
 
 var updateState = e => {
