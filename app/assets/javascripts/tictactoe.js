@@ -70,13 +70,25 @@ var checkWinner = () => {
 }
 
 var saveGame = () => {
-  let game = {}
-  game.state = getState()
-  // post ('/games', $gameState
-  // let post = $.post('/games, game')
-  $.ajax({
-    url: '/games', data: game, type: 'post'
-  })
+  if (currentGame == 0) {
+    let obj = {}
+    obj.state = getState()
+    obj.turn = turn
+    $.post('/games', obj)
+  }
+  else {
+    let obj = {}
+    obj.state = getState()
+    obj.turn = turn
+    $.ajax({url: '/games' + currentGame, data: obj, type: 'PATCH'})
+  }
+  // let game = {}
+  // game.state = getState()
+  // // post ('/games', $gameState
+  // // let post = $.post('/games, game')
+  // $.ajax({
+  //   url: '/games', data: game, type: 'post'
+  // })
 }
 
 var resetBoard = () => {
