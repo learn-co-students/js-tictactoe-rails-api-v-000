@@ -1,32 +1,30 @@
 $(function() {
   attachListeners()
+  const turn = 0
 });
 
 function attachListeners() {
-	var allRows = document.getElementsByTagName("tr")
+	var allCells = document.getElementsByTagName("td")
 
-	//Goal : iterate through allRows to get rows
-	// iterate through each of those rows to get cells
-
-	  Array.prototype.forEach.call(allRows
-	  	[0].children, function(row){
-	    console.log(row)
+	  Array.prototype.forEach.call(allCells, function(cell){
+	    cell.addEventListener("click", function(){
+    	    doTurn()
+    	})
 	})
-
-
-	  onClick(function(event){
-	    console.log("Success!")
-	})
-	  // var selector = '[data-x="0"][data-y="0"]'
-	  // document.querySelector(selector).addEventListener("click", doTurn()); 
 }
 
-function turn() {
-
+function turn(turn) {
+  turn += 1
 }
 
 function doTurn() {
 
 }
 
+function checkWinner() {
 
+}
+
+function updateState() {
+  
+}
