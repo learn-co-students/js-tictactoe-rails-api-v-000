@@ -1,8 +1,8 @@
-$(function() {
-  attachListeners()
-});
-
-var turn = 1
+var turn = 1;
+const winCombos = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]],  [[0,0],[0,1],[0,2]], [[1,0],[1,1],[1,2]],
+[[2,0],[2,1],[2,2]],
+[[0,0],[1,1],[2,2]],
+[[2,0],[1,1],[0,2]]];
 
 function attachListeners() {
 	var allCells = document.getElementsByTagName("td");
@@ -24,18 +24,21 @@ function checkWinner() {
 }
 
 function updateState(event) {
-
 	event.target.innerHTML = player()
 }
 
 function player() {
 	if (turn % 2 === 0){
-		return 'X'
+		return 'X';
 	} else {
-		return 'O'
+		return 'O';
 	}
 }
 
 function message() {
-  
+
 }
+
+$(function() {
+  attachListeners();
+});
