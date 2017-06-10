@@ -24,6 +24,10 @@ var attachListeners = () => {
   $('#previous').click(function(e){
     getGames()
   })
+
+  $('#save').click(function(e){
+    saveGame()
+  })
 }
 
 var doTurn = e => {
