@@ -23,24 +23,20 @@ var attachListeners = () => {
 }
 
 var doTurn = e => {
-  // NOTES
-  // innerText was causing the error
-  // moved tie game logic to checkWinner
-
-  //if (e.currentTarget.innerText == '') {
+  if (e.currentTarget.innerText == '') {
     updateState(e)
     checkWinner()
     turn += 1
-  //  if (turn === 9){
-    //  message('Tie game')
-    //  saveGame()
-  //    resetBoard()
-  //  }
-//  }
-//  else {
-  //  message('This cell is taken')
+    if (turn === 9){
+      message('Tie game')
+      saveGame()
+      resetBoard()
+    }
+  }
+  else {
+    message('This cell is taken')
+  }
 }
-
 
 var updateState = e => {
   return e.currentTarget.innerText = player()
@@ -56,15 +52,10 @@ var checkWinner = () => {
   var result = false
   var current = player()
   var $state = getState()
-
   $.each(winningCombos, (index, value) => {
     if ($state[value[0]] == current && $state[value[1]] == current && $state[value[2]] == current) {
-      // let winner = $state[value[0]]
-      message('Player ' + current + ' Won!')
-      resetBoard()
-      result = true
-    } else if (turn === 9){
-      message('Tie game')
+      let winner = $state[value[0]]
+      message('Player ' + winner + ' Won!')
       resetBoard()
       result = true
     }
@@ -86,8 +77,7 @@ var resetBoard = () => {
   saveGame()
   turn = 0
   currentGame = 0
-  // $('td').each((index, value) => {value.innerText = ''})
-  $('td').html('');
+  $('td').each((index, value) => {value.innerText = ''})
 }
 
 var message = (message) => {
