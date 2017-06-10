@@ -20,6 +20,10 @@ var attachListeners = () => {
   $('td').click(function(e) {
     doTurn(e)
   })
+
+  $('#previous').click(function(e){
+    getGames()
+  })
 }
 
 var doTurn = e => {
@@ -85,3 +89,27 @@ var message = (message) => {
 $(() => {
   attachListeners()
 })
+
+// Persistence Functions
+
+function getGames() {
+  $.ajax({
+    url: '/games',
+    type: 'GET',
+    dataType: 'json'
+  }).done(function(res){
+    showGames(res.games)
+  })
+}
+
+function showGames(games) {
+  var gamesHTML = $()
+  games.forEach(function(game){
+    gamesHTML = gamesHTML.add(showGame(game))
+  })
+  $('#games').html(gamesHTML)
+}
+
+function showGame(game){
+  return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
+}
