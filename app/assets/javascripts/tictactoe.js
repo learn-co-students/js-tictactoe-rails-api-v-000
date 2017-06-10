@@ -23,20 +23,24 @@ var attachListeners = () => {
 }
 
 var doTurn = e => {
-  if (e.currentTarget.innerText == '') {
+  // NOTES
+  // innerText was causing the error
+  // should we consider moving the tie game logic to checkWinner?
+
+  //if (e.currentTarget.innerText == '') {
     updateState(e)
     checkWinner()
     turn += 1
-    if (turn === 9){
-      message('Tie game')
-      saveGame()
-      resetBoard()
-    }
-  }
-  else {
-    message('This cell is taken')
-  }
+  //  if (turn === 9){
+    //  message('Tie game')
+    //  saveGame()
+  //    resetBoard()
+  //  }
+//  }
+//  else {
+  //  message('This cell is taken')
 }
+
 
 var updateState = e => {
   return e.currentTarget.innerText = player()
