@@ -1,4 +1,5 @@
 class GamesController < ApplicationController
+  before_action :set_game, only: [:update, :edit]
 
   def index
     @games = Game.all
@@ -15,11 +16,10 @@ class GamesController < ApplicationController
   end
 
   def edit
-    @game = Game.find(params[:id])
+
   end
 
   def update
-    @game = Game.find(params[:id])
     @game.update(game_params)
   end
 
@@ -27,5 +27,9 @@ class GamesController < ApplicationController
 
   def game_params
     params.require(:game).permit(:state => [])
+  end
+
+  def set_game
+    @game = Game.find(params[:id])
   end
 end
