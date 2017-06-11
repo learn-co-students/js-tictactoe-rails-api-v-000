@@ -39,13 +39,14 @@ var doTurn = e => {
       message('Tie game')
       saveGame()
       resetBoard()
-  } //else {
-  //  message('This cell is taken')
-  //}
+  }
+  else {
+   message('This cell is taken')
+  }
 }
 
 var updateState = e => {
-  return e.currentTarget.innerText = player()
+  $(e.target).html(player())
 }
 
 var getState = () => {
@@ -82,20 +83,13 @@ var saveGame = () => {
     obj.turn = turn
     $.ajax({url: '/games' + currentGame, data: obj, type: 'PATCH'})
   }
-  // let game = {}
-  // game.state = getState()
-  // // post ('/games', $gameState
-  // // let post = $.post('/games, game')
-  // $.ajax({
-  //   url: '/games', data: game, type: 'post'
-  // })
 }
 
 var resetBoard = () => {
   saveGame()
+  $('td').html('')
   turn = 0
   currentGame = 0
-  $('td').each((index, value) => {value.innerText = ''})
 }
 
 var message = (message) => {
