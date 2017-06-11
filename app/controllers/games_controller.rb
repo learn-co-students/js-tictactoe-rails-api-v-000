@@ -19,6 +19,10 @@ class GamesController < ApplicationController
     render json: @game
   end
 
+  def destroy
+    Game.find(params[:id]).destroy
+  end
+
   private
 
   def game_params

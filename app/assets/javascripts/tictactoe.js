@@ -31,19 +31,26 @@ var attachListeners = () => {
 }
 
 var doTurn = e => {
-  //if (e.currentTarget.innerText == '') {
-    updateState(e)
-    checkWinner()
-    turn += 1
-  if (turn === 9){
-      message('Tie game')
-      saveGame()
-      resetBoard()
+//if (e.currentTarget.innerText == '') {
+  updateState(e)
+  checkWinner()
+  turn += 1
+if (turn === 9){
+    message('Tie game')
+    saveGame()
+    resetBoard()
   }
   else {
-   message('This cell is taken')
+    message('This cell is taken')
   }
 }
+  // updateState(e)
+  // if (checkWinner() || turn === 9 {
+  //   saveGame()
+  //   resetBoard()
+  // })
+  // else {turn += 1}
+// }
 
 var updateState = e => {
   $(e.target).html(player())
