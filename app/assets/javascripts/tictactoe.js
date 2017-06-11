@@ -12,8 +12,8 @@ function attachListeners() {
 
 function doTurn(event) {
   turn += 1
-  checkWinner();
   updateState(event);
+  checkWinner();
 }
 
 function checkWinner() {
