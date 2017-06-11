@@ -17,14 +17,19 @@ function doTurn(event) {
 }
 
 function checkWinner() {
-
+  if (true) {
+    message("Player X Won!")
+  } else {
+    message("Player O Won!")
+  }
 }
 
 function updateState(event) {
-	event.target.innerHTML = player()
+	event.target.html = player()
 }
 
 function player() {
+  debugger;
 	if (turn % 2 === 0){
 		return 'X';
 	} else {
@@ -32,8 +37,8 @@ function player() {
 	}
 }
 
-function message() {
-
+function message(string) {
+  document.getElementById("message").innerHTML = string
 }
 
 $(function() {
