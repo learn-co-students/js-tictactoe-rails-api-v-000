@@ -91,26 +91,81 @@ var checkWinner = () => {
   return result
 }
 
-var saveGame = () => {
-  if (currentGame == 0) {
-    console.log('post request')
-    let obj = {}
-    obj.game = {}
-    obj.game.state = getState()
-    obj.game.turn = turn
-    console.log(obj)
-    $.post('/games', obj)
+var saveGame = function(resetCurrentGame) {
+  var url
+  var method
+
+  if(currentGame) {
+    console.log("patch request")
+    url = "/games/" + currentGame
+    method = "PATCH"
+  } else {
+    console.log("post request")
+    url = "/games"
+    method = "POST"
   }
-  else {
-    console.log('patch request')
-    let obj = {}
-    obj.game = {}
-    obj.game.state = getState()
-    obj.game.turn = turn
-    console.log(obj)
-    $.ajax({url: '/games' + currentGame, data: obj, type: 'PATCH'})
-  }
+
+  $.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: { game: { state: getState() } },
+    success: function(data) {
+      if(resetCurrentGame) {
+        currentGame = undefined;
+      } else {
+        currentGame = data.game.id;
+      }
+    }
+  })
 }
+
+// var saveGame = (resetCurrentGame) => {
+//   var url, method
+//     if (currentGame) {
+//       console.log('post request')
+//       url = '/games/' + currentGame
+//       method: 'PATCH'
+//     } else {
+//       url = '/games'
+//       method = 'POST'
+//     }
+//
+//     $.ajax({
+//       url: url,
+//       method: method,
+//       dataType: "json",
+//       data: {
+//         game: {
+//           state: getState()
+//         }
+//       },
+//       success: function(data) {
+//         if(resetCurrentGame) {
+//           currentGame = undefined;
+//         } else {
+//           currentGame = data.game.id;
+//         }
+//       }
+//     })
+
+
+    //   let obj = {}
+    //   obj.game = {}
+    //   obj.game.state = getState()
+    //   obj.game.turn = turn
+    //   $.post('/games', obj)
+    //   console.log(obj)
+    // } else if (currentGame != 0) {
+    //   console.log('patch request')
+    //   let obj = {}
+    //   obj.game = {}
+    //   obj.game.state = getState()
+    //   obj.game.turn = turn
+    //   console.log(obj)
+    //   $.ajax({url: '/games' + currentGame, data: obj, type: 'PATCH'})
+    // }
+  //}
 
 
 
