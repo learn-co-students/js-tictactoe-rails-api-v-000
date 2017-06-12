@@ -18,11 +18,14 @@ $(() => {
 })
 
 const attachListeners = function () {
-  $('td'').on('click', function(data) {
+  $('td').on('click', function(data) {
     doTurn($(this).data('x'), $(this).data('y'));
   })
-  $('#previous').on('click', function () {
+  $('#previous').on('click', () => {
     getAllGames()
+  })
+  $('#save').on('click', () => {
+    saveGame()
   })
 }
 
@@ -79,4 +82,8 @@ function message (message) {
 
 function getAllGames () {
   $.get('/games')
+}
+
+function saveGame () {
+  $.post('/games')
 }
