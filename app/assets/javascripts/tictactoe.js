@@ -37,7 +37,9 @@ function checkWinner () {
   var board = checkBoard ();
   winningCombos.forEach(function(position) {
     if (board[position[0]] == board[position[1]] && board[position[1]] == board[position[2]] && board[position[0]] != ""){
-      return `Player ${board[position[0]]} has won!`;
+      message(`Player ${board[position[0]]} Won!`);
+    } else {
+      return false
     }
   })
 }
@@ -54,4 +56,8 @@ function player() {
   } else {
     return 'O';
   }
+}
+
+function message (message) {
+  $('#message').html(message)
 }
