@@ -18,13 +18,13 @@ $(() => {
 })
 
 const attachListeners = function () {
-  $('td').on('click', function(data) {
+  $('td').click(function(data) {
     doTurn($(this).data('x'), $(this).data('y'));
   })
-  $('#previous').on('click', () => {
+  $('#previous').click(() => {
     getAllGames()
   })
-  $('#save').on('click', () => {
+  $('#save').click(() => {
     saveGame()
   })
 }
