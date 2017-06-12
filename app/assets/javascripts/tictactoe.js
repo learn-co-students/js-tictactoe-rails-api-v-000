@@ -1,11 +1,27 @@
 'use strict'
 
-function attachListeners() {
+$(() => {
+  attachListeners()
+})
+
+let turn = 0
+
+const attachListeners = function () {
   $("td").on('click', function(data) {
     doTurn($(this).data("x"), $(this).data("y"));
   });
 }
 
 function doTurn(x,y) {
-  console.log(x, y)
+  turn += 1
+  updateState(x,y)
+  checkWinner()
+}
+
+function updateState (x,y) {
+
+}
+
+function checkWinner () {
+
 }
