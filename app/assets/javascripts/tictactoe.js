@@ -11,7 +11,7 @@ const  winningCombos = [
     [2,4,6],
   ];
 let turn = 0
-let currentGame = 0
+let currentGame
 
 $(() => {
   attachListeners()
@@ -89,5 +89,26 @@ function getAllGames () { // 'Show Previous Games' button fires this.
 }
 
 function saveGame () { // 'Save Game' button fires this.
-  $.post('/games')
+  let url
+  let method
+  if (currentGame) { // If the game exists in the db already
+    url = `/games/${currentGame}`
+    method = 'PATCH'
+  } else { // If this is a new game not in the db
+    url = '/games'
+    method = 'POST'
+  }
+  $.ajax({ // I chose this over two jQuery calls in the block above.
+    url: url,
+    method: method,
+    dataType: 'json',
+    data: {
+      game: {
+        state: checkBoard()
+      }
+    },
+    success: (data) => {
+      currentGame = data.game.id // Set the currentGame to the just saved game.
+    }
+  })
 }
