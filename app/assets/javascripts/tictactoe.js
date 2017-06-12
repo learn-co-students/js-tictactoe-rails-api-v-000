@@ -34,14 +34,18 @@ function updateState (x,y) {
 }
 
 function checkWinner () {
-  var board = checkBoard ();
+  let winner = false;
+  let board = checkBoard ();
   winningCombos.forEach(function(position) {
     if (board[position[0]] == board[position[1]] && board[position[1]] == board[position[2]] && board[position[0]] != ""){
-      message(`Player ${board[position[0]]} Won!`);
-    } else {
-      return false
+      winner = true
     }
   })
+  if (winner === true) {
+    message(`Player ${player()} Won!`)
+  } else {
+    return false
+  }
 }
 
 function checkBoard () {
