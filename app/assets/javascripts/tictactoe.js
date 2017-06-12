@@ -87,6 +87,6 @@ function getAllGames () { // 'Show Previous Games' button fires this.
     })
 }
 
-function saveGame () {
+function saveGame () { // 'Save Game' button fires this.
   $.post('/games')
 }
