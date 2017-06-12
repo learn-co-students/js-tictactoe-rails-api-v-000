@@ -80,8 +80,11 @@ function message (message) {
   $('#message').html(message)
 }
 
-function getAllGames () {
+function getAllGames () { // 'Show Previous Games' button fires this.
   $.get('/games')
+    .done((response) => {
+      console.log(response)
+    })
 }
 
 function saveGame () {
