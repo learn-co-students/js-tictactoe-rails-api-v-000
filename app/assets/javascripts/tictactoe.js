@@ -43,6 +43,8 @@ function checkWinner () {
   })
   if (winner === true) {
     message(`Player ${player()} Won!`)
+  } else if (turn === 8) {
+    message('Tie game')
   } else {
     return false
   }
