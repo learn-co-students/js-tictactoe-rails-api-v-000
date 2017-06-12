@@ -13,13 +13,13 @@ const attachListeners = function () {
 }
 
 function doTurn(x,y) {
-  turn += 1
   updateState(x,y)
   checkWinner()
+  turn += 1
 }
 
 function updateState (x,y) {
-  $(`[data-x=${x}], [data-y=${y}]`).text(player())
+  $(`[data-x=${x}][data-y=${y}]`).html(player())
 }
 
 function checkWinner () {
