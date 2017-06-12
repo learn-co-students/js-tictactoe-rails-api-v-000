@@ -30,19 +30,32 @@ var attachListeners = () => {
   })
 }
 
+var tie = function() {
+  if (turn == 8) {
+    message("Tie game")
+    return true
+  } else {
+    return false
+  }
+}
+
 var doTurn = e => {
-//if (e.currentTarget.innerText == '') {
-  updateState(e)
-  checkWinner()
-  turn += 1
-if (turn === 9){
-    message('Tie game')
-    saveGame()
-    resetBoard()
-  }
-  else {
-    message('This cell is taken')
-  }
+  // if (e.currentTarget.innerHTML == ""){
+    updateState(e)
+    if (checkWinner() || tie()) {
+      saveGame()
+      resetBoard()
+
+    } else {
+      turn += 1
+    }
+    // if (turn === 8){
+    //   console.log('tie game')
+    //   message('Tie game')
+    // }
+  // } else {
+  //   message('This cell is taken')
+  // }
 }
   // updateState(e)
   // if (checkWinner() || turn === 9 {
@@ -70,6 +83,7 @@ var checkWinner = () => {
     if ($state[value[0]] == current && $state[value[1]] == current && $state[value[2]] == current) {
       let winner = $state[value[0]]
       message('Player ' + winner + ' Won!')
+      saveGame()
       resetBoard()
       result = true
     }
@@ -79,33 +93,38 @@ var checkWinner = () => {
 
 var saveGame = () => {
   if (currentGame == 0) {
+    console.log('post request')
     let obj = {}
-    obj.state = getState()
-    obj.turn = turn
+    obj.game = {}
+    obj.game.state = getState()
+    obj.game.turn = turn
+    console.log(obj)
     $.post('/games', obj)
   }
   else {
+    console.log('patch request')
     let obj = {}
-    obj.state = getState()
-    obj.turn = turn
+    obj.game = {}
+    obj.game.state = getState()
+    obj.game.turn = turn
+    console.log(obj)
     $.ajax({url: '/games' + currentGame, data: obj, type: 'PATCH'})
   }
 }
 
+
+
 var resetBoard = () => {
-  saveGame()
+//  saveGame()
   $('td').html('')
   turn = 0
-  currentGame = 0
+//  currentGame = 0
 }
 
 var message = (message) => {
   $('#message').text(message)
 }
 
-$(() => {
-  attachListeners()
-})
 
 // Persistence Functions
 
@@ -130,3 +149,7 @@ function showGames(games) {
 function showGame(game){
   return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
 }
+
+$(() => {
+  attachListeners()
+})
