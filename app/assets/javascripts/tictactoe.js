@@ -17,8 +17,8 @@ $(() => {
   attachListeners()
 })
 
-const attachListeners = function () {
-  $('td').click(function(data) {
+const attachListeners = () => {
+  $('td').click(function () {
     doTurn($(this).data('x'), $(this).data('y'));
   })
   $('#previous').click(() => {
@@ -40,10 +40,10 @@ function updateState (x,y) {
 }
 
 function checkWinner () {
-  let winner = false;
-  let board = checkBoard ();
+  let winner = false
+  let board = checkBoard ()
   winningCombos.forEach(function(position) {
-    if (board[position[0]] == board[position[1]] && board[position[1]] == board[position[2]] && board[position[0]] != ""){
+    if (board[position[0]] === board[position[1]] && board[position[1]] === board[position[2]] && board[position[0]] !== ""){
       winner = true
     }
   })
@@ -66,14 +66,14 @@ function resetBoard () {
 function checkBoard () {
   return $('td').map(function() {
     return this.innerHTML
-  }).toArray();
+  }).toArray()
 }
 
 function player() {
-  if(turn % 2 == 0) {
-    return 'X';
+  if (turn % 2 === 0) {
+    return 'X'
   } else {
-    return 'O';
+    return 'O'
   }
 }
 
@@ -81,24 +81,29 @@ function message (message) {
   $('#message').html(message)
 }
 
-function getAllGames () { // 'Show Previous Games' button fires this.
+// 'Show Previous Games' button fires this.
+function getAllGames () {
   $.get('/games')
     .done((response) => {
       console.log(response)
     })
 }
 
-function saveGame () { // 'Save Game' button fires this.
+// 'Save Game' button fires this.
+function saveGame () {
   let url
   let method
-  if (currentGame) { // If the game exists in the db already
+  // If the game exists in the db already
+  if (currentGame) {
     url = `/games/${currentGame}`
     method = 'PATCH'
-  } else { // If this is a new game not in the db
+  // If this is a new game not in the db
+  } else {
     url = '/games'
     method = 'POST'
   }
-  $.ajax({ // I chose this over two jQuery calls in the block above.
+  // I chose .ajax over two jQuery calls in the block above.
+  $.ajax({
     url: url,
     method: method,
     dataType: 'json',
@@ -108,7 +113,9 @@ function saveGame () { // 'Save Game' button fires this.
       }
     },
     success: (data) => {
-      currentGame = data.game.id // Set the currentGame to the just saved game.
+      // Set the currentGame to the just saved game.
+      // This might need to be changed. Not sure just yet.
+      currentGame = data.game.id
     }
   })
 }
