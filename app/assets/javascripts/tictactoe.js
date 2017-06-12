@@ -19,7 +19,7 @@ function doTurn(x,y) {
 }
 
 function updateState (x,y) {
-
+  $(`[data-x=${x}], [data-y=${y}]`).text(player())
 }
 
 function checkWinner () {
