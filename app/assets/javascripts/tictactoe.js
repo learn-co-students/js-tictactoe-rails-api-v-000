@@ -36,6 +36,10 @@ function updateState (x,y) {
 function checkWinner () {
   let winner = false;
   let board = checkBoard ();
+  const resetBoard = () => {
+    turn = -1
+    $('td').html("")
+  }
   winningCombos.forEach(function(position) {
     if (board[position[0]] == board[position[1]] && board[position[1]] == board[position[2]] && board[position[0]] != ""){
       winner = true
@@ -43,11 +47,18 @@ function checkWinner () {
   })
   if (winner === true) {
     message(`Player ${player()} Won!`)
+    resetBoard()
   } else if (turn === 8) {
     message('Tie game')
+    resetBoard()
   } else {
     return false
   }
+}
+
+function resetBoard() {
+  $('td').html('');
+  turn = 0;
 }
 
 function checkBoard () {
