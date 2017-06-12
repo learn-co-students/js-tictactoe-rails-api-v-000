@@ -25,3 +25,11 @@ function updateState (x,y) {
 function checkWinner () {
 
 }
+
+function player() {
+  if(turn % 2 == 0) {
+    return 'X';
+  } else {
+    return 'Y';
+  }
+}
