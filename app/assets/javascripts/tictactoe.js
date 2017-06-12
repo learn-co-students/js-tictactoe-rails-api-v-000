@@ -10,17 +10,20 @@ const  winningCombos = [
     [0,4,8],
     [2,4,6],
   ];
+let turn = 0
+let currentGame = 0
 
 $(() => {
   attachListeners()
 })
 
-let turn = 0
-
 const attachListeners = function () {
-  $("td").on('click', function(data) {
-    doTurn($(this).data("x"), $(this).data("y"));
-  });
+  $('td'').on('click', function(data) {
+    doTurn($(this).data('x'), $(this).data('y'));
+  })
+  $('#previous').on('click', function () {
+    getAllGames()
+  })
 }
 
 function doTurn(x,y) {
@@ -56,11 +59,6 @@ function checkWinner () {
   }
 }
 
-function resetBoard() {
-  $('td').html('');
-  turn = 0;
-}
-
 function checkBoard () {
   return $('td').map(function() {
     return this.innerHTML
@@ -77,4 +75,8 @@ function player() {
 
 function message (message) {
   $('#message').html(message)
+}
+
+function getAllGames () {
+  $.get('/games')
 }
