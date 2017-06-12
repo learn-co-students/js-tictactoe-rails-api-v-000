@@ -85,7 +85,13 @@ function message (message) {
 function getAllGames () {
   $.get('/games')
     .done((response) => {
-      console.log(response)
+      if (response.games.length > 0) {
+        let games = $()
+        response.games.forEach(function(e) {
+          games = games.add(`<li id="${e.id}">${e.id}</li>`)
+        })
+        $('#games').html(games)
+      }
     })
 }
 
