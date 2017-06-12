@@ -1,4 +1,4 @@
 Rails.application.routes.draw do
   root 'home#index'
-  resources :games, only: %i[index create update]
+  resources :games, only: %i[index create update show]
 end
