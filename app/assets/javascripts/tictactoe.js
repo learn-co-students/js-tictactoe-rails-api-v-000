@@ -1,5 +1,16 @@
 'use strict'
 
+const winningCombos = [
+                      [[0,0],[1,0],[2,0]],
+                      [[0,1],[1,1],[2,1]],
+                      [[0,2],[1,2],[2,2]],
+                      [[0,0],[1,1],[2,2]],
+                      [[0,0],[0,1],[0,2]],
+                      [[2,0],[2,1],[2,2]],
+                      [[1,0],[1,1],[1,2]],
+                      [[2,0],[1,1],[0,2]]
+                      ];
+
 $(() => {
   attachListeners()
 })
@@ -24,6 +35,12 @@ function updateState (x,y) {
 
 function checkWinner () {
 
+}
+
+function checkBoard () {
+  return $('td').map(function() {
+    return this.innerHTML
+  }).toArray();
 }
 
 function player() {
