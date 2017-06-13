@@ -28,9 +28,15 @@ var attachListeners = () => {
   $('#save').click(function(e){
     saveGame()
   })
+
+  $('#games').on('click', function(e){
+    currentGame = $('li').html()
+    console.log(currentGame)
+  })
 }
 
-var tie = function() {
+
+function tie() {
   if (turn == 8) {
     message("Tie game")
     return true
@@ -83,9 +89,9 @@ var checkWinner = () => {
     if ($state[value[0]] == current && $state[value[1]] == current && $state[value[2]] == current) {
       let winner = $state[value[0]]
       message('Player ' + winner + ' Won!')
-      saveGame()
-      resetBoard()
       result = true
+      saveGame()
+      //resetBoard()
     }
   })
   return result
@@ -96,23 +102,25 @@ var saveGame = function(resetCurrentGame) {
   var method
 
   if(currentGame) {
-    console.log("patch request")
-    url = "/games/" + currentGame
-    method = "PATCH"
+    console.log('patch request')
+    console.log(currentGame)
+    url = '/games/' + currentGame
+    method = 'PATCH'
   } else {
-    console.log("post request")
-    url = "/games"
-    method = "POST"
+    console.log('post request')
+    console.log(currentGame)
+    url = '/games'
+    method = 'POST'
   }
 
   $.ajax({
     url: url,
     method: method,
-    dataType: "json",
+    dataType: 'json',
     data: { game: { state: getState() } },
     success: function(data) {
       if(resetCurrentGame) {
-        currentGame = undefined;
+        currentGame = 0;
       } else {
         currentGame = data.game.id;
       }
@@ -173,7 +181,7 @@ var resetBoard = () => {
 //  saveGame()
   $('td').html('')
   turn = 0
-//  currentGame = 0
+  currentGame = 0
 }
 
 var message = (message) => {
@@ -202,7 +210,7 @@ function showGames(games) {
 }
 
 function showGame(game){
-  return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
+  return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id}, '</li>');
 }
 
 $(() => {
