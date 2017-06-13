@@ -27,9 +27,6 @@ const attachListeners = () => {
   $('#save').click(() => {
     saveGame();
   });
-  $('.game').click(function () {
-    loadGame($(this).data('game'));
-  });
 }
 
 function doTurn(x,y) {
@@ -95,11 +92,21 @@ function getAllGames () {
           games = games.add(`<li class="game" id="${e.id}" data-game="${e.id}">${e.id}</li>`);
         })
         $('#games').html(games);
+        $('.game').click(function () {
+          loadGame($(this).data('game'));
+        });
       }
     });
+
 }
 
-var loadGame = (gameid) => {
+$( document ).ready(function() {
+  $('.game').click(function () {
+    loadGame($(this).data('game'));
+  });
+});
+
+function loadGame(gameid) {
   $.get("/games/"+ gameid, function(response) {
 
     var state = response.game.state
@@ -108,6 +115,8 @@ var loadGame = (gameid) => {
     });
   });
  }
+
+
 // 'Save Game' button fires this.
 function saveGame (gameOver) {
   let url
