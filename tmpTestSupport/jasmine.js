@@ -810,7 +810,7 @@ getJasmineRequireObj().Any = function() {
     if (this.expectedObject == Object) {
       return typeof other == 'object';
     }
-    
+
     if (this.expectedObject == Boolean) {
       return typeof other == 'boolean';
     }
@@ -1287,14 +1287,14 @@ getJasmineRequireObj().buildExpectationResult = function() {
         return "";
       }
 
-      var error = options.error;
-      if (!error) {
-        try {
-          throw new Error(message());
-        } catch (e) {
-          error = e;
-        }
-      }
+      //var error = options.error;
+      //if (!error) {
+        //try {
+        //  throw new Error(message());
+      //  } catch (e) {
+        //  error = e;
+        //}
+      //}
       return stackFormatter(error);
     }
   }
@@ -2400,4 +2400,3 @@ getJasmineRequireObj().toThrowError = function(j$) {
 getJasmineRequireObj().version = function() {
   return "2.0.0";
 };
-

@@ -29,12 +29,23 @@ var attachListeners = () => {
     saveGame()
   })
 
-  $('#games').on('click', function(e){
-    currentGame = $('li').html()
-    console.log(currentGame)
+  $(document).on("click", "li", function(e) {
+    var id = this.innerHTML
+    //console.log(this.innerHTML)
+    $.get("/games/" + id, function(data) {
+      loadGame(data["game"]["state"])
+      currentGame = data["game"]["id"]
+    })
   })
 }
 
+function loadGame(state) {
+  var i = 0
+  $("tbody td").each(function() {
+    $(this).text(state[i])
+    i++
+  })
+}
 
 function tie() {
   if (turn == 8) {
