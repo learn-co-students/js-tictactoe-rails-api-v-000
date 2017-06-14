@@ -1,5 +1,31 @@
 Rails.application.routes.draw do
 
+  get 'games/index'
+
+  get 'games/new'
+
+  get 'games/show'
+
+  get 'games/create'
+
+  get 'games/edit'
+
+  get 'games/update'
+
+  get 'games/games'
+
+  get 'index/new'
+
+  get 'index/show'
+
+  get 'index/create'
+
+  get 'index/edit'
+
+  get 'index/update'
+
+  get 'index/games'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
