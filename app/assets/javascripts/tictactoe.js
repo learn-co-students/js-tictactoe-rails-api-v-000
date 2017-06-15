@@ -96,13 +96,17 @@ function checkWinner() {
   winCombos.forEach(function(winCombo) {
     if (board[winCombo[0]] === player() && board[winCombo[1]] === player() && board[winCombo[2]] === player()) {
       message("Player " + player() + " Won!")
-      handler()
+      var values = getTableValues();
+      var posting = $.ajax({
+          type: "POST",
+          data: {game:{state:values}},
+          url: "/games",
+      });
       clearBoard()
     }
   })
   if (turn === 8) {
     message("Tie game")
-    handler()
     clearBoard()
   }
   return false
