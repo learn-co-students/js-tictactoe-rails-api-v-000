@@ -1,5 +1,5 @@
-var turn = 1;
 const winCombos = [[[0,0],[1,0],[2,0]],[[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],[0,1],[0,2]], [[1,0],[1,1],[1,2]], [[2,0],[2,1],[2,2]],[[0,0],[1,1],[2,2]],[[2,0],[1,1],[0,2]]];
+var turn = 0
 
 function attachListeners() {
 	var allCells = document.getElementsByTagName("td");
@@ -11,9 +11,9 @@ function attachListeners() {
 }
 
 function doTurn(event) {
-  turn += 1
   updateState(event);
   checkWinner();
+    turn += 1
 }
 
 function checkWinner() {
@@ -24,15 +24,16 @@ function checkWinner() {
 }
 
 function updateState(event) {
-	event.target.html = player()
+	event.target.innerHTML = player(turn)
 }
 
 function player() {
-	if (turn % 2 === 0){
-		return 'X';
-	} else {
-		return 'O';
-	}
+  if (turn % 2 == 0){
+    return 'X'
+  }
+  else {
+    return 'O'
+  }
 }
 
 var message = function (winner) {
