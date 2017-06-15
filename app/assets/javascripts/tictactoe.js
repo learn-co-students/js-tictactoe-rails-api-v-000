@@ -23,6 +23,7 @@ function attachListeners() {
 function doTurn(event) {
   updateState(event)
   checkWinner()
+  turn += 1
 }
 
 function save(event) {
@@ -42,7 +43,7 @@ function clearBoard() {
     value.innerHTML = ''
   });
   currentGame = 0
-  turn = 0
+  turn = -1
 }
 
 function getPrevious(event) {
@@ -56,14 +57,17 @@ function getPrevious(event) {
 }
 
 function getGame(game) {
+  turn = 0
   var oldGame = $.get('/games/'+game.innerHTML)
   oldGame.done(function(data){
     var state = data.game.state
     $('td').each(function(index, value){
       value.innerHTML = state[index]
+      if (state[index] === 'X' || state[index] === 'O') {
+        turn += 1
+      }
     });
     currentGame = data.game.id
-    turn = 0
   })
 }
 
@@ -101,7 +105,6 @@ function checkWinner() {
     handler()
     clearBoard()
   }
-  turn += 1
   return false
 }
 
