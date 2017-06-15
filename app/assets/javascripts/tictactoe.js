@@ -53,13 +53,13 @@ class GameBoard {
 
     for(let i = 1; i < 4; i++){
       let nextLeft = `${rowNumInt}-${colNumInt - i}`
-      let nextRight = `${rowNumInt}-${colNumInt + i}`
-
       let boxLeft = document.getElementById(nextLeft)
-      let boxRight = document.getElementById(nextRight)
 
-      if ($(boxLeft).hasClass(this.color)) { counter++ }
-      if ($(boxRight).hasClass(this.color)) { counter++ }
+      if ($(boxLeft).hasClass(this.color)) {
+        counter++
+      } else {
+          break;
+      }
 
       console.log('hori', counter)
       if (counter >= 4) {
@@ -67,6 +67,31 @@ class GameBoard {
         break;
       }
     }
+
+    for(let i = 1; i < 4; i++){
+      let nextRight = `${rowNumInt}-${colNumInt + i}`
+      let boxRight = document.getElementById(nextRight)
+
+      if ($(boxRight).hasClass(this.color)) {
+        counter++
+      } else {
+          break;
+      }
+
+      console.log('hori', counter)
+      if (counter >= 4) {
+        return true
+        break;
+      }
+
+    }
+
+
+
+
+
+
+
   }
 
   vertWinner(rowNum, colNum, rowNumInt, colNumInt){
