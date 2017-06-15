@@ -83,15 +83,7 @@ class GameBoard {
         return true
         break;
       }
-
     }
-
-
-
-
-
-
-
   }
 
   vertWinner(rowNum, colNum, rowNumInt, colNumInt){
@@ -118,49 +110,76 @@ class GameBoard {
   }
 
   diagWinner(rowNum, colNum, rowNumInt, colNumInt){
-    let counter = 1
+    let counterPos = 1
+    let counterNeg = 1
 
     for(let i = 1; i < 4; i++){
-      let nextNW = `${rowNumInt+i}-${colNumInt-i}`
-      let boxNW = document.getElementById(nextNW)
-
       let nextNE = `${rowNumInt+i}-${colNumInt+i}`
       let boxNE = document.getElementById(nextNE)
 
-      let nextSW = `${rowNumInt-i}-${colNumInt-i}`
-      let boxSW = document.getElementById(nextSW)
-
-      let nextSE = `${rowNumInt-i}-${colNumInt+i}`
-      let boxSE = document.getElementById(nextSE)
-
-
-      if ($(boxNW).hasClass(this.color)) {
-        if ($(boxSE).hasClass(this.color)) {counter ++}
-        counter++
+      if ($(boxNE).hasClass(this.color)) {
+        counterPos++
+      } else {
+          break;
       }
 
-      else if ($(boxNE).hasClass(this.color)) {
-        if ($(boxSW).hasClass(this.color)) {counter ++}
-        counter++
-      }
-
-      else if ($(boxSW).hasClass(this.color)) {
-        if ($(boxNE).hasClass(this.color)) {counter ++}
-        counter++
-      }
-
-      else if ($(boxSE).hasClass(this.color)) {
-        if ($(boxNW).hasClass(this.color)) {counter ++}
-        counter++
-      }
-
-      console.log('diag', counter)
-      if (counter >= 4) {
+      console.log('diag', counterPos)
+      if (counterPos >= 4) {
         return true
         break;
       }
     }
 
+    for(let i = 1; i < 4; i++){
+      let nextSW = `${rowNumInt-i}-${colNumInt-i}`
+      let boxSW = document.getElementById(nextSW)
+
+      if ($(boxSW).hasClass(this.color)) {
+        counterPos++
+      } else {
+          break;
+      }
+
+      console.log('diag', counterPos)
+      if (counterPos >= 4) {
+        return true
+        break;
+      }
+    }
+
+    for(let i = 1; i < 4; i++){
+      let nextNW = `${rowNumInt+i}-${colNumInt-i}`
+      let boxNW = document.getElementById(nextNW)
+
+      if ($(boxNW).hasClass(this.color)) {
+        counterNeg++
+      } else {
+          break;
+      }
+
+      console.log('diag', counterNeg)
+      if (counterNeg >= 4) {
+        return true
+        break;
+      }
+    }
+
+    for(let i = 1; i < 4; i++){
+      let nextSE = `${rowNumInt-i}-${colNumInt+i}`
+      let boxSE = document.getElementById(nextSE)
+
+      if ($(boxSE).hasClass(this.color)) {
+        counterNeg++
+      } else {
+          break;
+      }
+
+      console.log('diag', counterNeg)
+      if (counterNeg >= 4) {
+        return true
+        break;
+      }
+    }
   }
 
   winner(clickedElement){
