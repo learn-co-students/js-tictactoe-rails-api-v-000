@@ -30,7 +30,7 @@ class GameBoard {
     let colNum = clickedElement.getAttribute("ID").slice(2)
     for(let i = 0; i <= 5; i++){
       let box = document.getElementById(`${i}-${colNum}`)
-      console.log(box);
+    
       if ( $(box).hasClass('red') || $(box).hasClass('black') ) {
         continue;
       } else if (this.playable) {
