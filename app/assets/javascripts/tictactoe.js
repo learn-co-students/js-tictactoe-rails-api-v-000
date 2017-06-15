@@ -1,5 +1,5 @@
-var turn = 0
 const winCombos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+var turn = 0
 
 $(document).ready(function() {
   attachListeners()
@@ -8,6 +8,10 @@ $(document).ready(function() {
 function attachListeners() {
   $('td').on('click', function(event) {
     doTurn(event)
+  })
+
+  $('#previous').on('click', function(event){
+    getPrevious(event)
   })
 
   $('#save').on('click', function(event) {
@@ -24,32 +28,40 @@ function attachListeners() {
        console.log(error);
      })
   })
+}
 
-  $('#previous').on('click', function(event) {
-    var games = $.get('/games')
-    games.done(function(data){
-      data.games.forEach(function(game){
-        $('#games').append(`<p onclick="getGame(this)">${game.id}</p>`)
-      });
-    });
-  });
+
+
+function doTurn(event) {
+  turn += 1
+  updateState(event)
+  checkWinner()
+}
+
+function getPrevious(event) {
+  $.get('/games').done(function(data) {
+    var ul = '<ul>'
+    data.games.forEach(function(game) {
+      ul += '<li onclick="getGame(this)">' + game.id + '</li>'
+    })
+    ul += '</ul>'
+    $('#games').html(ul)
+  })
 }
 
 function getGame(game) {
-  var oldGame = $.get(`/games/${game.innerHTML}`)
+  var oldGame = $.get('/games/'+game.innerHTML)
   oldGame.done(function(data){
     var state = data.game.state
     $('td').each(function(index, value){
-      value.innerHTML= `${state[index]}`
+      value.innerHTML = state[index]
     });
     $('table').attr('id', data.game.id)
   })
 }
 
-function doTurn(event) {
-  turn += 1
-  updateState(event)
-  // checkWinner()
+function checkWinner() {
+
 }
 
 function getTableValues() {
