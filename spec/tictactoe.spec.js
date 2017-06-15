@@ -152,6 +152,7 @@ describe('Tic Tac Toe Functionality', function() {
       // ___|_O_|___
       //    | X | O
       expect($("#message").html()).toEqual("Player O Won!");
+      // debugger;
       // ___|___|___
       // ___|___|___
       //    |   |
@@ -344,10 +345,7 @@ describe('#integration tests of persistence', function() {
       expect($("#games").children().length).toBe(1);
       $("#save").click()
       var data = {
-        games: [{
-          id:1,
-          state: ["X","","","","","","","",""]
-        },
+        games: [
         {
           id:2,
           state: ["","","","","","","","",""]
@@ -359,7 +357,7 @@ describe('#integration tests of persistence', function() {
         "contentType": 'application/json',
         "responseText" : JSON.stringify(data)
       }
-      $('#previous').click()
+      $('#previous').click();
       jasmine.Ajax.requests.mostRecent().respondWith(response);
       expect($("#games").children().length).toBe(2);
     });
@@ -453,6 +451,7 @@ describe('#integration tests of persistence', function() {
         "responseText" : JSON.stringify(data)
       }
       jasmine.Ajax.requests.mostRecent().respondWith(response);
+      debugger;
       // when you display the previous games you must give them a data attribute of gameid
       $('[data-gameid="2"]').click(function(){
         expect($('[data-x="0"][data-y="0"]').text()).toBe("")
