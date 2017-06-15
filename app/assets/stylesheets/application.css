@@ -24,4 +24,11 @@
 
 table {
   background-color: blue;
+  border: 2px solid yellow;
+}
+
+td {
+  background-image: url("http://www.413c.net/empty");
+  background-size: 80px 80px;
+  border: 1px solid yellow;
 }

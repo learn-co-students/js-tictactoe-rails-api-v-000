@@ -22,6 +22,8 @@ class GameBoard {
     this.turnCount = 0
     this.color
     this.playable = true
+    $('td.red').removeClass('red')
+    $('td.black').removeClass('black')
   }
 
   dropToBottom(clickedElement) {
@@ -59,6 +61,7 @@ class GameBoard {
       if ($(boxLeft).hasClass(this.color)) { counter++ }
       if ($(boxRight).hasClass(this.color)) { counter++ }
 
+      console.log('hori', counter)
       if (counter >= 4) {
         return true
         break;
@@ -78,6 +81,8 @@ class GameBoard {
 
       if ($(boxUp).hasClass(this.color)) { counter++ }
       if ($(boxDown).hasClass(this.color)) { counter++ }
+
+      console.log('vert', counter)
 
       if (counter >= 4) {
         return true
@@ -104,11 +109,27 @@ class GameBoard {
       let boxSE = document.getElementById(nextSE)
 
 
-      if ($(boxNW).hasClass(this.color)) { counter++ }
-      if ($(boxNE).hasClass(this.color)) { counter++ }
-      if ($(boxSW).hasClass(this.color)) { counter++ }
-      if ($(boxSE).hasClass(this.color)) { counter++ }
+      if ($(boxNW).hasClass(this.color)) {
+        if ($(boxSE).hasClass(this.color)) {counter ++}
+        counter++
+      }
 
+      else if ($(boxNE).hasClass(this.color)) {
+        if ($(boxSW).hasClass(this.color)) {counter ++}
+        counter++
+      }
+
+      else if ($(boxSW).hasClass(this.color)) {
+        if ($(boxNE).hasClass(this.color)) {counter ++}
+        counter++
+      }
+
+      else if ($(boxSE).hasClass(this.color)) {
+        if ($(boxNW).hasClass(this.color)) {counter ++}
+        counter++
+      }
+
+      console.log('diag', counter)
       if (counter >= 4) {
         return true
         break;
@@ -138,25 +159,31 @@ class App {
     this.allChips = document.querySelector('table')
     this.allChips.addEventListener('click', this.onClick.bind(this))
     this.board = new GameBoard()
+    document.getElementById('clear').addEventListener('click', this.boardReset.bind(this))
   }
 
   onClick(){
     const clickedElement = event.target
-    // var box
+    this.isPlayable(clickedElement)
+    }
+
+  isPlayable(clickedElement) {
     if (this.board.playable) {
       var box = this.board.dropToBottom(clickedElement)
-    }
-    if (this.board.winner(box)) {
-      setTimeout(() => {alert(`${this.board.color} WINNNNNS!!!!`)}, 300)
-      this.board.playable = false
+
+      if (this.board.winner(box)) {
+        setTimeout(() => {alert(`${this.board.color.toUpperCase()} WINNNNS!!!!`)}, 300)
+        this.board.playable = false
+      }
     }
   }
 
-
-  render() {
-
-
+  boardReset(){
+    this.board = new GameBoard()
   }
+
+
+  render() {}
 }
 
 
