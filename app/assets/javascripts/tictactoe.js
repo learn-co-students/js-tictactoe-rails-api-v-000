@@ -18,10 +18,9 @@ function doTurn(event) {
 
 function checkWinner() {
   if (true) {
-    message("Player X Won!")
-  } else {
-    message("Player O Won!")
-  }
+		"Player X Won!" 
+	} 
+	return false;
 }
 
 function updateState(event) {
@@ -29,7 +28,6 @@ function updateState(event) {
 }
 
 function player() {
-  debugger;
 	if (turn % 2 === 0){
 		return 'X';
 	} else {
@@ -37,8 +35,8 @@ function player() {
 	}
 }
 
-function message(string) {
-  document.getElementById("message").innerHTML = string
+var message = function (winner) {
+  document.getElementById("message").innerHTML = winner;
 }
 
 $(function() {
