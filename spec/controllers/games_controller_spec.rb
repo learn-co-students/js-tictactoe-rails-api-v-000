@@ -14,7 +14,7 @@ RSpec.describe GamesController, :type => :controller do
 
     it "updates games" do
       Game.create(:state => ["X", "O", "", "", "", "", "", "", ""])
-      patch :update, { :id => 1, :game => { :state => ["X", "", "", "", "", "", "", "", ""] } }
+      patch :update, { :id => 1, :state => ["X", "", "", "", "", "", "", "", ""]  }
       expect(Game.first.state).to eq ["X", "", "", "", "", "", "", "", ""]
     end
 
