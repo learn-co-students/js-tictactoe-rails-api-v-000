@@ -23,7 +23,6 @@ function attachListeners() {
 function doTurn(event) {
   updateState(event)
   checkWinner()
-  turn += 1
 }
 
 function save(event) {
@@ -97,11 +96,12 @@ function checkWinner() {
       clearBoard()
     }
   })
-  if (turn === 9) {
+  if (turn === 8) {
     message("Tie game")
     handler()
     clearBoard()
   }
+  turn += 1
   return false
 }
 
