@@ -390,7 +390,6 @@ describe('#integration tests of persistence', function() {
     attachListeners()
     expect($("#games").children().length).toBe(0);
     jasmine.Ajax.withMock(function() {
-
       $('[data-x="0"][data-y="0"]').click();
       $('[data-x="1"][data-y="0"]').click();
       $('[data-x="0"][data-y="1"]').click();
