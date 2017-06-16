@@ -1,4 +1,6 @@
-const winCombos = [[[0,0],[1,0],[2,0]],[[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],[0,1],[0,2]], [[1,0],[1,1],[1,2]], [[2,0],[2,1],[2,2]],[[0,0],[1,1],[2,2]],[[2,0],[1,1],[0,2]]];
+// const winCombos = [[[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]], [[0,0],[0,1],[0,2]], [[1,0],[1,1],[1,2]], [[2,0],[2,1],[2,2]],[[0,0],[1,1],[2,2]],[[2,0],[1,1],[0,2]]];
+
+const winCombos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,2]]
 var turn = 0
 
 function attachListeners() {
@@ -16,14 +18,25 @@ function doTurn(event) {
   turn += 1
 }
 
+// winCombos.forEach(combo){
+// 		board = document.getElementsByTagName("td")
+// 		if
+// 		board[combo[0]] === 'X' &&
+// 	}
+// }
+
+    
 function checkWinner() {
-  if ("X") {
-		return message("Player X Won!") //Player X won
-	} else if ("O") {
-		return message("Player O Won!") //Player O won
-	} else {
-		return false //No winner
-	}
+	 var board = document.getElementsByTagName("td")
+	 winCombos.forEach(combo) {
+    if (board[combo[0]].innerHTML === "X" && board[combo[1]].innerHTML === "X" && board[combo[2]].innerHTML === "X") {
+		return message("Player X Won!"); //Player X won
+			} else if (board[combo[0]].innerHTML == "O" && board[combo[1]].innerHTML == "O" && board[combo[2]].innerHTML == "O") {
+				return message("Player O Won!"); //Player O won
+			} else {
+				return false; //No winner
+			}
+	 }
 }
 
 function updateState(event) {
