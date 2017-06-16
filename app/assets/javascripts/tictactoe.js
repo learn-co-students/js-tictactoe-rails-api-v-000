@@ -13,14 +13,15 @@ function attachListeners() {
 function doTurn(event) {
   updateState(event);
   checkWinner();
-    turn += 1
+  turn += 1
 }
 
 function checkWinner() {
   if (true) {
-		"Player X Won!" 
-	} 
-	return false;
+		return message("Player X Won!")
+	} else {
+	return message("Player O Won!")
+	}
 }
 
 function updateState(event) {
