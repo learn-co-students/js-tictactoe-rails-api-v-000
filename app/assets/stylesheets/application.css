@@ -13,3 +13,46 @@
  *= require_tree .
  *= require_self
  */
+
+/* keyframes to add remove color */
+ @keyframes dropRedChip {
+  0%   {background-color: inherit;}
+  50%  {background-color: red;}
+  100% {background-color: inherit;}
+ }
+ @keyframes dropBlackChip {
+  0%   {background-color: inherit;}
+  50%  {background-color: black;}
+  100% {background-color: inherit;}
+ }
+
+.red {
+  background-color: red;
+}
+
+.black {
+  background-color: black;
+}
+
+table {
+  background-color: blue;
+  border: 2px solid yellow;
+}
+
+td {
+  background-image: url("http://www.413c.net/empty");
+  background-size: 80px 80px;
+  border: 1px solid yellow;
+}
+
+/* classes to add animations */
+
+.red-drop {
+  background-color: inherit;
+  animation: dropRedChip 0.5s;
+}
+
+.black-drop {
+  background-color: inherit;
+  animation: dropBlackChip 0.5s;
+}
