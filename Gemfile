@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
+
+gem 'learn-co'
 gem 'pry'
 gem 'pry-nav'
-gem 'active_model_serializers'
+gem 'active_model_serializers', '0.9.4'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5.1'
 # Use sqlite3 as the database for Active Record
@@ -21,6 +23,7 @@ gem 'jquery-rails'
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
+gem 'rake', '10.5.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
