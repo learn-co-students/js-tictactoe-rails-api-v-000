@@ -17,10 +17,12 @@ function doTurn(event) {
 }
 
 function checkWinner() {
-  if (true) {
-		return message("Player X Won!")
+  if ("X") {
+		return message("Player X Won!") //Player X won
+	} else if ("O") {
+		return message("Player O Won!") //Player O won
 	} else {
-	return message("Player O Won!")
+		return false //No winner
 	}
 }
 
