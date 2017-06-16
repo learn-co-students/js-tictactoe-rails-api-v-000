@@ -17,26 +17,19 @@ function doTurn(event) {
   checkWinner();
   turn += 1
 }
-
-// winCombos.forEach(combo){
-// 		board = document.getElementsByTagName("td")
-// 		if
-// 		board[combo[0]] === 'X' &&
-// 	}
-// }
-
     
 function checkWinner() {
-	 var board = document.getElementsByTagName("td")
-	 winCombos.forEach(combo) {
+   var board = document.getElementsByTagName("td")
+   winCombos.forEach(function(combo){ 
     if (board[combo[0]].innerHTML === "X" && board[combo[1]].innerHTML === "X" && board[combo[2]].innerHTML === "X") {
-		return message("Player X Won!"); //Player X won
-			} else if (board[combo[0]].innerHTML == "O" && board[combo[1]].innerHTML == "O" && board[combo[2]].innerHTML == "O") {
-				return message("Player O Won!"); //Player O won
-			} else {
-				return false; //No winner
-			}
-	 }
+    return message("Player X Won!"); //Player X won
+      } else if (board[combo[0]].innerHTML == "O" && board[combo[1]].innerHTML == "O" && board[combo[2]].innerHTML == "O") {
+        return message("Player O Won!"); //Player O won
+      } else {
+        ; //No winner
+      }
+   })
+         return false
 }
 
 function updateState(event) {
@@ -52,7 +45,7 @@ function player() {
   }
 }
 
-var message = function (winner) {
+function message(winner) {
   document.getElementById("message").innerHTML = winner;
 }
 
