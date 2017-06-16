@@ -19,19 +19,26 @@ function doTurn(event) {
 }
     
 function checkWinner() {
-   var board = document.getElementsByTagName("td")
-   winCombos.forEach(function(combo){ 
+  var board = document.getElementsByTagName("td")
+  // Check to see if there's a winner
+  winCombos.forEach(function(combo){ 
     if (board[combo[0]].innerHTML === "X" && board[combo[1]].innerHTML === "X" && board[combo[2]].innerHTML === "X") {
-    return message("Player X Won!"); //Player X won
-      } else if (board[combo[0]].innerHTML == "O" && board[combo[1]].innerHTML == "O" && board[combo[2]].innerHTML == "O") {
+      return message("Player X Won!"); //Player X won
+    } else if (board[combo[0]].innerHTML == "O" && board[combo[1]].innerHTML == "O" && board[combo[2]].innerHTML == "O") {
         return message("Player O Won!"); //Player O won
-      } else {
-        ; //No winner
-      }
-   })
-         return false
+    }
+  })
+   // Check to see if there's a tie
+  var tie = true
+  Array.prototype.forEach.call(board, function(cell){
+    if (cell.innerHTML === ""){
+      tie = false
+    }
+  })
+  if (tie === true){message("Tie game")}
+  return false
 }
-
+      
 function updateState(event) {
 	event.target.innerHTML = player(turn)
 }
