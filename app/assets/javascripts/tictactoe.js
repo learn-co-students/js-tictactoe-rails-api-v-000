@@ -13,12 +13,23 @@ function attachListeners() {
 
 function doTurn(event) {
   updateState(event);
-	debugger;
   if (checkWinner() === true){
     turn = 0
   } else {
     turn += 1
   }
+}
+
+function checkWinner() {
+  if (checkTie() === true) {
+    message("Tie game")
+    return true;
+  }
+  debugger;
+  if (checkVictory() ){
+    return true;
+  }
+    return false;
 }
 
 function checkTie() {
@@ -32,14 +43,11 @@ function checkTie() {
     return true
   }
 }
-    
-function checkWinner() {
-	if (checkTie() === true) {
-		message("Tie game")
-		return true;
-	}
-  // Check to see if there's a winner
-  winCombos.forEach(function(combo){ 
+
+
+function checkVictory(){
+    // Check to see if there's a winner
+  return winCombos.forEach(function(combo){ 
     if (board[combo[0]].innerHTML === "X" && board[combo[1]].innerHTML === "X" && board[combo[2]].innerHTML === "X") {
       message("Player X Won!"); //Player X won
       return true;
@@ -48,7 +56,6 @@ function checkWinner() {
         return true;
     }
   })
-    return false;
 }
       
 function updateState(event) {
