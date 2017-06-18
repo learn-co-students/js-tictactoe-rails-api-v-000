@@ -3,19 +3,19 @@ var turn = 0
 var board = document.getElementsByTagName("td")
 
 
-function attachButtonListeners() {
-  var saveButton = document.getElementById("save")
-  var previousButton = document.getElementById("previous")
+// function attachButtonListeners() {
+//   var saveButton = document.getElementById("save")
+//   var previousButton = document.getElementById("previous")
 
-  saveButton.addEventListener("click", function(event){
-    // do something that responds to the button pree
-    // probably do a POST request to the games index 
-  })
+//   saveButton.addEventListener("click", function(event){
+//     // do something that responds to the button pree
+//     // probably do a POST request to the games index 
+//   })
 
-  previousButton.addEventListener("click", function(event){
-    // do something that responds to the button pree
-  })
-}
+//   previousButton.addEventListener("click", function(event){
+//     // do something that responds to the button pree
+//   })
+// }
 
 
 // Turn functionality
@@ -104,5 +104,5 @@ function message(winner) {
 
 $(function() {
   attachListeners();
-  attachButtonListeners();
+  // attachButtonListeners();
 });
