@@ -11,7 +11,8 @@ class GamesController < ApplicationController
   end
 
   def create
-    @game = Game.create(game_params)
+    @state = JSON.parse(params[:state])    
+    @game = Game.create(state: @state)   
     render json: @game, status: 201
     redirect_to root_path
   end

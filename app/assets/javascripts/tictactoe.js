@@ -6,7 +6,9 @@ var board = document.getElementsByTagName("td")
 
 function attachListeners() {
   Array.prototype.some.call(board, function(cell) {
-    cell.addEventListener("click", doTurn); 
+    cell.addEventListener("click", function() {
+      doTurn()
+    }); 
   })
   // document.getElementById("save").addEventListener("click", saveGame);
   // document.getElementById("previous").addEventListener("click", previousGame);
@@ -14,11 +16,16 @@ function attachListeners() {
 
 function saveGame(){
   debugger;
+  var game_state = []    
+  Array.prototype.forEach.call(board, function(cell){
+      game_state.push(cell.innerHTML)  
+   })
+  $.post("/games", {state: JSON.stringify(game_state)})
 }
 
 function previousGame() {
-    // do something that responds to the button pree
-  }
+  debugger;
+}
 
 // Turn functionality
 
