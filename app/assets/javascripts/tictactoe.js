@@ -2,6 +2,8 @@ const winCombos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,
 var turn = 0
 var board = document.getElementsByTagName("td")
 
+// Turn functionality
+
 function attachListeners() {
 	  Array.prototype.forEach.call(board, function(cell){
 	    cell.addEventListener("click", function(event){
@@ -18,6 +20,21 @@ function doTurn(event) {
     turn += 1
   }
 }
+
+function updateState(event) {
+	event.target.innerHTML = player(turn)
+}
+
+function player() {
+  if (turn % 2 == 0){
+    return 'X'
+  }
+  else {
+    return 'O'
+  }
+}
+
+// Check if there is a winner, a tie, or play should continue.
 
 function checkWinner() {
   if (checkTie() === true) {
@@ -42,30 +59,15 @@ function checkTie() {
   }
 }
 
-
 function checkVictory(){
-  // Check to see if there's a winner
   if (winCombos.some(combo => board[combo[0]].innerHTML === "X" && board[combo[1]].innerHTML === "X" && board[combo[2]].innerHTML === "X")){
       message("Player X Won!"); //Player O won
-
       return true;
-    } else if (winCombos.some(combo => board[combo[0]].innerHTML == "O" && board[combo[1]].innerHTML == "O" && board[combo[2]].innerHTML == "O")) {
-        message("Player O Won!"); //Player O won
-        return true;
-    }
-}
-      
-function updateState(event) {
-	event.target.innerHTML = player(turn)
-}
 
-function player() {
-  if (turn % 2 == 0){
-    return 'X'
-  }
-  else {
-    return 'O'
-  }
+    } else if (winCombos.some(combo => board[combo[0]].innerHTML == "O" && board[combo[1]].innerHTML == "O" && board[combo[2]].innerHTML == "O")) {
+      message("Player O Won!"); //Player O won
+      return true;
+    }
 }
 
 function message(winner) {
@@ -74,8 +76,9 @@ function message(winner) {
   Array.prototype.forEach.call(board, function(cell){
     cell.innerHTML = ""
   })
-  // turn = 0
 }
+
+// Document ready
 
 $(function() {
   attachListeners();
