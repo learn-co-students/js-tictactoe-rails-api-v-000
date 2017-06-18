@@ -3,12 +3,25 @@ var turn = 0
 var board = document.getElementsByTagName("td")
 
 function attachListeners() {
-	var allCells = document.getElementsByTagName("td");
-	  Array.prototype.forEach.call(allCells, function(cell){
-	    cell.addEventListener("click", function(event){
-    	    doTurn(event);
-    	})
-	})
+    Array.prototype.forEach.call(board, function(cell){
+      cell.addEventListener("click", function(event){
+          doTurn(event);
+      })
+  })
+}
+
+function attachButtonListeners() {
+  var saveButton = document.getElementById("save")
+  var previousButton = document.getElementById("previous")
+
+  saveButton.addEventListener("click", function(event){
+    // do something that responds to the button pree
+    // probably do a POST request to the games index 
+  })
+
+  previousButton.addEventListener("click", function(event){
+    // do something that responds to the button pree
+  })
 }
 
 function doTurn(event) {
@@ -78,6 +91,13 @@ function message(winner) {
   // turn = 0
 }
 
+/////////THIS IS NEW:
+  
+  function currentGame(){
+
+  }
+
 $(function() {
   attachListeners();
+  attachButtonListeners();
 });
