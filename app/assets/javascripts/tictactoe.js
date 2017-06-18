@@ -6,8 +6,8 @@ var board = document.getElementsByTagName("td")
 
 function attachListeners() {
   takeTurn();
-  saveGame();
-  previousGame();
+  // saveGame();
+  // previousGame();
 }
 
 function takeTurn() {
