@@ -5,39 +5,25 @@ var board = document.getElementsByTagName("td")
 // Event Listeners
 
 function attachListeners() {
-  takeTurn();
-  // saveGame();
-  // previousGame();
-}
-
-function takeTurn() {
   Array.prototype.forEach.call(board, function(cell){
-	    cell.addEventListener("click", function(event){
-    	    doTurn(event);
+	    cell.addEventListener("click", doTurn); 
     	})
-	})
+  // document.getElementById("save").addEventListener("click", saveGame);
+  // document.getElementById("previous").addEventListener("click", previousGame);
 }
 
 function saveGame(){
-  var saveButton = document.getElementById("save")
-  saveButton.addEventListener("click", function(event){
-    // do something that responds to the button pree
-    // probably do a POST request to the games index 
-  })
+  debugger;
 }
 
 function previousGame() {
-  var previousButton = document.getElementById("previous")
-  previousButton.addEventListener("click", function(event){
     // do something that responds to the button pree
-  })
-}
-
+  }
 
 // Turn functionality
 
-function doTurn(event) {
-  updateState(event);
+function doTurn() {
+  updateState();
   if (checkWinner() === true){
     turn = 0;
   } else {
@@ -45,8 +31,8 @@ function doTurn(event) {
   }
 }
 
-function updateState(event) {
-	event.target.innerHTML = player(turn)
+function updateState() {
+	event.target.innerHTML = player()
 }
 
 function player() {
@@ -112,5 +98,4 @@ function message(winner) {
 
 $(function() {
   attachListeners();
-  // attachButtonListeners();
 });
