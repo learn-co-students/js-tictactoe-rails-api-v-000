@@ -5,9 +5,9 @@ var board = document.getElementsByTagName("td")
 // Event Listeners
 
 function attachListeners() {
-  Array.prototype.forEach.call(board, function(cell){
-	    cell.addEventListener("click", doTurn); 
-    	})
+  Array.prototype.some.call(board, function(cell) {
+    cell.addEventListener("click", doTurn); 
+  })
   // document.getElementById("save").addEventListener("click", saveGame);
   // document.getElementById("previous").addEventListener("click", previousGame);
 }
@@ -82,7 +82,7 @@ function checkVictory(){
 
 function message(winner) {
   document.getElementById("message").innerHTML = winner;
-  var board = document.getElementsByTagName("td")
+  // Clear board
   Array.prototype.forEach.call(board, function(cell){
     cell.innerHTML = ""
   })
