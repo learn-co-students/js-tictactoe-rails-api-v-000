@@ -23,13 +23,7 @@ function saveGame() {
       game_state.push(cell.innerHTML)  
    })
 
-  var values = $(game_state).serialize();
-  var newGame = $.post("/games", values);
-
-  newGame.done(function(data) {
-    var game = data;
-    $("#games").text(game["id"]);
-  });
+  $.post("/games", {state: JSON.stringify(game_state)});
 }
 
 function previousGame() {
