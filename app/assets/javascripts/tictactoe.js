@@ -25,7 +25,6 @@ function checkWinner() {
     message("Tie game")
     return true;
   }
-  debugger;
   if (checkVictory() ){
     return true;
   }
@@ -46,16 +45,15 @@ function checkTie() {
 
 
 function checkVictory(){
-    // Check to see if there's a winner
-  return winCombos.forEach(function(combo){ 
-    if (board[combo[0]].innerHTML === "X" && board[combo[1]].innerHTML === "X" && board[combo[2]].innerHTML === "X") {
-      message("Player X Won!"); //Player X won
+  // Check to see if there's a winner
+  if (winCombos.some(combo => board[combo[0]].innerHTML === "X" && board[combo[1]].innerHTML === "X" && board[combo[2]].innerHTML === "X")){
+      message("Player X Won!"); //Player O won
+
       return true;
-    } else if (board[combo[0]].innerHTML == "O" && board[combo[1]].innerHTML == "O" && board[combo[2]].innerHTML == "O") {
+    } else if (winCombos.some(combo => board[combo[0]].innerHTML == "O" && board[combo[1]].innerHTML == "O" && board[combo[2]].innerHTML == "O")) {
         message("Player O Won!"); //Player O won
         return true;
     }
-  })
 }
       
 function updateState(event) {
