@@ -5,8 +5,6 @@ var board = document.getElementsByTagName("td")
 // Event Listeners
 
 function attachListeners() {
-  // document.getElementById("save").addEventListener("click", saveGame);
-  // document.getElementById("previous").addEventListener("click", previousGame);
   Array.prototype.some.call(board, function(cell) {
     cell.addEventListener("click", function() {
       doTurn()
@@ -14,19 +12,24 @@ function attachListeners() {
   })
 }
 
+function attachButtonListeners() {
+  document.getElementById("save").addEventListener("click", saveGame);
+  document.getElementById("previous").addEventListener("click", previousGame);
+}
+
 function saveGame() {
-  // var game_state = []    
-  // Array.prototype.forEach.call(board, function(cell){
-  //     game_state.push(cell.innerHTML)  
-  //  })
+  var game_state = []    
+  Array.prototype.forEach.call(board, function(cell){
+      game_state.push(cell.innerHTML)  
+   })
 
-  // var values = $(game_state).serialize();
-  // var newGame = $.post("/games", values);
+  var values = $(game_state).serialize();
+  var newGame = $.post("/games", values);
 
-  // newGame.done(function(data) {
-  //   var game = data;
-  //   $("#games").text(game["id"]);
-  // });
+  newGame.done(function(data) {
+    var game = data;
+    $("#games").text(game["id"]);
+  });
 }
 
 function previousGame() {
@@ -111,4 +114,5 @@ function message(winner) {
 
 $(function() {
   attachListeners();
+  attachButtonListeners();
 });
