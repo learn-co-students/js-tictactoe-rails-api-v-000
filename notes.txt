@@ -1,0 +1,13 @@
+Things I've done:
+
+1) Create an empty currentGame() method in tictactoe.js,
+just to pass a jasmine test
+
+2. Thought about creating a new script tag in the index.html
+to house listeners for the buttons, but then realized I could
+do the same thing in tictactoe.js
+
+3. Created a seperated 'attachListeners' function, specifically
+for the buttons and add a call of attachListeners() to the document.ready. The buttons have ids, so I was able to use
+getElementById instead of getElementsByTagName.
+

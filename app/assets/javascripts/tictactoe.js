@@ -2,6 +2,22 @@ const winCombos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,
 var turn = 0
 var board = document.getElementsByTagName("td")
 
+
+function attachButtonListeners() {
+  var saveButton = document.getElementById("save")
+  var previousButton = document.getElementById("previous")
+
+  saveButton.addEventListener("click", function(event){
+    // do something that responds to the button pree
+    // probably do a POST request to the games index 
+  })
+
+  previousButton.addEventListener("click", function(event){
+    // do something that responds to the button pree
+  })
+}
+
+
 // Turn functionality
 
 function attachListeners() {
@@ -15,9 +31,9 @@ function attachListeners() {
 function doTurn(event) {
   updateState(event);
   if (checkWinner() === true){
-    turn = 0
+    turn = 0;
   } else {
-    turn += 1
+    turn += 1;
   }
 }
 
@@ -78,8 +94,15 @@ function message(winner) {
   })
 }
 
-// Document ready
+/////////THIS IS NEW:
+  
+  function currentGame(){
+
+  }
+
+  // Document ready
 
 $(function() {
   attachListeners();
+  attachButtonListeners();
 });
