@@ -2,31 +2,40 @@ const winCombos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,
 var turn = 0
 var board = document.getElementsByTagName("td")
 
-
-// function attachButtonListeners() {
-//   var saveButton = document.getElementById("save")
-//   var previousButton = document.getElementById("previous")
-
-//   saveButton.addEventListener("click", function(event){
-//     // do something that responds to the button pree
-//     // probably do a POST request to the games index 
-//   })
-
-//   previousButton.addEventListener("click", function(event){
-//     // do something that responds to the button pree
-//   })
-// }
-
-
-// Turn functionality
+// Event Listeners
 
 function attachListeners() {
-	  Array.prototype.forEach.call(board, function(cell){
+  takeTurn();
+  saveGame();
+  previousGame();
+}
+
+
+function takeTurn() {
+  Array.prototype.forEach.call(board, function(cell){
 	    cell.addEventListener("click", function(event){
     	    doTurn(event);
     	})
 	})
 }
+
+function saveGame(){
+  var saveButton = document.getElementById("save")
+  saveButton.addEventListener("click", function(event){
+    // do something that responds to the button pree
+    // probably do a POST request to the games index 
+  })
+}
+
+function previousGame() {
+  var previousButton = document.getElementById("previous")
+  previousButton.addEventListener("click", function(event){
+    // do something that responds to the button pree
+  })
+}
+
+
+// Turn functionality
 
 function doTurn(event) {
   updateState(event);

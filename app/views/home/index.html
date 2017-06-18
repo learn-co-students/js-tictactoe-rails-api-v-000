@@ -25,20 +25,5 @@
 		<button id="save">Save Game</button>
 		<button id="previous">Show Previous Games</button>
 
-		<script type="text/javascript" charset="utf-8">
-		$(function () {
-			$('save').click(function(event) {
-				debugger;
-			var values = $(this).serialize();
-			var saveGame = $.post('/games', values);
-			saveGame.done(function(data) {
-				var game = data;
-				$("#gameID").text(game["id"]);
-			});
-		  });
-		});
-		</script>
-
-		<script src="tictactoe.js"></script>
 	</body>
 </html>
