@@ -10,7 +10,6 @@ function attachListeners() {
   previousGame();
 }
 
-
 function takeTurn() {
   Array.prototype.forEach.call(board, function(cell){
 	    cell.addEventListener("click", function(event){
