@@ -3,8 +3,7 @@ var turn = 0
 var board = document.getElementsByTagName("td")
 
 function attachListeners() {
-	var allCells = document.getElementsByTagName("td");
-	  Array.prototype.forEach.call(allCells, function(cell){
+	  Array.prototype.forEach.call(board, function(cell){
 	    cell.addEventListener("click", function(event){
     	    doTurn(event);
     	})
