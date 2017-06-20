@@ -1,9 +1,11 @@
+
+
 var turn = 0
-var cells = $("td")
+
 
 function noMoreCells() {
-  var cells = $("td")
   allTaken = true
+  var cells = $("td")
 
   cells.each(function() {
     if (this.textContent === "") {
@@ -34,38 +36,63 @@ function checkWinner() {
     if (cells[combo[0]].textContent && cells[combo[0]].textContent === cells[combo[1]].textContent && cells[combo[1]].textContent === cells[combo[2]].textContent ) {
       value = true
       message("Player " + player() + " Won!")
-    }
-     if (noMoreCells()) {
-       value = true
-      message("Tie game")
-
-    }
+      }
 
     })
+
+    if (noMoreCells()) {
+      value = true
+     message("Tie game")
+   }
+
     return value
   }
 
-
-
-
-
-
 function doTurn(event) {
-
-
   updateState(event)
-  checkWinner()
-  turn++
 
+  if (!checkWinner()) {
+    turn++
+  }
+  else {
+    turn = 0
+    $("td").empty()
+  }
 
 }
+
 
 
 function attachListeners() {
   $("td").on("click", function(event) {
       doTurn(event)
     })
+
+    $("#save").on('click', function(event) {
+
+      event.preventDefault()
+
+      var state = $('td').map(function(index, element) {
+        return element.innerText
+      })
+      var string = JSON.stringify({game: {state: $.makeArray(state)}})
+
+
+      $.ajax({
+      type: "POST",
+      url: '/games',
+      data: string,
+      success: function(response) {
+        console.log(response)
+      },
+      dataType: 'json',
+      contentType: "application/json"
+      });
+    })
   }
+
+
+
 
   function player() {
     if (turn % 2 === 0) {
@@ -84,9 +111,8 @@ function attachListeners() {
 
 
 
+  $(function() {
 
 
-
-$(function() {
   attachListeners()
 })
