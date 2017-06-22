@@ -1,6 +1,7 @@
 
 
 var turn = 0
+var currentGame = null// figure out what is this for
 
 
 function noMoreCells() {
@@ -77,6 +78,19 @@ function attachListeners() {
       })
       var string = JSON.stringify({game: {state: $.makeArray(state)}})
 
+      if (currentGame) {
+        $.ajax({
+          method: "PATCH",
+          url: "/games/" + currentGame,
+          data: string,
+          success: function(response) {
+            alert(response)
+          },
+          dataType: 'json',
+          contentType: "application/json"
+        })
+      }// if statement
+      else {
 
       $.ajax({
       type: "POST",
@@ -84,11 +98,25 @@ function attachListeners() {
       data: string,
       success: function(response) {
         console.log(response)
+        currentGame = response.game.id
       },
       dataType: 'json',
       contentType: "application/json"
       });
-    })
+    }//else statement
+    })//save game listener
+
+    $('#previous').on('click', function(event) {
+
+      $.get('/games', function(games) {
+         var html =  games.games.map(function(game) {
+          return '<li>' + game.id + '</li>'
+        }).join(" ")//map
+        console.log(html)
+        $('#games').html(html)
+      })//get request
+    })//click event
+
   }
 
 
