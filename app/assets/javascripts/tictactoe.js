@@ -1,8 +1,44 @@
 
 
 var turn = 0
-var currentGame = null// figure out what is this for
+var currentGame = null
 
+function save(won) {
+    var state = $('td').map(function(index, element) {
+      return element.innerText
+    })
+    var string = JSON.stringify({game: {state: $.makeArray(state)}})
+
+    if (currentGame) {
+      $.ajax({
+        method: "PATCH",
+        url: "/games/" + currentGame,
+        data: string,
+        success: function(response) {
+        },
+        dataType: 'json',
+        contentType: "application/json"
+      })
+    }// if statement
+    else {
+
+    $.ajax({
+    type: "POST",
+    url: '/games',
+    data: string,
+    success: function (response) {
+      if (won) {
+        currentGame = null
+      }
+      else {
+        currentGame = response.game.id
+      }
+    },
+    dataType: 'json',
+    contentType: "application/json"
+    })
+  }//else
+} // save function
 
 function noMoreCells() {
   allTaken = true
@@ -16,7 +52,6 @@ function noMoreCells() {
   })
   return allTaken
 }
-
 
 function checkWinner() {
   var cells = $("td")
@@ -56,13 +91,13 @@ function doTurn(event) {
     turn++
   }
   else {
+
+    save(true)
     turn = 0
     $("td").empty()
   }
 
 }
-
-
 
 function attachListeners() {
   $("td").on("click", function(event) {
@@ -70,40 +105,8 @@ function attachListeners() {
     })
 
     $("#save").on('click', function(event) {
-
       event.preventDefault()
-
-      var state = $('td').map(function(index, element) {
-        return element.innerText
-      })
-      var string = JSON.stringify({game: {state: $.makeArray(state)}})
-
-      if (currentGame) {
-        $.ajax({
-          method: "PATCH",
-          url: "/games/" + currentGame,
-          data: string,
-          success: function(response) {
-            alert(response)
-          },
-          dataType: 'json',
-          contentType: "application/json"
-        })
-      }// if statement
-      else {
-
-      $.ajax({
-      type: "POST",
-      url: '/games',
-      data: string,
-      success: function(response) {
-        console.log(response)
-        currentGame = response.game.id
-      },
-      dataType: 'json',
-      contentType: "application/json"
-      });
-    }//else statement
+      save()
     })//save game listener
 
     $('#previous').on('click', function(event) {
@@ -112,15 +115,12 @@ function attachListeners() {
          var html =  games.games.map(function(game) {
           return '<li>' + game.id + '</li>'
         }).join(" ")//map
-        console.log(html)
         $('#games').html(html)
       })//get request
     })//click event
 
+
   }
-
-
-
 
   function player() {
     if (turn % 2 === 0) {
@@ -137,10 +137,6 @@ function attachListeners() {
     $('#message').text(message)
   }
 
-
-
   $(function() {
-
-
   attachListeners()
 })
