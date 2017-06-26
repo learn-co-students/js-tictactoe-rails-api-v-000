@@ -1,21 +1,31 @@
 var turn = 0;
+var gameCount = 0;
 
 function attachListeners() {
-  //createGame();
   $('td').click(function(e) {
     doTurn(e);
   });
+
+  $('#save').click(function(e) {
+    save(e)
+  });
 }
 
-function createGame() {
-  //$.post('/games')
+function save(e) {
+  gameCount++;
+  var values = {game: {state: currentBoard()}};
+  var posting = $.post('/games', values);
+  //new game is saving, next, deal with values and accomodate updating existing game
+  posting.done(function(data) {
+    //fill in values?
+  });
 }
 
 function resetGame() {
+  save();
   $('td').each(function(td) {
     this.innerHTML = "";
   });
-  //clearMessage();
 }
 
 function clearMessage() {
@@ -89,6 +99,16 @@ function updateState(e) {
   } else {
     return false;
   }
+}
+
+function currentBoard() {
+  var board = [];
+
+  $('td').each(function(space) {
+    board.push(this.innerHTML);
+  });
+
+  return board;
 }
 
 function player() {
