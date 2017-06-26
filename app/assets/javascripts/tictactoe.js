@@ -1,15 +1,25 @@
 var turn = 0;
 
 function attachListeners() {
+  //createGame();
   $('td').click(function(e) {
     doTurn(e);
   });
+}
+
+function createGame() {
+  //$.post('/games')
 }
 
 function resetGame() {
   $('td').each(function(td) {
     this.innerHTML = "";
   });
+  //clearMessage();
+}
+
+function clearMessage() {
+  $('#message').text("");
 }
 
 function doTurn(e) {
@@ -24,7 +34,7 @@ function doTurn(e) {
   }
 }
 
-//create Object to contain win combos? iterate of td selector collection? better way in general possible?
+//create Object to contain win combos? iterate over td selector collection? better way in general possible?
 function checkWinner() {
   //positions
   var one = $('td[data-x="0"][data-y="0"]').text();
