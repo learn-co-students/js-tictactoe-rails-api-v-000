@@ -2,14 +2,13 @@ var turn = 0;
 
 function attachListeners() {
   $('td').click(function(e) {
-    e.preventDefault();
-    let result = doTurn(e);
-  //   if (result === "over") {
-  //     $('td').each(function(td) {
-  //       this.innerHTML = "";
-  //     });
-  //     $('#message').text("");
-  //   }
+    doTurn(e);
+  });
+}
+
+function resetGame() {
+  $('td').each(function(td) {
+    this.innerHTML = "";
   });
 }
 
@@ -21,7 +20,7 @@ function doTurn(e) {
   }
 
   if($('#message').text() !== "") {
-    return "over";
+    resetGame();
   }
 }
 
