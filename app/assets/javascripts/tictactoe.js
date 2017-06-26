@@ -5,7 +5,10 @@ var turn = 0
 var winner = []
 var currentGame;
 function attachListeners(){
+
+$('#previous').on("click",function(event){
     showGames()
+  })
     loadGame()
     $("td").click(function(event){
       if($(this).text() == ""){
@@ -89,11 +92,7 @@ function updateState(event){
 ///// Save and Open Game functionality ////
 
 
-function getGames(){
 
-
-
-}
 
 function getBoard(){
   return winnerArray
@@ -111,8 +110,11 @@ function saveGame(won){
             url: "/games",
             success: function(resp){
               if(won){
+                console.log("I'm in Post top " + won + " " + currentGame)
                 currentGame = null
               }else {
+                //  debugger;
+                console.log("I'm in Post bottom " + won + " " + currentGame)
                 currentGame = resp.game
               }
             }
@@ -125,8 +127,11 @@ function saveGame(won){
         data: {game:{state: values}},
         success: function(resp){
           if(won){
+            console.log("I'm in Patch top " + won + " " + currentGame)
             currentGame = null
           }else {
+            // debugger;
+            console.log("I'm in Patch bottom " + won + " " + currentGame)
             currentGame = resp.game
           }
         }
@@ -137,17 +142,15 @@ function saveGame(won){
 
 
 function showGames(){
-  $('#previous').on("click",function(event){
-
+    $('#games').empty()
     $.get("/games", function(data, status){
-
-      for(let i = $('li').size(); i < data.games.length; i++) {
+      //debugger;
+      for(let i  = 0; i < data.games.length; i++) {
         $('#games').append('<li>'+ data.games[i].id + '</li>')
 
       }
     })
-  })
-}
+  }
 
 function loadGame(){
   $('#games').on('click','li', function(event){
