@@ -1,8 +1,9 @@
 var turn = 0;
-var gameCount = 0;
+var currentGame = 0;
 
 function attachListeners() {
   $('td').click(function(e) {
+    clearMessage();
     doTurn(e);
   });
   //save games in progress
@@ -11,7 +12,6 @@ function attachListeners() {
   });
   //display all saved games *limit to appending list 1 time - prevent repeats
   $('#previous').click(function(e) {
-    debugger;
     gamesList();
   });
 }
@@ -19,14 +19,15 @@ function attachListeners() {
 function gamesList() {
   $.get('/games', function(games) {
     games["games"].forEach(function(game) {
-      $('#games').append("<li>" + game["id"] + "</li>");
+      if($('#games').html().includes(game["id"]) === false) {
+        $('#games').append("<li>" + game["id"] + "</li>");
+      }
     });
   });
-  $('#games').hidden();
 }
 
 function save() {
-  gameCount++;
+  currentGame++;
   var board = currentBoard();
   var values = {
     game: {
@@ -52,11 +53,10 @@ function doTurn(e) {
   let result = updateState(e);
   if (result !== false) {
     turn++;
-    checkWinner();
-  }
-
-  if($('#message').text() !== "") {
-    resetGame();
+    var endOfGame = checkWinner();
+    if(endOfGame !== false) {
+      resetGame();
+    }
   }
 }
 
@@ -137,6 +137,7 @@ function player() {
 
 function message(winner) {
   $('div#message').text(winner);
+  //resetGame();
 }
 
 $(document).ready(attachListeners);
