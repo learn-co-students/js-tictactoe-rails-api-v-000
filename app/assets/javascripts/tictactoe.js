@@ -10,36 +10,58 @@ function attachListeners() {
   $('#save').click(function(e) {
     save();
   });
-  //display all saved games *limit to appending list 1 time - prevent repeats
+  //display all saved games
   $('#previous').click(function(e) {
-    gamesList();
+    //includes(1) because if there is no game with ID 1, @games is empty
+    if($('#games').html().includes(1) === false) {
+      gamesList();
+    } else {
+      $('#games ul').empty();
+    }
   });
+  //retrieve and resume previous game
+  $('#games').on('click', 'li', function(e) {
+    getGame(parseInt(this.innerHTML));
+  })
 }
 
 function gamesList() {
   $.get('/games', function(games) {
     games["games"].forEach(function(game) {
       if($('#games').html().includes(game["id"]) === false) {
-        $('#games').append("<li>" + game["id"] + "</li>");
+        $('#games ul').append("<li>" + game["id"] + "</li>");
       }
     });
   });
 }
 
 function save() {
-  currentGame++;
   var board = currentBoard();
   var values = {
     game: {
       state: board
     }
   };
-  $.post('/games', values);
+  //first move
+  if (currentGame === 0) {
+    $.post('/games', values);
+`   currentGame++;`
+  //all other moves
+  } else {
+    $.ajax({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    })
+  }
+}
 
+function getGame(id) {
+  debugger;
 }
 
 function resetGame() {
   save();
+  currentGame = 0;
   $('td').each(function(td) {
     this.innerHTML = "";
   });
