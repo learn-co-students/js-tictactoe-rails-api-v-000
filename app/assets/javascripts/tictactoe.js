@@ -56,7 +56,12 @@ function save() {
 }
 
 function getGame(id) {
-  debugger;
+  var requestedGame = $.get('/games/' + id, function(data) {
+    var td = $('td')
+    for (let i = 0; i < td.length; i++) {
+      td[i].innerHTML = data["game"]["state"][i];
+    }
+  });
 }
 
 function resetGame() {
