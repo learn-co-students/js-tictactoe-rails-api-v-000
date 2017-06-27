@@ -5,20 +5,36 @@ function attachListeners() {
   $('td').click(function(e) {
     doTurn(e);
   });
-
+  //save games in progress
   $('#save').click(function(e) {
-    save(e)
+    save();
+  });
+  //display all saved games *limit to appending list 1 time - prevent repeats
+  $('#previous').click(function(e) {
+    debugger;
+    gamesList();
   });
 }
 
-function save(e) {
-  gameCount++;
-  var values = {game: {state: currentBoard()}};
-  var posting = $.post('/games', values);
-  //new game is saving, next, deal with values and accomodate updating existing game
-  posting.done(function(data) {
-    //fill in values?
+function gamesList() {
+  $.get('/games', function(games) {
+    games["games"].forEach(function(game) {
+      $('#games').append("<li>" + game["id"] + "</li>");
+    });
   });
+  $('#games').hidden();
+}
+
+function save() {
+  gameCount++;
+  var board = currentBoard();
+  var values = {
+    game: {
+      state: board
+    }
+  };
+  $.post('/games', values);
+
 }
 
 function resetGame() {

@@ -3,7 +3,7 @@ class GamesController < ApplicationController
   def index
     @games = Game.all
     render json: @games
-  end 
+  end
 
   def show
     @game = Game.find(params[:id])
@@ -11,7 +11,6 @@ class GamesController < ApplicationController
   end
 
   def create
-    binding.pry
     @game = Game.create(game_params)
     render json: @game, status: 201
   end
