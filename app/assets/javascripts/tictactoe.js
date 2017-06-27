@@ -70,14 +70,18 @@ function checkWinner() {
      }
    });
 
- if (turn > 8) {
-   message('Tie game');
-   saveBoard(true);
-   reset();
-   }
- }
+ checkTie()
  return false;
 };
+
+function checkTie() {
+  if (turn > 8) {
+    message('Tie game');
+    saveBoard(true);
+    reset();
+    }
+  }
+}
 
 function clearBoard() {
   $("games").empty();
