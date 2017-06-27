@@ -55,12 +55,15 @@ function message(string) {
 };
 
 function checkWinner() {
- if (turn > 3) {
+ if (turn > 5) {
    win_combos.forEach(function(combo){
-     var row = $('td[data-x="' + combo[0][0] + '"][data-y="' + combo[0][1] + '"]').text() + $('td[data-x="' + combo[1][0] + '"][data-y="' + combo[1][1] + '"]').text() + $('td[data-x="' + combo[2][0] + '"][data-y="' + combo[2][1] + '"]').text();
+     var $td1 = $('td[data-x="' + combo[0][0] + '"][data-y="' + combo[0][1] + '"]').text()
+     var $td2 = $('td[data-x="' + combo[1][0] + '"][data-y="' + combo[1][1] + '"]').text()
+     var $td3 = $('td[data-x="' + combo[2][0] + '"][data-y="' + combo[2][1] + '"]').text()
+     var row = $td1 + $td2 + $td3 ;
 
      if (row === 'XXX' || row === 'OOO') {
-       message(`Player ${row[0]} Won!`);
+       message(`Player ${$td1} Won!`);
        saveBoard(true);
        reset();
        return;
@@ -89,14 +92,8 @@ function currentBoardCells() {
 };
 
 function saveBoard(gameOver){
-	var method = 'post';
-	var url = '/games';
-
-	if (currentGame > 0) {
-		method = 'patch';
-		url = url + '/' + currentGame;
-    debugger
-	}
+	method = 'patch';
+	url = '/games/' + currentGame;
 
 	$.ajax({
 		method: method,
@@ -116,7 +113,8 @@ function getGames() {
 		var savedGames = response;
 		clearBoard();
 		if (savedGames.length > 0){
-			var list = $("#games").append('<ul></ul>').find('ul');
+      $("#games").append('<ul></ul>')
+			var list = $("#games ul");
 			savedGames.forEach(function(game){
 				list.append('<li id="' + game["id"] + '">' + game["id"] + "</li>")
 			})
