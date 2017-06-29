@@ -55,9 +55,12 @@ function save() {
   //all other moves
   } else {
     $.ajax({
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    })
+      url: '/games/' + currentGame,
+      method: 'PATCH',
+      data: values
+    }).done(function(response) {
+      debugger;
+    });
   }
   gamesList();
 }
