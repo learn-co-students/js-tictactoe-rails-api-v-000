@@ -1,10 +1,17 @@
 var turn = 0;
 var currentGame = 0;
 
+//TO DO: make function that goes through td's of a board after old game is loaded into table. this will determine which player is up next.
+//TO DO: make PATCH - make id variable which is 0 by default (every time different game is loaded, set it equal to <li> html. when game is won or tied, reset to 0. this will determine if game needs POST or PATCH). this will be $.ajax()
+
+//AFTER THAT, SHOULD BE DONE!
 function attachListeners() {
   $('td').click(function(e) {
     clearMessage();
-    doTurn(e);
+    var ended = doTurn(e);
+    if (ended !== false) {
+      e.preventDefault();
+    }
   });
   //save games in progress
   $('#save').click(function(e) {
@@ -22,7 +29,7 @@ function attachListeners() {
   //retrieve and resume previous game
   $('#games').on('click', 'li', function(e) {
     getGame(parseInt(this.innerHTML));
-  })
+  });
 }
 
 function gamesList() {
@@ -45,7 +52,6 @@ function save() {
   //first move
   if (currentGame === 0) {
     $.post('/games', values);
-`   currentGame++;`
   //all other moves
   } else {
     $.ajax({
@@ -53,19 +59,24 @@ function save() {
       'Content-Type': 'application/json'
     })
   }
+  gamesList();
 }
 
 function getGame(id) {
-  var requestedGame = $.get('/games/' + id, function(data) {
+  turn = 0;
+  currentGame = id;
+  $.get('/games/' + id, function(data) {
     var td = $('td')
     for (let i = 0; i < td.length; i++) {
       td[i].innerHTML = data["game"]["state"][i];
+      setTurn(data["game"]["state"][i]);
     }
   });
 }
 
 function resetGame() {
-  save();
+  debugger;
+    save();
   currentGame = 0;
   $('td').each(function(td) {
     this.innerHTML = "";
@@ -84,6 +95,7 @@ function doTurn(e) {
     if(endOfGame !== false) {
       resetGame();
     }
+    return endOfGame;
   }
 }
 
@@ -159,6 +171,12 @@ function player() {
     return "X";
   } else {
     return "O";
+  }
+}
+
+function setTurn(space) {
+  if(space !== "") {
+    turn++;
   }
 }
 
