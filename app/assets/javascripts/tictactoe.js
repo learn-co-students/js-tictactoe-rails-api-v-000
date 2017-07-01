@@ -48,7 +48,6 @@ function save() {
       state: board
     }
   };
-
   // first move
   if (currentGame === 0) {
     $.post('/games', values);
@@ -76,7 +75,7 @@ function getGame(id) {
 }
 
 function resetGame() {
-    save();
+  save();
   currentGame = 0;
   $('td').each(function(td) {
     this.innerHTML = "";
