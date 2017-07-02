@@ -54,14 +54,6 @@ var resetBoard = () => {
   $("td").html('');
 }
 
-// function checkTie() {
-//     if (turn == 9){
-//       return true
-//     } else {
-//     return false 
-//   }
-// }
-
 function checkWinner() {
 
   getBoard()
