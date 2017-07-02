@@ -54,37 +54,38 @@ var resetBoard = () => {
   $("td").html('');
 }
 
-function checkTie() {
-    if (turn == 9){
-      return true
-    } else {
-    return false 
-  }
-}
+// function checkTie() {
+//     if (turn == 9){
+//       return true
+//     } else {
+//     return false 
+//   }
+// }
 
 function checkWinner() {
+
   getBoard()
-  winCombinations.forEach(function(row) {
+  for (var i = 0; i < winCombinations.length; i++) {
+    var row = winCombinations[i];
     if (board[row[0]] == board[row[1]] && board[row[2]] == board[row[1]] && board[row[0]] != ""){
       message(`Player ${board[row[0]]} Won!`)
-      resetBoard()
-      return false
+      return true;
     }
-  })
-    if (checkTie()) {
-      message('Tie game.')
-      resetBoard();
-    }
-    return true
+  }
+    return false
 }
 
-var updateState = function(e) {
-  $(e.target).html(player())
+var updateState = function(target) {
+  $(target).html(player())
 }
 
 function doTurn(e) {
-    updateState(e)
+    updateState(e.target)
     checkWinner()
+    if (turn == 9){
+      message('Tie game.')
+      resetBoard();
+    }
     turn ++
 }
 
