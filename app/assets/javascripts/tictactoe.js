@@ -64,7 +64,7 @@ function checkWinner() {
     }
   })
     if (checkTie()) {
-      message('Tie Game')
+      message('Tie game.')
       resetBoard();
     }
     return false
