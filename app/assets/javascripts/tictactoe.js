@@ -28,18 +28,13 @@ var getBoard = () => {
   })
 }
 
-function updateState() {
-  return player()
-}
-
-function attachListeners() {
-
+function updateState(e) {
+  e.target.innerHTML = player()
 }
 
 var message = string => {
   document.getElementById('message').innerHTML = `<p>${string}</p>`
 }
-
 
 function player() { 
   if (turn % 2 == 0) {
@@ -49,11 +44,10 @@ function player() {
   }
 }
 
-function doTurn() {
+function doTurn(e) {
+  updateState(e)
   if (!checkWinner()){
-    let playerTurn = updateState()
     turn += 1
-    return playerTurn
   } else {
     resetBoard()
   }
@@ -64,27 +58,26 @@ var resetBoard = () => {
   turn = 0 
 }
 
-var attachListener = function () {
+function attachListeners() {
   $(document).ready(function() {
     $('td').on("click", function (e) {
       if (e.target.dataset && e.target.innerHTML == "") {
-        e.target.innerHTML = doTurn()
+        e.target = doTurn(e)
       }
     }); 
-  });
+  })
 }
-
 
 function checkWinner() {
   getBoard()
-  winCombinations.forEach(function(line) {
-    if (board[line[0]].innerText == board[line[1]].innerText && board[line[2]].innerText == board[line[1]].innerText && board[line[0]].innerText != ""){
-      message(`Player ${board[line[0]].innerText} Won!`)
-      return "true"
+  winCombinations.forEach(function(row) {
+    if (board[row[0]].innerText == board[row[1]].innerText && board[row[2]].innerText == board[row[1]].innerText && board[row[0]].innerText != ""){
+      message(`Player ${board[row[0]].innerText} Won!`)
+      return true
     }
   })
     if (checkTie()) {
-      message(`There is a tie`)
+      message('There is a tie')
     }
     return false
 }
@@ -98,6 +91,6 @@ function checkTie() {
     return true 
 }
 
-attachListener()
+attachListeners()
 
 
