@@ -15,22 +15,19 @@ var board = {}
 var getBoard = () => {
   var index = 0
   document.querySelectorAll("[data-y='0']").forEach(function(row){
-     board[index] = row
+     board[index] = row.innerHTML
      index ++
   })
   document.querySelectorAll("[data-y='1']").forEach(function(row){
-     board[index] = row
+     board[index] = row.innerHTML
      index ++
   })
   document.querySelectorAll("[data-y='2']").forEach(function(row){
-     board[index] = row
+     board[index] = row.innerHTML
      index ++
   })
 }
 
-function updateState(e) {
-  e.target.innerHTML = player()
-}
 
 var message = string => {
   document.getElementById('message').innerHTML = `<p>${string}</p>`
@@ -44,51 +41,55 @@ function player() {
   }
 }
 
-function doTurn(e) {
-  updateState(e)
-  if (!checkWinner()){
-    turn += 1
-  } else {
-    resetBoard()
-  }
-}
-
 var resetBoard = () => {
-  board = {}
-  turn = 0 
+  turn = 0
+  $("td").html('');
 }
 
-function attachListeners() {
-  $(document).ready(function() {
-    $('td').on("click", function (e) {
-      if (e.target.dataset && e.target.innerHTML == "") {
-        e.target = doTurn(e)
-      }
-    }); 
-  })
+function checkTie() {
+    if (turn == 9){
+      return true
+    } else {
+    return false 
+  }
 }
 
 function checkWinner() {
   getBoard()
   winCombinations.forEach(function(row) {
-    if (board[row[0]].innerText == board[row[1]].innerText && board[row[2]].innerText == board[row[1]].innerText && board[row[0]].innerText != ""){
-      message(`Player ${board[row[0]].innerText} Won!`)
+    if (board[row[0]] == board[row[1]] && board[row[2]] == board[row[1]] && board[row[0]] != ""){
+      message(`Player ${board[row[0]]} Won!`)
+      resetBoard()
       return true
     }
   })
     if (checkTie()) {
-      message('There is a tie')
+      message('Tie Game')
+      resetBoard();
     }
     return false
 }
 
-function checkTie() {
-  for (var key in board) {
-    if (board[key].innerText == ""){
-      return false
-    } 
+var updateState = function(e) {
+  debugger
+  $(e.target).html(player())
+}
+
+function doTurn(e) {
+    updateState(e)
+  if (!checkWinner()){
+    turn += 1
   } 
-    return true 
+}
+
+function attachListeners() {
+  $(document).ready(function() {
+    $('tbody').on("click", function (e) {
+      if (e.target.dataset && e.target.innerHTML == "") {
+        doTurn(e)
+      }
+    }); 
+  })
 }
 
 attachListeners()
