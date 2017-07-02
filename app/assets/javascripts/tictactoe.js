@@ -14,8 +14,6 @@ $(document).ready(function() {
 //    }
 // });
 
-var doesThisWork
-
 var turn = 0
 
 function updateState() {
