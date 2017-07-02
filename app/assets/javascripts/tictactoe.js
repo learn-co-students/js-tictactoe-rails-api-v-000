@@ -9,19 +9,7 @@
     [2,4,6]  // Diagnoal R to L
   ]
 
-// $(document).ready(function() {
-//     $('td').on("click", function (e) {
-//       if (e.target.dataset && e.target.innerHTML == "") {
-//         e.target.innerHTML = doTurn()
-//       }
-//   }); 
-// });
-
-// $('tr[id^=mytablerow-]').on('click', function(){
-//    if ( $('a#action-toggle').text() == 'Enabled' ) {
-//        alert('action enabled'); 
-//    }
-// });
+var turn = 0
 var board = {}
 
 var getBoard = () => {
@@ -39,22 +27,21 @@ var getBoard = () => {
      index ++
   })
 }
-getBoard()
-
-var turn = 0
 
 function updateState() {
   return player()
 }
 
 function attachListeners() {
+
 }
+
 var message = string => {
   document.getElementById('message').innerHTML = `<p>${string}</p>`
 }
 
 
-function player() {
+function player() { 
   if (turn % 2 == 0) {
     return "X"
   } else {
@@ -67,9 +54,15 @@ function doTurn() {
     let playerTurn = updateState()
     turn += 1
     return playerTurn
+  } else {
+    resetBoard()
   }
- }
+}
 
+var resetBoard = () => {
+  board = {}
+  turn = 0 
+}
 
 var attachListener = function () {
   $(document).ready(function() {
@@ -81,16 +74,30 @@ var attachListener = function () {
   });
 }
 
-attachListener()
-
 
 function checkWinner() {
   getBoard()
   winCombinations.forEach(function(line) {
     if (board[line[0]].innerText == board[line[1]].innerText && board[line[2]].innerText == board[line[1]].innerText && board[line[0]].innerText != ""){
       message(`Player ${board[line[0]].innerText} Won!`)
-      return true
+      return "true"
     }
   })
+    if (checkTie()) {
+      message(`There is a tie`)
+    }
+    return false
 }
+
+function checkTie() {
+  for (var key in board) {
+    if (board[key].innerText == ""){
+      return false
+    } 
+  } 
+    return true 
+}
+
+attachListener()
+
 
