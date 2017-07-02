@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
-    $('body').on("click", function (e) {
-      if (e.target.dataset) {
+    $('tbody').on("click", function (e) {
+      if (e.target.dataset && e.target.innerHTML == "") {
         e.target.innerHTML = doTurn()
       }
   }); 
@@ -23,7 +23,7 @@ function attachListeners() {
 }
 
 function message() {
-
+  // $('#message').innerHTML = "message"
 }
 
 function checkWinner() {
