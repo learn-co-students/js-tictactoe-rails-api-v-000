@@ -10,22 +10,31 @@
   ]
 
 var turn = 0
-var board = {}
+// var board = {}
 
-var getBoard = () => {
-  var index = 0
-  document.querySelectorAll("[data-y='0']").forEach(function(row){
-     board[index] = row.innerHTML
-     index ++
-  })
-  document.querySelectorAll("[data-y='1']").forEach(function(row){
-     board[index] = row.innerHTML
-     index ++
-  })
-  document.querySelectorAll("[data-y='2']").forEach(function(row){
-     board[index] = row.innerHTML
-     index ++
-  })
+// var getBoard = () => {
+//   var index = 0
+//   document.querySelectorAll("[data-y='0']").forEach(function(row){
+//      board[index] = row.innerHTML
+//      index ++
+//   })
+//   document.querySelectorAll("[data-y='1']").forEach(function(row){
+//      board[index] = row.innerHTML
+//      index ++
+//   })
+//   document.querySelectorAll("[data-y='2']").forEach(function(row){
+//      board[index] = row.innerHTML
+//      index ++
+//   })
+// }
+
+var board = []
+
+var getBoard = function(){
+     board = []
+    document.querySelectorAll("[data-y]").forEach(function(cell){
+     board.push(cell.innerHTML)
+ })
 }
 
 
@@ -71,7 +80,6 @@ function checkWinner() {
 }
 
 var updateState = function(e) {
-  debugger
   $(e.target).html(player())
 }
 
