@@ -37,17 +37,16 @@ var getBoard = function(){
  })
 }
 
-
-var message = string => {
-  document.getElementById('message').innerHTML = `<p>${string}</p>`
-}
-
 function player() { 
   if (turn % 2 == 0) {
     return "X"
   } else {
     return "O"
   }
+}
+
+var message = string => {
+  document.getElementById('message').innerHTML = `<p>${string}</p>`
 }
 
 var resetBoard = () => {
@@ -69,14 +68,14 @@ function checkWinner() {
     if (board[row[0]] == board[row[1]] && board[row[2]] == board[row[1]] && board[row[0]] != ""){
       message(`Player ${board[row[0]]} Won!`)
       resetBoard()
-      return true
+      return false
     }
   })
     if (checkTie()) {
       message('Tie game.')
       resetBoard();
     }
-    return false
+    return true
 }
 
 var updateState = function(e) {
@@ -85,9 +84,18 @@ var updateState = function(e) {
 
 function doTurn(e) {
     updateState(e)
-  if (!checkWinner()){
-    turn += 1
-  } 
+    checkWinner()
+    turn ++
+}
+
+function getPrevious() { 
+  var gamesDiv = '' 
+  $.get("/games", function(data) { 
+    data.games.forEach(function(game) { 
+      gamesDiv += `<li class="game" data-id="${game.id}" > ${game.id} ${game.state} \n </li>`
+    }); 
+    $("#games").html(gamesDiv) 
+  }); 
 }
 
 function attachListeners() {
