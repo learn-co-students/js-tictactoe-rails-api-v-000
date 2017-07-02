@@ -2,8 +2,7 @@
 $(document).ready(function() {
     $('body').on("click", function (e) {
       if (e.target.dataset) {
-        debugger
-        e.target.innerHTML = player()
+        e.target.innerHTML = doTurn()
       }
   }); 
 });
@@ -17,7 +16,7 @@ $(document).ready(function() {
 var turn = 0
 
 function updateState() {
-   player()
+   return player()
 }
 
 function attachListeners() {
@@ -40,10 +39,12 @@ function player() {
 }
 
 function doTurn() {
-  var turn = turn + 1
-  updateState()
   checkWinner()
-}
+  let playerTurn = updateState()
+  turn += 1
+  return playerTurn
+ }
+
 
 
 
