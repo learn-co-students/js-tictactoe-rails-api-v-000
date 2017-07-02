@@ -1,6 +1,6 @@
 
 $(document).ready(function() {
-    $('tbody').on("click", function (e) {
+    $('td').on("click", function (e) {
       if (e.target.dataset && e.target.innerHTML == "") {
         e.target.innerHTML = doTurn()
       }
@@ -21,9 +21,8 @@ function updateState() {
 
 function attachListeners() {
 }
-
-function message() {
-  // $('#message').innerHTML = "message"
+var message = string => {
+  document.getElementById('message').innerHTML = `<p>${string}</p>`
 }
 
 function checkWinner() {
