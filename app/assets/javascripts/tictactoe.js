@@ -57,6 +57,7 @@ var updateState = function(target) {
 function doTurn(e) {
     updateState(e.target)
     if (checkWinner()) {
+      saveGame()
       resetBoard();
     }
     if (turn == 9){
