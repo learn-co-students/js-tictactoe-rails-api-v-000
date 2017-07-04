@@ -9,24 +9,8 @@
     [2,4,6]  // Diagnoal R to L
   ]
 
-var turn = 0
-// var board = {}
-
-// var getBoard = () => {
-//   var index = 0
-//   document.querySelectorAll("[data-y='0']").forEach(function(row){
-//      board[index] = row.innerHTML
-//      index ++
-//   })
-//   document.querySelectorAll("[data-y='1']").forEach(function(row){
-//      board[index] = row.innerHTML
-//      index ++
-//   })
-//   document.querySelectorAll("[data-y='2']").forEach(function(row){
-//      board[index] = row.innerHTML
-//      index ++
-//   })
-// }
+var turn = 0 
+var id = false
 
 var board = []
 
@@ -55,7 +39,6 @@ var resetBoard = () => {
 }
 
 function checkWinner() {
-
   getBoard()
   for (var i = 0; i < winCombinations.length; i++) {
     var row = winCombinations[i];
@@ -76,23 +59,82 @@ function doTurn(e) {
     if (checkWinner()) {
       resetBoard();
     }
-
     if (turn == 9){
       message('Tie game.')
       resetBoard();
     }
-    
     turn ++
 }
 
-function getPrevious(data) { 
-  var gamesDiv = '' 
-  $.get("/games", function(data) { 
-    data.data.forEach(function(game) { 
-      gamesDiv += `<li class="game" data-id="${game.id}" > ${game.id} ${game.attributes.state} \n </li>`
-    }); 
-    $("#games").html(gamesDiv) 
-  }); 
+// function getPrevious(data) { 
+//   var gamesDiv = '' 
+//   $.get("/games", function(data) { 
+//     data.data.forEach(function(game) { 
+//       debugger
+//     gamesDiv += `<li class="game" data-id="${game.id}"> ${game.id} ${game.attributes.state} \n </li>`
+// })
+//     $("#games").html(gamesDiv) 
+//   }); 
+// }
+
+// ${game.attributes.state}
+
+          // data.data.attributes.state.forEach(function(piece) {
+
+function getPrevious(data) {
+  $.get('/games', function(data) {
+    var list = data.data.map(function(game) {
+      return $(
+        `<li class="game" data-id="${game.id}">
+        ${game.id} \n
+        </li>`
+      ).on('click', function(e) {
+        id = $(this).data("id")
+        $.get('/games/' + id, function(data) {
+          placeMarks(data.data.attributes.state)
+         })   
+      });
+    });
+    $('#games').html(list);
+  });
+}
+
+var placeMarks = function(marks) {
+  if (marks.length > 0) {
+    $("td").each(function(i) {
+    $(this).text(marks[i]);
+    })
+  } else {
+    $("td").each(function(i) {
+    $(this).text("");
+    })
+  }
+}
+
+function saveGame() {
+  var url, method;
+  if(id) {
+    method = "PATCH"
+    url = "/games/" + id 
+  } else {
+    method = "POST"
+    url = "/games"
+  }
+
+$.ajax({ 
+    url: url, 
+    method: method,
+    datatype: "json",
+    data: {
+      game: {
+        state: board
+      }
+    },
+    success: function(data) {
+      debugger
+    }
+
+  })
 }
 
 function attachListeners() {
@@ -105,7 +147,10 @@ function attachListeners() {
     $('#previous').on("click", function () {
       getPrevious()
     })
+    $('#save').on("click", function () {
+      saveGame()
   })
+})
 }
 
 attachListeners()
