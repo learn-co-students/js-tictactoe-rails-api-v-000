@@ -62,6 +62,7 @@ function doTurn(e) {
     }
     if (turn == 9){
       message('Tie game.')
+      saveGame()
       resetBoard();
     }
     turn ++
