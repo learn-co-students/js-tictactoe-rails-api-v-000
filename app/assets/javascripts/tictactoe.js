@@ -54,18 +54,20 @@ var updateState = function(target) {
   $(target).html(player())
 }
 
-function doTurn(e) {
-    updateState(e.target)
+function doTurn(target) {
+
+    updateState(target)
     if (checkWinner()) {
       saveGame()
       resetBoard();
     }
+    turn ++
     if (turn == 9){
+  
       message('Tie game.')
       saveGame()
       resetBoard();
     }
-    turn ++
 }
 
 // function getPrevious(data) { 
@@ -143,7 +145,7 @@ function attachListeners() {
   $(document).ready(function() {
     $('tbody').on("click", function (e) {
       if (e.target.dataset && e.target.innerHTML == "") {
-        doTurn(e)
+        doTurn(e.target)
       }
     }); 
     $('#previous').on("click", function () {
@@ -151,8 +153,11 @@ function attachListeners() {
     })
     $('#save').on("click", function () {
       saveGame()
+    })
+    $('#clear').on("click", function () {
+      resetBoard()
+    })
   })
-})
 }
 
 attachListeners()
