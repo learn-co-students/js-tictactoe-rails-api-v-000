@@ -74,30 +74,15 @@ function doTurn(target) {
     turn ++
 }
 
-// function getPrevious(data) { 
-//   var gamesDiv = '' 
-//   $.get("/games", function(data) { 
-//     data.data.forEach(function(game) { 
-//       debugger
-//     gamesDiv += `<li class="game" data-id="${game.id}"> ${game.id} ${game.attributes.state} \n </li>`
-// })
-//     $("#games").html(gamesDiv) 
-//   }); 
-// }
-
-// ${game.attributes.state}
-
-          // data.data.attributes.state.forEach(function(piece) {
-
 function getPrevious(data) {
   $.get('/games', function(data) {
     var list = data.data.map(function(game) {
       return $(
-        `<li class="game" data-id="${game.id}">
+        `<button><li class="game" data-id="${game.id}">
         ${game.id} \n
-        </li>`
+        </li></button>`
       ).on('click', function(e) {
-        id = $(this).data("id")
+        id = e.target.dataset["id"]
         $.get('/games/' + id, function(data) {
           placeMarks(data.data.attributes.state)
          })   
