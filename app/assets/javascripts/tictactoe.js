@@ -33,7 +33,7 @@ var message = string => {
   document.getElementById('message').innerHTML = `<p>${string}</p>`
 }
 
-var resetBoard = () => {
+var resetBoard = function() {
   turn = 0
   $("td").html('');
 }
@@ -60,6 +60,7 @@ function doTurn(target) {
     if (checkWinner()) {
       saveGame()
       resetBoard();
+      return "winner"
     }
 
     
@@ -68,6 +69,7 @@ function doTurn(target) {
       message('Tie game.')
       saveGame()
       resetBoard();
+      return "tie"
     }
     turn ++
 }
