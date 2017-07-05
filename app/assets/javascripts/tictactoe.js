@@ -62,14 +62,14 @@ function doTurn(target) {
       resetBoard();
     }
 
-    turn ++
     
-    if (turn == 9){
+    if ($.inArray("", board) == -1){
   
       message('Tie game.')
       saveGame()
       resetBoard();
     }
+    turn ++
 }
 
 // function getPrevious(data) { 
@@ -137,7 +137,6 @@ $.ajax({
       }
     },
     success: function(data) {
-      debugger
     }
 
   })
