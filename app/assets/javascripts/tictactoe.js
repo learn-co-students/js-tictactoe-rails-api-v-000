@@ -9,15 +9,13 @@ function player() {
   }
 }
 
-function updateState() {
+function updateState(sq) {
   var result = player();
-  $('td').innerHTML = result;
+  sq.innerHTML = result;
 }
 
-
-
-function message() {
-
+function message(string) {
+  $('div#message').append(string);
 }
 
 function checkWinner(){
