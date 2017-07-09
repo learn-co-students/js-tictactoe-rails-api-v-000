@@ -1,17 +1,17 @@
 // Code your JavaScript / jQuery solution here
+var turn = 0;
 
 function player() {
-  var turn = 0
   if (turn % 2 == 0) {
-    return 'O'
+    return "X"
   } else {
-    return 'X'
-  };
+    return "O"
+  }
 }
 
 function updateState() {
-
-
+  var result = player();
+  $('td').innerHTML = result;
 }
 
 

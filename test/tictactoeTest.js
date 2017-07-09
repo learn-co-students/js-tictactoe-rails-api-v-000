@@ -44,6 +44,7 @@ describe('tictactoe.js', () => {
     it('is defined', () => {
       expect(window.player).to.be.a('function');
     });
+    debugger;
 
     it('returns "X" when the turn count is even', () => {
       expect(window.player()).to.equal('X');
