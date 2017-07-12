@@ -26,6 +26,11 @@ function attachListeners() {
 
   $("#previous").click(function() {
     $.get("/games", function(data) {
+      var games_list = '';
+      data.data.forEach(function(game) {
+        games_list += `<button class="game" data-id="${game.id}">${game.id}</button><br>`
+      });
+      $('#games').html(games_list);
       // $(".productName").text(data["name"]);
       // $(".productBody").text(data["description"]);
       // re-set the id to current on the link
