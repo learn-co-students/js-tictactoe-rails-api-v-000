@@ -2,7 +2,8 @@ $(document).ready(function() {
   attachListeners();
 });
 
-var turn = 0;  // Turn counter - first turn == 0, last possible turn == 8.
+var game_id = 0;  // Contains the database id of the current game. A new game will have a game_id of 0.
+var turn    = 0;  // Turn counter - first turn is 0, last possible turn is 8.
 
 var WIN_COMBINATIONS = [  // [x,y]
 //rows
@@ -21,39 +22,36 @@ var WIN_COMBINATIONS = [  // [x,y]
 // Attaches the appropriate event listeners to the squares of the game board as well as for the button#save, button#previous, and button#clear elements.
 // When a user clicks on a square on the game board, the event listener should invoke doTurn() and pass it the element that was clicked.
 function attachListeners() {
-  $("#clear").click(function() {
+  $('#clear').click(function() {
+    resetBoard();
   });
 
-  $("#previous").click(function() {
-    $.get("/games", function(data) {
+  $('#previous').click(function() {
+    $.get('/games', function(data) {
       var games_list = '';
       data.data.forEach(function(game) {
         games_list += `<button class="game" data-id="${game.id}">${game.id}</button><br>`
       });
       $('#games').html(games_list);
-      // $(".productName").text(data["name"]);
-      // $(".productBody").text(data["description"]);
-      // re-set the id to current on the link
-      // $(".js-next").attr("data-id", data["id"]);
-      // $( ".result" ).html( data );
-      // alert( "Load was performed." );
     });
   });
 
-  $("#save").click(function() {
+  $('#save').click(function() {
+    saveGame();
   });
 
-  $("tbody").click(function(e) {
+  $('tbody').click(function(e) {
     if ( !checkWinner() && !checkTie() ) {
       doTurn(e.target);
     }
   });
 }
 
-// Returns true if the current board is full.
+// Returns true if the current board is full and there is no winner.
 function checkTie() {
-  if (turn == 8) {
-    message("Tie game.");
+  if ( (8 === turn) && (!checkWinner()) ) {
+    message('Tie game.');
+    saveGame();
     return true;
   }
   return false;
@@ -64,8 +62,9 @@ function checkTie() {
 function checkWinner() {
   for (let i = 0; i < WIN_COMBINATIONS.length; ++i) {
     var combo = WIN_COMBINATIONS[i];
-    if ((is_position_taken(combo[0]) == true) && (position_value(combo[0])==position_value(combo[1])) && (position_value(combo[1])==position_value(combo[2]))) {
+    if ((is_position_taken(combo[0])) && (position_value(combo[0])===position_value(combo[1])) && (position_value(combo[1])===position_value(combo[2]))) {
       message(`Player ${position_value(combo[0])} Won!`);
+      saveGame();
       return true;
     }
   }
@@ -76,7 +75,7 @@ function checkWinner() {
 // Invokes the updateState() function, passing it the element that was clicked.
 // Invokes checkWinner() to determine whether the move results in a winning play.
 function doTurn(elem) {
-  if (elem.innerHTML == '') {
+  if ('' === elem.innerHTML) {
     updateState(elem);
     if ( checkWinner() || checkTie() ) {
       resetBoard();
@@ -86,6 +85,15 @@ function doTurn(elem) {
   }
 }
 
+// Returns an array representation of the current tic-tac-toe board's entries.
+function gameState() {
+  var state = [];
+  $('td').each( function(td) {
+    state.push($(this).text());
+  });
+  return state;
+}
+
 // Accepts a string and adds it to the div#message element in the DOM.
 var message = function(msg) {
   $('#message').text(msg);
@@ -93,7 +101,7 @@ var message = function(msg) {
 
 // Returns whether or not a box has been used.
 function is_position_taken(index) {
-  return !(position_value(index) === "");
+  return !('' === position_value(index));
 }
 
 // Returns the token of the player whose turn it is, 'X' when the turn variable is even and 'O' when it is odd.
@@ -109,7 +117,25 @@ function position_value(index) {
 // Set all boxes to be blank.
 function resetBoard() {
   $('td').html('');
-  turn = 0;
+  game_id = 0;
+  turn    = 0;
+}
+
+function saveGame() {
+  if (0 === game_id) {
+    $.post('/games', {'state[]': gameState()}, null, 'json')
+     .done(function(data) {
+       game_id = data.data.id;
+     });
+  } else {
+    debugger;
+    $.ajax({
+      type: "PATCH",
+      url: `/games/${game_id}`,
+      data: {'state[]': gameState()},
+      dataType: 'json'
+    });
+  }
 }
 
 // Invokes player() and adds the returned string ('X' or 'O') to the clicked square on the game board.
