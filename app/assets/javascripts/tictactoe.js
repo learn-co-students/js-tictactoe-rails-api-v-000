@@ -50,11 +50,27 @@ function doTurn(square){
 }
 
 function saveGame() {
-
+    
 }
 
 function resetBoard(){
     $('td').empty();
     turn = 0;
     currentGame = 0;
+}
+
+function attachListeners(){
+    $('td').on('click', function() {
+        // if (!$(this).text()) {
+        doTurn(this);
+        //}
+    });
+
+    $('#save').on( 'click', function(){ saveGame()});
+    $('#previous').on( 'click', function(){ showPreviousGame()});
+    $('#clear').on( 'click', function(){ resetBoard()});
+}
+
+function showPreviousGame() {
+    
 }
