@@ -244,8 +244,8 @@ describe('tictactoe.js', () => {
     it('resets the board and the "turn" counter when a game is won', () => {
       sinon.useFakeXMLHttpRequest();
 
-      populateBoard(['X', 'O', 'X', 'X', 'O', 'X', '', 'O', 'O']); //same code above
-      //  X | O | X 
+      populateBoard(['X', 'X', 'O', 'X', 'O', 'X', '', 'O', 'O']); //same code above but wrong boxes filled
+      //  X | X | O 
       // -----------
       //  X | O | X 
       // -----------
@@ -345,7 +345,6 @@ describe('Gameplay', () => {
     expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', '', '']);
   });
 });
-
 describe('AJAX interactions with the Rails API', () => {
 
   // Define helper functions
