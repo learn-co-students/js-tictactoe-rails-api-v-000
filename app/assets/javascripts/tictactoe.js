@@ -34,6 +34,13 @@ function attachListeners() {
       });
       $('#games').html(games_list);
     });
+
+    $('#games').click(function(e) {
+      game_id = $(e.target).data("id")
+      $.get(`/games/${game_id}`, function(game) {
+        resetBoard(game.data);
+      });
+    });
   });
 
   $('#save').click(function() {
@@ -51,7 +58,6 @@ function attachListeners() {
 function checkTie() {
   if ( (8 === turn) && (!checkWinner()) ) {
     message('Tie game.');
-    saveGame();
     return true;
   }
   return false;
@@ -62,9 +68,8 @@ function checkTie() {
 function checkWinner() {
   for (let i = 0; i < WIN_COMBINATIONS.length; ++i) {
     var combo = WIN_COMBINATIONS[i];
-    if ((is_position_taken(combo[0])) && (position_value(combo[0])===position_value(combo[1])) && (position_value(combo[1])===position_value(combo[2]))) {
+    if ((position_is_taken(combo[0])) && (position_value(combo[0])===position_value(combo[1])) && (position_value(combo[1])===position_value(combo[2]))) {
       message(`Player ${position_value(combo[0])} Won!`);
-      saveGame();
       return true;
     }
   }
@@ -78,9 +83,10 @@ function doTurn(elem) {
   if ('' === elem.innerHTML) {
     updateState(elem);
     if ( checkWinner() || checkTie() ) {
+      saveGame();
       resetBoard();
     } else {
-      turn += 1;
+      ++turn;
     }
   }
 }
@@ -100,7 +106,7 @@ var message = function(msg) {
 };
 
 // Returns whether or not a box has been used.
-function is_position_taken(index) {
+function position_is_taken(index) {
   return !('' === position_value(index));
 }
 
@@ -114,25 +120,36 @@ function position_value(index) {
   return $('[data-x=' + index[0] + '][data-y=' + index[1] + ']').text();
 }
 
-// Set all boxes to be blank.
-function resetBoard() {
-  $('td').html('');
-  game_id = 0;
-  turn    = 0;
+// Set all boxes to be blank or to have the specified values.
+function resetBoard(game) {
+  message('');
+  turn = 0;
+  if (game == undefined) {
+    $('td').html('');
+    game_id = 0;
+  } else {
+    game_id = game.id;
+    $('td').each( function(td) {
+      cell_value = game.attributes.state.shift();
+      $(this).text(cell_value);
+      if ('' !== cell_value) {
+        ++turn;
+      }
+    });
+    checkWinner() || checkTie();
+  }
 }
 
 function saveGame() {
   if (0 === game_id) {
     $.post('/games', {'state[]': gameState()}, null, 'json')
-     .done(function(data) {
-       game_id = data.data.id;
-     });
+     .done(function(data) { game_id = data.data.id; }
+    );
   } else {
-    debugger;
     $.ajax({
       type: "PATCH",
       url: `/games/${game_id}`,
-      data: {'state[]': gameState()},
+      data: {'state': gameState()},
       dataType: 'json'
     });
   }
