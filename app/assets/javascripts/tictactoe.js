@@ -77,5 +77,33 @@ function attachListeners(){
 }
 
 function showPreviousGame() {
-    
+    $('#games').empty();
+    $.get('/games', function(savedGames) {
+        if (savedGames.data.length) {
+            savedGames.data.forEach(function(game) {
+                $('#games').append("<button id='gameid-" + game.id + "'>" + game.id + "</button><br>");
+                $("#gameid-" + game.id).on('click', function(){ reloadGame(game.id) });
+            });
+        }
+    });
+}
+
+function reloadGame(gameID) {
+    message("");
+    $.get('/games/' + gameID, function(data) {
+        var index = 0, state = data.data.attributes.state;
+        for (var y = 0; y < 3; y++){
+            for (var x = 0; x < 3; x++) {
+                $("[data-x='" + x + "'][data-y='" + y + "']").html(state[index]);
+                index++;
+            }
+        }
+
+        turn = state.join("").length; //count the X and Y positions in the state
+        currentGame = data.data.id;
+
+        if(!checkWinner() && turn == 9){
+            message('Tie game.');
+        }
+    })
 }
