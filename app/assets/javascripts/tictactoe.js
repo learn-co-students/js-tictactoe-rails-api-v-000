@@ -140,8 +140,9 @@ function resetBoard(game) {
   }
 }
 
+// Save a new game or update an existing game.
 function saveGame() {
-  if (0 === game_id) {
+  if (game_id == 0) {
     $.post('/games', {'state[]': gameState()}, null, 'json')
      .done(function(data) { game_id = data.data.id; }
     );
