@@ -22,7 +22,7 @@ function resetFixtures() {
   for (let i = 0; i < 9; i++) {
     squares[i].innerHTML = '';
   }
-  window.turn *= 0;
+  window.turn = 0; // fix NaN bug
   messageDiv.innerHTML = '';
   gamesDiv.innerHTML = '';
 }
