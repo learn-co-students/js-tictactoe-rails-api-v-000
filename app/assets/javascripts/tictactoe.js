@@ -4,6 +4,11 @@ var WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4
 var turn = 0;
 var currentGame = 0;
 
+$(document).ready(function() {
+    attachListeners();
+});
+
+
 function player(){
     if (isNaN(window.turn) || window.turn == undefined) {
         return "X"
@@ -61,9 +66,9 @@ function resetBoard(){
 
 function attachListeners(){
     $('td').on('click', function() {
-        // if (!$(this).text()) {
-        doTurn(this);
-        //}
+        if (!$(this).text() && !checkWinner()) {
+            doTurn(this);
+        }
     });
 
     $('#save').on( 'click', function(){ saveGame()});
