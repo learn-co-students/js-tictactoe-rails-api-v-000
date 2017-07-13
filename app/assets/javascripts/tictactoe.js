@@ -55,7 +55,25 @@ function doTurn(square){
 }
 
 function saveGame() {
-    
+    var state=[]
+
+    $('td').text(function(index, square) {
+        state.push(square); // push the text of each square to the end of the array creating the state
+    });
+
+    if(currentGame) { // if they loaded a game and have currentGame set
+        $.ajax({
+            type: "PATCH", // of course rails wants PATCH not PUT
+            url: '/games/' + currentGame,
+            data: { state: state } // send the state as per the JSON 1.0 spec
+        });
+    } else {
+        $.post("/games", {state: state}, function(game){
+            currentGame = game.data.id //so it can be simply updted later
+            $('#games').append("<button id='gameid-" + game.id + "'>" + game.id + "</button><br>");
+            $("#gameid-" + game.id).on('click', function(){ reloadGame(game.id) });
+        });
+    }
 }
 
 function resetBoard(){
