@@ -31,10 +31,10 @@ var loadBoard = function(){
  })
 }
 
-var resetBoard = function() {
-  turn = 0
-  $("td").html('');
-}
+// var resetBoard = function() {
+//   turn = 0
+//   $("td").html('');
+// }
 
 function checkWinner() {
   //LOAD BOARD TO GET THE BOARD STATE
@@ -47,4 +47,27 @@ function checkWinner() {
     }
   }
     return false
+}
+
+$(document).ready(function() {
+   attachListeners();
+ })
+
+ var attachListeners = function() {
+   $("tbody").click(function(e) {
+     if (e.target.html == "" && !checkWinner()){
+       doTurn(e);
+     }
+   });
+   $("#save").click(function() {
+     save();
+   });
+
+   $("#previous").click(function() {
+     showAllGames();
+   });
+
+   $("#clear").click(function() {
+     clearGame();
+   });
 }
