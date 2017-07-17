@@ -110,9 +110,11 @@ function doTurn(position) {
   updateState(position);
   turn += 1;
   if (checkWinner()) {
+    save();
     resetBoard();
   } else if ((!checkWinner()) && turn ===9) {
     var msg = "Tie game.";
+    save();
     message(msg);
   };
 }
@@ -143,6 +145,10 @@ $(document).ready(function() {
    $("#clear").click(function() {
      clearGame();
    });
+
+   $(".gameButton").click(function(e) {
+    console.log(e.target.id);
+   })
 }
 
 
