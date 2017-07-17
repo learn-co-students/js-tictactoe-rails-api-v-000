@@ -9,16 +9,25 @@ var winConditions = [[0,1,2],
                       [2,4,6]];
 
 var turn = 0;
+var board = ['', '', '', '', '', '', '', '', ''];
 var currentGame = 0;
+
 
 var player = function(){
   return turn % 2 === 0 ? "X" : "O";
 }
 
-var updateState = function(e){
-  var result = player()
-  $(e.target).text(result);
+// var updateState = function(e){
+//   var result = player()
+//   $(e.target).text(result);
+// }
+
+function updateState(position) {
+  position.innerHTML = player();
+  loadBoard();
 }
+
+
 
 var message = function(message){
   $("#message").text(message);
@@ -31,14 +40,62 @@ var loadBoard = function(){
  })
 }
 
-// var resetBoard = function() {
-//   turn = 0
-//   $("td").html('');
-// }
+var resetBoard = function() {
+  turn = 0
+  $("td").html('');
+}
+
+var save = function() {
+  var myArray = [];
+  document.querySelectorAll("[data-y]").forEach(function(cell){
+    myArray.push(cell.innerHTML);
+  });
+  $.ajax({
+    type: 'POST',
+    url: '/games',
+    state: 'myArray',
+    success: function(data) {
+      alert("Game " + (data.data.id) + " saved!");
+    }
+  })
+}
+
+var clearGame = function() {
+  resetBoard();
+}
+
+var showAllGames = function() {
+  Array.prototype.contains = function(val) {  //extended Array prototype to easily compare visible button values(in an array) to data ids
+    for (var i = 0; i < this.length; i++) {
+      if (this[i] == val) {
+        return true;
+      }
+    }
+    return false;
+  }
+  var gameButtons = document.getElementsByClassName("gameButton"); // accesses all game buttons currently in the current window
+  var buttonIds = Array.prototype.map.call(gameButtons, function(el) { // this gathers all existing game button ids in an array
+      return el.id;
+  });
+
+  $.ajax({
+    type: 'GET',
+    url: '/games',
+    success: function(data) {
+      $.each(data.data, function(i, item) {
+        var game = data.data[i];
+        if (!(buttonIds.contains(game.id))) {
+          var myButton = $('<button type="submit" class="gameButton" value=' + '"' + game.attributes.state + '"' + 'id=' + '"' + game.id + '"' + '>' + 'Game ' + game.id + '</button>');
+          myButton.appendTo($('#games'));
+        }
+      });
+    }
+  });
+};
 
 function checkWinner() {
   //LOAD BOARD TO GET THE BOARD STATE
-  loadBoard()
+  loadBoard();
   for (var i = 0; i < winConditions.length; i++) {
     var row = winConditions[i];
     if (board[row[0]] == board[row[1]] && board[row[2]] == board[row[1]] && board[row[0]] != ""){
@@ -49,25 +106,43 @@ function checkWinner() {
     return false
 }
 
+function doTurn(position) {
+  updateState(position);
+  turn += 1;
+  if (checkWinner()) {
+    resetBoard();
+  } else if ((!checkWinner()) && turn ===9) {
+    var msg = "Tie game.";
+    message(msg);
+  };
+}
+
 $(document).ready(function() {
    attachListeners();
  })
 
  var attachListeners = function() {
+
+  
    $("tbody").click(function(e) {
-     if (e.target.html == "" && !checkWinner()){
-       doTurn(e);
+     if (e.target.innerHTML == "" && !checkWinner()){
+      doTurn(e.target);
      }
    });
+
    $("#save").click(function() {
-     save();
+    save();
+
    });
 
    $("#previous").click(function() {
-     showAllGames();
+    showAllGames();
+
    });
 
    $("#clear").click(function() {
      clearGame();
    });
 }
+
+
