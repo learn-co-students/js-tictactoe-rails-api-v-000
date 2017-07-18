@@ -88,8 +88,8 @@ var save = function() {
     state: loadBoard()
   }
 
-  if(currentGameId) {
-    url = "/games/" + currentGameId
+  if(currentGameId > 0) {
+    url = "/games/" + `${currentGameId}`
     method = "PATCH"
   } else {
     url = "/games"
