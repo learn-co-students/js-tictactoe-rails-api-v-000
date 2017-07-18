@@ -34,16 +34,14 @@ var loadBoard = function(){
 }
 
 var resetBoard = function() {
-  turn = 0
+  turn = 0;
+  currentGameId = 0;
   $("td").html('');
 }
-
-
 
 var clearGame = function() {
   resetBoard();
 }
-
 
 function checkWinner() {
   //LOAD BOARD TO GET THE BOARD STATE
@@ -58,19 +56,30 @@ function checkWinner() {
   return false
 }
 
-function doTurn(position) {
-  updateState(position);
-  turn += 1;
-  if (checkWinner()) {
-    save();
-    resetBoard();
-  } else if ((!checkWinner()) && turn ===9) {
-    var msg = "Tie game.";
-    save();
-    message(msg);
-  };
-}
+var doTurn = function(element){
+   updateState(element);
+   if(checkWinner() || tie()) {
+     save();
+     resetBoard();
+   } else {
+     turn += 1;
+   }
+ }
 
+ var tie = function() {
+   var tie = true;
+   $("td").each(function() {
+     if ($(this).html() === "") {
+       tie = false;
+     }
+   });
+
+   if (tie) {
+     message("Tie game.");
+   }
+
+   return tie;
+ }
 
 var save = function() {
   var myArray = [];
@@ -82,7 +91,7 @@ var save = function() {
   if (gameButtons.length === 0) {
     action = "post";
   } else {
-    for (var i=0; i < gameButtons.length; i++) { 
+    for (var i=0; i < gameButtons.length; i++) {
       if (gameButtons[i].id === currentGameId) {
         action = "patch";
         break;
@@ -91,7 +100,7 @@ var save = function() {
   }
   if (action === "post") {
     $.ajax({
-      type: 'POST',
+      method: 'POST',
       url: '/games',
       data: {state: myArray},
       success: function(data) {
@@ -100,14 +109,14 @@ var save = function() {
     });
   } else {
     $.ajax({
-      type: 'POST',
+      method: 'PATCH',
       url: '/games/' + currentGameId,
       data: {state: myArray, _method: 'put' },
       success: function(data) {
         console.log("Game " + data.data.id + " updated!");
       }
     });
-  }  
+  }
 };
 
 
@@ -131,9 +140,9 @@ var showAllGames = function() {
     url: '/games',
     success: function(data) {
       $.each(data.data, function(i, item) {
-        var game = data.data[i];       
+        var game = data.data[i];
         if (!(buttonIds.contains(game.id))) {
-          
+
           var myButton = $('<button type="submit" class="gameButton" data-value=' + '"' + game.attributes.state + '"' + '  id=' + '"' + game.id + '"' + '>' + 'Game ' + game.id + '</button>');
           myButton.appendTo($('#games'));
         }
@@ -171,7 +180,7 @@ var attachListeners = function() {
    clearGame();
  });
 
-  $(document).on('click', '.gameButton', function() { //this is actually memoized, will convert tomorrow to api call 
+  $(document).on('click', '.gameButton', function() { //this is actually memoized, will convert tomorrow to api call
     var gameState =  ($(this).data('value')).split(",");
     var gameTurn= 0;
     currentGameId = (this.id);
@@ -186,6 +195,3 @@ var attachListeners = function() {
     turn = gameTurn;
   })
 }
-
-
-
