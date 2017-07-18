@@ -10,24 +10,17 @@ var winConditions = [[0,1,2],
 
 var turn = 0;
 var board = ['', '', '', '', '', '', '', '', ''];
-var currentGame = 0;
+var currentGameId = 0;
 
 
 var player = function(){
   return turn % 2 === 0 ? "X" : "O";
 }
 
-// var updateState = function(e){
-//   var result = player()
-//   $(e.target).text(result);
-// }
-
 function updateState(position) {
   position.innerHTML = player();
   loadBoard();
 }
-
-
 
 var message = function(message){
   $("#message").text(message);
@@ -45,53 +38,12 @@ var resetBoard = function() {
   $("td").html('');
 }
 
-var save = function() {
-  var myArray = [];
-  document.querySelectorAll("[data-y]").forEach(function(cell){
-    myArray.push(cell.innerHTML);
-  });
-  console.log(myArray);
-  $.ajax({
-    type: 'POST',
-    url: '/games',
-    data: {state: myArray},
-    success: function(data) {
-    }
-  })
-}
+
 
 var clearGame = function() {
   resetBoard();
 }
 
-var showAllGames = function() {
-  Array.prototype.contains = function(val) {  //extended Array prototype to easily compare visible button values(in an array) to data ids
-    for (var i = 0; i < this.length; i++) {
-      if (this[i] == val) {
-        return true;
-      }
-    }
-    return false;
-  }
-  var gameButtons = document.getElementsByClassName("gameButton"); // accesses all game buttons currently in the current window
-  var buttonIds = Array.prototype.map.call(gameButtons, function(el) { // this gathers all existing game button ids in an array
-      return el.id;
-  });
-
-  $.ajax({
-    type: 'GET',
-    url: '/games',
-    success: function(data) {
-      $.each(data.data, function(i, item) {
-        var game = data.data[i];
-        if (!(buttonIds.contains(game.id))) {
-          var myButton = $('<button type="submit" class="gameButton" value=' + '"' + game.attributes.state + '"' + 'id=' + '"' + game.id + '"' + '>' + 'Game ' + game.id + '</button>');
-          myButton.appendTo($('#games'));
-        }
-      });
-    }
-  });
-};
 
 function checkWinner() {
   //LOAD BOARD TO GET THE BOARD STATE
@@ -103,7 +55,7 @@ function checkWinner() {
       return true;
     }
   }
-    return false
+  return false
 }
 
 function doTurn(position) {
@@ -118,6 +70,79 @@ function doTurn(position) {
     message(msg);
   };
 }
+
+
+var save = function() {
+  var myArray = [];
+  document.querySelectorAll("[data-y]").forEach(function(cell){
+    myArray.push(cell.innerHTML);
+  });
+  var gameButtons = document.getElementsByClassName("gameButton");
+  var action = "post";
+  if (gameButtons.length === 0) {
+    action = "post";
+  } else {
+    for (var i=0; i < gameButtons.length; i++) { 
+      if (gameButtons[i].id === currentGameId) {
+        action = "patch";
+        break;
+      }
+    }
+  }
+  if (action === "post") {
+    $.ajax({
+      type: 'POST',
+      url: '/games',
+      data: {state: myArray},
+      success: function(data) {
+        console.log("Game " + data.data.id + " saved!");
+      }
+    });
+  } else {
+    $.ajax({
+      type: 'POST',
+      url: '/games/' + currentGameId,
+      data: {state: myArray, _method: 'put' },
+      success: function(data) {
+        console.log("Game " + data.data.id + " updated!");
+      }
+    });
+  }  
+};
+
+
+var showAllGames = function() {
+  Array.prototype.contains = function(val) {  //extended Array prototype to easily compare visible button values(in an array) to data ids
+    for (var i = 0; i < this.length; i++) {
+      if (this[i] == val) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  var gameButtons = document.getElementsByClassName("gameButton"); // accesses all game buttons in the current window
+  var buttonIds = Array.prototype.map.call(gameButtons, function(el) { // gathers all existing game button ids into an array
+      return el.id;
+  });
+
+  $.ajax({
+    type: 'GET',
+    url: '/games',
+    success: function(data) {
+      $.each(data.data, function(i, item) {
+        var game = data.data[i];       
+        if (!(buttonIds.contains(game.id))) {
+          
+          var myButton = $('<button type="submit" class="gameButton" data-value=' + '"' + game.attributes.state + '"' + '  id=' + '"' + game.id + '"' + '>' + 'Game ' + game.id + '</button>');
+          myButton.appendTo($('#games'));
+        }
+      });
+    }
+  });
+};
+
+
 
 $(document).ready(function() {
    attachListeners();
@@ -146,12 +171,21 @@ var attachListeners = function() {
    clearGame();
  });
 
- $(document).on('click', '.gameButton', function() {
-  console.log(this);
- });
+  $(document).on('click', '.gameButton', function() {
+    var gameState =  ($(this).data('value')).split(",");
+    var gameTurn= 0;
+    currentGameId = (this.id);
 
-
-
+    var squares = document.querySelectorAll("[data-y]");
+    for (var i=0; i < 9; i++) {
+      squares[i].innerHTML = gameState[i];
+      if (gameState[i] === "X" || gameState[i] === "O") {
+        gameTurn += 1;
+      }
+    };
+    turn = gameTurn;
+  })
 }
+
 
 
