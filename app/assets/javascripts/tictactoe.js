@@ -82,7 +82,6 @@ var doTurn = function(element){
  }
 
 var save = function() {
-  // var myArray = [];
   var method;
   var url;
   var value = {
@@ -105,85 +104,45 @@ var save = function() {
       currentGameId = game.data.id;
     }
   })
-  // document.querySelectorAll("[data-y]").forEach(function(cell){
-  //   myArray.push(cell.innerHTML);
-  // });
-  // var gameButtons = document.getElementsByClassName("gameButton");
-  // var action = "post";
-  // if (gameButtons.length === 0) {
-  //   method = "post";
-  // } else {
-  //   for (var i=0; i < gameButtons.length; i++) {
-  //     if (gameButtons[i].id === currentGameId) {
-  //       method = "patch";
-  //       break;
-  //     }
-  //   }
-  // }
-
-  // if (action === "post") {
-  //   $.ajax({
-  //     method: 'POST',
-  //     url: '/games',
-  //     data: {state: myArray},
-  //     success: function(data) {
-  //       console.log("Game " + data.data.id + " saved!");
-  //     }
-  //   });
-  // } else {
-  //   $.ajax({
-  //     method: 'PATCH',
-  //     url: '/games/' + currentGameId,
-  //     // data: {state: myArray, _method: 'put' },
-  //     data: {state: myArray},
-  //     success: function(data) {
-  //       console.log("Game " + data.data.id + " updated!");
-  //     }
-  //   });
-  // }
 };
 
-
 var showAllGames = function() {
-  Array.prototype.contains = function(val) {  //extended Array prototype to easily compare visible button values(in an array) to data ids
-    for (var i = 0; i < this.length; i++) {
-      if (this[i] == val) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  var gameButtons = document.getElementsByClassName("gameButton"); // accesses all game buttons in the current window
-  var buttonIds = Array.prototype.map.call(gameButtons, function(el) { // gathers all existing game button ids into an array
-      return el.id;
-  });
-
-  $.ajax({
-    type: 'GET',
-    url: '/games',
-    success: function(data) {
-      $.each(data.data, function(i, item) {
-        var game = data.data[i];
-        if (!(buttonIds.contains(game.id))) {
-
-          var myButton = $('<button type="submit" class="gameButton" data-value=' + '"' + game.attributes.state + '"' + '  id=' + '"' + game.id + '"' + '>' + 'Game ' + game.id + '</button>');
-          myButton.appendTo($('#games'));
-        }
+  $('#games').empty();
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(function(game){
+        $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+        $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
       });
     }
   });
-};
+}
 
+function reloadGame(gameID) {
+    message("");
+    $.get('/games/' + gameID, function(data) {
+        var index = 0, state = data.data.attributes.state;
+        for (var y = 0; y < 3; y++){
+            for (var x = 0; x < 3; x++) {
+                $("[data-x='" + x + "'][data-y='" + y + "']").html(state[index]);
+                index++;
+            }
+        }
 
+        turn = state.join("").length;
+        currentGame = data.data.id;
+
+        if(!checkWinner() && turn == 9){
+            message('Tie game.');
+        }
+    })
+}
 
 $(document).ready(function() {
    attachListeners();
  })
 
 var attachListeners = function() {
-
-
  $("tbody").click(function(e) {
    if (e.target.innerHTML == "" && !checkWinner()){
     doTurn(e.target);
@@ -218,4 +177,5 @@ var attachListeners = function() {
     };
     turn = gameTurn;
   })
+
 }
