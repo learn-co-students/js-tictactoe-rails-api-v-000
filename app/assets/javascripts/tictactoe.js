@@ -50,12 +50,12 @@ var save = function() {
   document.querySelectorAll("[data-y]").forEach(function(cell){
     myArray.push(cell.innerHTML);
   });
+  console.log(myArray);
   $.ajax({
     type: 'POST',
     url: '/games',
-    state: 'myArray',
+    data: {state: myArray},
     success: function(data) {
-      alert("Game " + (data.data.id) + " saved!");
     }
   })
 }
@@ -123,32 +123,35 @@ $(document).ready(function() {
    attachListeners();
  })
 
- var attachListeners = function() {
+var attachListeners = function() {
 
-  
-   $("tbody").click(function(e) {
-     if (e.target.innerHTML == "" && !checkWinner()){
-      doTurn(e.target);
-     }
-   });
 
-   $("#save").click(function() {
-    save();
+ $("tbody").click(function(e) {
+   if (e.target.innerHTML == "" && !checkWinner()){
+    doTurn(e.target);
+   }
+ });
 
-   });
+ $("#save").click(function() {
+  save();
 
-   $("#previous").click(function() {
-    showAllGames();
+ });
 
-   });
+ $("#previous").click(function() {
+  showAllGames();
 
-   $("#clear").click(function() {
-     clearGame();
-   });
+ });
 
-   $(".gameButton").click(function(e) {
-    console.log(e.target.id);
-   })
+ $("#clear").click(function() {
+   clearGame();
+ });
+
+ $(document).on('click', '.gameButton', function() {
+  console.log(this);
+ });
+
+
+
 }
 
 
