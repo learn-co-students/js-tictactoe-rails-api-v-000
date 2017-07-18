@@ -171,7 +171,7 @@ var attachListeners = function() {
    clearGame();
  });
 
-  $(document).on('click', '.gameButton', function() {
+  $(document).on('click', '.gameButton', function() { //this is actually memoized, will convert tomorrow to api call 
     var gameState =  ($(this).data('value')).split(",");
     var gameTurn= 0;
     currentGameId = (this.id);
