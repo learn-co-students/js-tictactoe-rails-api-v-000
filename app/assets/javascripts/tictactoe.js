@@ -82,41 +82,65 @@ var doTurn = function(element){
  }
 
 var save = function() {
-  var myArray = [];
-  document.querySelectorAll("[data-y]").forEach(function(cell){
-    myArray.push(cell.innerHTML);
-  });
-  var gameButtons = document.getElementsByClassName("gameButton");
-  var action = "post";
-  if (gameButtons.length === 0) {
-    action = "post";
+  // var myArray = [];
+  var method;
+  var url;
+  var value = {
+    state: loadBoard()
+  }
+
+  if(currentGameId) {
+    url = "/games/" + currentGameId
+    method = "PATCH"
   } else {
-    for (var i=0; i < gameButtons.length; i++) {
-      if (gameButtons[i].id === currentGameId) {
-        action = "patch";
-        break;
-      }
+    url = "/games"
+    method = "POST"
+  }
+
+  $.ajax({
+    url: url,
+    method: method,
+    data: value,
+    success: function(game) {
+      currentGameId = game.data.id;
     }
-  }
-  if (action === "post") {
-    $.ajax({
-      method: 'POST',
-      url: '/games',
-      data: {state: myArray},
-      success: function(data) {
-        console.log("Game " + data.data.id + " saved!");
-      }
-    });
-  } else {
-    $.ajax({
-      method: 'PATCH',
-      url: '/games/' + currentGameId,
-      data: {state: myArray, _method: 'put' },
-      success: function(data) {
-        console.log("Game " + data.data.id + " updated!");
-      }
-    });
-  }
+  })
+  // document.querySelectorAll("[data-y]").forEach(function(cell){
+  //   myArray.push(cell.innerHTML);
+  // });
+  // var gameButtons = document.getElementsByClassName("gameButton");
+  // var action = "post";
+  // if (gameButtons.length === 0) {
+  //   method = "post";
+  // } else {
+  //   for (var i=0; i < gameButtons.length; i++) {
+  //     if (gameButtons[i].id === currentGameId) {
+  //       method = "patch";
+  //       break;
+  //     }
+  //   }
+  // }
+
+  // if (action === "post") {
+  //   $.ajax({
+  //     method: 'POST',
+  //     url: '/games',
+  //     data: {state: myArray},
+  //     success: function(data) {
+  //       console.log("Game " + data.data.id + " saved!");
+  //     }
+  //   });
+  // } else {
+  //   $.ajax({
+  //     method: 'PATCH',
+  //     url: '/games/' + currentGameId,
+  //     // data: {state: myArray, _method: 'put' },
+  //     data: {state: myArray},
+  //     success: function(data) {
+  //       console.log("Game " + data.data.id + " updated!");
+  //     }
+  //   });
+  // }
 };
 
 
