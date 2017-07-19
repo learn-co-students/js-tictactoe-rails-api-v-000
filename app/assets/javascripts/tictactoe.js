@@ -130,8 +130,7 @@ function reloadGame(gameID) {
         }
 
         turn = state.join("").length;
-        currentGameId = data.data.id; // Here was the issue! :)
-
+        currentGameId = data.data.id; 
         if(!checkWinner() && turn == 9){
             message('Tie game.');
         }
@@ -162,20 +161,4 @@ var attachListeners = function() {
  $("#clear").click(function() {
    clearGame();
  });
-
-  // $(document).on('click', '.gameButton', function() { //this is actually memoized, will convert tomorrow to api call
-  //   var gameState =  ($(this).data('value')).split(",");
-  //   var gameTurn= 0;
-  //   currentGameId = (this.id);
-
-  //   var squares = document.querySelectorAll("[data-y]");
-  //   for (var i=0; i < 9; i++) {
-  //     squares[i].innerHTML = gameState[i];
-  //     if (gameState[i] === "X" || gameState[i] === "O") {
-  //       gameTurn += 1;
-  //     }
-  //   };
-  //   turn = gameTurn;
-  // })
-
 }
