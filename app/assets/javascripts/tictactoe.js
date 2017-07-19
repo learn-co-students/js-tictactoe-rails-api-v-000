@@ -81,12 +81,12 @@ var doTurn = function(element){
    return tie;
  }
 
+
 var save = function() {
   var method;
   var url;
-  var value = {
-    state: loadBoard()
-  }
+  var value = { state: loadBoard()}
+  console.log(currentGameId);
 
   if(currentGameId > 0) {
     url = "/games/" + `${currentGameId}`
@@ -130,7 +130,7 @@ function reloadGame(gameID) {
         }
 
         turn = state.join("").length;
-        currentGame = data.data.id;
+        currentGameId = data.data.id; // Here was the issue! :)
 
         if(!checkWinner() && turn == 9){
             message('Tie game.');
@@ -163,19 +163,19 @@ var attachListeners = function() {
    clearGame();
  });
 
-  $(document).on('click', '.gameButton', function() { //this is actually memoized, will convert tomorrow to api call
-    var gameState =  ($(this).data('value')).split(",");
-    var gameTurn= 0;
-    currentGameId = (this.id);
+  // $(document).on('click', '.gameButton', function() { //this is actually memoized, will convert tomorrow to api call
+  //   var gameState =  ($(this).data('value')).split(",");
+  //   var gameTurn= 0;
+  //   currentGameId = (this.id);
 
-    var squares = document.querySelectorAll("[data-y]");
-    for (var i=0; i < 9; i++) {
-      squares[i].innerHTML = gameState[i];
-      if (gameState[i] === "X" || gameState[i] === "O") {
-        gameTurn += 1;
-      }
-    };
-    turn = gameTurn;
-  })
+  //   var squares = document.querySelectorAll("[data-y]");
+  //   for (var i=0; i < 9; i++) {
+  //     squares[i].innerHTML = gameState[i];
+  //     if (gameState[i] === "X" || gameState[i] === "O") {
+  //       gameTurn += 1;
+  //     }
+  //   };
+  //   turn = gameTurn;
+  // })
 
 }
