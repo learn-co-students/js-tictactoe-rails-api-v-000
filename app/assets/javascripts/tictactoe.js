@@ -21,7 +21,7 @@ function attachListeners() {
   });
 
   $('#previous').on('click', function() {
-    loadGames();
+    prevGames();
   });
 }
 
@@ -112,7 +112,7 @@ function saveGame() {
   }
 }
 
-function loadGames() {
+function prevGames() {
   $.get('/games', function(data) {
     var gamesArray = data["data"];
     if (gamesArray.length > 0) {
@@ -123,6 +123,26 @@ function loadGames() {
       });
 
       $('#games').html(gamesHtmlArray);
+
+      $('.game-button').on('click', function(event) {
+        loadGame(event);
+      });
     }
+  });
+}
+
+function loadGame(event) {
+  var id = $(event.target).data('id');
+  $.get(`/games/${id}`, function(game) {
+    current = game["data"]["id"];
+    var $td = $('td');
+    game["data"]["attributes"]["state"].forEach(function(data, i) {
+      if (data) {
+        $td[i].innerHTML = data;
+        turn++;
+      } else {
+        $td[i].innerHTML = '';
+      }
+    });
   });
 }
