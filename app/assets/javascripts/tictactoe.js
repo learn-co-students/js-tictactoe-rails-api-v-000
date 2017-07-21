@@ -15,6 +15,14 @@ function attachListeners() {
   $('#clear').on('click', function() {
     emptyBoard();
   });
+
+  $('#save').on('click', function() {
+    saveGame();
+  });
+
+  $('#previous').on('click', function() {
+    loadGames();
+  });
 }
 
 function player() {
@@ -54,6 +62,7 @@ function checkWinner() {
 
   winCombos.some(function(comboArr) {
     if (board[comboArr[0]] !== '' && board[comboArr[0]] === board[comboArr[1]] && board[comboArr[1]] === board[comboArr[2]]) {
+      saveGame();
       isWinner = true;
       message(`Player ${board[comboArr[0]]} Won!`);
     }
@@ -67,6 +76,7 @@ function doTurn(td) {
   turn++;
   checkWinner();
   if (turn == 9) {
+    saveGame();
     message('Tie game.');
     emptyBoard();
   }
@@ -75,4 +85,44 @@ function doTurn(td) {
 function emptyBoard() {
   $('td').empty();
   turn = 0;
+  current = 0;
+}
+
+function saveGame() {
+  var state = [];
+
+  $('td').text((index, td) => {
+    state.push(td);
+  });
+
+  if (current) {
+    $.ajax({
+       url: `/games/${current}`,
+       data: {
+         state: state,
+         id: current
+       },
+       type: 'PATCH'
+     });
+  } else {
+    $.post('/games', { state: state })
+    .done(function(data) {
+      current = data["data"]["id"];
+    });
+  }
+}
+
+function loadGames() {
+  $.get('/games', function(data) {
+    var gamesArray = data["data"];
+    if (gamesArray.length > 0) {
+      var gamesHtmlArray = "";
+
+      $(gamesArray).each((index, game) => {
+        gamesHtmlArray += '<button data-id="' + game["id"] + '" class="game-button">Game ' + game.id + '</button><br>';
+      });
+
+      $('#games').html(gamesHtmlArray);
+    }
+  });
 }
