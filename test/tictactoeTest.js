@@ -339,7 +339,6 @@ describe('Gameplay', () => {
     window.doTurn(squares[7]);
 
     window.doTurn(squares[4]);
-
     const board = Array.from(squares).map(s => s.innerHTML);
 
     expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', '', '']);
