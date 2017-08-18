@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
-// var gameId = 0;
+var gameId = 0;
 const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
@@ -35,6 +35,7 @@ function doTurn(el) {
     updateState(el)
     turn += 1;
     if (checkWinner()) {
+        saveGame()
         resetGame()
     } else {       
         checkTieGame()
@@ -46,12 +47,14 @@ function resetGame() {
         $(this).text('');
     });  
     turn = 0;
+    gameId = 0;
 }
 
 function checkTieGame() {
     if (turn === 9) {
+        saveGame()
         resetGame()
-       return message('Tie game.');
+        return message('Tie game.');
     }
 }
 
@@ -60,11 +63,15 @@ function appendSavedGames() {
         if (response.data.length !== 0) {
             response.data.forEach(function(game) {                
                 if (game.id > $('#games button:last').text()){
-                    $('#games').append(`<button>${game.id}</button> <br>`)
+                    $('#games').append(`<button">${game.id}</button> <br>`)
                 }
             })
         }
     })
+}
+
+function populateBoard() {
+    console.log("hi")
 }
 
 function attachListeners() {
@@ -75,28 +82,24 @@ function attachListeners() {
    })
    $('#clear').on("click", () => resetGame())
    $('#previous').on("click", () => appendSavedGames())
-   $('#save').on("click", () => saveGame(getGameId()))
+   $('#save').on("click", () => saveGame())
 }
 
-function saveGame(gameId) {
-    debugger;
-    if (gameExists(gameId)) {
+function saveGame() {
+    let state = buildBoard()
+    if (gameId) {
         // make ajax PATCH request
         $.ajax({
             method: 'PATCH',
             url: `/games/${gameId}`,
-            data: { state: buildBoard() }
+            data: { state: state }
         })
-    } else {
-        debugger;
-        $.post('/games', { state: buildBoard() }).done(function(response) {
+    } else {        
+        var posting = $.post('/games', { state: state })
+        posting.done(function(response) {        
+            gameId = response.data.id;
         })
     }
-}
-
-function gameExists(gameId) {
-    debugger;
-    $.get(`games/${gameId}`)
 }
 
 function buildBoard() {
@@ -105,17 +108,6 @@ function buildBoard() {
         currentBoard.push(this.textContent); 
     }); 
     return currentBoard;
-}
-
-function getGameId() {
-    $.get('/games').done(function(response) {
-    debugger;
-        if (response.data.length > 1) {
-            return response.data[response.length - 1];
-        }
-        var gameId = response.data.id
-    })
-    return gameId;
 }
 
 $(document).ready(attachListeners())
