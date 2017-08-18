@@ -63,15 +63,28 @@ function appendSavedGames() {
         if (response.data.length !== 0) {
             response.data.forEach(function(game) {                
                 if (game.id > $('#games button:last').text()){
-                    $('#games').append(`<button">${game.id}</button> <br>`)
+                    $('#games').append(`<button onclick="getBoard.call(this);" data-id="${game.id}">${game.id}</button> <br>`)
                 }
             })
         }
     })
 }
 
-function populateBoard() {
-    console.log("hi")
+function getBoard() {
+    var clickedGame = $(this).data("id")
+    $.get(`/games/${clickedGame}`).done(function(response) {
+        // debugger;
+        var retrievedState = response.data.attributes.state
+        var currentState = document.querySelectorAll('td')
+        for (let i = 0; i < 9; i++) {
+            currentState[i].innerHTML = retrievedState[i];
+            if (retrievedState[i] !== '') {
+                turn += 1;
+            }
+        }
+        gameId = response.data.id
+        
+    })
 }
 
 function attachListeners() {
