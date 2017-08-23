@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 
-var WIN_COMBINATIONS = [
+const WIN_COMBINATIONS = [
     [0,1,2],
     [3,4,5],
     [6,7,8],
@@ -19,11 +19,16 @@ var WIN_COMBINATIONS = [
   });
 
   function attachListeners() {
-      $("td").on("click", function() {
-        if (!$.text(this) && !checkWinner()) {
-            doTurn(this);
+       $("td").on("click", function() {
+         if (!$.text(this) && !checkWinner()) {
+             doTurn(this);
         }
     });
+
+    $('#save').on('click', () => saveGame());
+    $('#previous').on('click', () => showPreviousGames());
+    $('#clear').on('click', () => resetGame());
+ }
 
 
    var player = () => turn % 2 ? 'O' : 'X';
@@ -32,9 +37,6 @@ var WIN_COMBINATIONS = [
         $(td).append(player());
     }
 
-    // var message = function(string) {
-    //     $('#message').append(string);
-    // }
     var message = (string) => $('#message').append(string);
 
     var board = () => {
@@ -45,7 +47,6 @@ var WIN_COMBINATIONS = [
 
     var checkWinner = function() {
         // we have WIN_COMBINATIONS that lead to our winning row, they are nested arrays
-        //
         for (var i = 0; i < WIN_COMBINATIONS.length; i++) {
             var combo = WIN_COMBINATIONS[i] // nested array [0,1,2], board()[combo[0]] it'll be board()[0]
             if(board()[combo[0]] == board()[combo[1]] &&
@@ -64,24 +65,76 @@ var WIN_COMBINATIONS = [
         currentGame = 0;
     }
 
-    var doTurn = function(td) {
-        updateState(td);
-        turn++;
-        if (!checkWinner()) {
-            message("Tie game.");
-        } else {
-            resetGame();
-        }
+        function doTurn(square) {
+      updateState(square);
+      turn++;
+      if (checkWinner()) {
+        saveGame();
+        resetGame();
+      } else if (turn === 9) {
+        message("Tie game.");
+        saveGame();
+        resetGame();
+      }
     }
 
-  // <script type="text/javascript" charset="utf-8">
-  // $('#save').on("click", function(e) {
-  //   e.preventDefault();
-  // }
-  // </script>
+    function saveGame() {
+    var state = [];
+    var gameData;
 
-  // <script type="text/javascript" charset="utf-8">
-  // $('#clear').on("click", function(e) {
-  //   e.preventDefault();
-  // }
-  // </script>
+    $('td').text((index, td) => {
+        state.push(td);
+    });
+
+    gameData = {state: state};
+
+    if (currentGame !== 0) {
+        $.ajax({
+        url: `/games/${currentGame}`,
+        data: {
+            state: state,
+            id: currentGame
+        },
+        type: 'PATCH'
+        });
+    } else {
+        $.post('/games', { state: state }).done((data) => {
+             currentGame = data["data"]["id"];
+        });
+    }
+}
+
+
+    function loadGame(event) {
+    var id = $(event.target).data('id');
+    $.get(`/games/${id}`, (game) => {
+        currentGame = game["data"]["id"];
+        var $td = $('td');
+        game["data"]["attributes"]["state"].forEach((data, i) => {
+            if (data) {
+                $td[i].innerHTML = data;
+                ++turn;
+            } else {
+                $td[i].innerHTML = '';
+            }
+        });
+    });
+}
+
+    function showPreviousGames() {
+    $.get('/games', (data) => {
+        var games = data["data"];
+        if (games.length > 0) {
+            var gamesHtml = "";
+
+            $(games).each((i, game) => {
+                gamesHtml += '<button data-id="' + game["id"] + '" class="game-button">' + game.id + '</button><br>';
+            });
+
+            $('#games').html(gamesHtml);
+            $('.game-button').on('click', (event) => {
+                loadGame(event);
+            });
+        }
+    });
+    }
