@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 $(document).ready(function() {
-  attachListeners();
+  window.attachListeners();
 });
 
 const WIN_COMBINATIONS = [
@@ -25,28 +25,26 @@ const WIN_COMBINATIONS = [
  // [[2,0],[1,1],[0,2]]];
 
 var turn = 0;
+var gameID = undefined;
 
 function attachListeners() {
   $('td').on('click', function(){
     if (!checkWinner()) {
-      doTurn(this);
+      window.doTurn(this);
     }
   });
 
 
-  //$(#previous).on('click', function(){
-      //list all previous games and add a button to restore
-  //})
-  //$(#save).on('click', function(){
-    //save game in current state
-  //})
-  $('#clear').on('click', function(){
-    clearBoard()
+  $('#previous').on('click', function(){
+    previousBoard();
   });
-    // clears the game board and starts a new game
-  //})
-  //
-  //
+  $('#save').on('click', function(){
+    saveBoard();
+  });
+  $('#clear').on('click', function(){
+    clearBoard();
+  });
+
 }
 
 function player() {
@@ -56,20 +54,22 @@ function player() {
 function doTurn(cell) {
   //increment turn by one
   if ($(cell).is(':empty')) {
-    updateState(cell);
+    window.updateState(cell);
     turn += 1;
-    if (checkWinner()) {
+    if (window.checkWinner()) {
+      window.checkWinner();
+      saveBoard();
       clearBoard();
     } else if (turn === 9) {
-      message("Tie game.")
+      window.message("Tie game.");
+      saveBoard();
+      clearBoard();
     };
   }
-
-
 }
 
 function updateState(cell) {
-  $(cell).text(player())
+  $(cell).text(window.player())
 }
 
 function message(string) {
@@ -85,7 +85,7 @@ function checkWinner() {
   });
   function combo(win_combination) {
     if (board[win_combination[0]] == board[win_combination[1]] && board[win_combination[0]] == board[win_combination[2]] && (board[win_combination[0]] === "X" || board[win_combination[0]] === "O")) {
-      message(`Player ${board[win_combination[0]]} Won!`)
+      window.message(`Player ${board[win_combination[0]]} Won!`)
       return true
     } else {
       return false
@@ -97,22 +97,64 @@ function checkWinner() {
     return false
   }
 
-
-
-//  WIN_COMBINATIONS.detect do |win_combination|
-//      @board.cells[win_combination[0]] == @board.cells[win_combination[1]] && //@board.cells[win_combination[0]] == @board.cells[win_combination[2]] && //(@board.cells[win_combination[0]] == "X" || @board.cells[win_combination[0]] == "O")
-//    end
-
-
-
 }
 
-function full() {
-  return state.includes('');
-}
 
 function clearBoard() {
   $('td').text('');
   turn = 0;
+  gameID = undefined;
+}
+
+function previousBoard() {
+  $("#games").text('');
+  $.ajax({
+    method: 'GET',
+    url: '/games'
+  }).done(function(resp){
+    var previousGames = ""
+    resp.data.forEach(function(oldgame){
+      $("#games").append('<button class="old">' + oldgame.id + '</button>')
+      $('.old').on('click', function(){
+        $.ajax({
+          method: 'GET',
+          url: '/games/' + oldgame.id
+        }).done(function(resp){
+          clearBoard;
+          var board = [];
+          gameID = oldgame.id;
+          board = resp.data.attributes.state
+          $('td').each(function(i){
+            this.innerHTML = (board[i])
+            if (board[i] === "X" || board[i] === "O") {
+              turn ++;
+            }
+          });
+        });
+      });
+    });
+  });
+}
+
+function saveBoard() {
+  var board = [];
+  $('td').each(function() {
+    board.push($(this).text());
+  });
+  if (gameID) {
+    $.ajax({
+      method: 'PATCH',
+      url: '/games/' + gameID,
+      data: { state: board}
+    })
+  } else {
+    $.ajax({
+      method: 'POST',
+      url: '/games',
+      data: { state: board}
+    }).done(function(resp) {
+      gameID = resp.data.id
+    })
+  }
 
 }
