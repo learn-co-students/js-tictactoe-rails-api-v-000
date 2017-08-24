@@ -115,21 +115,21 @@ function previousBoard() {
     var previousGames = ""
     resp.data.forEach(function(oldgame){
       $("#games").append('<button class="old">' + oldgame.id + '</button>')
-      $('.old').on('click', function(){
-        $.ajax({
-          method: 'GET',
-          url: '/games/' + oldgame.id
-        }).done(function(resp){
-          clearBoard;
-          var board = [];
-          gameID = oldgame.id;
-          board = resp.data.attributes.state
-          $('td').each(function(i){
-            this.innerHTML = (board[i])
-            if (board[i] === "X" || board[i] === "O") {
-              turn ++;
-            }
-          });
+    });
+    $('.old').on('click', function(){
+      $.ajax({
+        method: 'GET',
+        url: '/games/' + this.textContent
+      }).done(function(resp){
+        clearBoard;
+        var board = [];
+        gameID = resp.data.id
+        board = resp.data.attributes.state
+        $('td').each(function(i){
+          this.innerHTML = (board[i])
+          if (board[i] === "X" || board[i] === "O") {
+            turn ++;
+          }
         });
       });
     });
