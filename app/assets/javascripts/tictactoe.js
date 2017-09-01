@@ -27,7 +27,7 @@ var message = function message(string) {
 function checkWinner() {
   for(i = 0; i < combos.length; i++){
     if (checkCombo(combos[i], isTaken())){
-      message('Player ' + player() + ' Won!')
+      message("Player " + player() + " Won!")
       return true;
     }
   }
