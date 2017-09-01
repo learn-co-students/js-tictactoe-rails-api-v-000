@@ -8,11 +8,11 @@ var currentGame = 0;
 
 function player() {
   if (turn % 2 == 0) {
-    return "X"
+    return 'X'
   }
   else {
-    return "O"
-  }
+    return 'O'
+  };
 };
 
 function updateState(event) {
@@ -74,17 +74,6 @@ function checkTie(turn) {
   }
 };
 
-var save = function(resetCurrentGame) {
-  var url, method;
-  if(currentGame) {
-    url = "/games/" + currentGame
-    method = "PATCH"
-  } else {
-    url = "/games"
-    method = "POST"
-  }
-};
-
 var resetState = function() {
   turn = 0;
   currentGame = 0;
@@ -99,14 +88,16 @@ function attachListeners() {
   });
 
   $('#save').on('click', () => save());
+
   $('#previous').on('click', () => getAllGames());
+
   $('#clear').on('click', () => resetState());
 };
 
 var getAllGames = function() {
   $.getJSON("/games", function(data) {
     showGames(data.games)
-  });
+      });
 };
 
 var showGames = function(games) {
@@ -115,13 +106,23 @@ var showGames = function(games) {
     dom = dom.add(showGame(game));
   })
   $("#games").html(dom);
-};
+}
 
 var showGame = function(game) {
   return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
-};
+}
 
-$.ajax({
+var save = function(resetCurrentGame) {
+  var url, method;
+  if(currentGame) {
+    url = "/games/" + currentGame
+    method = "PATCH"
+  } else {
+    url = "/games"
+    method = "POST"
+  }
+
+  $.ajax({
     url: url,
     method: method,
     dataType: "json",
