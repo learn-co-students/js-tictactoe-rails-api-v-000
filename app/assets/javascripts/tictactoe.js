@@ -1,8 +1,8 @@
 $(document).ready(function() {
   attachListeners();
 });
-const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
-                        [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+
+var combos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 var turn = 0;
 var currentGame = 0;
 
@@ -13,37 +13,129 @@ function player() {
   else {
     return "O"
   }
-}
+};
 
-function updateState(square) {
+function updateState(event) {
   var token = player();
-  $(square).text(token);
+  $(event).text(token);
 }
 
-function message(string) {
+var message = function message(string) {
   $('#message').text(string);
-}
+};
 
 function checkWinner() {
-  var board = {};
-  var winner = false;
+  for(i = 0; i < combos.length; i++){
+    if (checkCombo(combos[i], isTaken())){
+      message('Player ' + player() + ' Won!')
+      return true;
+    }
+  }
+  return false;
+};
 
-  $('td').text((index, square) => board[index] = square);
+function checkCombo(combo, tdArr) {
+  if ((tdArr[combo[0]] === "X") && (tdArr[combo[1]] === "X") && (tdArr[combo[2]] === "X")){
+      return true;
+    }else if ((tdArr[combo[0]] === "O") && (tdArr[combo[1]] === "O") && (tdArr[combo[2]] === "O")) {
+      return true;
+    } else {
+      return false;
+    };
+};
 
-  WINNING_COMBOS.some(function(combo) {
-    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
-      message(`Player ${board[combo[0]]} Won!`);
-      return winner = true;
+function isTaken() {
+  var marks = []
+   $("td").each(function(i) {
+     marks.push($(this).text())
+   })
+  return marks;
+};
+
+function doTurn(event) {
+  updateState(event);
+  if(checkWinner()) {
+    save(true)
+    resetState();
+  } else if(checkTie(turn)) {
+    save(true)
+    resetState();
+    message('Tie game.')
+  } else {
+    turn += 1;
+  }
+};
+
+function checkTie(turn) {
+  if (turn === 8) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+var save = function(resetCurrentGame) {
+  var url, method;
+  if(currentGame) {
+    url = "/games/" + currentGame
+    method = "PATCH"
+  } else {
+    url = "/games"
+    method = "POST"
+  }
+};
+
+var resetState = function() {
+  turn = 0;
+  currentGame = 0;
+  $('td').empty();
+};
+
+function attachListeners() {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
     }
   });
 
-  return winner;
-}
+  $('#save').on('click', () => save());
+  $('#previous').on('click', () => getAllGames());
+  $('#clear').on('click', () => resetState());
+};
 
-function doTurn() {
-  console.log("Increments the turn variable by 1. Invokes the updateState function, passing it the element that was clicked. Invokes checkWinner f to determine whether the move results in a winning play.")
-}
+var getAllGames = function() {
+  $.getJSON("/games", function(data) {
+    showGames(data.games)
+  });
+};
 
-function attachListeners() {
-  console.log("Attaches the appropriate event listeners to the squares of the game board as well as for the button save, button previous, and button clear elements.  When a user clicks on a square on the game board, the event listener should invoke doTurn f  and pass it the element that was clicked.")
-}
+var showGames = function(games) {
+  var dom = $()
+  games.forEach(function(game) {
+    dom = dom.add(showGame(game));
+  })
+  $("#games").html(dom);
+};
+
+var showGame = function(game) {
+  return $('<li>', {'data-state': game.state, 'data-gameid': game.id, text: game.id});
+};
+
+$.ajax({
+    url: url,
+    method: method,
+    dataType: "json",
+    data: {
+      game: {
+        state: isTaken()
+      }
+    },
+    success: function(data) {
+      if(resetCurrentGame) {
+        currentGame = undefined;
+      } else {
+        currentGame = data.game.id;
+      }
+    }
+  })
+};
