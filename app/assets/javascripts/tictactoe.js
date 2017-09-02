@@ -6,7 +6,8 @@ var combos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,
 var turn = 0;
 var currentGame = 0;
 
-function player() {
+//Returns the token of the player whose turn it is, 'X' when the turn variable is even and 'O' when it is odd.
+function player() { 
   if (turn % 2 == 0) {
     return 'X'
   }
@@ -15,15 +16,18 @@ function player() {
   };
 };
 
+//Invokes player() and adds the returned string ('X' or 'O') to the clicked square on the game board.
 function updateState(event) {
   var token = player();
   $(event).text(token);
 }
 
+//Accepts a string and adds it to the div#message element in the DOM.
 var message = function message(string) {
   $('#message').text(string);
 };
 
+//passing in the appropriate string based on who won: 'Player X Won!' or 'Player O Won!'
 function checkWinner() {
   for(i = 0; i < combos.length; i++){
     if (checkCombo(combos[i], isTaken())){
