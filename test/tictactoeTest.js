@@ -212,7 +212,7 @@ describe('tictactoe.js', () => {
 
       window.doTurn(squares[8]);
 
-      // expect(spy.calledOnce).to.be.true;
+      expect(spy.calledOnce).to.be.true;
     });
 
     it('invokes the updateState() function', () => {
@@ -506,8 +506,8 @@ describe('AJAX interactions with the Rails API', () => {
         expect(requests[0].method).to.equal('POST');
         expect(requests[0].url).to.equal('/games');
 
-        // expect(requests[1].method).to.equal('PATCH');
-        // expect(requests[1].url).to.equal('/games/1');
+        expect(requests[1].method).to.equal('PATCH');
+        expect(requests[1].url).to.equal('/games/1');
       });
     });
   });
