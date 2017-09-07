@@ -68,24 +68,24 @@ function saveGame(){
     });
   }else{
     $.post('/games', data, function(game){
-      createButton(game);
+      $("#games").append("<button onClick='reloadGame(" + game.data.id + ")'> Game #"+ game.data.id +"</button> ")
     });
   }
 }
 
-function postGame(data){
-  $.post('/games', data, function(resp){
-    window.game = resp["id"];
-  });
-}
-
-function patchGame(game, data){
-  $.ajax({
-    method: 'PATCH',
-    url: `/games/${game}`,
-    data: data
-  });
-}
+// function postGame(data){
+//   $.post('/games', data, function(resp){
+//     window.game = resp["id"];
+//   });
+// }
+//
+// function patchGame(game, data){
+//   $.ajax({
+//     method: 'PATCH',
+//     url: `/games/${game}`,
+//     data: data
+//   });
+// }
 
 function getGames(){
   $("#games").empty();
