@@ -67,25 +67,11 @@ function saveGame(){
       data: data
     });
   }else{
-    $.post('/games', data, function(game){
-      $("#games").append("<button onClick='reloadGame(" + game.data.id + ")'> Game #"+ game.data.id +"</button> ")
+    $.post('/games', data).done(function(resp){
+      window.game = resp.data['id'];
     });
   }
 }
-
-// function postGame(data){
-//   $.post('/games', data, function(resp){
-//     window.game = resp["id"];
-//   });
-// }
-//
-// function patchGame(game, data){
-//   $.ajax({
-//     method: 'PATCH',
-//     url: `/games/${game}`,
-//     data: data
-//   });
-// }
 
 function getGames(){
   $("#games").empty();
