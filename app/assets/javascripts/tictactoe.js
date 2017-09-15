@@ -13,13 +13,25 @@ $(function () {
     dumbArray.push(document.getElementsByTagName("td")[7]["textContent"])
     dumbArray.push(document.getElementsByTagName("td")[8]["textContent"])
     var values = dumbArray;
+    var gameId = document.getElementsByTagName("table").game
+
+    if (gameId) {
+      $.ajax({
+        url: '/games/' + gameId,
+        method: 'patch',
+        data: {state: values}
+      });
+    } else {
     $.ajax({
       url: '/games',
-      type: "POST",
-      // method: (game.exists) ? 'post' : 'patch',
+      method: 'post',
       data: {state: values}
-    });
-    // debugger
+    }).done(function(data){
+      document.getElementsByTagName("table").game = data["data"]["id"]
+      // debugger
+    })
+
+  }
 })
 
 
@@ -69,7 +81,7 @@ $(function () {
     var x = document.getElementsByTagName("td")
     $(x).empty();
     window.turn = 0;
-    $.post('/games').done();
+    // $.post('/games').done();
   });
 
   $('#previous').click(function() {
@@ -85,12 +97,21 @@ $(function () {
 
 
   $("#games").on('click', ":button[id^='game-']", function() {
-    // debugger;
     var posting = $.get('/games/' + this.id.substring(5));
     posting.done(function(data) {
       var game = data["data"]["attributes"]["state"]
-      debugger;
-      $("#tdbody").innerHTML = game
+      // debugger;
+      document.getElementsByTagName("table").game = this.url.substring(7)
+      turn = game.filter(Boolean).length
+      $("td:eq(0)").text(game[0])
+      $("td:eq(1)").text(game[1])
+      $("td:eq(2)").text(game[2])
+      $("td:eq(3)").text(game[3])
+      $("td:eq(4)").text(game[4])
+      $("td:eq(5)").text(game[5])
+      $("td:eq(6)").text(game[6])
+      $("td:eq(7)").text(game[7])
+      $("td:eq(8)").text(game[8])
     });
   });
 
@@ -148,6 +169,7 @@ function checkWinner() {
   for (win of winCombinations) {
     if (dumbArray[win[0]] === dumbArray[win[1]] && dumbArray[win[1]] === dumbArray[win[2]] && dumbArray[win[0]] != ''){
       messageCall('Player ' + player() + ' Won!')
+      $("#save").click()
       return true }
     } return false
 }
@@ -163,6 +185,7 @@ function doTurn(input) {
   }
 
   if (turn === 9 && checkWinner() === false){
+    $("#save").click()
     messageCall("Tie game.");
     turn = 0;
     $("#clear").click()
