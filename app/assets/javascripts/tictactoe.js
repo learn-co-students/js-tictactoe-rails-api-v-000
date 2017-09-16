@@ -134,9 +134,33 @@ function checkWinner() {
 }
 
 function doTurn(input) {
+  //this version allows the user to win, load the won game again, and click an input that persists
+  // updateState(input)
+  //
+  // if (checkWinner() === true){
+  //   // debugger;
+  //
+  //   var x = document.getElementsByTagName("td")
+  //   $(x).empty()
+  //   turn = 0
+  //   // $("#clear").click()
+  // } else {
+  //   turn +=1
+  //       }
+  // if (turn === 9 && checkWinner() === false){
+  //    $("#save").click()
+  //    messageCall("Tie game.");
+  //   //  $("#clear").click()
+  //   var x = document.getElementsByTagName("td")
+  //   $(x).empty()
+  //   turn = 0
+  //  }
+
+   //this version allows the user to win, and doesn't allow them to reload the game and enter another input
+  //  but it calls checkWinner() too many times for the test
+
     if (checkWinner() === false && turn < 9) {
       updateState(input)
-    }
 
     if (checkWinner() === true){
       // debugger;
@@ -148,6 +172,7 @@ function doTurn(input) {
     } else {
       turn +=1
           }
+  }
     if (turn === 9 && checkWinner() === false){
        $("#save").click()
        messageCall("Tie game.");
@@ -158,20 +183,4 @@ function doTurn(input) {
      }
 
 
-
-//   if (checkWinner() === false && turn < 9) {
-//     updateState(input)
-//
-//   if (checkWinner() === true) {
-//     $("#clear").click()
-//   } else {
-//     turn +=1
-//   }
-// }
-//
-//   if (turn === 9 && checkWinner() === false){
-//     $("#save").click()
-//     messageCall("Tie game.");
-//     $("#clear").click()
-//   }
 }
