@@ -14,6 +14,7 @@ $(function () {
     dumbArray.push(document.getElementsByTagName("td")[8]["textContent"])
     var values = dumbArray;
     var gameId = document.getElementsByTagName("table").game
+    debugger
 
     if (gameId) {
       $.ajax({
@@ -32,6 +33,7 @@ $(function () {
     })
 
   }
+  // $("#clear").click()
 })
 
 
@@ -78,10 +80,24 @@ $(function () {
  //  });})})
 
   $('#clear').click(function() {
-    var x = document.getElementsByTagName("td")
-    $(x).empty();
-    window.turn = 0;
+
     // $.post('/games').done();
+    // messageCall("")
+    var x = document.getElementsByTagName("td")
+    var gameId = document.getElementsByTagName("table").game
+    debugger
+    if (gameId) {
+      // $("#save").click()
+      gameId = ""
+      $(x).empty();
+      turn = 0;
+      $.post('/games').done();
+    } else {
+      $(x).empty();
+      turn = 0;
+      // $.post('/games').done();
+
+    }
   });
 
   $('#previous').click(function() {
@@ -116,16 +132,16 @@ $(function () {
   });
 
 
+  attachListeners();
 });
 
   function attachListeners() {
       $('td').click(function() {
         doTurn(this);
       })}
-
-      $(document).ready(function() {
-        attachListeners();
-        })
+      //
+      // $(document).ready(function() {
+      //   })
 
 
 var turn = 0;
@@ -168,6 +184,7 @@ function checkWinner() {
 
   for (win of winCombinations) {
     if (dumbArray[win[0]] === dumbArray[win[1]] && dumbArray[win[1]] === dumbArray[win[2]] && dumbArray[win[0]] != ''){
+      debugger
       messageCall('Player ' + player() + ' Won!')
       $("#save").click()
       return true }
@@ -180,14 +197,18 @@ function doTurn(input) {
   if (checkWinner() === false) {
     turn +=1
   } else {
-    turn = 0;
+    // turn = 0;
     $("#clear").click()
+    // $.get('/games').done()
+    // $.post('/games').done();
+
   }
 
   if (turn === 9 && checkWinner() === false){
     $("#save").click()
     messageCall("Tie game.");
-    turn = 0;
+    // turn = 0;
     $("#clear").click()
+    // $.get('/games').done()
   }
 }
