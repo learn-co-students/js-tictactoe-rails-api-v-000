@@ -2,13 +2,15 @@
 $(function () {
 
   $('#save').click(function(event) {
+    // debugger;
+    // retrieve the current board state into an array
     var values = []
-
     for (let i = 0; i < 9; i++) {
       values.push(document.getElementsByTagName("td")[i]["textContent"]);
     }
+    //find out if this game has been persisted
     var gameId = document.getElementsByTagName("table").game
-
+    //if it has been persisted, send a patch request
     if (gameId) {
       $.ajax({
         url: '/games/' + gameId,
@@ -16,33 +18,38 @@ $(function () {
         data: {state: values}
       });
     } else {
+      //if it has not been persisted, send a post request
     $.ajax({
       url: '/games',
       method: 'post',
       data: {state: values}
     }).done(function(data){
+      //once the previously unsaved game has been persisted, attach its game id to the document
       document.getElementsByTagName("table").game = data["data"]["id"]
     })
-
   }
 })
 
   $('#clear').click(function() {
-
+    //grab all the td DOM elements
     var x = document.getElementsByTagName("td")
+    //find out if the game has been persisted
     var gameId = document.getElementsByTagName("table").game
+    //if the game has been persisted, reset the board and create a new game
     if (gameId) {
       gameId = ""
       $(x).empty();
       turn = 0;
       $.post('/games').done();
     } else {
+      //if the game has not been persisted, just reset the board
       $(x).empty();
       turn = 0;
     }
   });
 
   $('#previous').click(function() {
+    //get all the saved games and add a button for each
     var posting = $.get('/games');
     posting.done(function(data) {
       var games = data["data"]
@@ -57,6 +64,7 @@ $(function () {
   $("#games").on('click', ":button[id^='game-']", function() {
     var posting = $.get('/games/' + this.id.substring(5));
     posting.done(function(data) {
+      // debugger;
       var game = data["data"]["attributes"]["state"]
       document.getElementsByTagName("table").game = this.url.substring(7)
       $("td:eq(0)").text(game[0])
@@ -69,6 +77,7 @@ $(function () {
       $("td:eq(7)").text(game[7])
       $("td:eq(8)").text(game[8])
       if (checkWinner() === true) {
+        // debugger;
         turn = game.filter(Boolean).length - 1;
       } else {
         turn = game.filter(Boolean).length;
@@ -125,16 +134,44 @@ function checkWinner() {
 }
 
 function doTurn(input) {
-  updateState(input)
-  if (checkWinner() === false) {
-    turn +=1
-  } else {
-    $("#clear").click()
-  }
+    if (checkWinner() === false && turn < 9) {
+      updateState(input)
 
-  if (turn === 9 && checkWinner() === false){
-    $("#save").click()
-    messageCall("Tie game.");
-    $("#clear").click()
+    if (checkWinner() === true){
+      // debugger;
+
+      var x = document.getElementsByTagName("td")
+      $(x).empty()
+      turn = 0
+      // $("#clear").click()
+    } else {
+      turn +=1
+          }
   }
+    if (turn === 9 && checkWinner() === false){
+       $("#save").click()
+       messageCall("Tie game.");
+      //  $("#clear").click()
+      var x = document.getElementsByTagName("td")
+      $(x).empty()
+      turn = 0
+     }
+
+
+
+//   if (checkWinner() === false && turn < 9) {
+//     updateState(input)
+//
+//   if (checkWinner() === true) {
+//     $("#clear").click()
+//   } else {
+//     turn +=1
+//   }
+// }
+//
+//   if (turn === 9 && checkWinner() === false){
+//     $("#save").click()
+//     messageCall("Tie game.");
+//     $("#clear").click()
+//   }
 }
