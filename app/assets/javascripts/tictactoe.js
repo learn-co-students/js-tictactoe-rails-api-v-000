@@ -136,6 +136,7 @@ function checkWinner() {
 function doTurn(input) {
     if (checkWinner() === false && turn < 9) {
       updateState(input)
+    }
 
     if (checkWinner() === true){
       // debugger;
@@ -147,7 +148,6 @@ function doTurn(input) {
     } else {
       turn +=1
           }
-  }
     if (turn === 9 && checkWinner() === false){
        $("#save").click()
        messageCall("Tie game.");
