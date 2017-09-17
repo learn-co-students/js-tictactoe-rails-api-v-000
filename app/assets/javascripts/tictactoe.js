@@ -148,19 +148,33 @@ var winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,
 function checkWinner() {
   var values = []
   var squares = window.document.querySelectorAll('td');
+  var xCount = 0
+  var oCount = 0
 
   for (let i = 0; i < 9; i++) {
     var square = squares[i]["innerHTML"];
 // debugger;
     values.push(square);
+    if (square === "X") {
+      xCount +=1
+    } else if (square === "O") {
+      oCount +=1
+    }
   }
-
+  // turn = values.length
   for (win of winCombinations) {
     if (values[win[0]] === values[win[1]] && values[win[1]] === values[win[2]] && values[win[0]] != ''){
-      debugger;
-      messageCall('Player ' + player() + ' Won!')
+      // debugger;
+      var winner;
+      if (xCount > oCount) {
+        winner = "X"
+      } else {
+        winner = "O"
+      }
+      messageCall('Player ' + winner + ' Won!')
       $("#save").click()
-      turn = 0
+      // turn = 0
+
       return true }
     } return false
 }
@@ -177,6 +191,7 @@ function doTurn(input) {
     var x = document.getElementsByTagName("td")
     $(x).empty()
     turn = 0
+    // $('td').unbind("click")
     // $("#clear").click()
   } else {
     turn +=1
