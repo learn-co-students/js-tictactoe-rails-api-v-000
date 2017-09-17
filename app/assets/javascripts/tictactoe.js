@@ -77,10 +77,10 @@ $(function () {
       $("td:eq(7)").text(game[7])
       $("td:eq(8)").text(game[8])
       if (checkWinner() === true) {
-        // debugger;
         turn = game.filter(Boolean).length - 1;
-         $('td').unbind("click")
+        $('td').unbind("click")
       } else {
+        attachListeners();
         turn = game.filter(Boolean).length;
       }
     });
@@ -136,7 +136,7 @@ function checkWinner() {
 
 function doTurn(input) {
   //this version allows the user to win, load the won game again, and click an input that persists
-  $('td').bind("click")
+  // $('td').bind("click")
 
   updateState(input)
 
