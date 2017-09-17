@@ -36,10 +36,12 @@ $(function () {
       current_game = 0
       $(x).empty();
       turn = 0;
+      boardValues = 0
       $.post('/games').done();
     } else {
       //if the game has not been persisted, just reset the board
       $(x).empty();
+      boardValues = 0
       turn = 0;
     }
   });
@@ -95,14 +97,36 @@ var turn = 0;
 var current_game = 0
 
 function player(){
+  if (turn === 0) {
+
+  var boardValues = [];
+  for (let i = 0; i < 9; i++) {
+    var square = document.getElementsByTagName("td");
+    if (square[i]["innerHTML"] != ""){
+      boardValues.push(square[i]["innerHTML"]);
+    }
+  }
+  turn = boardValues.length
+
+}
+
+  // var board = values.filter(function(input) {
+  //   return input === "X"
+  // });
   if (turn % 2 === 0) {
-    // debugger
     return 'X'
   } else {
-    // debugger
-
     return 'O'
   }
+
+  // if (turn % 2 === 0) {
+  //   // debugger
+  //   return 'X'
+  // } else {
+  //   // debugger
+  //
+  //   return 'O'
+  // }
 }
 
 function updateState(input) {
@@ -121,17 +145,32 @@ function messageCall(string) {
 var winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
 function checkWinner() {
-  var values = []
-
-  for (let i = 0; i < 9; i++) {
-    values.push(document.getElementsByTagName("td")[i]["textContent"]);
-  }
+  // if (turn === 0) {
+  //
+  // var values = []
+  //  = 0
+  // for (let i = 0; i < 9; i++) {
+  //   var square = document.getElementsByTagName("td")[i]["textContent"];
+  //   values.push(square);
+  //   if (square[i] === "X" || square[i] === "O"){
+  //     whoWon += 1;
+  //   }
+  // }
+  // }
 
   for (win of winCombinations) {
     if (values[win[0]] === values[win[1]] && values[win[1]] === values[win[2]] && values[win[0]] != ''){
       // debugger
+      // var winner;
+      // if (whoWon % 2 === 0) {
+      //   winner = "O"
+      // } else {
+      //   winner = "X"
+      // }
       messageCall('Player ' + player() + ' Won!')
       $("#save").click()
+      // boardValues = 0
+      turn = 0
       return true }
     } return false
 }
@@ -153,8 +192,9 @@ function doTurn(input) {
     turn +=1
         }
   if (turn === 9 && checkWinner() === false){
+    messageCall("Tie game.");
+    debugger
      $("#save").click()
-     messageCall("Tie game.");
     //  $("#clear").click()
     var x = document.getElementsByTagName("td")
     $(x).empty()
