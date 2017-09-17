@@ -8,12 +8,10 @@ $(function () {
     for (let i = 0; i < 9; i++) {
       values.push(document.getElementsByTagName("td")[i]["textContent"]);
     }
-    //find out if this game has been persisted
-    var gameId = document.getElementsByTagName("table").game
     //if it has been persisted, send a patch request
-    if (gameId) {
+    if (current_game) {
       $.ajax({
-        url: '/games/' + gameId,
+        url: '/games/' + current_game,
         method: 'patch',
         data: {state: values}
       });
@@ -24,8 +22,8 @@ $(function () {
       method: 'post',
       data: {state: values}
     }).done(function(data){
-      //once the previously unsaved game has been persisted, attach its game id to the document
-      document.getElementsByTagName("table").game = data["data"]["id"]
+      //once the previously unsaved game has been persisted, set current_game
+      current_game = data["data"]["id"]
     })
   }
 })
@@ -33,11 +31,9 @@ $(function () {
   $('#clear').click(function() {
     //grab all the td DOM elements
     var x = document.getElementsByTagName("td")
-    //find out if the game has been persisted
-    var gameId = document.getElementsByTagName("table").game
     //if the game has been persisted, reset the board and create a new game
-    if (gameId) {
-      gameId = ""
+    if (current_game) {
+      current_game = 0
       $(x).empty();
       turn = 0;
       $.post('/games').done();
@@ -62,11 +58,11 @@ $(function () {
 
 
   $("#games").on('click', ":button[id^='game-']", function() {
-    var posting = $.get('/games/' + this.id.substring(5));
-    posting.done(function(data) {
+    var getting = $.get('/games/' + this.id.substring(5));
+    getting.done(function(data) {
       // debugger;
       var game = data["data"]["attributes"]["state"]
-      document.getElementsByTagName("table").game = this.url.substring(7)
+      current_game = this.url.substring(7)
       $("td:eq(0)").text(game[0])
       $("td:eq(1)").text(game[1])
       $("td:eq(2)").text(game[2])
@@ -76,8 +72,9 @@ $(function () {
       $("td:eq(6)").text(game[6])
       $("td:eq(7)").text(game[7])
       $("td:eq(8)").text(game[8])
+      turn = game.filter(Boolean).length-1;
       if (checkWinner() === true) {
-        turn = game.filter(Boolean).length - 1;
+        // debugger;
         $('td').unbind("click")
       } else {
         attachListeners();
@@ -95,11 +92,15 @@ $(function () {
       })}
 
 var turn = 0;
+var current_game = 0
 
 function player(){
   if (turn % 2 === 0) {
+    // debugger
     return 'X'
   } else {
+    // debugger
+
     return 'O'
   }
 }
@@ -128,6 +129,7 @@ function checkWinner() {
 
   for (win of winCombinations) {
     if (values[win[0]] === values[win[1]] && values[win[1]] === values[win[2]] && values[win[0]] != ''){
+      // debugger
       messageCall('Player ' + player() + ' Won!')
       $("#save").click()
       return true }
