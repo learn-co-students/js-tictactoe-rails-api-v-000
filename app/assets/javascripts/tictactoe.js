@@ -97,18 +97,19 @@ var turn = 0;
 var current_game = 0
 
 function player(){
-  if (turn === 0) {
-
-  var boardValues = [];
-  for (let i = 0; i < 9; i++) {
-    var square = document.getElementsByTagName("td");
-    if (square[i]["innerHTML"] != ""){
-      boardValues.push(square[i]["innerHTML"]);
-    }
-  }
-  turn = boardValues.length
-
-}
+//   if (turn === 0) {
+//
+//   var boardValues = [];
+//   for (let i = 0; i < 9; i++) {
+//     var square = document.getElementsByTagName("td");
+//     if (square[i]["innerHTML"] != ""){
+//       boardValues.push(square[i]["innerHTML"]);
+//     }
+//   }
+//   debugger
+//   turn = boardValues.length
+//
+// }
 
   // var board = values.filter(function(input) {
   //   return input === "X"
@@ -145,31 +146,20 @@ function messageCall(string) {
 var winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
 function checkWinner() {
-  // if (turn === 0) {
-  //
-  // var values = []
-  //  = 0
-  // for (let i = 0; i < 9; i++) {
-  //   var square = document.getElementsByTagName("td")[i]["textContent"];
-  //   values.push(square);
-  //   if (square[i] === "X" || square[i] === "O"){
-  //     whoWon += 1;
-  //   }
-  // }
-  // }
+  var values = []
+  var squares = window.document.querySelectorAll('td');
+
+  for (let i = 0; i < 9; i++) {
+    var square = squares[i]["innerHTML"];
+// debugger;
+    values.push(square);
+  }
 
   for (win of winCombinations) {
     if (values[win[0]] === values[win[1]] && values[win[1]] === values[win[2]] && values[win[0]] != ''){
-      // debugger
-      // var winner;
-      // if (whoWon % 2 === 0) {
-      //   winner = "O"
-      // } else {
-      //   winner = "X"
-      // }
+      debugger;
       messageCall('Player ' + player() + ' Won!')
       $("#save").click()
-      // boardValues = 0
       turn = 0
       return true }
     } return false
