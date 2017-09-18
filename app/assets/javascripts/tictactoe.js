@@ -2,7 +2,6 @@
 $(function () {
 
   $('#save').click(function(event) {
-    // debugger;
     // retrieve the current board state into an array
     var values = []
     for (let i = 0; i < 9; i++) {
@@ -77,7 +76,6 @@ $(function () {
       $("td:eq(8)").text(game[8])
       turn = game.filter(Boolean).length-1;
       if (checkWinner() === true) {
-        // debugger;
         $('td').unbind("click")
       } else {
         attachListeners();
@@ -91,65 +89,39 @@ $(function () {
 
   function attachListeners() {
       $('td').click(function() {
-        doTurn(this);
+        if (checkWinner() === false) {
+          doTurn(this);
+
+        }
       })}
 
 var turn = 0;
 var current_game = 0
 
 function player(){
-//   if (turn === 0) {
-//
-//   var boardValues = [];
-//   for (let i = 0; i < 9; i++) {
-//     var square = document.getElementsByTagName("td");
-//     if (square[i]["innerHTML"] != ""){
-//       boardValues.push(square[i]["innerHTML"]);
-//     }
-//   }
-//   debugger
-//   turn = boardValues.length
-//
-// }
-
-  // var board = values.filter(function(input) {
-  //   return input === "X"
-  // });
   if (turn % 2 === 0) {
     return 'X'
   } else {
     return 'O'
   }
-
-  // if (turn % 2 === 0) {
-  //   // debugger
-  //   return 'X'
-  // } else {
-  //   // debugger
-  //
-  //   return 'O'
-  // }
 }
 
 function updateState(input) {
   if (input.innerHTML === "") {
-  input.innerHTML = player();
-} else {
-  messageCall("Choose another square")
-  turn -= 1
-}
+    input.innerHTML = player();
+  } else {
+    messageCall("Choose another square")
+    turn -= 1
+  }
 }
 
 function messageCall(string) {
   return document.getElementById("message").innerHTML = string
-  // attachListeners()
-
 }
 
 var winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
 function checkWinner() {
-  // debugger;
   var values = []
   var squares = window.document.querySelectorAll('td');
   var xCount = 0
@@ -157,7 +129,6 @@ function checkWinner() {
 
   for (let i = 0; i < 9; i++) {
     var square = squares[i]["innerHTML"];
-// debugger;
     values.push(square);
     if (square === "X") {
       xCount +=1
@@ -165,11 +136,8 @@ function checkWinner() {
       oCount +=1
     }
   }
-  // turn = values.length
   for (win of winCombinations) {
     if (values[win[0]] === values[win[1]] && values[win[1]] === values[win[2]] && values[win[0]] != ''){
-      // debugger;
-      // turn = oCount + xCount - 1
       var winner;
       if (xCount > oCount) {
         winner = "X"
@@ -178,64 +146,25 @@ function checkWinner() {
       }
       messageCall('Player ' + winner + ' Won!')
       $("#save").click()
-      // turn = 0
           return true }
     } return false
 }
 
-
 function doTurn(input) {
-  //this version allows the user to win, load the won game again, and click an input that persists
-  // $('td').bind("click")
-
   updateState(input)
 
   if (checkWinner() === true){
-    // debugger;
-
     var x = document.getElementsByTagName("td")
     $(x).empty()
-    // $('td').unbind("click")
     $("#clear").click()
-    // turn = 0
   } else {
     turn +=1
         }
   if (turn === 9 && checkWinner() === false){
     messageCall("Tie game.");
-    // debugger
      $("#save").click()
-    //  $("#clear").click()
     var x = document.getElementsByTagName("td")
     $(x).empty()
     turn = 0
    }
-
-   //this version allows the user to win, and doesn't allow them to reload the game and enter another input
-  //  but it calls checkWinner() too many times for the test
-  //
-  //   if (checkWinner() === false && turn < 9) {
-  //     updateState(input)
-  //
-  //   if (checkWinner() === true){
-  //     // debugger;
-  //
-  //     var x = document.getElementsByTagName("td")
-  //     $(x).empty()
-  //     turn = 0
-  //     // $("#clear").click()
-  //   } else {
-  //     turn +=1
-  //         }
-  // }
-  //   if (turn === 9 && checkWinner() === false){
-  //      $("#save").click()
-  //      messageCall("Tie game.");
-  //     //  $("#clear").click()
-  //     var x = document.getElementsByTagName("td")
-  //     $(x).empty()
-  //     turn = 0
-  //    }
-
-
 }
