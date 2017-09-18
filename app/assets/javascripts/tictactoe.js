@@ -44,6 +44,7 @@ $(function () {
       boardValues = 0
       turn = 0;
     }
+
   });
 
   $('#previous').click(function() {
@@ -141,11 +142,14 @@ function updateState(input) {
 
 function messageCall(string) {
   return document.getElementById("message").innerHTML = string
+  // attachListeners()
+
 }
 
 var winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
 function checkWinner() {
+  // debugger;
   var values = []
   var squares = window.document.querySelectorAll('td');
   var xCount = 0
@@ -165,6 +169,7 @@ function checkWinner() {
   for (win of winCombinations) {
     if (values[win[0]] === values[win[1]] && values[win[1]] === values[win[2]] && values[win[0]] != ''){
       // debugger;
+      // turn = oCount + xCount - 1
       var winner;
       if (xCount > oCount) {
         winner = "X"
@@ -174,10 +179,10 @@ function checkWinner() {
       messageCall('Player ' + winner + ' Won!')
       $("#save").click()
       // turn = 0
-
-      return true }
+          return true }
     } return false
 }
+
 
 function doTurn(input) {
   //this version allows the user to win, load the won game again, and click an input that persists
@@ -190,15 +195,15 @@ function doTurn(input) {
 
     var x = document.getElementsByTagName("td")
     $(x).empty()
-    turn = 0
     // $('td').unbind("click")
-    // $("#clear").click()
+    $("#clear").click()
+    // turn = 0
   } else {
     turn +=1
         }
   if (turn === 9 && checkWinner() === false){
     messageCall("Tie game.");
-    debugger
+    // debugger
      $("#save").click()
     //  $("#clear").click()
     var x = document.getElementsByTagName("td")
