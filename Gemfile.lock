@@ -89,6 +89,8 @@ GEM
     pry-byebug (3.4.2)
       byebug (~> 9.0)
       pry (~> 0.10)
+    pry-rails (0.3.6)
+      pry (>= 0.10.4)
     rack (1.6.8)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -178,6 +180,7 @@ DEPENDENCIES
   jquery-rails
   pry
   pry-byebug
+  pry-rails
   rails (= 4.2.5.1)
   rspec-rails (~> 3.0)
   sass-rails (~> 5.0)

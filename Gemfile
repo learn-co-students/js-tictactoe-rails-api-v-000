@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'pry-rails'
 gem 'active_model_serializers', '0.10.6'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
