@@ -1,7 +1,7 @@
 // Code your JavaScript / jQuery solution here
 var gameId = null
 var turn = 0;
-var player = () => (turn % 2 === 0) ? 'X' : 'O'
+
 
 $(function() {
   attachListeners();
@@ -19,6 +19,8 @@ function updateState(element) {
 function setMessage(message) {
   $("#message").append("<p>" + message + "</p>");
 }
+
+var player = () => (turn % 2 === 0) ? 'X' : 'O'
 
 function checkWinner() {
   var token;
@@ -65,10 +67,14 @@ function doTurn(element) {
     var won = checkWinner()
     if (won || (turn === 9)) {
       setMessage("Game is over. You can't keep playing.")
+      saveGame();
     } else if ($(element).text() === ""){
     updateState(element);
     turn++;
-    checkWinner();
+
+    if (checkWinner()) {
+      saveGame();
+    }
   } else {
     setMessage("That spot is taken.")
   }
