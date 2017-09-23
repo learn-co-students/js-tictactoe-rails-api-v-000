@@ -68,12 +68,14 @@ function doTurn(element) {
     if (won || (turn === 9)) {
       setMessage("Game is over. You can't keep playing.")
       saveGame();
+      resetBoard();
     } else if ($(element).text() === ""){
     updateState(element);
     turn++;
 
     if (checkWinner()) {
       saveGame();
+      resetBoard();
     }
   } else {
     setMessage("That spot is taken.")
@@ -137,7 +139,7 @@ function saveGame() {
       url: `/games/${gameId}`,
       data: {
         state: gameArray,
-        turnCount: turns
+        turnCount: turn
       },
       dataType: 'json'
     })
