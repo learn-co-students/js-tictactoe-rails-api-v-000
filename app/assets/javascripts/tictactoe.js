@@ -1,7 +1,6 @@
 // Code your JavaScript / jQuery solution here
 
-const winCombinations = [
-
+var winCombination = [
  [0,1,2],
  [3,4,5],
  [6,7,8],
@@ -16,16 +15,6 @@ var board = ["", "", "", "", "", "", "", "", "" ]
 var turn = 0
 
 
-function turncount() {
-  var counter = 0
-  board.forEach(function (element) {
-    if ((element === "X") || (element === "O")) {
-      counter += 1
-    }
-  })
-  return counter
-}
-
 function player() {
   if (turn % 2 === 0) {
     return "X"
@@ -35,25 +24,63 @@ function player() {
   }
 }
 
-
-function updateState(board) {
-  $(board).text(player())
+function updateState(square) {
+  $(square).text(player())
 }
 
 function setMessage(string) {
-  $( "div#message" ).html(string)
+  $("div#message").html(string)
 }
 
 function checkWinner() {
-  (winCombinations).any? do |win_combination|
- if ((@board[win_combination[0]] == "X" && @board[win_combination[1]] == "X" && @board[win_combination[2]] == "X") ||
-     (@board[win_combination[0]] == "O" && @board[win_combination[1]] == "O" && @board[win_combination[2]] == "O"))
-     return true
- else {
-   false
- }
+  var board = window.document.querySelectorAll('td')
+  for (var i = 0; i < winCombination.length; i++) {
+    var combo = winCombination[i] // [0,1,2]
+    var boardCombo1 = board[combo[0]].innerHTML
+    var boardCombo2 = board[combo[1]].innerHTML
+    var boardCombo3 = board[combo[2]].innerHTML
+      if ((boardCombo1 === "X" && boardCombo2 === "X" && boardCombo3 === "X") ||
+        (boardCombo1 === "O" && boardCombo2 === "O" && boardCombo3 === "O")) {
+        setMessage(`Player ${boardCombo1} Won!`)
+        return true
+      }
+    }
+      return false
 }
 
 function doTurn() {
-
+  updateState()
+  turn += 1
+  if (checkWinner()) {
+    resetBoard()
+  }
+  else if (turn === 9) {
+    setMessage("Tie game.")
+    resetBoard()
+  }
 }
+
+function resetBoard() {
+  $('td').empty()
+  turn = 0
+}
+
+$(document).ready(function() {
+  attachListeners()
+})
+
+ function attachListeners() {
+   $('td').on('click', function() {
+     if (($(this).html() === "") && (!checkWinner())) {
+       doTurn(this)
+     }
+   })
+   $("#save").on("click", saveGame())
+ }
+
+ function saveGame() {
+   $.get("/games").success(function(response) {
+    $("div#save").html(response)
+  });
+
+ }
