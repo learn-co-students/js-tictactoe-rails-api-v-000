@@ -23,12 +23,14 @@ function isEven(num) {
 }
 
 function doTurn() {
-  $(this).text(player());
+  updateState(this)
   turn += 1
 }
 
-function updateState() {
-
+function updateState(elem) {
+  $(elem).text(player());
+  console.log(elem);
+  console.log($(elem).data("x"));
 }
 
 function setMessage() {
