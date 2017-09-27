@@ -23,6 +23,7 @@ function isEven(num) {
 }
 
 function doTurn() {
+  console.log("Hello");
   updateState(this)
   turn += 1
 }
