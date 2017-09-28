@@ -41,7 +41,6 @@ function checkWinner() {
       if ((boardCombo1 === "X" && boardCombo2 === "X" && boardCombo3 === "X") ||
         (boardCombo1 === "O" && boardCombo2 === "O" && boardCombo3 === "O")) {
         setMessage(`Player ${boardCombo1} Won!`)
-        debugger
         return true
       }
     }
@@ -50,7 +49,7 @@ function checkWinner() {
 
 function doTurn(td) {
   updateState(td)
-  turn += 1
+  turn ++
   if (checkWinner()) {
     saveGame()
     resetBoard()
@@ -72,77 +71,78 @@ $(document).ready(function() {
   attachListeners()
 })
 
- function attachListeners() {
-   $('td').on('click', function() {
-     if (($(this).html() === "") && (!checkWinner())) {
-       doTurn(this)
-     }
-   })
+function attachListeners() {
+  $('td').on('click', function() {
+   if (($(this).html() === "") && (!checkWinner())) {
+     doTurn(this)
+   }
+  })
    $("#save").on("click", function() { saveGame() })
    $("#previous").on("click", function() { previousGames() })
    $("#clear").on("click", function() { resetBoard() })
  }
 
  function saveGame() {
-
    var board = []
    var json_game_info = {}
 
    $("td").text((index, square) => {board.push(square)})
    json_game_info = { state: board }
-
     if(current_game_id) {
      $.ajax({
-
        type: 'PATCH',
        url: `/games/${current_game_id}`,
        data: json_game_info
      })
-    //  .done(function(data) {
-    //    console.log(data)
-    //    id = data["data"]["id"]
-    //    $("#games").html(`Game id# ${id}`)
-    //  })
+     .done(function(data) {
+       id = data["data"]["id"]
+       $("#games").html(`Game id# ${id}`)
+     })
     }
     else {
      $.post("/games", json_game_info, function(response) {
        new_game_id = response["data"]["id"]
+       current_game_id = new_game_id
        $("#games").html(`Game id #${new_game_id}`)
-       $("#gameid-" + response.data.id).on('click', () => loadGame());
+        $("#gameid-" + response.data.id).on('click', () => loadGame());
      })
+
    }
  }
 
  function previousGames() {
     $("div#games").empty()
-   $.get("/games", function(response) {
+    $.get("/games", function(response) {
      response["data"].forEach(function(eachData){
-      $("div#games").append(`<button id='${eachData["id"]}'>Game # ${eachData["id"]}</button><br>`)
+      $("div#games").prepend(`<button id='${eachData["id"]}'>Game # ${eachData["id"]}</button><br>`)
       $(`#${eachData["id"]}`).on('click', loadGame)
      })
     })
  }
 
  function loadGame() {
-
+    $("div#games").empty()
    $.get(`/games/${this.id}`, function(response){
      current_game_id = parseInt(response["data"]["id"])
       state = response["data"]["attributes"]["state"]
-
       for(let i=0; i < state.length; i++){
-        counter = 0
+
         if (i < 3) {
-        $('[data-x="' + i + '"][data-y="' + 0 + '"]')[0].innerText = state[i]
+        $('[data-x="' + i + '"][data-y="' + 0 + '"]')[0].innerHTML = state[i]
         }
         else if(i > 2 && i < 6 ) {
           var j = i-3
-          $('[data-x="' + j + '"][data-y="' + 1 + '"]')[0].innerText = state[i]
+          $('[data-x="' + j + '"][data-y="' + 1 + '"]')[0].innerHTML = state[i]
         }
         else {
           var k = i-6
-          $('[data-x="' + k + '"][data-y="' + 2 + '"]')[0].innerText = state[i]
+          $('[data-x="' + k + '"][data-y="' + 2 + '"]')[0].innerHTML = state[i]
         }
+
+         turn = state.join('').length;
+
       }
+
 
     // this is how the board looks when it's going through the loop
     // | x=0,y=0,i=0 | x=1,y=0,i=1 | x=2,y=0,i=2
@@ -151,4 +151,5 @@ $(document).ready(function() {
     // ------------------------------------------
     // | x=0,y=2,i=6 | x=1,y=2,i=7 | x=2,y=2,i=8
    })
+
  }
