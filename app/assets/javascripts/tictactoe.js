@@ -1,12 +1,12 @@
 // Code your JavaScript / jQuery solution here
 $(function () {
   attachListeners();
+
 })
 
-var turn = 0
 
 function player() {
-  if (isEven(turn)) {
+  if (isEven(turnCount())) {
     return "X"
   } else {
     return "O"
@@ -24,22 +24,69 @@ function isEven(num) {
 
 function doTurn() {
   console.log("Hello");
-  updateState(this)
-  turn += 1
+  if (checkWinner()) {
+    for (i = 0; i < 9; i++) {
+    $("td")[i].innerHTML = ""
+    }
+  } else {
+    updateState(this);
+  }
+
 }
 
+function turnCount() {
+  counter = 0
+  for (var i = 0; i < 9; i++) {
+    if ($("td")[i].innerHTML === "X" || $("td")[i].innerHTML === "O") {
+      counter++
+    }
+  }
+  return counter
+}
 function updateState(elem) {
   $(elem).text(player());
-  console.log(elem);
-  console.log($(elem).data("x"));
 }
 
-function setMessage() {
-
+function setMessage(winner) {
+  $("#message").text(winner);
 }
 
 function checkWinner() {
+  const winCombos = [
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6]
+  ]
 
+  for (var i = 0; i < winCombos.length; i++) {
+    if ($("td")[winCombos[i][0]].textContent === "X"
+        && $("td")[winCombos[i][1]].textContent === "X"
+        && $("td")[winCombos[i][2]].textContent === "X") {
+          setMessage("Player X Won!")
+          return true
+    } else if ($("td")[winCombos[i][0]].textContent === "O"
+        && $("td")[winCombos[i][1]].textContent === "O"
+        && $("td")[winCombos[i][2]].textContent === "O") {
+          setMessage("Player O Won!")
+          return true
+    } else if(turnCount() === 9) {
+      setMessage("Tie game.")
+      return true
+    }
+  }
+  return false
+}
+
+function workIt() {
+  var myArray = []
+  for (var i = 0; i < 9; i++) {
+      myArray.push($("td")[i].innerHTML);
+  }
 }
 
 function attachListeners() {
