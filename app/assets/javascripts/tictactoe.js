@@ -74,26 +74,30 @@ function previousGames(){
    $.ajax({
        url: '/games',
        method: 'GET',
-     }).done(function(info){
-      var games = info;
+     }).done(function(games){
+
       var buttonsHTML = ""; 
+
       for(var i =0; i < games['data'].length; i++){
         var id = games['data'][i]['id'];
          buttonsHTML += `<button data-id="${id}">` + id + "</button>"
-      }
+      };
+
       $('div#games').html(buttonsHTML);
-      
+
     }).then(function(){
-      previousGamesButtonsListener()
+      GameButtonsListener()
     });
     
 }
 
-function previousGamesButtonsListener(){
+function GameButtonsListener(){
    $('#games button').on('click', function(evt){
     gameID = this.dataset['id'];
+    //pupolate the board
   })
 }
+
 
 function jsonfyGame(board, id = null){
   return JSON.stringify({
@@ -114,7 +118,13 @@ function saveGame(state){
     method: 'POST',
     dataType: 'json'
   }).done(function(game){
-    console.log(game)
+     
+    var id = game['data']['id']
+    $('#games').append(`<button data-id="${id}">` + id + "</button>")
+
+    gameID = parseInt(id);
+
+    GameButtonsListener();
   });
 }
 
