@@ -82,13 +82,60 @@ function checkWinner() {
   return false
 }
 
-function workIt() {
+function saveGame() {
   var myArray = []
   for (var i = 0; i < 9; i++) {
       myArray.push($("td")[i].innerHTML);
+  }
+  $.post('/games', {'state' : myArray})
+  console.log(myArray);
+}
+
+function previousGame() {
+  $.get('/games', function(data) {
+    var games = data["data"]
+    for (var i = 0; i < games.length; i++) {
+      $("#games").append('<input type="button" class="js-next" data-id="' + games[i]["id"] + '" value=" Game '+ games[i]["id"] + '"> <br>')
+      console.log(games[i]["id"]);
+    }
+    $(".js-next").on("click", function() {
+      var nextId = parseInt($(this).attr("data-id"))
+      console.log(nextId);
+      $.get("/games/" + nextId + ".json", function(data) {
+        var board = data.data.attributes["state"]
+        for (var i = 0; i < board.length; i++) {
+          $("td")[i].innerHTML = board[i]
+        }
+        console.log(board);
+      })
+    })
+  })
+  // $.ajax({
+  //       type: "GET",
+  //       dataType: "json",
+  //       url: "/games",
+  //       success: function(data){
+  //         console.log(data.data);
+  //         for (var i = 0; i < data.data.length; i++) {
+  //           console.log(data.data[i].attributes.state);
+  //         }
+  //       }
+  //   });
+}
+
+function loadGame() {
+  console.log(this);
+}
+
+function clearGame() {
+  for (i = 0; i < 9; i++) {
+    $("td")[i].innerHTML = ""
   }
 }
 
 function attachListeners() {
   $("#ttt tbody tr").on("click", "td", doTurn);
+  $("#save").on("click", saveGame);
+  $("#previous").on("click", previousGame);
+  $("#clear").on("click", clearGame)
 }
