@@ -1,21 +1,34 @@
-const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
-                        [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
-let turn = 0;
-let currentGame = 0;
-let player = () => turn % 2 ? 'O' : 'X';
-let status = 'playing'
+var winCombos = [[0,1,2],
+                  [3,4,5],
+                  [6,7,8],
+                  [0,3,6],
+                  [1,4,7],
+                  [2,5,8],
+                  [0,4,8],
+                  [2,4,6]];
+var turn = 0;
+var currentGame = 0;
 
-function doTurn(square){
-  updateState(square);
-  turn++;
-  setMessage(`Make a Selection`);
-  if (checkWinner()) {
-    saveGame();
-    resetBoard();
-  } else if (turn === 9){
-    setMessage(`Tie game.`);
-    saveGame();
-    resetBoard();
+function player(){
+	if (turn % 2 == 0){
+		return 'X'
+	}
+	else if (turn % 2 != 0){
+		return 'O'
+	}
+}
+
+var doTurn = function(square){
+  if (updateState(square)) {
+    turn++;
+  }
+    if (checkWinner()) {
+      saveGame();
+      resetBoard();
+    } else if (turn === 9){
+      setMessage(`Tie game.`);
+      saveGame();
+      resetBoard();
   }
 };
 
@@ -23,7 +36,6 @@ function resetBoard(){
   $('td').empty();
   turn = 0;
   currentGame = 0;
-  status = 'playing';
   setMessage(`Welcome to Tic Tac Toe!`);
 };
 
@@ -34,35 +46,31 @@ function attachListeners(){
     }
 
   });
-  setMessage(`Welcome to Tic Tac Toe!`);
   $('#save').on('click', () => saveGame());
   $('#previous').on('click', () => showPreviousGames());
   $('#clear').on('click', () => resetBoard());
 };
 
 function checkWinner(){
-  let board = {};
-  let winner = false;
+  var board = $('table');
+  var winner = false;
+
 
   $('td').text((index, square) => board[index] = square);
 
-  WINNING_COMBOS.some(function(combo) {
-   if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
-    setMessage(`${board[combo[0]]} Won!`);
-     return winner = true;
-     status = 'game over';
+  winCombos.some(function(combo) {
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+    setMessage(`Player ${board[combo[0]]} Won!`);
+     winner = true;
+   } else {
+     winner = false
    }
+   return winner
  });
 }
 
 function updateState(square){
-  if (status === 'game over') {
-    $(square).text(function(event){
-      event.preventDefault();
-    });
-  } else {
     $(square).text(player());
-  }
 };
 
  function setMessage(message){
@@ -100,9 +108,24 @@ function updateState(square){
 
  };
 
- function reloadGame(){
+ function reloadGame(gameID) {
+     message("");
+     $.get('/games/' + gameID, function(data) {
+         var index = 0, state = data.data.attributes.state;
+         for (var y = 0; y < 3; y++){
+             for (var x = 0; x < 3; x++) {
+                 $("[data-x='" + x + "'][data-y='" + y + "']").html(state[index]);
+                 index++;
+             }
+         }
 
- };
+         turn = state.join("").length;
+         currentGameId = data.data.id;
+         if(!checkWinner() && turn == 9){
+             message('Tie game.');
+         }
+     })
+ }
 
  $(document).ready(function() {
    attachListeners();
