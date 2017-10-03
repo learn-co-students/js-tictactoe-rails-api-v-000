@@ -273,7 +273,7 @@ describe('tictactoe.js', () => {
       expect(window.attachListeners).to.be.a('function');
     });
 
-    xit('attaches event listeners that invoke doTurn() when a square is clicked on', () => {
+    it('attaches event listeners that invoke doTurn() when a square is clicked on', () => {
       var spy = sandbox.stub(window, 'doTurn');
 
       squares[0].click();
@@ -435,7 +435,7 @@ describe('AJAX interactions with the Rails API', () => {
         );
 
         const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
+        console.log(gameButtons);
         expect(gameButtons.length).to.equal(2);
       });
 
