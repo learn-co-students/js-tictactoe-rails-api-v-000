@@ -67,40 +67,41 @@ function setMessage(message){
 };
 
 function saveGame(){
- let state = [];
- let gameData;
+  let state = [];
+  let gameData;
 
- $('td').text((index, square) => {
+  $('td').text((index, square) => {
    state.push(square);
- });
+  });
 
- gameData = { state: state };
+  gameData = { state: state };
 
- if (currentGame) {
+  if (currentGame) {
    $.ajax({
      type: 'PATCH',
      url: `/games/${currentGame}`,
      data: gameData
    });
- } else {
+
+  } else {
    $.post('/games', gameData, function(game) {
      currentGame = game.data.id;
      $('#games').append(`<button id="gameid-${game.data.id}">Game: ${game.data.id}</button><br>`);
      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
    });
- }
+  }
 };
 
- function showPreviousGames(){
- 	$("div#games").empty()
- 	$.get('/games', function(data){
+function showPreviousGames(){
+	$("#games").empty()
+	$.get('/games', function(data){
 
- 		data["data"].forEach((game) => {
- 			$("div#games").append(`<p><button type='button' id=gameid-${game.id}>Game: ${game.id}</button><em>(last updated at ${game.updated_at})</em></p>`)
- 			$(`#gameid-${game.id}`).on('click', () => {reloadGame(game.id)})
- 		})
- 	})
- }
+		data["data"].forEach((game) => {
+			$("div#games").append(`<p><button type='button' id=gameid-${game.id}>Game: ${game.id}</button></p>`)
+			$(`#gameid-${game.id}`).on('click', () => {reloadGame(game.id)})
+		})
+	})
+};
 
 function reloadGame(gameID) {
   setMessage("");
@@ -115,7 +116,7 @@ function reloadGame(gameID) {
 
       turn = state.join("").length;
       currentGameId = data.data.id;
-      if(!checkWinner() && turn == 9){
+      if(!checkWinner() && turn === 9){
         setMessage('Tie game.');
       }
   })
