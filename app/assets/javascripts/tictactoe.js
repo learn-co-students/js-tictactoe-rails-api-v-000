@@ -1,3 +1,8 @@
+//if i set const instead of var, tests fail. if i use let instead of var, tests fail.
+//i would prefer to use const and let
+
+
+//const = WIN_COMBOS
 var winCombos = [[0,1,2],
                   [3,4,5],
                   [6,7,8],
@@ -6,6 +11,7 @@ var winCombos = [[0,1,2],
                   [2,5,8],
                   [0,4,8],
                   [2,4,6]];
+//let
 var turn = 0;
 var currentGame = 0;
 var board = {};
@@ -59,7 +65,7 @@ function checkWinner(){
 };
 
 function updateState(square){
-    $(square).text(player());
+  $(square).text(player());
 };
 
 function setMessage(message){
@@ -67,60 +73,75 @@ function setMessage(message){
 };
 
 function saveGame(){
-  let state = [];
-  let gameData;
+  var state = [];
+  var gameData;
 
   $('td').text((index, square) => {
-   state.push(square);
+  state.push(square);
   });
 
-  gameData = { state: state };
+  gameData = {state: state}
 
-  if (currentGame) {
-   $.ajax({
-     type: 'PATCH',
-     url: `/games/${currentGame}`,
-     data: gameData
-   });
+  if(currentGame){
+    $.ajax({
+
+      method: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+  });
 
   } else {
-   $.post('/games', gameData, function(game) {
-     currentGame = game.data.id;
-     $('#games').append(`<button id="gameid-${game.data.id}">Game: ${game.data.id}</button><br>`);
-     $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
-   });
+    $.post('/games', gameData).done(function(game){
+    currentGame = game.data['id'];
+    $('#games').append(`<button id="gameid-${game.data.id}">Game: ${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
   }
 };
 
 function showPreviousGames(){
 	$("#games").empty()
-	$.get('/games', function(data){
-
-		data["data"].forEach((game) => {
-			$("div#games").append(`<p><button type='button' id=gameid-${game.id}>Game: ${game.id}</button></p>`)
-			$(`#gameid-${game.id}`).on('click', () => {reloadGame(game.id)})
-		})
-	})
+	$.get('/games', (oldGames) => {
+    if (oldGames.data.length) {
+      oldGames.data.forEach(previousGameButton);
+    }
+	});
 };
 
-function reloadGame(gameID) {
-  setMessage("");
-  $.get('/games/' + gameID, function(data) {
-      var index = 0, state = data.data.attributes.state;
-      for (var y = 0; y < 3; y++){
-          for (var x = 0; x < 3; x++) {
-              $("[data-x='" + x + "'][data-y='" + y + "']").html(state[index]);
-              index++;
-          }
-      }
-
-      turn = state.join("").length;
-      currentGameId = data.data.id;
-      if(!checkWinner() && turn === 9){
-        setMessage('Tie game.');
-      }
-  })
+function previousGameButton(game) {
+  $('#games').append(`<button id="gameid-${game.id}">Game: ${game.id}</button><br>`);
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
 }
+
+function reloadGame(gameID) {
+  setMessage('');
+
+  const xhr = new XMLHttpRequest;
+  xhr.overrideMimeType('application/json');
+  xhr.open('GET', `/games/${gameID}`, true);
+  xhr.onload = () => {
+    const data = JSON.parse(xhr.responseText).data;
+    const id = data.id;
+    const state = data.attributes.state;
+
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+
+    turn = state.join('').length;
+    currentGame = id;
+
+    if (!checkWinner() && turn === 9) {
+      message('Tie game.');
+    }
+  };
+
+  xhr.send(null);
+};
 
  $(document).ready(function() {
    attachListeners();
