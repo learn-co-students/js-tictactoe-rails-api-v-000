@@ -4,7 +4,7 @@ $(function () {
 
 })
 var turn = 0;
-
+var currentGame = 0;
 var winCombos = [
   [0,1,2],
   [3,4,5],
@@ -51,15 +51,16 @@ function doTurn(elem) {
 
 }
 
-// function turnCount() {
-//   counter = 0
-//   for (var i = 0; i < 9; i++) {
-//     if ($("td")[i].innerHTML === "X" || $("td")[i].innerHTML === "O") {
-//       counter++
-//     }
-//   }
-//   return counter
-// }
+function turnCount() {
+  counter = 0
+  for (var i = 0; i < 9; i++) {
+    if ($("td")[i].innerHTML === "X" || $("td")[i].innerHTML === "O") {
+      counter++
+    }
+  }
+  return counter
+}
+
 function updateState(elem) {
   if ($(elem).is(':empty')) {
     $(elem).text(player());
@@ -79,14 +80,17 @@ function checkWinner() {
     if ($("td")[winCombos[i][0]].textContent === "X"
         && $("td")[winCombos[i][1]].textContent === "X"
         && $("td")[winCombos[i][2]].textContent === "X") {
+          saveGame();
           setMessage("Player X Won!")
           return true
     } else if ($("td")[winCombos[i][0]].textContent === "O"
         && $("td")[winCombos[i][1]].textContent === "O"
         && $("td")[winCombos[i][2]].textContent === "O") {
+          saveGame();
           setMessage("Player O Won!")
           return true
     } else if(turn > 7) {
+          saveGame();
           setMessage("Tie game.")
           return true
     }
@@ -96,46 +100,50 @@ function checkWinner() {
 
 function saveGame() {
   var myArray = []
+  var gameState;
   for (var i = 0; i < 9; i++) {
       myArray.push($("td")[i].innerHTML);
   }
-  $.post('/games', {'state' : myArray})
+  gameState = { state: myArray}
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameState
+    });
+  } else {
+    $.post('/games', {'state' : myArray}, function(data) {
+      currentGame = data.data.id
+      console.log(data.data);
+    });
   // console.log(myArray);
+  }
 }
 
 function previousGame() {
-  $.get('/games', function(data) {
-
-    var games = data["data"]
-    console.log(data);
-    $("#games").html("")
-    for (var i = 0; i < games.length; i++) {
-      $("#games").append('<input type="button" class="js-next" data-id="' + games[i]["id"] + '" value=" Game '+ games[i]["id"] + '"> <br>')
-      // console.log(games[i]["id"]);
+  $("#games").html("")
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(buttonizePreviousGame);
     }
-    $(".js-next").on("click", function() {
-      var nextId = parseInt($(this).attr("data-id"))
-      // console.log(nextId);
-      $.get("/games/" + nextId + ".json", function(data) {
-        var board = data.data.attributes["state"]
-        for (var i = 0; i < board.length; i++) {
-          $("td")[i].innerHTML = board[i]
-        }
-        // console.log(board);
-      })
-    })
   })
-  // $.ajax({
-  //       type: "GET",
-  //       dataType: "json",
-  //       url: "/games",
-  //       success: function(data){
-  //         console.log(data.data);
-  //         for (var i = 0; i < data.data.length; i++) {
-  //           console.log(data.data[i].attributes.state);
-  //         }
-  //       }
-  //   });
+}
+
+function buttonizePreviousGame(game) {
+  $("#games").append(`<button class="js-next" id="${game.id}">Game ${game.id}</button> <br>`);
+  $(".js-next").on("click", function() {
+    var gameId = parseInt($(this).attr("id"))
+    currentGame = gameId;
+    console.log(currentGame);
+    $.get("/games/" + gameId + ".json", function(data) {
+      var board = data.data.attributes["state"]
+      for (var i = 0; i < board.length; i++) {
+        $("td")[i].innerHTML = board[i]
+      }
+      turn = turnCount();
+      // console.log(board);
+    });
+  });
 }
 
 function loadGame() {
@@ -143,6 +151,8 @@ function loadGame() {
 }
 
 function clearGame() {
+  turn = 0;
+  currentGame = 0;
   for (i = 0; i < 9; i++) {
     $("td")[i].innerHTML = ""
   }

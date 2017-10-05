@@ -637,7 +637,7 @@ describe('AJAX interactions with the Rails API', () => {
       gameButtons[0].click();
 
       expect(requests[1].method).to.equal('GET');
-      expect(requests[1].url).to.equal('/games/1');
+      expect(requests[1].url).to.equal('/games/1.json');
     });
 
     it("loads the saved game's state into the board", () => {
