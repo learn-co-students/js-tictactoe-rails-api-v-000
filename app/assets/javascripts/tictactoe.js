@@ -62,7 +62,6 @@ function attachListeners() {
 
   $('#save').click(function() {
     saveGame()
-    gameId = 0
   })
 }
 
