@@ -19,7 +19,9 @@ $(document).ready(function() {
 
 function attachListeners() {
   $("td").on('click', function(e) {
-    doTurn(this)
+    if (checkWinner() === false) {
+      doTurn(this)
+    }
   })
 
   $("#previous").on("click", function() {
@@ -61,6 +63,7 @@ function attachListeners() {
 
   $('#save').click(function() {
     saveGame()
+    gameType = "previous"
   })
 }
 
@@ -86,62 +89,68 @@ function setMessage(string) {
 
 function checkWinner() {
   var values = document.querySelectorAll('td')
-  state = Array.prototype.map.call(values, function (x) {return x.innerHTML;})
+  var state = Array.prototype.map.call(values, function (x) {return x.innerHTML;})
   var winning = false
   var winningCombination = []
   winningCombinations.forEach(function(combination) {
-    if (winning === false && (combination.every(function(y) {return state[y] === "X"}) || combination.every(function(y) {return state[y] === "O"}))) {
+    if (winning === false && (combination.every(function(y) {return state[y] === "X"}))) {
       winningCombination = combination
       winning = true
-      if(turn % 2 == 0) {
-        setMessage('Player X Won!')
-      } else {
-        setMessage('Player O Won!')
-      }
+      setMessage("Player X Won!")
+    }
+    else if (winning === false && combination.every(function(y) {return state[y] === "O"})) {
+      winningCombination = combination
+      winning = true
+      setMessage("Player O Won!")
     }
   });
   return winning
 }
 
 function doTurn(move) {
-    if (turn === 0 & checkWinner()===false) {
-      setMessage(" ")
-    }
-    if (turn === 8) {
-      updateState(move)
-      if (checkWinner() === false) {
-        setMessage("Tie game.")
-      }
+    updateState(move)
+    if (checkWinner()) {
+      saveGame()
+      turn = 0
+      clearBoard()
+    } else if (turn === 8) {
+      setMessage("Tie game.")
+      gameType = "new"
       saveGame()
       turn = 0
       clearBoard()
     } else {
-      updateState(move)
-      if (checkWinner()) {
-        saveGame()
-        turn = 0
-        clearBoard()
-      } else {
-        turn+=1
+      if (turn === 0) {
+        setMessage(" ")
       }
+      turn+=1
     }
 }
 
 function saveGame() {
   var values = document.querySelectorAll('td')
   state = Array.prototype.map.call(values, function (x) {return x.innerHTML;})
-  if (gameType === "new") {
+  if (!gameId) {
     var posting = $.post('/games', {"state": state});
+    posting.done(function(response) {
+      gameId = response.data.id
+    })
   } else {
-    var posting = $.ajax("/games/"+gameId, { type: 'PATCH', data: { "state": state }});
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${gameId}`,
+      dataType: 'json',
+      data: {"state": state}
+    });
   }
 }
 
 function clearBoard() {
-  turn = 0
-  moves = document.querySelectorAll("td")
-  moves.forEach(function(element) {
-    element.innerHTML = ""
-  });
-  gameType = "new"
+    turn = 0
+    moves = document.querySelectorAll("td")
+    moves.forEach(function(element) {
+      element.innerHTML = ""
+    });
+    gameType = "new"
+    gameId = 0
 }
