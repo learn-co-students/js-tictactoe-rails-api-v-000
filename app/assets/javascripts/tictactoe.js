@@ -12,7 +12,6 @@ var winningCombinations = [
 
 var gameId = 0
 
-
 $(document).ready(function() {
   attachListeners()
 })
@@ -91,17 +90,11 @@ function checkWinner() {
   var winning = false
   var winningCombination = []
   winningCombinations.forEach(function(combination) {
-    if (winning === false && (combination.every(function(y) {return state[y] === "X"}))) {
-      winningCombination = combination
+    if (winning === false && (combination.every(function(y) {return state[y] === "X"}) || combination.every(function(y) {return state[y] === "O"}))) {
+      setMessage(`Player ${state[combination[1]]} Won!`)
       winning = true
-      setMessage("Player X Won!")
     }
-    else if (winning === false && combination.every(function(y) {return state[y] === "O"})) {
-      winningCombination = combination
-      winning = true
-      setMessage("Player O Won!")
-    }
-  });
+  })
   return winning
 }
 
