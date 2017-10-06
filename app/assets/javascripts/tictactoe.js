@@ -110,13 +110,10 @@ function doTurn(move) {
     updateState(move)
     if (checkWinner()) {
       saveGame()
-      turn = 0
       clearBoard()
     } else if (turn === 8) {
       setMessage("Tie game.")
-      gameId = 0
       saveGame()
-      turn = 0
       clearBoard()
     } else {
       if (turn === 0) {
