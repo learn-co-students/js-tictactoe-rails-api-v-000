@@ -9,7 +9,7 @@ var winningCombinations = [
   [0,4,8],
   [2,4,6]
 ]
-var gameType = "new"
+
 var gameId = 0
 
 
@@ -51,7 +51,6 @@ function attachListeners() {
           }
           square += 1
         });
-        gameType = "previous"
         setMessage(" ")
       });
     });
@@ -63,7 +62,7 @@ function attachListeners() {
 
   $('#save').click(function() {
     saveGame()
-    gameType = "previous"
+    gameId = 0
   })
 }
 
@@ -115,7 +114,7 @@ function doTurn(move) {
       clearBoard()
     } else if (turn === 8) {
       setMessage("Tie game.")
-      gameType = "new"
+      gameId = 0
       saveGame()
       turn = 0
       clearBoard()
@@ -151,6 +150,5 @@ function clearBoard() {
     moves.forEach(function(element) {
       element.innerHTML = ""
     });
-    gameType = "new"
     gameId = 0
 }
