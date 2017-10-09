@@ -45,7 +45,7 @@ function updateState(event){
 };
 
 function checkWinner(token){
-  for (let i=0; i < win_combos.length; i++) {
+  for (var i=0; i < win_combos.length; i++) {
     pos_1 = win_combos[i][0];
     pos_2 = win_combos[i][1];
     pos_3 = win_combos[i][2];
