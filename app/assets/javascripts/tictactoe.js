@@ -12,7 +12,7 @@ var turn = 0;
 var gameID = null;
 
 function board(){
-  var tableData = window.document.querySelectorAll('td');
+  var tableData = $('td');
   var arr = [];
   for(var i= 0; i < tableData.length; i++){
     arr.push(tableData[i].innerHTML);
@@ -42,13 +42,9 @@ function checkWinner(){
   var currentBoard = board()
   for(i= 0; i < win_combinations.length; i++){
     var combo = win_combinations[i]
-    if(currentBoard[combo[0]] == "X" && currentBoard[combo[1]] == "X" && currentBoard[combo[2]] == "X"){
+    if(currentBoard[combo[0]] !== "" && currentBoard[combo[0]] === currentBoard[combo[1]] && currentBoard[combo[1]] === currentBoard[combo[2]]){
       setMessage(`Player ${currentBoard[combo[0]]} Won!`)
       return true
-    }
-    else if (currentBoard[combo[0]] == "O" && currentBoard[combo[1]] == "O" && currentBoard[combo[2]] == "O") {
-      setMessage(`Player ${currentBoard[combo[0]]} Won!`)
-      return true;
     }
   }
   return false
@@ -57,10 +53,12 @@ function checkWinner(){
 function doTurn(position){
   updateState(position)
   if(checkWinner()){
-  resetBoard()
+    saveGame()
+    resetBoard()
   }
-  else if(turn === 9){
+  else if(turn === 9){  
     setMessage("Tie game.")
+    saveGame()
     resetBoard()
   }
 }
@@ -80,58 +78,71 @@ function previousGames(){
 
       for(var i =0; i < games['data'].length; i++){
         var id = games['data'][i]['id'];
-         buttonsHTML += `<button data-id="${id}">` + id + "</button>"
+         buttonsHTML += `<button data-id="${id}">${id}</button>`
       };
 
       $('div#games').html(buttonsHTML);
-
-    }).then(function(){
-      GameButtonsListener()
+      gameButtonsListener();
     });
     
 }
 
-function GameButtonsListener(){
+function gameButtonsListener(){
    $('#games button').on('click', function(evt){
+     
     gameID = this.dataset['id'];
-    //pupolate the board
-  })
-}
+    
+    $.get('/games/' + gameID, function(game){
 
+      var state = game['data']['attributes']['state'];
 
-function jsonfyGame(board, id = null){
-  return JSON.stringify({
-    "data": {
-      "id": id,
-      "type": "games",
-      "atttributes": {
-        "state": board
+      if(state.length){
+        setMessage('');
+
+        // var tableData = $('td');
+        // for(var i=0; i< tableData.length; i++){
+        //   tableData[i].innerHTML = state[i];
+        // };
+        let index = 0;
+        for(let y = 0; y < 3; y++){
+          for(let x = 0; x < 3; x++){
+            document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+            index ++;
+          } 
+        };
+
+        turn = state.join('').length;
+
+        if(checkWinner() && turn === 9){
+          setMessage('Tie Game!');
+        }
       } 
-    }
+    }); 
+    
   });
 }
 
-function saveGame(state){
+function saveGame(){
   $.ajax({
     url: '/games',
-    data: jsonfyGame(board),
+    data: {"state": board()},
     method: 'POST',
     dataType: 'json'
   }).done(function(game){
      
     var id = game['data']['id']
-    $('#games').append(`<button data-id="${id}">` + id + "</button>")
+    $('#games').append(`<button data-id="${id}">${id}</button>`)
 
     gameID = parseInt(id);
 
-    GameButtonsListener();
+    gameButtonsListener();
   });
 }
 
-function updateGame(state, id) {
+function updateGame() {
   $.ajax({
-    url: '/games/' + id,
-    data: jsonfyGame(board, id),
+    url: '/games/' + gameID,
+    data: {"state": board()},
     method: 'PATCH',
     dataType: 'json'
   }).done(function(game){
@@ -161,5 +172,8 @@ function attachListeners(){
     
   $('#clear').on('click', function(){
     console.log('clear') //clear board and start a completely new game
+    resetBoard();
+    gameID = null 
+
   });
 }
