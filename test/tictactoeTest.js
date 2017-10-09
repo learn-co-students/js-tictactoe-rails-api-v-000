@@ -62,6 +62,7 @@ describe('tictactoe.js', () => {
       resetFixtures();
     });
 
+
     it('is defined', () => {
       expect(window.updateState).to.be.a('function');
     });
