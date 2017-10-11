@@ -1,15 +1,10 @@
 var turn = 0;
 var currentGame = 0;
 
-$(document).ready(function() {
-  attachListeners();
-});
+$(document).ready(() => attachListeners());
 
 function player() {
-  if (turn % 2 === 0)
-    return "X";
-  else
-    return "O";
+  (turn % 2 === 0) ? "X" : "O"
 }
 
 function updateState(square) {
@@ -63,9 +58,7 @@ function attachListeners() {
     $('#message').empty();
     currentGame = 0;
   });
-
   $('#save').click(() => saveGame());
-
   $('#previous').click(() => previousGame());
 }
 
@@ -102,13 +95,11 @@ function saveGame() {
 }
 
 function reloadGame(id) {
-
   document.getElementById('message').innerHTML = '';
   const xhr = new XMLHttpRequest;
   xhr.overrideMimeType('application/json');
   xhr.open('GET', `/games/${id}`, true);
   xhr.onload = () => {
-
     const data = JSON.parse(xhr.responseText).data;
     const state = data.attributes.state;
 
