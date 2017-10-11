@@ -4,7 +4,10 @@ var currentGame = 0;
 $(document).ready(() => attachListeners());
 
 function player() {
-  (turn % 2 === 0) ? "X" : "O"
+  if (turn % 2 === 0)
+    return "X";
+  else
+    return "O";
 }
 
 function updateState(square) {
@@ -58,7 +61,9 @@ function attachListeners() {
     $('#message').empty();
     currentGame = 0;
   });
+
   $('#save').click(() => saveGame());
+
   $('#previous').click(() => previousGame());
 }
 
