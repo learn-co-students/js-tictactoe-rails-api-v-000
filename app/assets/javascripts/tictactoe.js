@@ -1,4 +1,5 @@
 var turn = 0;
+var currentGame = 0;
 
 $(document).ready(function() {
   attachListeners();
@@ -39,40 +40,93 @@ function doTurn(square) {
   turn += 1;
   if (checkWinner()) {
     turn = 0;
-    $('td').empty(); // this is the board
+    saveGame();
+    $('td').empty();
   } else if (turn === 9) {
     setMessage("Tie game.");
     turn = 0;
+    saveGame();
     $('td').empty();
   }
 }
 
 function attachListeners() {
-  $('td').on('click', function() {
+  $('td').click(function() {
     if (!$.text(this) && !checkWinner()) {
       doTurn(this);
     }
-  })
+  });
 
   $('#clear').click(function() {
     turn = 0;
     $('td').empty();
+    $('#message').empty();
+    currentGame = 0;
   });
 
-  $('#save').click(saveGame());
-  $('#previous').click(previousGame());
+  $('#save').click(() => saveGame());
+
+  $('#previous').click(() => previousGame());
 }
 
 function previousGame() {
-  $.ajax({
-    method: 'GET',
-    url: '/games',
-  })
+  $('#games').empty();
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(buttonizePreviousGame);
+    }
+  });
+}
+
+function buttonizePreviousGame(game) {
+  $('#games').append(`<button id="${game.id}">${game.id}</button><br>`);
+  $(`#${game.id}`).click(() => reloadGame(game.id));
 }
 
 function saveGame() {
-  $.ajax({
-    method: 'POST',
-    url: '/games',
-  })
+  const squares = document.querySelectorAll('td');
+  var board = Array.from(squares).map(s => s.innerHTML);
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: { state: board }
+    });
+  } else {
+    $.post('/games', { state: board }, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id="${game.data.id}">${game.data.id}</button><br>`);
+      $(`#${game.data.id}`).click(() => reloadGame(game.data.id));
+    });
+  }
+}
+
+function reloadGame(id) {
+
+  document.getElementById('message').innerHTML = '';
+  const xhr = new XMLHttpRequest;
+  xhr.overrideMimeType('application/json');
+  xhr.open('GET', `/games/${id}`, true);
+  xhr.onload = () => {
+
+    const data = JSON.parse(xhr.responseText).data;
+    const state = data.attributes.state;
+
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+
+    turn = state.join('').length;
+    currentGame = data.id;
+
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
+    }
+  };
+
+  xhr.send(null);
 }
