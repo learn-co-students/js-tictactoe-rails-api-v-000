@@ -26,3 +26,19 @@ function checkWinner() {
 
   return winner;
 }
+
+function resetBoard(){
+  turn = 0;
+  $('td').empty();
+}
+
+function doTurn(square) {
+  updateState(square);
+  turn ++;
+  if (checkWinner()) {
+    resetBoard();
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+    resetBoard();
+  }
+}
