@@ -1,7 +1,7 @@
 $(document).ready(function(){
     attachListeners()
 })
-var id;
+var id, win;
 var turn = 0;
 var winCom = [
     [0,1,2],
@@ -35,14 +35,14 @@ var winCom = [
     // else{
     //     board[4+intX] = piece;
     // } 
-
-    if($(event).html() === ''){
-       turn++;
-      $(event).text(piece);
-    }
-    else{
-      "Spot taken"
-    }
+  
+    if($(event).html() === '' || !win){
+          turn++;
+          $(event).text(piece);
+        }
+        else{
+          "Spot taken"
+        }
    }
    
 function board(){
@@ -55,8 +55,10 @@ function board(){
 }
 
 function newBoard(){ 
-    var tableData = $('td'); var arr = []; 
-    for(var i = 0; i < tableData.length;i++){ tableData[i].innerHTML = ''} 
+    // turn = 0;
+    var tableData = $('td');
+    for(var i = 0; i < tableData.length;i++){ tableData[i].innerHTML = ''};
+    turn = 0; 
 }
 
    function checkWinner(){
@@ -65,8 +67,6 @@ function newBoard(){
      if (currentBoard[winCom[i][0]]!== ''){
         if(currentBoard[winCom[i][0]] == currentBoard[winCom[i][1]] && currentBoard[winCom[i][1]] == currentBoard[winCom[i][2]]){
             setMessage('Player ' + currentBoard[winCom[i][2]] + ' Won!');
-            saveGame()
-            resetGame();
             return true;
         }
       }
@@ -75,35 +75,48 @@ function newBoard(){
    } 
    function resetGame(){
       newBoard();
-      turn = 0;
    }
 
    function setMessage(message){
        $('div#message').html(message);
    }
-
+   
+   function gameExist(){
+     if(id == undefined){
+       saveGame();
+     }
+     else{
+      updateGame();
+     }
+   }
 
    function doTurn(event){
-     updateState(event);
-     if(turn === 9){
+     updateState(event)
+     win = checkWinner()
+     if (win){
        saveGame()
-       setMessage('Tie game.')
-        return  resetGame();
+      // gameExist();
+      resetGame()
      }
-     else if (checkWinner()){
-         saveGame()
-        // resetGame()
+     else if (turn === 9){ 
+      //  gameExist();
+        setMessage('Tie game.')
+        saveGame()
+       resetGame()
      }
-
+      // else{
+      //  updateState(event);
+      // }
    }
 
    function saveGame(){
      var savedGame = $.post('/games', {'state':board()})
-     savedGame.done(function(data){
-         debugger
+     savedGame.done(function(data){ 
         id = parseInt(data['data']['id']);
      })
    }
+
+
     function updateGame(){
       $.ajax({
         type: "PATCH",
@@ -114,29 +127,46 @@ function newBoard(){
    function previousGames(){
      $.get('/games').done(function(data){
        var buttons=""
-        for(var i = 1; i < data["data"].length;i++){
-          buttons+=`<button id=game${i}">${i}</button>`;
-          $("#game"+i).on('click', ()=>{getGame(i)})
-       }
-      $("div#games").html(buttons)
+      //  if($("div#games").val()== ''){
+        for(var i = 1; i < data["data"].length+1;i++){
+          buttons+=`<button id=${i} class='game'">${i}</button>`;
+          // $("#game"+i).on('click', ()=>{getGame(i)})
+        }
+         $("div#games").html(buttons)
+      //  }
+      //   else{
+      //     var id = data["data"].length-1
+      //     $("div#games").append(`<button data-id=game${id} class='game'">${id}</button>`)
+      //   }
+
+      
       }
      )
    }
 
    function getGame(gameId){
-         debugger
+     id = gameId
+     var num = 0;
       $.get('/games/'+gameId).done(function(data){
       var tableData = $('td');
        var arr = data['data']['attributes']['state']
        for(var i= 0; i < tableData.length; i++){
+         debugger
           tableData[i].innerHTML = arr[i];
+          if(arr[i] !== ''){
+             num++
+          }
         }
+         turn = num;
       })
+  
    }
 
    function loadGame(array){
     var tableData = $('td');
+  
       for(var i= 0; i < tableData.length; i++){
+      
           tableData[i].innerHTML = array[i];
         }
       }
@@ -150,15 +180,12 @@ function newBoard(){
   }
    function attachListeners(){
        $('td').on('click', function(event){
+         if(!win){
            doTurn(event.target)}
+          }
        )
        $('#save').on('click', function(){
-         if(id == undefined){
-            saveGame()
-          }
-          else{
-             updateGame()
-          }
+        gameExist()
        })
         $('#previous').on('click', function(){
            previousGames()  
@@ -168,4 +195,9 @@ function newBoard(){
            id = undefined
            loadGame(clearBoard)
        })
+       $("div#games").on('click', '.game', function(event){
+          var savedGame = event["currentTarget"]["attributes"][0]["nodeValue"];
+          getGame(savedGame)
+       })
+        
    } 
