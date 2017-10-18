@@ -1,7 +1,8 @@
 $(document).ready(function(){
     attachListeners()
 })
-var id, win;
+var id;
+var win = false;
 var turn = 0;
 var winCom = [
     [0,1,2],
@@ -35,7 +36,6 @@ var winCom = [
     // else{
     //     board[4+intX] = piece;
     // } 
-  
     if($(event).html() === '' || !win){
           turn++;
           $(event).text(piece);
@@ -180,9 +180,10 @@ function newBoard(){
   }
    function attachListeners(){
        $('td').on('click', function(event){
-         if(!win){
+         if(checkWinner() === false){
            doTurn(event.target)}
-          }
+       }
+         
        )
        $('#save').on('click', function(){
         gameExist()
