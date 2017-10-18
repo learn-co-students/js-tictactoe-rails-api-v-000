@@ -64,22 +64,22 @@ function attachListeners() {
 }
 
 function saveGame() {
-  var board = [];
-  var state;
+  var state = [];
+  var gameInfo;
 
-  $('td').text((index, square) => board.push(square));
-  state = {board: board};
+  $('td').text((index, square) => {state.push(square)});
+  gameInfo = {state: state};
 
   if (currentGameId) {
     $.ajax({
-      type: 'PATCH',
+      type: "PATCH",
       url: `/games/${currentGameId}`,
-      data: state
+      data: gameInfo
     });
   } else {
-    $.post('/games', state, function(response) {
-      currentGameId = response["data"]["id"];
-      $("#games").append(`<button id="game_id_${currentGameId}">Id: ${currentGameId}</button><br>`)
+    $.post('/games', gameInfo, function(response) {
+      currentGameId = response.data.id;
+      $("#games").append(`<button id="game_id_${currentGameId}">${currentGameId}</button><br>`)
       $("#game_id_" + currentGameId).on('click', () => reloadGame(currentGameId))
     });
   }
@@ -98,31 +98,30 @@ function showPreviousGames() {
 }
 
 function checkTurn(array) {
-  array.forEach((elem) => {
-    if (elem !== "") {
-      turn ++
-    }
-  });
-  return turn
+  turn = array.join("").length
+
+  if(!checkWinner() && turn === 9){
+    $('#message').text("Tie game.");
+  }
 }
 
 function reloadGame(gameId) {
-  // delete any type of message ight have been printed
   $('#message').text("");
-  $.get('/games/' + gameId, function(resp) {
+  const req = new XMLHttpRequest();
+  req.overrideMimeType('application/json'); // place it before .send()
+  req.open('GET', `/games/${gameId}`, true); //set true for asynchronous requests
+  req.onload = () => {
+    const data = JSON.parse(req.responseText).data;
+    const state = data.attributes.state;
     var index = 0;
-    var state = resp.data.attributes.state;
     for (let y = 0; y < 3; y++) {
       for (let x = 0; x < 3; x++) {
-        $("[data-x='" + x + "'] [data-y='" + y + "']").html(state[index]);
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
         index++;
       }
     }
-    currentGame = resp.data.id;
+    currentGameId = data.id;
     checkTurn(state)
-    if(!checkWinner() && turn === 9){
-      $('#message').text("Tie game.");
-    }
-  });
-
+  };
+  req.send(null);
 }
