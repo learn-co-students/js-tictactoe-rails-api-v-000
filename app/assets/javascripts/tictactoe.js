@@ -11,7 +11,7 @@ function player() {
 }
 
 function setMessage(msg){
-	$('div#message').html(msg);
+	$("div#message").html(msg);
 }
 
 var winCombos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
@@ -20,61 +20,127 @@ function checkWinner(){
   var won = false;
   var symbol = "";
   winCombos.some(function(winComboLoc){
-    var winCondition = ($(board[winComboLoc[0]]).html() === "X" && $(board[winComboLoc[1]]).html() === "X" && $(board[winComboLoc[2]]).html() === "X") || ($(board[winComboLoc[0]]).html() === "O" && $(board[winComboLoc[1]]).html() === "O" && $(board[winComboLoc[2]]).html() === "O")
+    var winSquare1 = $(board[winComboLoc[0]]).html();
+    var winSquare2 = $(board[winComboLoc[1]]).html();
+    var winSquare3 = $(board[winComboLoc[2]]).html();
+    var winCondition = (winSquare1 === "X" && winSquare2 === "X" && winSquare3 === "X") || (winSquare1 === "O" && winSquare2 === "O" && winSquare3 === "O")
     if (winCondition) {
       symbol = $(board[winComboLoc[0]]).html();
       return won = true;
     }
   });
 
-  //WORKS BUT WON"T PASS TEST WITHOUT CHECKING FOR THE OTHER PLAYER
-  // var symbol = player();
-  // winCombos.some(function(winComboLoc){
-  //   if ($(board[winComboLoc[0]]).html() === symbol &&
-  //     $(board[winComboLoc[1]]).html() === symbol &&
-  //     $(board[winComboLoc[2]]).html() === symbol ) {
-  //     return won = true;
-  //   }
-  // });
-  if (won) setMessage(`Player ${symbol} Won!`);
+  if (won) {setMessage(`Player ${symbol} Won!`)};
   return won;
 }
 
 function attachListeners() {
 	$("td").click(function(){
+    if (!checkWinner()) {
 			doTurn(this);
+    }
 	});
 
   $("#save").click(saveGame);
-  $("#previous").click(loadPreviousGame);
+  $("#previous").click(previousGame);
   $("#clear").click(resetBoard);
 }
 
 function doTurn(square){
   if ($(square).html() === "") {
     updateState(square);
-    if (++turn === 9) {
-      setMessage("Tie game.");
+    turn++;
+    if(checkWinner()) {
+      saveGame();
       resetBoard();
-    }else if (checkWinner()) resetBoard();
+    } else if (turn === 9) {
+      setMessage("Tie game.");
+      saveGame();
+      resetBoard();
+    }
   } else {
-    alert ('square taken');
+    // the spot has been played.
+    alert ("square taken");
   }
 }
 
 function resetBoard() {
-  $('td').empty();
+  $("td").empty();
   turn = 0;
+  currentGameId = 0;
 }
 
 
-$(attachListeners());
+$(attachListeners);
 var turn = 0;
 
 function saveGame() {
+  var game_state = $("td").map(function() { return this.innerHTML
+  }).get();
+  //check if Game is new
+  if (currentGameId === 0) {
+    var posting = $.post("/games", {state: game_state});
+    posting.done(function(game){
+      currentGameId = game.data.id;
+    })
+  } else {
+    $.ajax({
+      url: `/games/${currentGameId}`,
+      type: 'PATCH',
+      data: {state: game_state},
+
+      success : function(response, textStatus, jqXhr) {
+        console.log("Game Successfully Patched!");
+      },
+      error : function(jqXHR, textStatus, errorThrown) {
+          // log the error to the console
+          console.log("The following error occured: " + textStatus, errorThrown);
+      },
+      complete : function() {
+          console.log("Game Patch Ran");
+      }
+    });
+  }
+  // $.get("/games", function(hash) {
+  //   var games = hash["data"];
+  //   games.filter(function(game) {
+  //     if (game["id"] === currentGameId) {
+  //       $.patch("/games/" + currentGameId, {state: game_state} )
+  //     }
+  //   })
+  // });
+
+  // if currentGameId
 
 }
 
-function loadPreviousGame() {
+var currentGameId = 0;
+function previousGame() {
+  $.get("/games", function(games_hash) {
+    var games = games_hash["data"];
 
+    // clear html and refill div#games
+    $("div#games").html("");
+
+    games.forEach(function (game){
+      $("div#games").append(`<button id='${game["id"]}'>Game # ${game["id"]}</button><br>`);
+      $("#" + game["id"]).click(loadGame);
+    })
+
+  })
+}
+
+
+function a () {
+  alert("hello");
+}
+function loadGame (){
+  $.get("/games/" + this.id, function (game) {
+    var state = game.data.attributes.state;
+    currentGameId = game.data.id;
+    turn = state.filter(function(square){ return square !== "";}).length
+    state.forEach(function(value, index) {
+      $("td").get(index).innerHTML = value;
+    })
+  })
 }
