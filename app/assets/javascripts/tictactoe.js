@@ -1,3 +1,21 @@
+
+$(attachListeners);
+var winCombos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+var currentGameId = 0;
+var turn = 0;
+
+function attachListeners() {
+  //clicking on boards
+  $("td").click(function(){
+    if (!checkWinner()) { doTurn(this)};
+  });
+
+  $("#save").click(saveGame);
+  $("#previous").click(previousGame);
+  $("#clear").click(resetBoard);
+}
+
+
 function updateState(square){
 	$(square).text(player());
 }
@@ -14,7 +32,6 @@ function setMessage(msg){
 	$("div#message").html(msg);
 }
 
-var winCombos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 function checkWinner(){
   var board = $("td");
   var won = false;
@@ -32,18 +49,6 @@ function checkWinner(){
 
   if (won) {setMessage(`Player ${symbol} Won!`)};
   return won;
-}
-
-function attachListeners() {
-	$("td").click(function(){
-    if (!checkWinner()) {
-			doTurn(this);
-    }
-	});
-
-  $("#save").click(saveGame);
-  $("#previous").click(previousGame);
-  $("#clear").click(resetBoard);
 }
 
 function doTurn(square){
@@ -69,10 +74,6 @@ function resetBoard() {
   turn = 0;
   currentGameId = 0;
 }
-
-
-$(attachListeners);
-var turn = 0;
 
 function saveGame() {
   var game_state = $("td").map(function() { return this.innerHTML
@@ -101,20 +102,9 @@ function saveGame() {
       }
     });
   }
-  // $.get("/games", function(hash) {
-  //   var games = hash["data"];
-  //   games.filter(function(game) {
-  //     if (game["id"] === currentGameId) {
-  //       $.patch("/games/" + currentGameId, {state: game_state} )
-  //     }
-  //   })
-  // });
-
-  // if currentGameId
-
 }
 
-var currentGameId = 0;
+
 function previousGame() {
   $.get("/games", function(games_hash) {
     var games = games_hash["data"];
