@@ -120,10 +120,6 @@ function previousGame() {
   })
 }
 
-
-function a () {
-  alert("hello");
-}
 function loadGame (){
   $.get("/games/" + this.id, function (game) {
     var state = game.data.attributes.state;
