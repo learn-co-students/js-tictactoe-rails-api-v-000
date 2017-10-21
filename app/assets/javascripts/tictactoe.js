@@ -11,7 +11,7 @@ function attachListeners() {
   });
 
   $("#save").click(saveGame);
-  $("#previous").click(previousGame);
+  $("#previous").click(previousGames);
   $("#clear").click(resetBoard);
 }
 
@@ -105,7 +105,7 @@ function saveGame() {
 }
 
 
-function previousGame() {
+function previousGames() {
   $.get("/games", function(games_hash) {
     var games = games_hash["data"];
 
@@ -113,7 +113,7 @@ function previousGame() {
     $("div#games").html("");
 
     games.forEach(function (game){
-      $("div#games").append(`<button id='${game["id"]}'>Game # ${game["id"]}</button><br>`);
+      $("div#games").append(`<button id='${game["id"]}'>Game # ${game["id"]}</button>` + `Last Updated at: ${game["attributes"]["updated-at"]}<br>`);
       $("#" + game["id"]).click(loadGame);
     })
 
