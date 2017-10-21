@@ -124,7 +124,7 @@ function loadGame (){
   $.get("/games/" + this.id, function (game) {
     var state = game.data.attributes.state;
     currentGameId = game.data.id;
-    turn = state.filter(function(square){ return square !== "";}).length
+    turn = state.filter(function(square){ return square !== "";}).length;
     state.forEach(function(value, index) {
       $("td").get(index).innerHTML = value;
     })
