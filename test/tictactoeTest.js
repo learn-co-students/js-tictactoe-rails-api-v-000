@@ -177,6 +177,7 @@ describe('tictactoe.js', () => {
       const spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['O', '', '', 'X', 'O', 'X', 'X', '', 'O']);
+      window.turn = 1
       //  O |   |   
       // -----------
       //  X | O | X 
