@@ -30,14 +30,20 @@ function attachListeners(){
   $('body').on('click', 'button.saved-game', function(e){
     e.preventDefault()
     $.get(`/games/${this.dataset.id}`, function(response){
-      console.log(response) 
-      // load the response (saved-game) into the board
+      loadGame(response)
     })
   })
  
   $("button#clear").click(function(event) {
     console.log("clear it up")
   })
+}
+
+function loadGame(game){
+  for(let i = 0; i < 9; i++){
+    $('td')[i].innerHTML = game.data.attributes.state[i]
+  }
+  setMessage(`Game ${game.data.id} loaded.`)
 }
 
 function getBoardState(){
