@@ -1,6 +1,7 @@
 let turn = 1
 
 function player(){
+  turn = 0
   if (turn %2 !== 0){
     return 'O'
   } else {
