@@ -53,13 +53,17 @@ function checkWinner() {
 }
 
 function doTurn(move) {
-  updateState(move)
-  if (checkWinner()) {
-    boardReset()
-  } else if (turn === 8){
-    setMessage("Tie game.")
-  } else {
-    turn += 1
+  if (checkWinner() !== true) {
+    updateState(move)
+    move.removeEventListener('click', placeToken, false)
+    if (checkWinner() === true) {
+      boardReset()
+    } else if (turn === 8){
+      setMessage("Tie game.")
+      boardReset()
+    } else {
+      turn += 1
+    }
   }
 }
 
@@ -68,6 +72,20 @@ function boardReset() {
     xsquares[i].innerHTML = ''
   }
   turn *= 0
+  attachListeners()
   // xmessageDiv.innerHTML = ''
   // xgamesDiv.innerHTML = ''
+}
+
+var placeToken = () => { doTurn(event.target) }
+
+function attachListeners() {
+
+  for (let i=0; i < 9; i++) {
+    xsquares[i].addEventListener('click', placeToken, false)
+  }
+}
+
+window.onload = () => {
+  attachListeners()
 }

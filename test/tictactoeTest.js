@@ -213,7 +213,7 @@ describe('tictactoe.js', () => {
 
       window.doTurn(squares[8]);
 
-      expect(spy.calledOnce).to.be.true;
+      expect(spy.calledTwice).to.be.true;
     });
 
     it('invokes the updateState() function', () => {
@@ -302,7 +302,7 @@ describe('Gameplay', () => {
   });
 
   it('Users cannot place a token in a square that is already taken', () => {
-    squares[0].innerHTML = 'X';
+    squares[0].click();
     window.turn = 1;
 
     squares[0].click();
