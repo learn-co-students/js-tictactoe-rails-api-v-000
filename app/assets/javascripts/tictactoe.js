@@ -21,11 +21,19 @@ function attachListeners(){
     $.get('/games', function(response){
       let games = response.data
       for(let i = 0; i < games.length;i++){
-        $('div#games').append(`<p data-id=${games[i].id}>Game no: ${games[i].id}</p>`)
+        $('div#games').append(`<button class='saved-game' data-id=${games[i].id}>Game no: ${games[i].id}</button><br>`)
       }
     })
   })
 
+  $('body').on('click', 'button.saved-game', function(e){
+    e.preventDefault()
+    $.get(`/games/${this.dataset.id}`, function(response){
+      console.log(response) 
+      // load the response (saved-game) into the board
+    })
+  })
+ 
   $("button#clear").click(function(event) {
     console.log("clear it up")
   })
