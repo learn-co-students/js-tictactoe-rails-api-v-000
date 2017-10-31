@@ -1,7 +1,7 @@
-let turn = 0
+let turn = 1
 
 function player(){
-  if (turnCount() %2 === 0){
+  if (turn %2 === 0){
     return "X"
   } else {
     return "O"
@@ -14,16 +14,16 @@ function attachListeners(){
   })
 }
 
-function turnCount(){    
-  let state = getBoardState()
-  turn = 0
-  state.filter(function(item, index, array){
-    if (item != ""){
-      turn++
-    }
-  })  
-  return turn
-}  
+// function turnCount(){    
+//   let state = getBoardState()
+//   turn = 0
+//   state.filter(function(item, index, array){
+//     if (item != ""){
+//       turn++
+//     }
+//   })  
+//   return turn
+// }  
 
 function getBoardState(){
   let board = $('td')
@@ -36,7 +36,7 @@ function getBoardState(){
 
 function updateState(e){
   let token = player()
-  e.innerText =  token
+  e.html =  token
   setMessage(`<h4>Next player is: ${player()}</h4>`)
 }
 
@@ -55,8 +55,8 @@ function checkWinner(){
 
 function doTurn(e){
   updateState(e)
-  turnCount()
-  // checkWinner()
+  turn++
+  checkWinner()
   // setMessage() with the argument "Tie game." when the game is tied:    
   // doTurn() resets the board and the "turn" counter when a game is won:
 }
