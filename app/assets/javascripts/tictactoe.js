@@ -20,7 +20,8 @@ function attachListeners(){
   $("button#previous").click(function(e) {
     $.get('/games', function(response){
       let games = response.data
-      for(let i = 0; i < games.length;i++){
+      $('div#games').html('')
+      for(let i = 0; i < games.length;i++){          
         $('div#games').append(`<button class='saved-game' data-id=${games[i].id}>Game no: ${games[i].id}</button><br>`)
       }
     })
