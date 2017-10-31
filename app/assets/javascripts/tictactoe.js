@@ -1,10 +1,10 @@
 let turn = 1
 
 function player(){
-  if (turn %2 === 0){
-    return "X"
+  if (turn %2 !== 0){
+    return 'O'
   } else {
-    return "O"
+    return 'X'
   } 
 }
 
@@ -36,8 +36,9 @@ function getBoardState(){
 
 function updateState(e){
   let token = player()
-  e.html =  token
-  setMessage(`<h4>Next player is: ${player()}</h4>`)
+  if (e.innerText === ""){
+    e.innerText = token
+  } 
 }
 
 function setMessage(msg){
