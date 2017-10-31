@@ -1,11 +1,11 @@
-let turn = 1
+let turn = 0
 
 function player(){
-  turn = 0
-  if (turn %2 !== 0){
-    return 'O'
-  } else {
+  if (turn %2 === 0){
     return 'X'
+  } else 
+  if(turn %2 !== 0){
+    return 'O'
   } 
 }
 
@@ -13,18 +13,23 @@ function attachListeners(){
   $("td").click(function(event) {
     doTurn(event.target)
   })
-}
+  $("button#save").click(function(event) {
+    console.log("save me baby")
+  })
 
-// function turnCount(){    
-//   let state = getBoardState()
-//   turn = 0
-//   state.filter(function(item, index, array){
-//     if (item != ""){
-//       turn++
-//     }
-//   })  
-//   return turn
-// }  
+  $("button#previous").click(function(e) {
+    $.get('/games', function(response){
+      let games = response.data
+      for(let i = 0; i < games.length;i++){
+        $('div#games').append(`<p data-id=${games[i].id}>Game no: ${games[i].id}</p>`)
+      }
+    })
+  })
+
+  $("button#clear").click(function(event) {
+    console.log("clear it up")
+  })
+}
 
 function getBoardState(){
   let board = $('td')
@@ -37,9 +42,7 @@ function getBoardState(){
 
 function updateState(e){
   let token = player()
-  if (e.innerText === ""){
-    e.innerText = token
-  } 
+  e.innerHTML = token 
 }
 
 function setMessage(msg){
