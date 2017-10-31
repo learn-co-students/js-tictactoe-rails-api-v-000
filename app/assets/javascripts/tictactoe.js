@@ -89,3 +89,20 @@ function attachListeners() {
 window.onload = () => {
   attachListeners()
 }
+
+$("#previous").click(function() {
+  $.get('/games', function(data) {
+    let gameData = data["data"]
+    if (gameData.length > 0) {
+      gameData.forEach(function(game) {
+        let element = $("<button/>", {
+          text: "Game " + game["id"],
+          id: 'btn_' + game["id"],
+          click: function () {alert('hi')}
+        })
+      $("#games").append(element)
+
+      }, this);
+    }
+  })
+})
