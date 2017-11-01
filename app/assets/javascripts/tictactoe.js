@@ -8,15 +8,16 @@ function player(){
     return 'O'
   } 
 }
-
+/////////////// begin attachedListeners ////////////////////////////// 
 function attachListeners(){
   $("td").click(function(event) {
     doTurn(event.target)
   })
-  $("button#save").click(function(event) {
-    console.log("save me baby")
-  })
 
+  $("button#save").click(function(e) {
+    saveGame(e.target)
+   })
+  
   $("button#previous").click(function(e) {
     $.get('/games', function(response){
       let games = response.data
@@ -26,19 +27,29 @@ function attachListeners(){
       }
     })
   })
-
+  
   $('body').on('click', 'button.saved-game', function(e){
     e.preventDefault()
     $.get(`/games/${this.dataset.id}`, function(response){
       loadGame(response)
     })
   })
- 
+   
   $("button#clear").click(function(event) {
-    console.log("clear it up")
+    $('td').html('')
   })
 }
+///////// end attachListeners  /////////////////////////////////
 
+function saveGame(){
+  let state = $('td').serialize()
+  let game = $.post('/games', state);
+  game.done(function(data){
+    console.log(data)
+    setMessage(`Game saved.`)
+  })
+}
+ 
 function loadGame(game){
   for(let i = 0; i < 9; i++){
     $('td')[i].innerHTML = game.data.attributes.state[i]
