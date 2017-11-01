@@ -2,9 +2,11 @@ let turn = 0
 
 function player(){
   if (turn %2 === 0){
+    setMessage("O's turn")
     return 'X'
   } else 
   if(turn %2 !== 0){
+    setMessage("X's turn")
     return 'O'
   } 
 }
@@ -13,11 +15,20 @@ function attachListeners(){
   $("td").click(function(event) {
     doTurn(event.target)
   })
+  
+//new
+  $("button#new").click(function(e){
+    $('td').html('')
+    $('#games').html('')
+    setMessage("New game, X make your move!")
+  })
 
+//save 
   $("button#save").click(function(e){
     saveGame(e.target)
-   })
-  
+  })
+
+//previous
   $("button#previous").click(function(e) {
     $.get('/games', function(response){
       let games = response.data
@@ -28,41 +39,61 @@ function attachListeners(){
       $('div#message').html("Previous games loaded.") 
     })
   })
-  
-  $('body').on('click', 'button.saved-game', function(e){
-    e.preventDefault()
-    $.get(`/games/${this.dataset.id}`, function(response){
-      loadGame(response)
-    })
-  })
-   
+
+//clear
   $("button#clear").click(function(event) {
     $('td').html('')
     turn = 0
     $('div#message').html('Game cleared.') 
   })
+
+//reset
+  $("button#reset").click(function(e){
+    $.get('/reset', function(response){
+      $('div#game').html('')
+      setMessage('Database reset')
+      console.log(response)
+    })
+  })
+
+//load saved game
+  $('body').on('click', 'button.saved-game', function(e){
+    e.preventDefault()
+    $.get(`/games/${this.dataset.id}`, function(response){
+      loadGame(response)
+      $('div#game').html(`${response.data.id}`)
+    })
+  })
+   
 }
 ///////// end attachListeners  /////////////////////////////////
 
 function saveGame(){
   let state = cerealizer($('td'))
-  
-  if(newGame(state) === false ){
-    setMessgae("Sorry, this game is already saved.")
-    return
-  } else {
+  let gameId = $('div#game')[0].innerHTML
+  // if(checkForGame(state) === false ){
     $.ajax({
-      type: "POST",
+      type: "patch",
       url: "/games",
-      data: {state: state},
+      data: {id: `${gameId}`, state: state},
       success: (function (data){
-        setMessage(`Game ${data.data.id} saved.`)
+        setMessage(`Game ${data.data.id} PATCHED.`)
       })
     })
-  }
+  // return
+  // } else {
+  //   $.ajax({
+  //     type: "POST",
+  //     url: "/games",
+  //     data: {state: state},
+  //     success: (function (data){
+  //       setMessage(`Game ${data.data.id} SAVED.`)
+  //     })
+  //   })
+  // }
 }
 
-function newGame(state){
+function checkForGame(state){
   let checkState = state
   $.get('/games', function(data){
     let arr = data.data

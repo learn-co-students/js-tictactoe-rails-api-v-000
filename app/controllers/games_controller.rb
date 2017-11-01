@@ -21,11 +21,17 @@ class GamesController < ApplicationController
     @game.update(game_params)
     render json: @game
   end
-
+  
+  def reset
+    %x[rake db:dcms]
+    @games = Game.all 
+    render json: @games
+  end
+  
   private
-
+  
   def game_params
-    params.permit(state: [])
+    params.permit(:id, state: [])
   end
 
   def set_game
