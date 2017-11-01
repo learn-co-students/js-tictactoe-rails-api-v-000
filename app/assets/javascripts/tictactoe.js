@@ -1,9 +1,6 @@
 let turn = 0
-let setTurnDiv = ()=>{$('div#turn').html(`${turn}`)}
 let currentGame = 0
-let setCurrentGame = ()=>{$('div#current-game').html(`${currentGame}`)}
 
- 
 //attachListeners
 $(function(){
   attachListeners()
@@ -18,17 +15,15 @@ function attachListeners(){
     //set board on load
     $('body').on('load', function(){
       turn = 0
-      setTurnDiv()
       currentGame = 0
-      setCurrentGame()
+
     })
 
     //new game
     $("button#new").click(function(e){
       turn = 0
-      setTurnDiv()
       currentGame = 0
-      setCurrentGame()
+
       $('td').html('')
       $('#games').html('')
       setMessage("Make your move!")
@@ -59,11 +54,10 @@ function attachListeners(){
     $("button#clear").click(function(event) {
       $('td').html('')
       turn = 0
-      setTurnDiv()
       $('div#message').html('Start a new game.') 
       $('div#game').html('')
       currentGame = 0
-      setCurrentGame()
+
     })
 
     //button reset DB
@@ -72,7 +66,7 @@ function attachListeners(){
         $('div#game').html('')
         setMessage('Database reset')
         currentGame = 0
-        setCurrentGame()
+  
         console.log(response)
       })
     })
@@ -144,7 +138,6 @@ function loadGame(gameId){
       $('td')[i].innerHTML = response.data.attributes.state[i]
     }
     currentGame = gameId
-    setCurrentGame()
     setMessage(`Game ${response.data.id} loaded.`)
   })
 }
@@ -153,16 +146,34 @@ function loadGame(gameId){
 function setMessage(msg){
   $('div#message').html(msg)  
 }
-//doTurn
+//checkWinner
+function checkWinner(){ 
+  let board = {};
+  let winner = false;
+  const combos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
+  [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
+  
+  $('td').text((index, square) => board[index] = square)
+  combos.some(function(combo) {
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+      setMessage(`Player ${board[combo[0]]} Won!`)
+      return winner = true
+    }
+  })
+  return winner
+}
 
+//doTurn
 function doTurn(e){
-  checkWinner()
-  if (e.innerText === ""){
-    updateState(e)
-    turn += 1
-    setTurnDiv()
-  } else {
-    setMessage("Please choose an empty square!")
+  updateState(e)
+  turn++
+  if (checkWinner()){
+    saveGame()
+    resetBoard()
+  } else if (turn === 9){
+    setMessage("Tie game.")
+    saveGame()
+    resetBoard()
   }
 }
 
@@ -174,23 +185,7 @@ function updateState(e){
 
 //resetBoard
 function resetBoard(){
-  $('td').html('')
+  $('td').empty()
   currentBoard = 0
-}
-
-//checkWinner
-function checkWinner(){ 
-  var board = {};
-  var winner = false;
-  const combos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
-  [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
-
-  $('td').text((index, square) => board[index] = square)
-  combos.some(function(combo) {
-    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
-      setMessage(`Player ${board[combo[0]]} Won!`)
-      return winner = true
-    }
-  })
-  return winner
+  turn = 0
 }
