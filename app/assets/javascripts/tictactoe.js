@@ -88,11 +88,9 @@ function attachListeners(){
 function player(){
   if (turn === 0 || turn % 2 === 0){
     $('div#turn').html(turn)
-    $('div#next-player').html('O')
     return 'X'
   } else {
     $('div#turn').html(turn)
-    $('div#next-player').html('X')
     return 'O'
   }
 }
@@ -106,31 +104,51 @@ function cerealizer(obj){
   return arr
 }
 
-//saveGame
-function saveGame(){
-  let state = cerealizer($('td'))
-  if(currentGame !== 0 ){
+// //saveGame
+// function saveGame(){
+//   let state = cerealizer($('td'))
+//   if(currentGame !== 0 ){
+//     $.ajax({
+//       type: "PATCH",
+//       url: "/games",
+//       data: {id: `${currentGame}`, state: state}
+//     })
+//   } else {
+//   $.ajax({
+//     type: "POST",
+//     url: "/games",
+//     data: {state: state}
+    
+//     })
+//   }
+// }
+  
+function saveGame() {
+  var state = [];
+  var gameData;
+
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+
+  gameData = { state: state };
+
+  if (currentGame) {
     $.ajax({
-      type: "PATCH",
-      url: "/games",
-      data: {id: `${currentGame}`, state: state},
-      success: (function (data){
-        setMessage(`Game ${currentGame} PATCHED.`)
-      })
-    })
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
   } else {
-  $.ajax({
-    type: "POST",
-    url: "/games",
-    data: {state: state},
-    success: (function (data){
-      setMessage(`Game ${data.data.id} SAVED.`)
-      console.log(`Game ${data.data.id} saved.`)
-      })
-    })
+    $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
   }
 }
-  
+
+
 //loadGame
 function loadGame(gameId){
   $.get(`/games/${gameId}`, function(response){
