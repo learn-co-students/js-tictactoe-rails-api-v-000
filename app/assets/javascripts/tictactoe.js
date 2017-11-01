@@ -95,13 +95,19 @@ $("#previous").click(function() {
     let gameData = data["data"]
     if (gameData.length > 0) {
       gameData.forEach(function(game) {
-        let element = $("<button/>", {
-          text: "Game " + game["id"],
-          id: 'btn_' + game["id"],
-          click: function () {alert('hi')}
-        })
-      $("#games").append(element)
-
+        //search #games div for already existing game ids, return ids in an array for testing
+        let existingIds = $("#games *").map( function (index, element) {
+          return this["id"].replace("btn_", "")
+        }).get()
+        //this code creates a new button if the game.id is not in the existingIds array
+        if (!existingIds.includes(game.id)){ 
+          let element = $("<button/>", {
+            text: "Game " + game.id,
+            id: 'btn_' + game.id,
+            click: function () {alert('do something else here!')}
+          })
+          $("#games").append(element)
+        }    
       }, this);
     }
   })
