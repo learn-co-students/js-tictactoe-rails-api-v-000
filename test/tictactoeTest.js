@@ -95,9 +95,8 @@ describe('tictactoe.js', () => {
 
     it('sets a provided string as the innerHTML of the div#message element', () => {
       const string = "Player X Won!";
-
+      
       window.setMessage(string);
-
       expect(messageDiv.innerHTML).to.contain(string);
     });
   });
