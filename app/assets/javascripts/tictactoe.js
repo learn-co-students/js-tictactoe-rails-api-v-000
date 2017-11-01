@@ -14,7 +14,7 @@ function attachListeners(){
     doTurn(event.target)
   })
 
-  $("button#save").click(function(e) {
+  $("button#save").click(function(e){
     saveGame(e.target)
    })
   
@@ -25,6 +25,7 @@ function attachListeners(){
       for(let i = 0; i < games.length;i++){          
         $('div#games').append(`<button class='saved-game' data-id=${games[i].id}>Game no: ${games[i].id}</button><br>`)
       }
+      $('div#message').html("Previous games loaded.") 
     })
   })
   
@@ -37,19 +38,54 @@ function attachListeners(){
    
   $("button#clear").click(function(event) {
     $('td').html('')
+    turn = 0
+    $('div#message').html('Game cleared.') 
   })
 }
 ///////// end attachListeners  /////////////////////////////////
 
 function saveGame(){
-  let state = $('td').serialize()
-  let game = $.post('/games', state);
-  game.done(function(data){
-    console.log(data)
-    setMessage(`Game saved.`)
+  let state = cerealizer($('td'))
+  
+  if(newGame(state) === false ){
+    setMessgae("Sorry, this game is already saved.")
+    return
+  } else {
+    $.ajax({
+      type: "POST",
+      url: "/games",
+      data: {state: state},
+      success: (function (data){
+        setMessage(`Game ${data.data.id} saved.`)
+      })
+    })
+  }
+}
+
+function newGame(state){
+  let checkState = state
+  $.get('/games', function(data){
+    let arr = data.data
+    for(let i=0; i<arr.length; i++){
+      let a = checkState 
+      let b = arr[i].attributes.state
+      match(a,b)
+    }
   })
 }
- 
+
+function match(a,b){
+  return a === b
+}
+
+function cerealizer(obj){
+  let arr = []
+  for(i=0;i<obj.length;i++){
+    arr.push(obj[i].innerHTML)
+  }
+  return arr
+}
+
 function loadGame(game){
   for(let i = 0; i < 9; i++){
     $('td')[i].innerHTML = game.data.attributes.state[i]
@@ -68,7 +104,11 @@ function getBoardState(){
 
 function updateState(e){
   let token = player()
-  e.innerHTML = token 
+  if(e.innerHTML === ""){
+    e.innerHTML = token
+  }else{
+    return
+  }
 }
 
 function setMessage(msg){
