@@ -6,7 +6,7 @@ class GamesController < ApplicationController
     render json: games
   end
 
-  def show
+  def show    
     render json: @game
   end
 
@@ -19,7 +19,7 @@ class GamesController < ApplicationController
 
   def update
     @game.update(game_params)
-    render json: @game
+    render json: @game 
   end
   
   def reset
