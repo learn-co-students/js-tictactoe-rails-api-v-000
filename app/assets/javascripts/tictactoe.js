@@ -9,7 +9,9 @@ $(function(){
 //////// begin attachedListeners ///////////
 function attachListeners(){
   $("td").click(function(event) {
-    doTurn(event.target)
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
   })
 
     //set board on load
