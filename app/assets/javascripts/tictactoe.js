@@ -14,6 +14,20 @@ function attachListeners() {
 					doTurn(this)
 		}
 	})
+
+
+
+	$("#previous").on("click", function(event) {
+		alert("previous")
+	})
+
+	$("#save").on("click", function(event) {
+		alert("save")
+	})
+
+	$("#clear").on("click", function(event) {
+		alert("clear")
+	})
 }
 
 function updateState(position) {
@@ -50,7 +64,6 @@ function checkWinner() {
 	for(var i = 0; i < winningCombos.length; i++) {
 		if (board[winningCombos[i][0]] != "" && board[winningCombos[i][0]] === board[winningCombos[i][1]] && board[winningCombos[i][1]] == board[winningCombos[i][2]]) {
 			setMessage("Player " + board[winningCombos[i][0]] + " Won!")
-			// turn = 0
 			return true
 		}
 	}
@@ -66,7 +79,6 @@ function checkTie() {
 }
 
 function resetBoard() {
-	// turn = 0
 	boardData = $('td')
 	boardData.each(function(position) {
 		boardData[position].innerHTML = ""
@@ -74,13 +86,11 @@ function resetBoard() {
 }
 
 function doTurn(position) {
-	updateState(position)
+	updateState(position)	
 		turn ++
 	if (checkWinner() || checkTie()) {
-		debugger
 		resetBoard()
 		turn = 0
-	} else {
 	}
 }
 
