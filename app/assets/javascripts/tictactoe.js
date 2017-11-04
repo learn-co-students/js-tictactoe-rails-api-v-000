@@ -61,7 +61,8 @@ function player() {
 
 function loadGame() {
 	$(".gameButton").on("click", function(event) {
-		var id = this.innnerHTML
+		var gameId = this.innnerHTML
+		currentGame = this.innerHTML
 		$.get("/games/" + this.innerHTML, function(callback) {
 			var gameState = callback["data"]["attributes"].state
 			var gameBoard = $('td')
