@@ -6,13 +6,25 @@ $(function () {
 })
 
 function attachListeners() {
-	// $("td").on("click", function (event) {
-	// 	if(this.innerHTML === "" && checkWinner() === false && checkTie() === false) {
-	// 				doTurn(this)
-	// 	}
-	// })
 	takeTurn()
+	showGames()
+	saveOrUpdateGame()
 
+	$("#clear").on("click", function(event) {
+		resetBoard()
+	})
+}
+
+
+function takeTurn() {
+	$("td").on("click", function (event) {
+		if(this.innerHTML === "" && checkWinner() === false && checkTie() === false) {
+					doTurn(this)
+		}
+	})
+}
+
+function showGames() {
 	$("#previous").on("click", function(event) {
 		$.get("/games", function(callback) {
 			if (callback["data"].length > 0) {
@@ -25,17 +37,15 @@ function attachListeners() {
 			}	
 		})
 	})
+}
 
+function saveOrUpdateGame() {
 	$("#save").on("click", function(event) {
 		if(currentGame === 0) {
 			save()
 		} else {
 			updateGame()
 		}
-		resetBoard()
-	})
-
-	$("#clear").on("click", function(event) {
 		resetBoard()
 	})
 }
@@ -56,17 +66,20 @@ function updateGame() {
 	})
 }
 
+function doTurn(position) {
+	updateState(position)	
+		turn ++
+	if (checkWinner() || checkTie()) {
+		save()
+		resetBoard()
+	}
+}
+
 function player() {
 	return (turn % 2 === 0 ? "X" : "O")
 }
 
-function takeTurn() {
-	$("td").on("click", function (event) {
-		if(this.innerHTML === "" && checkWinner() === false && checkTie() === false) {
-					doTurn(this)
-		}
-	})
-}
+
 
 function loadGame() {
 	$(".gameButton").on("click", function(event) {
@@ -148,12 +161,5 @@ function resetBoard() {
 	currentGame = 0
 }
 
-function doTurn(position) {
-	updateState(position)	
-		turn ++
-	if (checkWinner() || checkTie()) {
-		save()
-		resetBoard()
-	}
-}
+
 
