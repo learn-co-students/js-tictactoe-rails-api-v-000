@@ -6,11 +6,12 @@ $(function () {
 })
 
 function attachListeners() {
-	$("td").on("click", function (event) {
-		if(this.innerHTML === "" && checkWinner() === false && checkTie() === false) {
-					doTurn(this)
-		}
-	})
+	// $("td").on("click", function (event) {
+	// 	if(this.innerHTML === "" && checkWinner() === false && checkTie() === false) {
+	// 				doTurn(this)
+	// 	}
+	// })
+	takeTurn()
 
 	$("#previous").on("click", function(event) {
 		$.get("/games", function(callback) {
@@ -57,6 +58,14 @@ function updateGame() {
 
 function player() {
 	return (turn % 2 === 0 ? "X" : "O")
+}
+
+function takeTurn() {
+	$("td").on("click", function (event) {
+		if(this.innerHTML === "" && checkWinner() === false && checkTie() === false) {
+					doTurn(this)
+		}
+	})
 }
 
 function loadGame() {
