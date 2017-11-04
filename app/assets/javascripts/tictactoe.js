@@ -69,10 +69,10 @@ function boardReset() {
   for (let i = 0; i < 9; i++) {
     $('td')[i].innerHTML = ''
   }
-  turn *= 0 
+  turn = 0 
   currentGame = 0
   attachListeners()
-  // xmessageDiv.innerHTML = ''
+  $("#message").empty()
   // xgamesDiv.innerHTML = ''
 }
 
@@ -89,15 +89,36 @@ function createButton(game) {
   let element = $("<button/>", {
     text: "Game " + game.id,
     id: 'btn_' + game.id,
-    click: getSavedGame(game.id)
+    click: function(){
+      getSavedGame(game.id)
+    }
   })
   $("#games").append(element)
 }
 
 function getSavedGame(gameId) {
   $.get('/games/' + gameId, function (game){
-    debugger
+    boardReset()
+    let state = game.data.attributes.state
+    populateBoard(state)
+    setTurn(state)
+    currentGame = game.data.id
   })
+}
+
+function populateBoard(arr) {
+  for (let i = 0; i < 9; i++) {
+    $('td')[i].innerHTML = arr[i]
+  }
+}
+
+function setTurn(arr) {
+  turn = arr.reduce((p, c) => {
+    if(c === "X" || c === "O")
+      p++
+    return p
+  })
+
 }
 
 function getPrevious() {
@@ -123,6 +144,8 @@ function saveGame() {
 
   $('td').text((index, square) => state.push(square))
 
+  populateBoard(state)
+
   let gameData = { state: state }
 
   if (currentGame) {
@@ -135,7 +158,7 @@ function saveGame() {
 
     $.post('/games', gameData, function (game) {
       currentGame = game.data.id
-      createButton(game)
+      // createButton(game)
 
     })
   }
