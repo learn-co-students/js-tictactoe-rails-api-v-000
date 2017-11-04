@@ -5,7 +5,7 @@ var currentGame = 0
 
 
 
-const WIN_COMBINATIONS = [
+var WIN_COMBINATIONS = [
   [0, 1, 2],
   [3, 4, 5],
   [6, 7, 8],
@@ -25,7 +25,7 @@ function player () {
 }
 
 function updateState (square) {
-  let token = player()
+  var token = player()
   $(square).text(token)
 }
 
@@ -34,8 +34,8 @@ function setMessage(message) {
 }
 
 function checkWinner() {
-  let winner = WIN_COMBINATIONS.some(function(combo){
-    let checkCombo = combo.map(function(i){
+  var winner = WIN_COMBINATIONS.some(function(combo){
+    var checkCombo = combo.map(function(i){
       return $('td')[i].textContent
     })
     return (checkCombo[0] === checkCombo[1] &&
@@ -66,27 +66,32 @@ function doTurn(move) {
 }
 
 function boardReset() {
-  for (let i = 0; i < 9; i++) {
+  for (var i = 0; i < 9; i++) {
     $('td')[i].innerHTML = ''
   }
   turn = 0 
   currentGame = 0
   attachListeners()
-  $("#message").empty()
+  // $("#message").empty()
   // xgamesDiv.innerHTML = ''
 }
 
 var placeToken = () => { doTurn(event.target) }
 
+// function placeToken() {
+//   doTurn(event.target)
+// }
+
 function attachListeners() {
 
-  for (let i=0; i < 9; i++) {
+  for (var i=0; i < 9; i++) {
     $('td')[i].addEventListener('click', placeToken, false)
   }
+  // $('td').on("click", placeToken)
 }
 
 function createButton(game) {
-  let element = $("<button/>", {
+  var element = $("<button/>", {
     text: "Game " + game.id,
     id: 'btn_' + game.id,
     click: function(){
@@ -99,7 +104,7 @@ function createButton(game) {
 function getSavedGame(gameId) {
   $.get('/games/' + gameId, function (game){
     boardReset()
-    let state = game.data.attributes.state
+    var state = game.data.attributes.state
     populateBoard(state)
     setTurn(state)
     currentGame = game.data.id
@@ -107,7 +112,7 @@ function getSavedGame(gameId) {
 }
 
 function populateBoard(arr) {
-  for (let i = 0; i < 9; i++) {
+  for (var i = 0; i < 9; i++) {
     $('td')[i].innerHTML = arr[i]
   }
 }
@@ -123,11 +128,11 @@ function setTurn(arr) {
 
 function getPrevious() {
   $.get('/games', function (data) {
-    let gameData = data["data"]
+    var gameData = data["data"]
     if (gameData.length > 0) {
       gameData.forEach(function (game) {
         //search #games div for already existing game ids, return ids in an array for testing
-        let existingIds = $("#games *").map(function (index, element) {
+        var existingIds = $("#games *").map(function (index, element) {
           return this["id"].replace("btn_", "")
         }).get()
         //this code creates a new button if the game.id is not in the existingIds array
@@ -140,13 +145,13 @@ function getPrevious() {
 }
 
 function saveGame() {
-  let state = []
+  var state = []
 
   $('td').text((index, square) => state.push(square))
 
   populateBoard(state)
 
-  let gameData = { state: state }
+  var gameData = { state: state }
 
   if (currentGame) {
     $.ajax({
