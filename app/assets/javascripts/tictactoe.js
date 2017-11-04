@@ -1,13 +1,9 @@
 // Code your JavaScript / jQuery solution here
 
 var turn = 0
+var currentGame = 0
 
-const xsquares = window.document.querySelectorAll('td')
-const xmessageDiv = window.document.getElementById('message')
-const xgamesDiv = window.document.getElementById('games')
-const xsaveButton = window.document.getElementById('save')
-const xpreviousButton = window.document.getElementById('previous')
-const xclearButton = window.document.getElementById('clear')
+
 
 const WIN_COMBINATIONS = [
   [0, 1, 2],
@@ -34,13 +30,13 @@ function updateState (square) {
 }
 
 function setMessage(message) {
-  xmessageDiv.innerText = message
+  $("#message").text(message)
 }
 
 function checkWinner() {
   let winner = WIN_COMBINATIONS.some(function(combo){
     let checkCombo = combo.map(function(i){
-      return xsquares[i].textContent
+      return $('td')[i].textContent
     })
     return (checkCombo[0] === checkCombo[1] &&
             checkCombo[0] === checkCombo[2] &&
@@ -57,9 +53,11 @@ function doTurn(move) {
     updateState(move)
     move.removeEventListener('click', placeToken, false)
     if (checkWinner() === true) {
+      saveGame()
       boardReset()
     } else if (turn === 8){
       setMessage("Tie game.")
+      saveGame()
       boardReset()
     } else {
       turn += 1
@@ -69,9 +67,10 @@ function doTurn(move) {
 
 function boardReset() {
   for (let i = 0; i < 9; i++) {
-    xsquares[i].innerHTML = ''
+    $('td')[i].innerHTML = ''
   }
-  turn *= 0
+  turn *= 0 
+  currentGame = 0
   attachListeners()
   // xmessageDiv.innerHTML = ''
   // xgamesDiv.innerHTML = ''
@@ -82,33 +81,72 @@ var placeToken = () => { doTurn(event.target) }
 function attachListeners() {
 
   for (let i=0; i < 9; i++) {
-    xsquares[i].addEventListener('click', placeToken, false)
+    $('td')[i].addEventListener('click', placeToken, false)
   }
 }
 
-window.onload = () => {
-  attachListeners()
+function createButton(game) {
+  let element = $("<button/>", {
+    text: "Game " + game.id,
+    id: 'btn_' + game.id,
+    click: getSavedGame(game.id)
+  })
+  $("#games").append(element)
 }
 
-$("#previous").click(function() {
-  $.get('/games', function(data) {
+function getSavedGame(gameId) {
+  $.get('/games/' + gameId, function (game){
+    debugger
+  })
+}
+
+function getPrevious() {
+  $.get('/games', function (data) {
     let gameData = data["data"]
     if (gameData.length > 0) {
-      gameData.forEach(function(game) {
+      gameData.forEach(function (game) {
         //search #games div for already existing game ids, return ids in an array for testing
-        let existingIds = $("#games *").map( function (index, element) {
+        let existingIds = $("#games *").map(function (index, element) {
           return this["id"].replace("btn_", "")
         }).get()
         //this code creates a new button if the game.id is not in the existingIds array
-        if (!existingIds.includes(game.id)){ 
-          let element = $("<button/>", {
-            text: "Game " + game.id,
-            id: 'btn_' + game.id,
-            click: function () {alert('do something else here!')}
-          })
-          $("#games").append(element)
-        }    
+        if (!existingIds.includes(game.id)) {
+          createButton(game)
+        }
       }, this);
     }
   })
+}
+
+function saveGame() {
+  let state = []
+
+  $('td').text((index, square) => state.push(square))
+
+  let gameData = { state: state }
+
+  if (currentGame) {
+    $.ajax({
+      type: "patch",
+      url: `/games/${currentGame}`,
+      data: gameData
+    })
+  } else {
+
+    $.post('/games', gameData, function (game) {
+      currentGame = game.data.id
+      createButton(game)
+
+    })
+  }
+}
+
+$(document).ready(function() {
+  attachListeners()
+
+  $("#previous").click(getPrevious)
+
+  $("#save").click(saveGame)
+
+  $("#clear").click(boardReset)
 })
