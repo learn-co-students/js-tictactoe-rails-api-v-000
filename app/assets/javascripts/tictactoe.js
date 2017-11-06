@@ -82,7 +82,8 @@ function saveGame() {
   } else {
     $.post('/games', gameData, function(game) {
       currentGame = game.data.id;
-      $('#games').append(`<button id="gameid-${currentGame}">Game ${currentGame}</button><br>`);
+      $('#games').append(`<button id="gameid-${currentGame}">Game ${currentGame}</button> Last updated: ${game.data.attributes.updated_at}<br>`);
+      debugger;
       $("#gameid-" + currentGame).on('click', function() {
         loadGame(currentGame);
       });
@@ -119,7 +120,7 @@ function displayPreviousGames() {
   $.get('/games', function(savedGames) {
     if (savedGames.data.length) {
       savedGames.data.forEach(function(game) {
-        $('#games').append(`<button id="gameid-${game.id}">Game ${game.id}</button><br>`);
+        $('#games').append(`<button id="gameid-${game.id}">Game ${game.id}</button> Last updated: ${game.attributes.updated_at}<br>`);
         $(`#gameid-${game.id}`).on('click', function() {
           loadGame(game.id);
         });

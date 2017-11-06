@@ -3,16 +3,16 @@ class GamesController < ApplicationController
 
   def index
     games = Game.all
-    render json: games
+    render json: games, each_serializer: GameSerializer, key_transform: :unaltered
   end
 
   def show
-    render json: @game
+    render json: @game, each_serializer: GameSerializer, key_transform: :unaltered
   end
 
   def create
     game = Game.create(game_params)
-    render json: game, status: 201
+    render json: game, status: 201, each_serializer: GameSerializer, key_transform: :unaltered
   end
 
   def update
