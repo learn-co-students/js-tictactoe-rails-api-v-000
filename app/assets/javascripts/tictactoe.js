@@ -118,15 +118,6 @@ function displayPreviousGames() {
   $('#games').empty();
   $.get('/games', function(savedGames) {
     if (savedGames.data.length) {
-      savedGames.data.forEach(buttonizePreviousGame);
-    }
-  });
-}
-
-function displayPreviousGames() {
-  $('#games').empty();
-  $.get('/games', function(savedGames) {
-    if (savedGames.data.length) {
       savedGames.data.forEach(function(game) {
         $('#games').append(`<button id="gameid-${game.id}">Game ${game.id}</button><br>`);
         $(`#gameid-${game.id}`).on('click', function() {
