@@ -45,7 +45,6 @@ const WIN_COMBINATIONS = [
     };
 
     var checkWinner = function() {
-        // we have WIN_COMBINATIONS that lead to our winning row, they are nested arrays
         for (var i = 0; i < WIN_COMBINATIONS.length; i++) {
             var combo = WIN_COMBINATIONS[i] // nested array [0,1,2], board()[combo[0]] it'll be board()[0]
             if(board()[combo[0]] == board()[combo[1]] &&
@@ -68,13 +67,14 @@ const WIN_COMBINATIONS = [
       $('#message').text(string);
     }
 
-        function doTurn(square) {
+    function doTurn(square) {
       updateState(square);
       turn++;
       if (checkWinner()) {
         saveGame();
         resetGame();
-      } else if (turn === 9) {
+      }
+      else if (turn === 9) {
         setMessage("Tie game.");
         saveGame();
         resetGame();
@@ -104,8 +104,8 @@ const WIN_COMBINATIONS = [
         $.post('/games', { state: state }).done((data) => {
              currentGame = data["data"]["id"];
         });
+      }
     }
-}
 
 
     function loadGame(event) {
@@ -122,22 +122,22 @@ const WIN_COMBINATIONS = [
             }
         });
     });
-}
+  }
 
-function showPreviousGames() {
-$.get('/games', (data) => {
-    var games = data["data"];
-    if (games.length > 0) {
-        var gamesHtml = "";
+  function showPreviousGames() {
+  $.get('/games', (data) => {
+      var games = data["data"];
+      if (games.length > 0) {
+          var gamesHtml = "";
 
-        $(games).each((i, game) => {
-            gamesHtml += '<button data-id="' + game["id"] + '" class="game-button">' + game.id + '</button><br>';
-        });
+          $(games).each((i, game) => {
+              gamesHtml += '<button data-id="' + game["id"] + '" class="game-button">' + game.id + '</button><br>';
+          });
 
-        $('#games').html(gamesHtml);
-        $('.game-button').on('click', (event) => {
-            loadGame(event);
-        });
-    }
-  });
-}
+          $('#games').html(gamesHtml);
+          $('.game-button').on('click', (event) => {
+              loadGame(event);
+          });
+      }
+    });
+  }
