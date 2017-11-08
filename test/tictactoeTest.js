@@ -211,8 +211,7 @@ describe('tictactoe.js', () => {
       const spy = sandbox.spy(window, 'checkWinner');
 
       window.doTurn(squares[8]);
-
-      expect(spy.calledOnce).to.be.true;
+      expect(spy.called).to.be.true;
     });
 
     it('invokes the updateState() function', () => {
@@ -320,9 +319,9 @@ describe('Gameplay', () => {
     //  O | O |   
 
     squares[4].click();
-
+    
     expect(squares[4].innerHTML).to.equal('');
-    expect(window.turn).to.equal(5);
+    expect(window.turn).to.equal(0);
   });
 
   it('Users can play multiple games', () => {
@@ -532,7 +531,6 @@ describe('AJAX interactions with the Rails API', () => {
         clearButton.click();
 
         const board = Array.from(squares).map(s => s.innerHTML);
-
         expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);
         expect(window.turn).to.equal(0);
       });
@@ -660,7 +658,7 @@ describe('AJAX interactions with the Rails API', () => {
       );
 
       const board = Array.from(squares).map(s => s.innerHTML);
-
+      
       expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', 'O', '']);
       expect(window.turn).to.equal(2);
     });
