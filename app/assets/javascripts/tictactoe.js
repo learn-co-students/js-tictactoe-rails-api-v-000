@@ -1,34 +1,6 @@
 var turn = 0;
 var currentGame = 0;
 
-$(document).ready(function() {
-  attachListeners();
-});
-
-function attachListeners() {
-  $('td').on('click', function () {
-    if(!$.text(this) && !checkWinner()) {
-      doTurn(this);
-    }
-  });
-  $('#save').on('click', () => saveGame());
-  $('#previous').on('click', () => previousGame());
-  $('#clear').on('click', () => clearBoard());
-}
-
-function doTurn(space) {
-  updateState(space);
-  turn++;
-  if(checkWinner()) {
-    saveGame();
-    clearBoard();
-  } else if (turn === 9) {
-    setMessage("Tie game.");
-    saveGame();
-    clearBoard();
-  }
-}
-
 function player() {
   if(turn % 2 == 0) {
     return "X";
@@ -61,6 +33,19 @@ function checkWinner() {
   });
 
   return winner;
+}
+
+function doTurn(space) {
+  updateState(space);
+  turn++;
+  if(checkWinner()) {
+    saveGame();
+    clearBoard();
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+    saveGame();
+    clearBoard();
+  }
 }
 
 function saveGame() {
@@ -136,4 +121,19 @@ function reloadGame(gameID) {
   };
 
   xhr.send(null);
+}
+
+$(document).ready(function() {
+  attachListeners();
+});
+
+function attachListeners() {
+  $('td').on('click', function () {
+    if(!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  });
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => previousGame());
+  $('#clear').on('click', () => clearBoard());
 }
