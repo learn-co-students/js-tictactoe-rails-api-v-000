@@ -39,10 +39,15 @@ function checkWinner() {
   }).get()
   // detect the first winner
  winCombos.find((win) => {
-    if (board[win[0]] === board[win[1]] && board[win[1]] === board[win[2]] && board[win[0]] !== "" && board[win[0]] !== undefined)
-  //winner message
-      return winner = true
+   debugger
+    if (board[win[0]] === board[win[1]] && board[win[1]] === board[win[2]] && board[win[0]] !== "" && board[win[0]] !== undefined) {
+      //winner message
       setMessage(`Player ${board[win[0]]} Won!`)
+      return winner = true
+
+    } else {
+      return winner = false
+    }
   })
   return winner
 }
@@ -56,11 +61,11 @@ function doTurn(square) {
   turn++
   if (checkWinner()) {
     saveGame()
-    clearBoard() // can it reset?
+    clearGame()
   } else if (turn === 9) {
       setMessage("Tie Game.")
       saveGame()
-      clearBoard() // can it reset?
+      clearGame()
   }
 }
 
@@ -94,8 +99,6 @@ function saveGame() {
   //get state data and put in variable here ""
   data = {state: boardState}
 
-  currentGame =
-
   if (currentGame) {
     $.ajax({
       type: "PATCH",
@@ -107,10 +110,13 @@ function saveGame() {
     $.ajax({
       type: "POST",
       url: '/games',
-      data: data
-      success: function() {}
+      data: data,
+      success: function(game) {
+        currentGame = game.data.id
+        $('#games').append(`<button id='gameid-${game.data.id}'>${game.data.id}</button>`)
+        $(`#gameid-${game.data.id}`).on('click', () => reloadGame(game.data.id))
+      }
     })
-
   }
 }
 
@@ -119,14 +125,21 @@ function saveGame() {
 //All buttons should be added to the div#games element []
 
 function showPreviousGames() {
+  previousGamesButton = function(game){
+    $('#games').append(`<button id='gameid-${game.id}'>${game.id}</button>`)
+    $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id))
+  }
   $('#games').empty();
-
    //hijack the route
-   $.get("/games", function(games) {
-
-    //get game info
-    //maybe create a separate button function?
-  })
+   $.ajax({
+     type: 'get',
+     url: '/games',
+     success: function(games) {
+       if (games['data'].length > 0) {
+         games['data'].forEach(previousGamesButton())
+       }
+     }
+   })
 }
 
 
