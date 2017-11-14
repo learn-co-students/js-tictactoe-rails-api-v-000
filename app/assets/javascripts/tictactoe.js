@@ -39,7 +39,6 @@ function checkWinner() {
   }).get()
   // detect the first winner
  winCombos.find((win) => {
-   debugger
     if (board[win[0]] === board[win[1]] && board[win[1]] === board[win[2]] && board[win[0]] !== "" && board[win[0]] !== undefined) {
       //winner message
       setMessage(`Player ${board[win[0]]} Won!`)
@@ -63,7 +62,7 @@ function doTurn(square) {
     saveGame()
     clearGame()
   } else if (turn === 9) {
-      setMessage("Tie Game.")
+      setMessage("Tie game.")
       saveGame()
       clearGame()
   }
@@ -95,7 +94,6 @@ function saveGame() {
  let boardState = $('td').map(function(){
      return $(this).text()
   }).get()
-
   //get state data and put in variable here ""
   data = {state: boardState}
 
@@ -125,31 +123,43 @@ function saveGame() {
 //All buttons should be added to the div#games element []
 
 function showPreviousGames() {
-  previousGamesButton = function(game){
-    $('#games').append(`<button id='gameid-${game.id}'>${game.id}</button>`)
-    $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id))
-  }
-  $('#games').empty();
-   //hijack the route
-   $.ajax({
-     type: 'get',
-     url: '/games',
-     success: function(games) {
-       if (games['data'].length > 0) {
-         games['data'].forEach(previousGamesButton())
-       }
-     }
-   })
+  //clear current game
+  $('#games').empty()
+  //hijack the route
+  $.get('/games', function(games){
+    if (games['data'].length > 0) {
+      games['data'].forEach(previousGamesButton)
+    }
+  })
 }
 
+//Separate button out from showPreviousGames function
+function previousGamesButton(game) {
+  $('#games').append(`<button id='gameid-${game.id}'>${game.id}</button>`)
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id))
+}
+
+function reloadGame(gameId){
+  $.get(`/games/${gameId}`, function(game){
+    currentGame = game.data.id
+    const state = game.data.attributes.state
+    turn  = state.filter((e) => e!=='').length
+    let index = 0
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++){
+
+        $(`td[data-x='${x}'][data-y='${y}']`).html(state[index])
+        index++
+      }
+    }
+  })
+}
 
 //Clears the board and starts a new game
-
 function clearGame() {
   //set turn to 0 and currentGame
   turn = 0;
   currentGame = undefined;
-
 // set board to ''
   $('td').empty();
 }
