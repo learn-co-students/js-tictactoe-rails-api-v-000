@@ -45,7 +45,6 @@ function checkWinner() {
 function doTurn(square) {
   updateState(square)
   turn++
-  checkWinner()
   if (checkWinner()) {
     saveGame()
     resetBoard()
@@ -56,12 +55,86 @@ function doTurn(square) {
   }
 }
 
-function saveGame() {
 
+function attachListeners() {
+  $('td').on('click', function() {  
+    if (!checkWinner() && !$.text(this)) {
+      doTurn(this)
+    };
+  })
+
+  $('#clear').on('click', function() {
+    resetBoard()
+  })
+
+  $('#save').on('click', function() {
+    saveGame()
+  })
+
+  $('#previous').on('click', function() {
+    previousGames()
+  })
+}
+
+function saveGame(){
+  let curr_board = []
+  for(let i = 0; i < 9; i++){
+    let square = $("td")[i].innerHTML
+    curr_board.push(square)
+  }
+  
+  if (gameId === 0) {
+      $.post("/games", { state: curr_board }, function(game) {
+        gameId = game.data.id
+        $('#games').append(`<button id="game-id-${gameId}" data-id="${gameId}>Game ${gameId}</button><br>`);
+        $(`#game-id-${gameId}`).on('click', loadGame);
+      })
+    } else {
+      $.ajax({
+        url: `/games/${gameId}`,
+        type: 'PATCH',
+        data: curr_board
+      })
+    }
 }
 
 function resetBoard() {
-  $('td').empty();
-  turn = 0;
-  currentGame = 0;
+  $('td').empty()
+  turn = 0
+  gameId = 0
 }
+
+function previousGames() {
+  $('#games').empty()
+  $.get('/games', function(games) {
+    games.data.forEach(function(game) {
+      $('#games').append(`<button id="game-id-${game.id}" data-id="${game.id}">Game ${game.id}</button><br>`)
+      $(`#game-id-${game.id}`).on('click', loadGame)
+    })
+  })
+}
+
+function loadGame(event) {
+  var id = event.target.dataset.id
+  $.get(`/games/${id}`, function(game) {
+    var gameState = game.data.attributes.state
+    let index = 0
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = gameState[index];
+        index++;
+      }
+    }
+    //turn counter && gameId
+    turn = 0;
+    for(let i = 0; i < gameState.length; i++){
+      if(gameState[i] === "O" || gameState[i] === "X")
+          turn++
+    }
+    gameId = id
+  })
+}
+
+$(document).ready(function(){
+  attachListeners()
+})
