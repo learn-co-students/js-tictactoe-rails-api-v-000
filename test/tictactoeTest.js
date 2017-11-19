@@ -169,7 +169,6 @@ describe('tictactoe.js', () => {
       //  O | O |
 
       window.checkWinner();
-
       expect(spy.firstCall.args[0]).to.equal('Player X Won!');
     });
 
@@ -318,11 +317,10 @@ describe('Gameplay', () => {
     //    |   |
     // -----------
     //  O | O |
-
     squares[4].click();
 
     expect(squares[4].innerHTML).to.equal('');
-    expect(window.turn).to.equal(5);
+    expect(window.turn).to.equal(0);
   });
 
   it('Users can play multiple games', () => {
@@ -341,7 +339,6 @@ describe('Gameplay', () => {
     window.doTurn(squares[4]);
 
     const board = Array.from(squares).map(s => s.innerHTML);
-
     expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', '', '']);
   });
 });
