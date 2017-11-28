@@ -48,9 +48,8 @@ function doTurn(square){
         setMessage(`Tie game.`);
     } else if(win){
         turn = 0;
-        $("td").toArray().forEach(square => {
-            $(square).text("")
-        });
+        $('td').empty();
+        
     }
 }
 
