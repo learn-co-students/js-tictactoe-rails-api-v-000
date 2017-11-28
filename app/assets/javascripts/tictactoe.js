@@ -81,6 +81,7 @@ function saveBoard(){
     // $.get("/games")
 }
 function showGamesIndex(){
+    $('#games').empty();
     $.get("/games", function(response){
         if (response.data.length > 0){
             response.data.forEach(game => {
