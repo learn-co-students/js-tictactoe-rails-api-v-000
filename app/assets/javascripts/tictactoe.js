@@ -71,7 +71,6 @@ function attachListeners() {
       }
     });
   
- 
     $('#previous').on('click', () => {
         showGamesIndex()});
     $('#clear').on('click', () => {
@@ -104,11 +103,25 @@ function saveBoard(){
     }
 }
 function reloadGame(gameID) {
- $.get("/games/" + gameID, function(response){
-    stateArray = response.data.attributes.state;
-    $("td").empty();
-    debugger;
- });    
+    setMessage("");
+    $.get("/games/" + gameID, function(response){
+        stateArray = response.data.attributes.state;
+        id = response.data.id;
+        let index = 0;
+        for (let y = 0; y < 3; y++) {
+            for (let x = 0; x < 3; x++) {
+                document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = stateArray[index];
+                index++;
+            }
+        }
+
+        turn = stateArray.join('').length;
+        currentGame = id;
+
+        if (!checkWinner() && turn === 9) {
+            setMessage('Tie game.');
+        }
+    });    
 }
 
 function showGamesIndex(){
