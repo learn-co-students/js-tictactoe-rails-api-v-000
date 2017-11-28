@@ -78,15 +78,14 @@ function attachListeners() {
   }
 
 function saveBoard(){
-    // $.get("/games")
+    $.get("/games")
 }
 function showGamesIndex(){
-    $('#games').empty();
+    $('div#games').empty();
     $.get("/games", function(response){
-        if (response.data.length > 0){
+        if (response.data.length){
             response.data.forEach(game => {
-                $('div#games').append(`<div> <BUTTON>${game.id}</BUTTON> </div>`)
-                debugger;
+                $('div#games').append(`<BUTTON id="gameid-${game.id}">${game.id}</BUTTON><br>`);
             });
             
 
