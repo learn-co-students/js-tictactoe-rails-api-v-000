@@ -99,14 +99,14 @@ function saveBoard(){
       $.post('/games', { state: stateArray }, function(game) {
         currentGame = game.data.id;
         $('div#games').append(`<BUTTON id="gameid-${game.data.id}">${game.data.id}</BUTTON><br>`);
-        $("BUTTON#gameid-" + game.data.id).on('click', (game) => {
-            reloadGame(game.data.id)
-        });
+        $("BUTTON#gameid-" + game.data.id).on('click', () => {reloadGame(game.data.id)});
       });
     }
 }
 function reloadGame(gameID) {
  $.get("/games/" + gameID, function(response){
+    stateArray = response.data.attributes.state;
+    $("td").empty();
     debugger;
  });    
 }
@@ -117,9 +117,8 @@ function showGamesIndex(){
         if (response.data.length){
             response.data.forEach(game => {
                 $('div#games').append(`<BUTTON id="gameid-${game.id}">${game.id}</BUTTON><br>`);
+                $("BUTTON#gameid-" + game.id).on('click', () => {reloadGame(game.id)});
             });
-      //????      
-
         }
     })
 }
