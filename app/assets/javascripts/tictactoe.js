@@ -40,15 +40,21 @@ function boardNotFull(){
     });
 
 }
-function doTurn(square){
-    turn++;
-    var win = checkWinner();
+function doTurn(square) {
     updateState(square);
-    if (!win && !boardNotFull()){
-        setMessage(`Tie game.`);
-    } else if(win){
-        turn = 0;
-        $('td').empty();
+    turn++;
+    if (checkWinner()) {
+      //saveGame();
+      resetBoard();
+    } else if (turn === 9) {
+      setMessage("Tie game.");
+      //saveGame();
+      resetBoard();
+    }
+  }
+function resetBoard(){
+    turn = 0;
+    $('td').empty();
         
     }
 }
