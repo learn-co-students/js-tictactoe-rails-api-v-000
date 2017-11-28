@@ -46,11 +46,12 @@ function doTurn(square) {
     updateState(square);
     turn++;
     if (checkWinner()) {
-      //saveGame();
+      saveBoard();
       resetBoard();
+
     } else if (turn === 9) {
       setMessage("Tie game.");
-      //saveGame();
+      saveBoard();
       resetBoard();
     }
   }
@@ -60,7 +61,35 @@ function resetBoard(){
     //currentGame = 0;
 }
 function attachListeners() {
-    
-    
+    $('td').on('click', function() {
+      if (!$(this).text() && !checkWinner()) {
+        doTurn(this);
+      }
+    });
+  
+ 
+    $('#previous').on('click', () => {
+        showGamesIndex()});
+    $('#clear').on('click', () => {
+        resetBoard()});
+    $('#save').on('click', () => {
+        saveBoard();
+    });
+  }
+
+function saveBoard(){
+    // $.get("/games")
+}
+function showGamesIndex(){
+    $.get("/games", function(response){
+        if (response.data.length > 0){
+            response.data.forEach(game => {
+                $('div#games').append(`<div> <BUTTON>${game.id}</BUTTON> </div>`)
+                debugger;
+            });
+            
+
+        }
+    })
 }
 
