@@ -1,10 +1,6 @@
-window.onload = () => {
-    
-
-}
-
 var turn = 0;
 var square;
+
 
 
 function player() {          
@@ -56,5 +52,18 @@ function doTurn(square) {
 }
 
 function attachListeners() {
-    
+   const element = document.querySelectorAll("td")
+   for (let i of element) {
+    i.addEventListener("click", function() {
+        if (i.innerHTML === "" && checkWinner() === false)  { 
+            doTurn(this);
+        }
+       
+    });
+   }  
 }
+
+
+$(function() {
+    attachListeners();
+});
