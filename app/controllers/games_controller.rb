@@ -23,7 +23,7 @@ class GamesController < ApplicationController
   private
 
   def game_params
-    params.permit(state: [])
+    params.permit(:updated_at, state: [])
   end
 
   def set_game
