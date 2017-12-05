@@ -66,4 +66,23 @@ function attachListeners() {
 
 $(function() {
     attachListeners();
-});
+    
+    document.getElementById("save").addEventListener("click", function() {
+        alert("save button clicked")
+        })
+    
+    
+    document.getElementById("previous").addEventListener("click", function() {
+        $.get("/games", function(response) {
+            if (response.data.length !== 0) {
+                let game = response.data.map((game) => game)
+                let jsonGame = JSON.stringify(game)
+                console.log(jsonGame)
+                //document.getElementById("games").appendChild
+            }
+
+            
+        })
+    })
+    
+})
