@@ -63,6 +63,15 @@ function attachListeners() {
    }  
 }
 
+function createGameButton(game) {
+    let id = game.id
+    let gameButton = document.getElementById(id);
+    console.log(gameButton)
+    if (gameButton == null) {
+        $("#games").append(`<button id="${game.id}">${game.id}</button>`);
+    }       
+}
+
 
 $(function() {
     attachListeners();
@@ -75,10 +84,11 @@ $(function() {
     document.getElementById("previous").addEventListener("click", function() {
         $.get("/games", function(response) {
             if (response.data.length !== 0) {
-                let game = response.data.map((game) => game)
-                let jsonGame = JSON.stringify(game)
-                console.log(jsonGame)
-                //document.getElementById("games").appendChild
+                const games = response.data
+                for (let game of games) {
+                    createGameButton(game)
+                }
+            
             }
 
             
