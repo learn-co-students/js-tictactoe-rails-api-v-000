@@ -1,5 +1,6 @@
 var turn = 0;
 var square;
+var gameID = 0;
 
 
 
@@ -27,25 +28,29 @@ function checkWinner() {
     });
     if(winningCombination) {
         const token = board[winningCombination[0]].innerHTML
-        setMessage(`Player ${token} Won!`)
+        setMessage(`Player ${token} Won!`);
     }
     return winningCombination ? true : false 
 }
 
 function resetBoard() {
     document.querySelectorAll('td').forEach((square) => {
-        square.innerHTML = "";
+        square.innerHTML = '';
     });
+    turn = 0;
+    gameID = 0;
 }
 
 function doTurn(square) {
     updateState(square);
     turn++;
     if (checkWinner()) {
+        saveGame();
         resetBoard();
         turn = 0;
     } else if (turn === 9) {
         setMessage("Tie game.");
+        saveGame();
         resetBoard();
         turn = 0;
     }
@@ -66,19 +71,60 @@ function attachListeners() {
 function createGameButton(game) {
     let id = game.id
     let gameButton = document.getElementById(id);
-    console.log(gameButton)
     if (gameButton == null) {
-        $("#games").append(`<button id="${game.id}">${game.id}</button>`);
+        $("#games").append(`<BUTTON id="${game.id}" game-data="${game.id}" onclick="loadGame(this)">${game.id}</BUTTON>` + " Updated:" + `${new Date(game.attributes['updated-at'])}<br>`);
     }       
 }
+
+function loadGame(button) {
+    $.get("/games/" + button.id, function(response) {
+        const gameBoard = response.data.attributes.state
+        populateBoard(gameBoard);
+        turn = gameBoard.join('').length;
+        gameID = button.id;
+    } ) 
+}
+
+function populateBoard(gameState) {
+    var boardArray = [].slice.call(document.querySelectorAll("td"))
+    let loadedBoard = boardArray.map((square, i) => {
+        square.innerHTML = gameState[i] })
+}
+
+function getBoard() {
+    let gameArray = [];
+    const board = document.querySelectorAll('td')
+    for (const square of board) {
+        gameArray.push(square.innerHTML)
+    }
+   return gameArray;
+}
+
+function saveGame() {
+    let board = getBoard();
+    if (gameID === 0) {
+        $.post("/games", { state: board}, function(response) {
+            gameID = response.data.id;
+        })
+    } else {
+        $.ajax({
+            type: 'PATCH',
+            url: `/games/${gameID}`, 
+            data: { state: board}
+        });
+    }   
+}
+
+
+
 
 
 $(function() {
     attachListeners();
     
     document.getElementById("save").addEventListener("click", function() {
-        alert("save button clicked")
-        })
+          saveGame();
+    })
     
     
     document.getElementById("previous").addEventListener("click", function() {
@@ -89,10 +135,14 @@ $(function() {
                     createGameButton(game)
                 }
             
-            }
-
-            
+            } 
         })
+    })
+
+    document.getElementById("clear").addEventListener("click", function() {
+        resetBoard();
     })
     
 })
+
+

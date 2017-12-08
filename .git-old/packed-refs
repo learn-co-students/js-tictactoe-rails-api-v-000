@@ -1,0 +1,4 @@
+# pack-refs with: peeled fully-peeled 
+583d934bc6b5eb8f9a8a649e9f0c9fab10a08fcf refs/remotes/origin/lj-class
+25571c0f628df732201ca63007e8451d5ebf66dc refs/remotes/origin/master
+b0af0b790ef517b84647be2c68ee395922a83389 refs/remotes/origin/solution
