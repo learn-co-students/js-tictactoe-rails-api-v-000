@@ -72,6 +72,7 @@ function createGameButton(game) {
     let id = game.id
     let gameButton = document.getElementById(id);
     if (gameButton == null) {
+<<<<<<< HEAD
         $("#games").append(`<BUTTON id="${game.id}" game-data="${game.id}" onclick="loadGame(this)">${game.id}</BUTTON>` + " Updated:" + `${new Date(game.attributes['updated-at'])}<br>`);
     }       
 }
@@ -91,6 +92,12 @@ function populateBoard(gameState) {
         square.innerHTML = gameState[i] })
 }
 
+=======
+        $("#games").append(`<BUTTON id="${game.id}" game-data="${game.id}">${game.id}</BUTTON><br>`);
+    }       
+}
+
+>>>>>>> fd26cd3fdba34d387f2a20dd67ba9ec0ca102118
 function getBoard() {
     let gameArray = [];
     const board = document.querySelectorAll('td')
@@ -115,7 +122,15 @@ function saveGame() {
     }   
 }
 
+<<<<<<< HEAD
 
+=======
+function loadGame(gameID) {
+    $.get("/games/" + gameID, function(response) {
+        let gameArray = response.data.attributes.state
+    } ) 
+}
+>>>>>>> fd26cd3fdba34d387f2a20dd67ba9ec0ca102118
 
 
 
