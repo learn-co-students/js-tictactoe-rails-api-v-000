@@ -1,5 +1,6 @@
 var turn = 0;
 var square;
+var gameID = 0;
 
 
 
@@ -27,25 +28,29 @@ function checkWinner() {
     });
     if(winningCombination) {
         const token = board[winningCombination[0]].innerHTML
-        setMessage(`Player ${token} Won!`)
+        setMessage(`Player ${token} Won!`);
     }
     return winningCombination ? true : false 
 }
 
 function resetBoard() {
     document.querySelectorAll('td').forEach((square) => {
-        square.innerHTML = "";
+        square.innerHTML = '';
     });
+    turn = 0;
+    gameID = 0;
 }
 
 function doTurn(square) {
     updateState(square);
     turn++;
     if (checkWinner()) {
+        saveGame();
         resetBoard();
         turn = 0;
     } else if (turn === 9) {
         setMessage("Tie game.");
+        saveGame();
         resetBoard();
         turn = 0;
     }
@@ -66,19 +71,49 @@ function attachListeners() {
 function createGameButton(game) {
     let id = game.id
     let gameButton = document.getElementById(id);
-    console.log(gameButton)
     if (gameButton == null) {
-        $("#games").append(`<button id="${game.id}">${game.id}</button>`);
+        $("#games").append(`<BUTTON id="${game.id}" game-data="${game.id}">${game.id}</BUTTON><br>`);
     }       
 }
+
+function getBoard() {
+    let gameArray = [];
+    const board = document.querySelectorAll('td')
+    for (const square of board) {
+        gameArray.push(square.innerHTML)
+    }
+   return gameArray;
+}
+
+function saveGame() {
+    let board = getBoard();
+    if (gameID === 0) {
+        $.post("/games", { state: board}, function(response) {
+            gameID = response.data.id;
+        })
+    } else {
+        $.ajax({
+            type: 'PATCH',
+            url: `/games/${gameID}`, 
+            data: { state: board}
+        });
+    }   
+}
+
+function loadGame(gameID) {
+    $.get("/games/" + gameID, function(response) {
+        let gameArray = response.data.attributes.state
+    } ) 
+}
+
 
 
 $(function() {
     attachListeners();
     
     document.getElementById("save").addEventListener("click", function() {
-        alert("save button clicked")
-        })
+          saveGame();
+    })
     
     
     document.getElementById("previous").addEventListener("click", function() {
@@ -89,10 +124,14 @@ $(function() {
                     createGameButton(game)
                 }
             
-            }
-
-            
+            } 
         })
+    })
+
+    document.getElementById("clear").addEventListener("click", function() {
+        resetBoard();
     })
     
 })
+
+
