@@ -2,3 +2,23 @@
 function player(){
 
 }
+
+function updateState(){
+
+}
+
+function setMessage(){
+
+}
+
+function checkWinner(){
+
+}
+
+function doTurn(){
+
+}
+
+function attachListeners(){
+
+}
