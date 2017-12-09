@@ -9,11 +9,12 @@ function player(){
 }
 
 function updateState(token){
+
   player()
 }
 
-function setMessage(winner){
-  return "Player ${winner} won!"
+function setMessage(message){
+  return message
 }
 
 function checkWinner(){
@@ -22,6 +23,8 @@ function checkWinner(){
 
 function doTurn(){
   turn += 1
+  checkWinner()
+  setMessage("Player X Won!''")
 }
 
 function attachListeners(){
