@@ -8,12 +8,12 @@ function player(){
   }
 }
 
-function updateState(){
-
+function updateState(token){
+  player()
 }
 
-function setMessage(){
-
+function setMessage(winner){
+  return "Player ${winner} won!"
 }
 
 function checkWinner(){
@@ -27,6 +27,8 @@ function doTurn(){
 function attachListeners(){
 
   doTurn()
+  updateState()
+  checkWinner()
 }
 
 $(document).ready(attachListeners())
