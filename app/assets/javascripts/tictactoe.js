@@ -54,8 +54,8 @@ function doTurn(){
 
 function attachListeners(){
   $("td").on("click", function(){
-    if(!$.text(this) && !checkWinner()){
-      doTurn(this)
+    if(!$.text(this) && !checkWinner()){ //if the text of the td element clicked doesn't exist and checkWinner is false
+      doTurn(this) //do turn. this is passed in because updateState requires an argument
     }
   })
 }
