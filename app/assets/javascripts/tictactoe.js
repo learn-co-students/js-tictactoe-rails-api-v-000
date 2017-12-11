@@ -39,7 +39,7 @@ function checkWinner(){
 function doTurn(){
   turn += 1
   checkWinner()
-  setMessage('Player X Won!')
+  updateState(player())
 }
 
 function attachListeners(){
