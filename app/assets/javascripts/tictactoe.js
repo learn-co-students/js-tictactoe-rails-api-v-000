@@ -13,13 +13,24 @@ $(function(){ //on document.ready
 
 function doTurn(square){
   updateState(square);
-  checkWinner();
+  checkCatsGame ? setMessage("Tie game.") : null
+  checkWinner() ? clearBoard() : turn ++
+}
 
-  turn ++
+function clearBoard(){
+  for (var s of $squares){
+    s.innerHTML = "";
+  };
+  debugger
+  turn = 0
+  debugger
 }
 
 function checkCatsGame(){
-
+  var currentBoard = boardToArray()
+  // debugger
+  var result = currentBoard.find(s => s == "")
+  return !result & !checkWinner() ? true : false
 }
 
 function boardToArray(){
