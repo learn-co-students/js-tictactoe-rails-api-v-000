@@ -5,6 +5,11 @@ function getBoard(){
   return $("td").toArray().map((e) => {return e.innerHTML})
 }
 
+function resetBoard(){
+  return $("td").empty()
+  turn = 0
+}
+
 function player(){
   if(turn % 2 === 0){
     return "X"
@@ -37,10 +42,14 @@ function checkWinner(){
 
 function doTurn(){
   var board = getBoard()
+  updateState(player())
+  turn += 1
 
-  if (checkWinner() === false && turn <= 9){
-    turn += 1
-    updateState(player())
+  if(checkWinner()){
+    resetBoard()
+  } else if(turn === 9) {
+    setMessage("Tie game.")
+    resetBoard()
   }
 }
 
