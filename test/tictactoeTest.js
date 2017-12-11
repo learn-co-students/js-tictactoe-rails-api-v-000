@@ -119,7 +119,7 @@ describe('tictactoe.js', () => {
       //    |   |
       // -----------
       //  O | O |
-      debugger
+      // debugger
       expect(window.checkWinner()).to.be.true;
     });
 

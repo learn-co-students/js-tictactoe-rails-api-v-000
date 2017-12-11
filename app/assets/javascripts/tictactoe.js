@@ -9,7 +9,7 @@ var turn = 0
 $(function(){ //on document.ready
   attachListeners();
   $squares = $("td");
-  debugger
+  // debugger
 });
 
 
