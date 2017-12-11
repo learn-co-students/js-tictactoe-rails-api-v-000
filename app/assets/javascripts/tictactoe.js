@@ -1,15 +1,21 @@
 // Code your JavaScript / jQuery solution here
 
-//NEED TO HIDE THESE VARIABLES FROM GLOBAL VIEW EVENTUALLY
+//NEED TO HIDE THESE VARIABLES FROM GLOBAL VIEW
+//main variables
 var $squares
 var currentBoard = []
-$(function(){
+var turn = 0
+
+$(function(){ //on document.ready
   attachListeners();
   $squares = $("td");
   debugger
 });
 
-var turn = 0
+
+
+
+
 
 
 function boardToArray(){
@@ -85,6 +91,7 @@ function checkWinner(){
     var pos3 = currentBoard[combo[2]]
 
     if ((pos1 == pos2 & pos2 == pos3) & (pos1 == "X" | pos1=="O")){
+      setMessage(`Player ${pos1} Won!`)
       wonStatus = true
       break
     }
