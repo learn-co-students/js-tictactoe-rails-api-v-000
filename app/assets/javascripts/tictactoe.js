@@ -55,7 +55,6 @@ function updateState(element){
     let yCoord = parseInt(element.dataset["y"])
     let boardArrayCoord = DOMCoordinatesMapper(xCoord,yCoord)
     // debugger
-    currentBoard[boardArrayCoord] = token
     turn ++
   }
 }
@@ -78,6 +77,7 @@ function checkWinner(){
   ]
 
   //for each entry in WinningCombos:
+  var currentBoard = boardToArray()
   var wonStatus = false
   for (var combo of winningCombos){
     var pos1 = currentBoard[combo[0]]
