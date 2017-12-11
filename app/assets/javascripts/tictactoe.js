@@ -6,8 +6,8 @@ function getBoard(){
 }
 
 function resetBoard(){
-  return $("td").empty()
   turn = 0
+  return $("td").empty()
 }
 
 function player(){
@@ -44,7 +44,6 @@ function doTurn(){
   var board = getBoard()
   updateState(player())
   turn += 1
-
   if(checkWinner()){
     resetBoard()
   } else if(turn === 9) {
