@@ -12,8 +12,8 @@ function updateState(element){
   element.innerHTML += player();
 }
 
-function setMessage(message){
-  return message
+function setMessage(string){
+  $('div#message')[0].innerHTML += string
 }
 
 function checkWinner(){
@@ -23,7 +23,7 @@ function checkWinner(){
 function doTurn(){
   turn += 1
   checkWinner()
-  setMessage("Player X Won!''")
+  setMessage('Player X Won!')
 }
 
 function attachListeners(){
