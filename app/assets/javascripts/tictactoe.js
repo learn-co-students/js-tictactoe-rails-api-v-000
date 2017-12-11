@@ -1,10 +1,25 @@
 // Code your JavaScript / jQuery solution here
 
 //NEED TO HIDE THESE VARIABLES FROM GLOBAL VIEW EVENTUALLY
+var $squares
+var currentBoard = []
+$(function(){
+  attachListeners();
+  $squares = $("td");
+  debugger
+});
+
 var turn = 0
-var currentBoard = ["","","",
-                    "","","",
-                    "","",""]
+
+
+function boardToArray(){
+  var newArr = []
+  for (let i = 0; i < 9; i++) {
+    newArr[i] = $squares[i].innerHTML;
+  }
+  return newArr
+}
+
 const DOMCoordinatesMapper = function(x, y){
 // takes in xy coordinates as inputs and converts to
   if (y === 0){
@@ -90,7 +105,3 @@ function attachListeners(){
     })
   }
 }
-
-$(function(){
-  attachListeners();
-});
