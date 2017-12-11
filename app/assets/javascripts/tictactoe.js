@@ -1,16 +1,15 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
 function player(){
-  if(this.turn % 2 === 0){
+  if(turn % 2 === 0){
     return "X"
   } else {
     return "O"
   }
 }
 
-function updateState(token){
-
-  player()
+function updateState(element){
+  element.innerHTML += player();
 }
 
 function setMessage(message){
@@ -34,4 +33,6 @@ function attachListeners(){
   checkWinner()
 }
 
-$(document).ready(attachListeners())
+$(document).ready(function(){
+  attachListeners()
+})
