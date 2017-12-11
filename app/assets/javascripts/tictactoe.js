@@ -53,12 +53,10 @@ function doTurn(){
 }
 
 function attachListeners(){
-  $("td").addEventLIstener("click", function(){
+  $("td").on("click", function(){
+    if($.text(this) === "" && !checkWinner())
     doTurn()
-    return true
   })
-  updateState()
-  checkWinner()
 }
 
 $(document).ready(function(){
