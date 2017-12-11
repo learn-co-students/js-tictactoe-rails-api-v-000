@@ -39,7 +39,7 @@ function updateState(element){
     let xCoord = parseInt(element.dataset["x"])
     let yCoord = parseInt(element.dataset["y"])
     let boardArrayCoord = DOMCoordinatesMapper(xCoord,yCoord)
-    debugger
+    // debugger
     currentBoard[boardArrayCoord] = token
     turn ++
   }
@@ -50,8 +50,8 @@ function setMessage(msg){
   $messageDiv.text(msg)
 }
 
-function checkWinner(board){
-  const WinningCombos = [
+function checkWinner(){
+  const winningCombos = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -61,11 +61,21 @@ function checkWinner(board){
     [0, 4, 8],
     [6, 4, 2]
   ]
-  // for (const i of currentBoard){
-  //
-  // }
-  //check to see if there are any winning combos on the board
-}
+
+  //for each entry in WinningCombos:
+  var wonStatus = false
+  for (var combo of winningCombos){
+    var pos1 = currentBoard[combo[0]]
+    var pos2 = currentBoard[combo[1]]
+    var pos3 = currentBoard[combo[2]]
+
+    if ((pos1 == pos2 & pos2 == pos3) & (pos1 == "X" | pos1=="O")){
+      wonStatus = true
+      break
+    }
+  };
+  return wonStatus
+};
 
 function doTurn(){
 
