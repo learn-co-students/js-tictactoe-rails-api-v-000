@@ -54,8 +54,10 @@ function doTurn(){
 }
 
 function attachListeners(){
-
-  doTurn()
+  $("td").addEventLIstener("click", function(){
+    doTurn()
+    return true
+  })
   updateState()
   checkWinner()
 }
