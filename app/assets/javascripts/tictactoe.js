@@ -54,8 +54,9 @@ function doTurn(){
 
 function attachListeners(){
   $("td").on("click", function(){
-    if($.text(this) === "" && !checkWinner())
-    doTurn()
+    if(!$.text(this) && !checkWinner()){
+      doTurn(this)
+    }
   })
 }
 
