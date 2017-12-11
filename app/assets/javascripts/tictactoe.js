@@ -3,7 +3,6 @@
 //NEED TO HIDE THESE VARIABLES FROM GLOBAL VIEW
 //main variables
 var $squares
-var currentBoard = []
 var turn = 0
 
 $(function(){ //on document.ready
@@ -12,11 +11,16 @@ $(function(){ //on document.ready
   // debugger
 });
 
+function doTurn(square){
+  updateState(square);
+  checkWinner();
 
+  turn ++
+}
 
+function checkCatsGame(){
 
-
-
+}
 
 function boardToArray(){
   var newArr = []
@@ -61,7 +65,6 @@ function updateState(element){
     let yCoord = parseInt(element.dataset["y"])
     let boardArrayCoord = DOMCoordinatesMapper(xCoord,yCoord)
     // debugger
-    turn ++
   }
 }
 
@@ -99,16 +102,13 @@ function checkWinner(){
   return wonStatus
 };
 
-function doTurn(){
-
-}
 
 function attachListeners(){
   let $theBoard = $("td")
 
   for (let i of $theBoard){
     $(i).on("click", function(e){
-      updateState(this)
+      doTurn(this)
     })
   }
 }
