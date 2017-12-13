@@ -64,8 +64,24 @@ function attachListeners(){
   $("#clear").on("click", function(){
     resetBoard()
   })
+
+  $("#previous").on("click", function(){
+    previousGames()
+  })
+
+  $("#save").on("click", function(){
+    saveGame()
+  })
 }
 
 $(document).ready(function(){
   attachListeners()
 })
+
+function previousGames(){
+  $.get('/games',)
+}
+
+function saveGame(){
+
+}
