@@ -1,13 +1,15 @@
 var turn = 0
 const win_combos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+var gameId = 0
 
 function getBoard(){
   return $("td").toArray().map((e) => {return e.innerHTML})
 }
 
 function resetBoard(){
-  turn = 0
-  return $("td").empty()
+  turn = 0;
+  gameId = 0;
+  return $("td").empty();
 }
 
 function player(){
@@ -57,6 +59,10 @@ function attachListeners(){
     if(!$.text(this) && !checkWinner()){ //if the text of the td element clicked doesn't exist and checkWinner is false
       doTurn(this) //do turn. this is passed in because updateState requires an argument
     }
+  })
+
+  $("#clear").on("click", function(){
+    resetBoard()
   })
 }
 
