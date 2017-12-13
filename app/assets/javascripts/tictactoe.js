@@ -83,7 +83,12 @@ function previousGames(){
 }
 
 function saveGame(){
-  $.post(`/games/${gameId}`, function(resp){
-
-  })
+  game = {state: getBoard()}
+  //if the game Id is 0, then make a post request to create an id
+  if (gameId === 0){
+    //post request to /games as defined in rake routes, give in game element, and function defined from resp
+    $.post(`/games`, game, function(resp){
+      gameId = parseInt(resp.data.id)
+    })
+  }
 }
