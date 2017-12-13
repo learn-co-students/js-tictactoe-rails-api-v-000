@@ -83,5 +83,7 @@ function previousGames(){
 }
 
 function saveGame(){
+  $.post(`/games/${gameId}`, function(resp){
 
+  })
 }
