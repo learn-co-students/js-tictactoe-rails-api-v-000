@@ -51,7 +51,7 @@ function doTurn(){
   } else if(turn === 9) {
     setMessage("Tie game.")
     resetBoard()
-  }
+  } saveGame()
 }
 
 function attachListeners(){
@@ -107,5 +107,7 @@ function saveGame(){
 }
 
 function loadGame(gameId){
-
+  // $.get(`/games/${gameId}`, function(resp){
+  //
+  // })
 }
