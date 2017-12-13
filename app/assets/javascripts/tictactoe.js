@@ -34,9 +34,11 @@ function checkWinner(){
   for(c of win_combos){
     if (board[c[0]] === "X" && board[c[1]] === "X" && board[c[2]] === "X" ) {
     setMessage('Player X Won!')
+    saveGame()
     return true
   } else if (board[c[0]] === "O" && board[c[1]] === "O" && board[c[2]] === "O" ){
     setMessage('Player O Won!')
+    saveGame()
     return true
   }
 } return false
@@ -106,8 +108,17 @@ function saveGame(){
   }
 }
 
-function loadGame(gameId){
-  // $.get(`/games/${gameId}`, function(resp){
-  //
-  // })
+function loadGame(id){
+  gameId = id
+  $.get(`/games/${gameId}`, function(resp){
+    //response is heavily nested JSON object, needs to get in the state section
+    resp.data.attributes.state.forEach(function(state, index){
+      if (state !== ""){
+        $td[index] = state
+        turn ++
+      } else {
+        $td[index] = ''
+      }
+    })
+  })
 }
