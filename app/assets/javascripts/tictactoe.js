@@ -90,5 +90,13 @@ function saveGame(){
     $.post(`/games`, game, function(resp){
       gameId = parseInt(resp.data.id)
     })
+    //else update the game PATCH method
+  } else {
+    $.ajax({
+      url: `/games/${gameId}`,
+      method: 'PATCH',
+      data: game,
+    })
   }
+
 }
