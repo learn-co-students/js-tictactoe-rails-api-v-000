@@ -103,12 +103,18 @@ function attachListeners() {
 
 function clickedPrevious() {
   $.get('/games', function (games) {
-    if (games['data'].length > 0 ) {
+    // games #=>  list of game objs
+    // debugger
+    // ensure that there are game in the db
+    // debugger
+    if (games.data.length > 0) {
       gameList = '';
 
       games.data.forEach(function (game) {
         gameList += '<button id=data-id="' + game.id + '">' +
           game.attributes.state + '</button>';
+      });
+
       $('#games').html(gameList);
     }
   });
@@ -118,6 +124,7 @@ function clickedSave() {
   const $board = $('td').map(function (el) { return el.textContent; });
 
   const gameData = { state: $board };
+
   // debugger
   // if (currentGame) {
   //   $.ajax({
@@ -126,11 +133,13 @@ function clickedSave() {
   //     data: gameData,
   //   });
   // } else {
-  debugger
+  debugger;
+
   $.post('/games', gameData, function (game) {
     console.log(game)
     currentGame = game.data.id;
   });
+
   // $.ajax({
   //   type: 'POST',
   //   url: '/games',
