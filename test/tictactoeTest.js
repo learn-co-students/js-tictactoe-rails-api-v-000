@@ -97,7 +97,7 @@ describe('tictactoe.js', () => {
     it('sets a provided string as the innerHTML of the div#message element', () => {
       const string = "Player X Won!";
 
-      window.message(string);
+      window.setMessage(string);
 
       expect(messageDiv.innerHTML).to.contain(string);
     });
@@ -160,7 +160,7 @@ describe('tictactoe.js', () => {
     });
 
     it('invokes the message() function with the argument "Player X Won!" when player X wins', () => {
-      const spy = sandbox.stub(window, 'message');
+      const spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['', '', '', 'X', 'X', 'X', 'O', 'O', '']);
       //    |   |   
@@ -175,7 +175,7 @@ describe('tictactoe.js', () => {
     });
 
     it('invokes the message() function with the argument "Player O Won!" when player O wins', () => {
-      const spy = sandbox.stub(window, 'message');
+      const spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['O', '', '', 'X', 'O', 'X', 'X', '', 'O']);
       //  O |   |   
@@ -227,7 +227,7 @@ describe('tictactoe.js', () => {
     it('invokes the message() function with the argument "Tie game." when the game is tied', () => {
       sinon.useFakeXMLHttpRequest();
 
-      const spy = sandbox.spy(window, 'message');
+      const spy = sandbox.spy(window, 'setMessage');
 
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
       //  X | O | X 
@@ -237,7 +237,7 @@ describe('tictactoe.js', () => {
       //  O |   | O 
 
       window.turn = 8;
-      window.doTurn(squares[7]);
+      window.doTurn(squares[8]);
 
       expect(spy.firstCall.args[0]).to.equal('Tie game.');
     });
