@@ -79,7 +79,12 @@ $(document).ready(function(){
 })
 
 function previousGames(){
-  $.get('/games',)
+  $.get("/games", function(resp){
+    $("#games").empty()
+    resp.data.forEach(function(game){
+      $("#games").append(`<button class data-id="${game.id}" onclick="loadgame(${game.id})"> Game ${game.id}</button>`)
+    })
+  })
 }
 
 function saveGame(){
@@ -92,11 +97,15 @@ function saveGame(){
     })
     //else update the game PATCH method
   } else {
+    //make the ajax request with 3 pieces of data: url, method and data to patch in database
     $.ajax({
       url: `/games/${gameId}`,
       method: 'PATCH',
       data: game,
     })
   }
+}
+
+function loadGame(gameId){
 
 }
