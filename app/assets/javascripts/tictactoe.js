@@ -113,12 +113,12 @@ function loadGame(id){
   $.getJSON(`/games/${gameId}`, function(resp){
     //response is heavily nested JSON object, needs to get in the state section
     resp.data.attributes.state.forEach(function(state, index){
-      debugger
+      //debugger
       if (state){
-        $td[index] = state
+        $("td")[index] = state
         turn ++
       } else {
-        $td[index] = ''
+        $("td")[index] = ''
       }
     })
   })
