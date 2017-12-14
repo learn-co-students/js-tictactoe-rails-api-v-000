@@ -111,16 +111,13 @@ function saveGame(){
 function loadGame(id){
   gameId = id
   $.getJSON(`/games/${gameId}`, function(resp){
-    //response is heavily nested JSON object, needs to get in the state section
-    resp.data.attributes.state.forEach(function(state, index){
-      //debugger
-      if (state){
-        //if there is something in state, update the td with it and increase the turn
-        $("td").toArray()[index] = state
-        turn ++
-      } else {
-        $("td").toArray()[index] = ""
-      }
+    //response is heavily nested JSON object, needs to get in the state section, assign it to global turn variable
+    turn = resp.data.attributes.state.reduce(function(sum, e){
+      if (e !== ''){
+        sum ++
+      } return sum
+    },0)
+
+      $("td").toArray().forEach((e, index) => {e.innerHTML = resp.data.attributes.state[index]})
     })
-  })
 }
