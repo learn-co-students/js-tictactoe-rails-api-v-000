@@ -61,22 +61,21 @@ function findWinngCombo() {
 }
 
 function doTurn(square) {
+  updateState(square);
   turn++;
 
-  updateState(square);
-
   if (checkWinner()) {
+    saveGame();
     resetGame();
   } else if (turn === 9) {
     setMessage('Tie game.');
+    saveGame();
     resetGame();
   }
 }
 
 function resetGame() {
-  $('td').each(function () {
-    $(this).text('');
-  });
+  $('td').each(function () { $(this).text(''); });
 
   turn = 0;
 }
@@ -88,69 +87,57 @@ function attachListeners() {
     }
   });
 
-  $('#previous').on('click', function () {
-    clickedPrevious();
-  });
-
-  $('#save').on('click', function () {
-    clickedSave();
-  });
-
-  $('#clear').on('click', function () {
-    clickedClear();
-  });
+  $('#previous').on('click', () => gameIndex());
+  $('#save').on('click', () => saveGame());
+  $('#clear').on('click', () => clearGame());
 }
 
-function clickedPrevious() {
+function gameIndex() {
+  $('#games').empty();
+
   $.get('/games', function (games) {
-    // games #=>  list of game objs
-    // debugger
-    // ensure that there are game in the db
-    // debugger
     if (games.data.length > 0) {
-      gameList = '';
-
       games.data.forEach(function (game) {
-        gameList += '<button id=data-id="' + game.id + '">' +
-          game.attributes.state + '</button>';
-      });
+        $('#games').append('<button id = gameId-' + game.id + '>' +
+          'Game: ' + game.id + '</button>' + ' ' + ' Updated at: ' +
+          moment(game.attributes['updated-at']).format('MM/DD/YYYY h:mm a') +
+          '<br /><br />');
 
-      $('#games').html(gameList);
+        $('#gameId-' + game.id).on('click', () => displaySavedGame(game));
+      });
     }
   });
 }
 
-function clickedSave() {
-  const $board = $('td').map(function (el) { return el.textContent; });
+function saveGame() {
+  const $board = $('td').map(function () { return $(this).text(); }).get();
 
   const gameData = { state: $board };
-
-  // debugger
-  // if (currentGame) {
-  //   $.ajax({
-  //     type: 'PATCH',
-  //     url: `/games/${currentGame}`,
-  //     data: gameData,
-  //   });
-  // } else {
-  debugger;
-
-  $.post('/games', gameData, function (game) {
-    console.log(game)
-    currentGame = game.data.id;
-  });
-
-  // $.ajax({
-  //   type: 'POST',
-  //   url: '/games',
-  //   data: gameData,
-  // }).done(function (r) {
-  //   console.log(r);
-  // });
-  // }
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData,
+    });
+  } else {
+    const posting = $.post('/games', gameData);
+    posting.done(function (game) {
+      currentGame = game.data.id;
+    });
+  }
 }
 
-function clickedClear() {
-  // debugger;
-  // alert('clear was clicked');
+function clearGame() {
+  resetGame();
+  currentGame = undefined;
+}
+
+function displaySavedGame(game) {
+  $.get('/games/' + game.id, function (game) {
+    const board = game.data.attributes.state;
+    $('td').each(function (index) { $(this).text(board[index]); });
+
+    turn = board.filter((e) => e !== '').length;
+    currentGame = game.data.id;
+  });
 }
