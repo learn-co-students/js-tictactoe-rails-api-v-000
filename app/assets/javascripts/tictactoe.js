@@ -1,14 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
-// const cellOne = $('*[data-x=0][data-y=0]')[0]
-// const cellTwo = $('*[data-x=1][data-y=0]')[0]
-// const cellThree = $('*[data-x=2][data-y=0]')[0]
-// const cellFour = $('*[data-x=0][data-y=1]')[0]
-// const cellFive = $('*[data-x=1][data-y=1]')[0]
-// const cellSix = $('*[data-x=2][data-y=1]')[0]
-// const cellSeven = $('*[data-x=0][data-y=2]')[0]
-// const cellEight = $('*[data-x=1][data-y=2]')[0]
-// const cellNine = $('*[data-x=2][data-y=2]')[0]
+var currentGameId
 
 WIN_COMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,2]]
 
@@ -82,6 +74,46 @@ function attachListeners() {
   }
 }
 
+function saveGame() {
+  $("#save").click(function(){
+    let state = (getBoardState())
+    let stateParams = {
+      "state": state
+    }
+    if (currentGameId === undefined) {
+      $.post("/games", stateParams, function(data){
+        currentGameId = data["data"]["id"]
+        })
+      }
+    else {
+      var xhr = new XMLHttpRequest()
+      xhr.open("PATCH", `/games/${currentGameId}`)
+      xhr.setRequestHeader("Content-type", "application/json")
+      xhr.send(JSON.stringify(stateParams))
+    }
+  })
+}
+
+function getPrevious() {
+    $('#previous').click(function(){
+      if($('#games')[0].childNodes.length === 0) {
+      $.get("/games", function(resp){
+        for (const game in resp.data){
+          var location = resp.data[game]["id"]
+          var button = document.createElement("button", {id:`${location}`})
+          button.innerHTML = location
+        $("#games").append(button).append('<br>')
+      }
+      })
+    }})
+}
+
+function loadGame(){
+
+}
+
 $(function(){
   attachListeners()
+  getPrevious()
+  saveGame()
 })
