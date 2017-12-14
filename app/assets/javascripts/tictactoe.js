@@ -1,4 +1,3 @@
-
 var turn = 0
 const win_combos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
 var gameId = 0
@@ -85,7 +84,7 @@ function previousGames(){
   $.get("/games", function(resp){
     $("#games").empty()
     resp.data.forEach(function(game){
-      $("#games").append(`<button class data-id="${game.id}" onclick="loadgame(${game.id})"> Game ${game.id}</button>`)
+      $("#games").append(`<button class data-id="${game.id}" onclick="loadGame(${game.id})"> Game ${game.id}</button><br>`)
     })
   })
 }
@@ -104,17 +103,18 @@ function saveGame(){
     $.ajax({
       url: `/games/${gameId}`,
       method: 'PATCH',
-      data: game,
+      data: game
     })
   }
 }
 
 function loadGame(id){
   gameId = id
-  $.get(`/games/${gameId}`, function(resp){
+  $.getJSON(`/games/${gameId}`, function(resp){
     //response is heavily nested JSON object, needs to get in the state section
     resp.data.attributes.state.forEach(function(state, index){
-      if (state !== ""){
+      debugger
+      if (state){
         $td[index] = state
         turn ++
       } else {
