@@ -44,10 +44,10 @@ function checkWinner(){
 } return false
 }
 
-function doTurn(){
+function doTurn(square){
   var board = getBoard()
-  updateState(player())
-  turn += 1
+  updateState(square)
+  turn ++
   if(checkWinner()){
     resetBoard()
   } else if(turn === 9) {
@@ -115,10 +115,11 @@ function loadGame(id){
     resp.data.attributes.state.forEach(function(state, index){
       //debugger
       if (state){
-        $("td")[index] = state
+        //if there is something in state, update the td with it and increase the turn
+        $("td").toArray()[index] = state
         turn ++
       } else {
-        $("td")[index] = ''
+        $("td").toArray()[index] = ""
       }
     })
   })
