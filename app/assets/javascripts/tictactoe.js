@@ -113,11 +113,13 @@ function loadGame(id){
   $.getJSON(`/games/${gameId}`, function(resp){
     //response is heavily nested JSON object, needs to get in the state section, assign it to global turn variable
     turn = resp.data.attributes.state.reduce(function(sum, e){
+      //accumulate to understand which turn it is
       if (e !== ''){
+        //if e is not blank, increase turn
         sum ++
       } return sum
     },0)
-
+    //puts the "td" element to an array, for each index, update it with the response data attributes' index
       $("td").toArray().forEach((e, index) => {e.innerHTML = resp.data.attributes.state[index]})
     })
 }
