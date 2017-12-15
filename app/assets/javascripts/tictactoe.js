@@ -148,12 +148,10 @@ function previousGames(){
     if (games.data.length){ //if array is not empty
       var list = $("#games").append('<ul></ul>').find('ul');
       games.data.forEach(function(game){
-        // list.append('<li>' + game.id + '</li>');
-        // list.append(`<li>${game.id}</li>`);
-        list.append(`<button id="gameid-${game.id}">${game.id}</button><br>`)
-          $(`gameid-${game.id}`).on('click', function(){
-            console.log("In the functionwhoa")
-          })
+        list.append(`<li><button id="${game.id}">Game ${game.id}</button></li><br>`)
+        $(`#${game.id}`).click(function(){
+          console.log("anything happen when i click?")
+        })
       })
     }
   })
