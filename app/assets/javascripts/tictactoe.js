@@ -205,24 +205,5 @@ function reloadGame(gameID) {
       }
     })
 }
-
-
-//parallel iteration
-//appending
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Clicking this button should grab all of the persisted games from the database
-// and create a button for each that, when clicked,
 // returns that saved game's state to our tic-tac-toe board.
 // All of the buttons should be added to the div#games element in the DOM.
