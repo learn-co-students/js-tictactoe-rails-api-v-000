@@ -502,11 +502,12 @@ describe('AJAX interactions with the Rails API', () => {
 
         saveButton.click();
 
-        expect(requests[0].method).to.equal('POST');
+        expect(requests[0].method).to.equal("POST");
         expect(requests[0].url).to.equal('/games');
 
-        expect(requests[1].method).to.equal('PATCH');
+        expect(requests[1].method).to.equal("PATCH");
         expect(requests[1].url).to.equal('/games/1');
+
       });
     });
   });

@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
-var currentGameId
+let currentGameId = false
 
 WIN_COMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,2]]
 
@@ -10,6 +10,13 @@ function player(){
   }
   else {
     return "O"
+  }
+}
+
+function populateBoard(arr) {
+  var squares = window.document.querySelectorAll('td')
+  for (let i = 0; i < 9; i++) {
+    squares[i].innerHTML = arr[i];
   }
 }
 
@@ -24,7 +31,7 @@ function setMessage(message) {
 
 function getBoardState() {
     var state = []
-    const squares = window.document.querySelectorAll('td');
+    var squares = window.document.querySelectorAll('td');
     for (let i = 0; i < 9; i++) {
       state.push(squares[i].innerHTML)
     }
@@ -32,7 +39,7 @@ function getBoardState() {
 }
 
 function checkWinner(){
-  let current = getBoardState()
+  var current = getBoardState()
   var winner = ""
   for (const combo of WIN_COMBINATIONS) {
     if (current[combo[0]] == current[combo[1]] && current[combo[1]] == current[combo[2]] && current[combo[0]] !== "") {
@@ -45,7 +52,7 @@ function checkWinner(){
 function doTurn(arg) {
   if (arg.innerHTML === "") {
     updateState(arg)
-    const winner = checkWinner()
+    var winner = checkWinner()
     turn = ++turn
     if (turn === 9 ) {
       setMessage("Tie game.")
@@ -59,16 +66,22 @@ function doTurn(arg) {
   }
 }
 
+function attachClearBoardListener() {
+  $('#clear').click(function(){
+    clearBoard()
+  })
+}
 function clearBoard() {
-  let squares = window.document.querySelectorAll('td')
+  var squares = window.document.querySelectorAll('td')
   for (const square of squares ) {
     square.innerHTML = ""
   }
   turn = 0
+  currentGameId = false
 }
 
 function attachListeners() {
-  let squares = window.document.querySelectorAll('td')
+  var squares = window.document.querySelectorAll('td')
   for (const square of squares ) {
     square.onclick = function(event) {
       doTurn(square)
@@ -76,46 +89,81 @@ function attachListeners() {
   }
 }
 
-function saveGame() {
+function attachSaveGameListener() {
   $("#save").click(function(){
-    let state = (getBoardState())
-    let stateParams = {
+    saveGame()
+  })
+}
+
+function saveGame() {
+    var state = (getBoardState())
+    var stateParams = {
       "state": state
     }
-    if (currentGameId === undefined) {
+    if (currentGameId === false) {
       $.post("/games", stateParams, function(data){
         currentGameId = data["data"]["id"]
         })
       }
     else {
-      var xhr = new XMLHttpRequest()
-      xhr.open("PATCH", `/games/${currentGameId}`)
-      xhr.setRequestHeader("Content-type", "application/json")
-      xhr.send(JSON.stringify(stateParams))
-    }
-  })
+      stateParams.id = currentGameId
+      $.ajax({
+         url: `/games/${currentGameId}`,
+         type: "PATCH",
+         data: (stateParams),
+         success: function(res) {
+         }
+ });
+
+
+      // var xhr = new XMLHttpRequest()
+      // xhr.open("PATCH", `/games/${currentGameId}`)
+      // xhr.setRequestHeader("Content-type", "application/json")
+      // xhr.send(JSON.stringify(stateParams))
+    // }
+    // return currentGameId
+}
 }
 
 function getPrevious() {
     $('#previous').click(function(){
       if($('#games')[0].childNodes.length === 0) {
       $.get("/games", function(resp){
-        for (const game in resp.data){
+        for (var game in resp.data){
           var location = resp.data[game]["id"]
-          var button = document.createElement("button", {id:`${location}`})
+          var button = document.createElement("button")
+          button.id = location
+          button.className = "loadGame"
           button.innerHTML = location
         $("#games").append(button)//.append('<br>')
       }
+      loadGame()
       })
-    }})
+    }}
+  )
+}
+
+function getTurn(){
+  var empty = state.filter(cell => cell === "")
+  return 9-empty.length
 }
 
 function loadGame(){
+  $('.loadGame').click(function(){
+    $.get(`/games/${this.id}`, function(resp){
+      state = resp.data.attributes.state
+      clearBoard()
+      populateBoard(state)
+      currentGameId = resp.data.id
+      turn = getTurn()
+    })
 
+  })
 }
 
 $(function(){
   attachListeners()
   getPrevious()
-  saveGame()
+  attachSaveGameListener()
+  attachClearBoardListener()
 })
