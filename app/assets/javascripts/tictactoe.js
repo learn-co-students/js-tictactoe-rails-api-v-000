@@ -188,15 +188,7 @@ function previousGames(){
 }
 
 function reloadGame(gameID) {
-  // document.getElementById('message').innerHTML = '';
-
-  // const req = new XMLHttpRequest;
-  // // req.overrideMimeType('application/json');
-  // req.open('GET', `/games/${gameID}`);
-  // req(send)
   console.log(`gameID: ${gameID}`)
-
-
   fetch(`/games/${gameID}`)
     .then(res => res.json())
     .then(function(json){
@@ -204,18 +196,14 @@ function reloadGame(gameID) {
       console.log(json.data.attributes.state)
       var currentGame = json.data.id
       console.log(`current game: ${currentGame}`)
-
       for (i=0; i<state.length; i++){
         for (j=0; j < $('td').length; j++){
           if (i === j){
-            $('td')[j].append(state[i])
+            $('td')[j].innerHTML = (state[i])
           }
         }
       }
     })
-
-
-
 }
 
 
