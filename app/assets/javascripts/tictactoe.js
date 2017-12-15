@@ -97,7 +97,8 @@ function checkWinner() {
 
   WINNING_COMBOS.forEach(function(combo) {
     if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
-      setMessage("Player " + board[combo[0]] + " Won!")
+      // setMessage("Player " + board[combo[0]] + " Won!")
+      setMessage(`Player ${board[combo[0]]} Won!`)
       winner = true
     }
   })
@@ -112,7 +113,6 @@ function doTurn(td) {
   updateState(td)
   turn++
   if (checkWinner()) {
-    // setMessage("Player " + player() + " Won!")
     resetBoard()
   } else if (turn === 9){
     setMessage("Tie game.")
@@ -143,15 +143,17 @@ function attachListeners () {
 
 function previousGames(){
   $.get('/games', function(games){
-    console.log(games.data)
+    console.log(games.data.length)
 
-    if (games){
-
-      var list = $("#message").append('<ul></ul>').find('ul');
-      // for (var i = 0; i < 10; i++)
+    if (games.data.length){ //if array is not empty
+      var list = $("#games").append('<ul></ul>').find('ul');
       games.data.forEach(function(game){
-        console.log(game.id)
-        list.append('<li>hi</li>');
+        // list.append('<li>' + game.id + '</li>');
+        // list.append(`<li>${game.id}</li>`);
+        list.append(`<button id="gameid-${game.id}">${game.id}</button><br>`)
+          $(`gameid-${game.id}`).on('click', function(){
+            console.log("In the functionwhoa")
+          })
       })
     }
   })
