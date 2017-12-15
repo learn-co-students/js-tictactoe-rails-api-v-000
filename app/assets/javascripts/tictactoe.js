@@ -49,9 +49,11 @@ function doTurn(arg) {
     turn = ++turn
     if (turn === 9 ) {
       setMessage("Tie game.")
+      saveGame()
       clearBoard()
     }
     else if (winner) {
+      saveGame()
       clearBoard()
     }
   }
@@ -102,7 +104,7 @@ function getPrevious() {
           var location = resp.data[game]["id"]
           var button = document.createElement("button", {id:`${location}`})
           button.innerHTML = location
-        $("#games").append(button).append('<br>')
+        $("#games").append(button)//.append('<br>')
       }
       })
     }})
