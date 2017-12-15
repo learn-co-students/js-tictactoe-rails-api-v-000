@@ -22,6 +22,7 @@ function doTurn(square){
     clearBoard();
   } else if (tied === true){
     setMessage("Tie game.");
+    clearBoard()
   } else {
     turn++;
   }
@@ -48,7 +49,6 @@ function checkCatsGame(){
     }
     return foundBlankSpace;
   };
-  debugger
   return !blankSpaces(currentBoard);
 }
 
@@ -131,13 +131,29 @@ function checkWinner(){
   return wonStatus
 };
 
+function saveGame(){
+
+  alert("game save button pushed")
+}
 
 function attachListeners(){
   let $theBoard = $("td")
+  let $saveButton = $("button#save")
+  let $previousButton = $("button#previous")
+  let $clearButton = $("button#clear")
 
   for (let i of $theBoard){
     $(i).on("click", function(e){
       i.innerHTML === "" ? doTurn(this) : null
     })
-  }
+  };
+
+  $saveButton.on("click", function(e){
+    alert("save button clicked")
+    // this.get("/games", function(data){
+    //
+    // })
+  });
+
+
 }
