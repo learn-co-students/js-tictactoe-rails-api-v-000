@@ -451,6 +451,7 @@ describe('AJAX interactions with the Rails API', () => {
         );
 
         previousButton.click();
+        debugger
         requests[1].respond(
           200,
           { 'Content-Type': 'application/json' },

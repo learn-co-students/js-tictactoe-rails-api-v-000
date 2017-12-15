@@ -52,8 +52,8 @@ function checkWinner(){
 function doTurn(arg) {
   if (arg.innerHTML === "") {
     updateState(arg)
-    var winner = checkWinner()
     turn = ++turn
+    var winner = checkWinner()
     if (turn === 9 ) {
       setMessage("Tie game.")
       saveGame()
