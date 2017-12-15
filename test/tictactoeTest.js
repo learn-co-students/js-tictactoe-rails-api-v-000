@@ -322,7 +322,7 @@ describe('Gameplay', () => {
     squares[4].click();
 
     expect(squares[4].innerHTML).to.equal('');
-    expect(window.turn).to.equal(5);
+    expect(window.turn).to.equal(0);
   });
 
   it('Users can play multiple games', () => {
@@ -451,7 +451,6 @@ describe('AJAX interactions with the Rails API', () => {
         );
 
         previousButton.click();
-        debugger
         requests[1].respond(
           200,
           { 'Content-Type': 'application/json' },

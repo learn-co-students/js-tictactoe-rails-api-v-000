@@ -1,8 +1,8 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
-let currentGameId = false
+var currentGameId = false
 
-WIN_COMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,2]]
+var WIN_COMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,2]]
 
 function player(){
   if(turn % 2 === 0) {
@@ -15,7 +15,7 @@ function player(){
 
 function populateBoard(arr) {
   var squares = window.document.querySelectorAll('td')
-  for (let i = 0; i < 9; i++) {
+  for (var i = 0; i < 9; i++) {
     squares[i].innerHTML = arr[i];
   }
 }
@@ -32,7 +32,7 @@ function setMessage(message) {
 function getBoardState() {
     var state = []
     var squares = window.document.querySelectorAll('td');
-    for (let i = 0; i < 9; i++) {
+    for (var i = 0; i < 9; i++) {
       state.push(squares[i].innerHTML)
     }
     return state
@@ -41,7 +41,7 @@ function getBoardState() {
 function checkWinner(){
   var current = getBoardState()
   var winner = ""
-  for (const combo of WIN_COMBINATIONS) {
+  for (let combo of WIN_COMBINATIONS) {
     if (current[combo[0]] == current[combo[1]] && current[combo[1]] == current[combo[2]] && current[combo[0]] !== "") {
       setMessage(`Player ${current[combo[0]]} Won!`)
       return true
@@ -50,16 +50,19 @@ function checkWinner(){
 }
 
 function doTurn(arg) {
+
   if (arg.innerHTML === "") {
+
     updateState(arg)
     turn = ++turn
+
     var winner = checkWinner()
-    if (turn === 9 ) {
-      setMessage("Tie game.")
+    if (winner) {
       saveGame()
       clearBoard()
     }
-    else if (winner) {
+    else if (turn === 9 ) {
+      setMessage("Tie game.")
       saveGame()
       clearBoard()
     }
@@ -73,7 +76,7 @@ function attachClearBoardListener() {
 }
 function clearBoard() {
   var squares = window.document.querySelectorAll('td')
-  for (const square of squares ) {
+  for (let square of squares ) {
     square.innerHTML = ""
   }
   turn = 0
@@ -127,7 +130,7 @@ function saveGame() {
 
 function getPrevious() {
     $('#previous').click(function(){
-      if($('#games')[0].childNodes.length === 0) {
+      $("#games").empty()
       $.get("/games", function(resp){
         for (var game in resp.data){
           var location = resp.data[game]["id"]
@@ -139,7 +142,7 @@ function getPrevious() {
       }
       loadGame()
       })
-    }}
+    }
   )
 }
 
