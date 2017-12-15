@@ -13,24 +13,43 @@ $(function(){ //on document.ready
 
 function doTurn(square){
   updateState(square);
-  checkCatsGame ? setMessage("Tie game.") : null
-  checkWinner() ? clearBoard() : turn ++
+  let won
+  let tied
+  checkWinner() ? won = true : null;
+  checkCatsGame() ? tied = true : null;
+
+  if (won === true) {
+    clearBoard();
+  } else if (tied === true){
+    setMessage("Tie game.");
+  } else {
+    turn++;
+  }
 }
 
 function clearBoard(){
+  turn = 0
   for (var s of $squares){
     s.innerHTML = "";
   };
-  debugger
-  turn = 0
-  debugger
+  // debugger
+}
+
+function checkGameStatus(){
+
 }
 
 function checkCatsGame(){
-  var currentBoard = boardToArray()
-  // debugger
-  var result = currentBoard.find(s => s == "")
-  return !result & !checkWinner() ? true : false
+  var currentBoard = boardToArray();
+  const blankSpaces = function(currentBoard){
+    var foundBlankSpace = false;
+    for (let s of currentBoard){
+      s === "" ? foundBlankSpace = true : null;
+    }
+    return foundBlankSpace;
+  };
+  debugger
+  return !blankSpaces(currentBoard);
 }
 
 function boardToArray(){
@@ -66,11 +85,10 @@ function player(){
 
 
 function updateState(element){
-  const token = player()
   if ($(element).text() === ""){
     //needs to actually update the game object in the database
 
-    $(element).text(token)
+    $(element).text(player())
     // CAPTURE THE ELEMENT'S DATASET IN VARIABLES, then put them into DOMCoordinatesMapper
     let xCoord = parseInt(element.dataset["x"])
     let yCoord = parseInt(element.dataset["y"])
@@ -119,7 +137,7 @@ function attachListeners(){
 
   for (let i of $theBoard){
     $(i).on("click", function(e){
-      doTurn(this)
+      i.innerHTML === "" ? doTurn(this) : null
     })
   }
 }
