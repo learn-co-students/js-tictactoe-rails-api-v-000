@@ -201,7 +201,7 @@ describe('tictactoe.js', () => {
 
     it('increments the value of the "turn" variable', () => {
       expect(window.turn).to.equal(0);
-
+      
       window.doTurn(squares[0]);
 
       expect(window.turn).to.equal(1);
@@ -320,7 +320,7 @@ describe('Gameplay', () => {
     //  O | O |
 
     squares[4].click();
-
+    debugger
     expect(squares[4].innerHTML).to.equal('');
     expect(window.turn).to.equal(5);
   });
