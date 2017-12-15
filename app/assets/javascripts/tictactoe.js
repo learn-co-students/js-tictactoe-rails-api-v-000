@@ -143,12 +143,23 @@ function attachListeners () {
 
 function previousGames(){
   $.get('/games', function(games){
-    console.log(games)
+    console.log(games.data)
+
     if (games){
-      
+
+      var list = $("#message").append('<ul></ul>').find('ul');
+      // for (var i = 0; i < 10; i++)
+      games.data.forEach(function(game){
+        console.log(game.id)
+        list.append('<li>hi</li>');
+      })
     }
   })
 }
+
+// Clicking the button#previous element when previously-saved games exist in the database
+// adds those previous games as buttons in the DOM's div#games element:
+
 
 // Clicking this button should grab all of the persisted games from the database
 // and create a button for each that, when clicked,
