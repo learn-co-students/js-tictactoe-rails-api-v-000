@@ -144,7 +144,6 @@ function reloadGame(gameID) {
 
   xhr.send();
 
-
   // fetch(`/games/${gameID}`)
   //   .then(res => res.json())
   //   .then(function(json){
