@@ -144,7 +144,6 @@ function attachListeners () {
 function saveGame() {
   var board = [];
   var gameData;
-
   $('td').text(function(index, td){
     board.push(td);
   });
