@@ -145,12 +145,15 @@ function saveGame() {
   var board = [];
   var gameData;
 
-  $('td').text((index, td) => {
+  $('td').text(function(index, td){
     board.push(td);
   });
 
-  gameData = { state: board };
-  console.log(gameData)
+// function(index,currentcontent)	Optional. Specifies a function that returns the new text content for the selected elements
+// index - Returns the index position of the element in the set
+// currentcontent - Returns current content of selected elements
+
+  gameData = { state: board }; //hash with board array
 
   if (currentGame) {
     $.ajax({
@@ -158,13 +161,13 @@ function saveGame() {
       url: `/games/${currentGame}`,
       data: gameData
     });
+    console.log(`Game ${currentGame} saved!`)
   } else {
     $.post('/games', gameData, function(game) {
       currentGame = game.data.id;
-      $('#games').append(`<button id="${game.data.id}">Game ${game.data.id}</button><br>`);
+      $('#games ul').append(`<button id="${game.data.id}">Game ${game.data.id}</button><br>`);
+      console.log(`New game ${game.data.id} has been saved`)
       $(`#${game.data.id}`).click(function(){
-        console.log(`when i click this, saved game ${game.data.id} should load`)
-        console.log(`the current game is supposedly ${currentGame}`)
         reloadGame(currentGame)
       })
     });
@@ -192,9 +195,9 @@ function reloadGame(gameID) {
   fetch(`/games/${gameID}`)
     .then(res => res.json())
     .then(function(json){
-      var state = json.data.attributes.state
+      state = json.data.attributes.state
       console.log(json.data.attributes.state)
-      var currentGame = json.data.id
+      currentGame = json.data.id
       console.log(`current game: ${currentGame}`)
       for (i=0; i<state.length; i++){
         for (j=0; j < $('td').length; j++){
