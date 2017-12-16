@@ -124,17 +124,17 @@ function resetBoard(){
 
 function attachListeners () {
   console.log("Can you see me?")
-  $('#previous').on('click', function(){
+  $('#previous').click(function(){
     previousGames()
   });
-  $('#save').on('click', function(){
+  $('#save').click(function(){
     saveGame()
   });
-  $('#clear').on('click', function(){
+  $('#clear').click(function(){
     resetBoard()
   });
 
-  $('td').on('click', function(){
+  $('td').click(function(){
     if (!$.text(this) && !checkWinner()) {
       doTurn(this)
     }
@@ -164,7 +164,7 @@ function saveGame() {
   } else {
     $.post('/games', gameData, function(game) {
       currentGame = game.data.id;
-      $('#games ul').append(`<button id="${game.data.id}">Game ${game.data.id}</button><br>`);
+      $('#games').append(`<button id="${game.data.id}">Game ${game.data.id}</button><br>`);
       console.log(`New game ${game.data.id} has been saved`)
       $(`#${game.data.id}`).click(function(){
         reloadGame(currentGame)
@@ -177,9 +177,10 @@ function previousGames(){
   $('#games').empty(); //prevents listing duplicates
   $.get('/games', function(games){
     if (games.data.length){ //if array is not empty
-      var list = $("#games").append('<ul></ul>').find('ul');
+      // var list = $("#games").append('<ul></ul>').find('ul');
+      var list = $("#games")
       games.data.forEach(function(game){
-        list.append(`<li><button id="${game.id}">Game ${game.id}</button></li><br>`)
+        list.append(`<button id="${game.id}">Game ${game.id}</button><br>`)
         $(`#${game.id}`).click(function(){
           console.log(`when i click this, game ${game.id} should load`)
           reloadGame(game.id)
