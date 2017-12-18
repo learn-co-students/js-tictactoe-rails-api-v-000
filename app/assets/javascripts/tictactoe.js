@@ -34,8 +34,8 @@ function clearBoard(){
   for (var s of $squares){
     s.innerHTML = "";
   };
-  debugger
   $theBoard.attr("data-game-id", null);
+  $theBoard.removeData("gameId")
   // debugger
 }
 
@@ -158,16 +158,26 @@ function attachListeners(){
 
   $saveButton.on("click", function(e){
     let boardState = boardToArray()
-    let submissionParams = {state: boardState}
 
-    let posting = $.post("/games", submissionParams, function(data){
-      debugger
-      if (!$theBoard.data("game-id")){
+    if (!$theBoard.data("game-id")){
+      let submissionParams = {state: boardState}
+      let posting = $.post("/games", submissionParams, function(data){
+      // debugger
         $theBoard.attr("data-game-id", data["data"]["id"])
-        debugger
-      }
-      console.log(data)
-    });
+        // debugger
+        console.log(data)
+      });
+    } else {
+      let theGameId = $theBoard.data("game-id")
+      let submissionParams = {state: boardState, id: theGameId}
+      let patching = $.ajax({
+        type: "PATCH",
+        url: `/games/${theGameId}`,
+        data: submissionParams,
+        success: function(resp){console.log(resp)},
+        fail: function(){console.log("Failed To Save Game")}
+      })
+    }
   });
 
   $previousButton.on("click", function(e){
