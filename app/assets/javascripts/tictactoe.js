@@ -7,12 +7,55 @@ $( function(){
 
 function player() {
   if (turn == 0 || turn % 2 == 0) {
-    return "X"
+    return "X";
   } else {
-    return "O"
+    return "O";
   }
 }
 
 function updateState(square) {
-  $(square).text(player())
+  $(square).text(player());
+}
+
+function setMessage(message) {
+  $("#message").text(message);
+}
+
+function checkWinner() {
+
+  const WIN_COMBINATIONS = [
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6]
+  ]
+
+  var td_one = $("td")[0].innerHTML
+  var td_two = $("td")[1].innerHTML
+  var td_three = $("td")[2].innerHTML
+  var td_four = $("td")[3].innerHTML
+  var td_five = $("td")[4].innerHTML
+  var td_six = $("td")[5].innerHTML
+  var td_seven = $("td")[6].innerHTML
+  var td_eight = $("td")[7].innerHTML
+  var td_nine = $("td")[8].innerHTML
+  var td_array = [td_one,td_two,td_three,td_four,td_five,td_six,td_seven,td_eight,td_nine]
+
+  console.log(td_array)
+
+  WIN_COMBINATIONS.forEach (function(win_combo) {
+    debugger;
+    //if (td_array[win_combo[0]] == "X" && td_array[win_combo[1]] == "X" && td_array[win_combo[2]] === "X") {
+    //  return true
+    //else (td_array[win_combo[0]] == "O" && td_array[win_combo[1]] == "O" && (td_array[win_combo[2]] == "O")
+    //  return true
+    //}
+  });
+
+  return false
+
 }
