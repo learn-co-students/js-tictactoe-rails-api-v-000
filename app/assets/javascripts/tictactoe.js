@@ -29,10 +29,13 @@ function doTurn(square){
 }
 
 function clearBoard(){
+  let $theBoard = $("table")
   turn = 0
   for (var s of $squares){
     s.innerHTML = "";
   };
+  debugger
+  $theBoard.attr("data-game-id", null);
   // debugger
 }
 
@@ -156,6 +159,7 @@ function attachListeners(){
   $saveButton.on("click", function(e){
     let boardState = boardToArray()
     let submissionParams = {state: boardState}
+
     let posting = $.post("/games", submissionParams, function(data){
       debugger
       if (!$theBoard.data("game-id")){
