@@ -143,17 +143,29 @@ function attachListeners(){
   let $clearButton = $("button#clear")
 
   for (let i of $theBoard){
-    $(i).on("click", function(e){
-      i.innerHTML === "" ? doTurn(this) : null
+    $(i).on("click", function(e) {
+      // set up to not "DO TURN" if a winner is detected
+      if (!checkWinner()){
+        i.innerHTML === "" ? doTurn(this) : null;
+      };
     })
   };
 
   $saveButton.on("click", function(e){
-    alert("save button clicked")
-    // this.get("/games", function(data){
-    //
-    // })
+    let boardState = boardToArray()
+    let submissionParams = {state: boardState}
+    let posting = $.post("/games", submissionParams, function(data){
+      console.log(data)
+    });
   });
 
+  $previousButton.on("click", function(e){
+    $.get("/games", function(data){
+      console.log(data)
+    })
+  });
 
+  $clearButton.on("click", function(e){
+    clearBoard();
+  });
 }
