@@ -1,6 +1,8 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
 
+var current_id;
+
 $( function(){
   attachListeners();
 });
@@ -81,10 +83,12 @@ function doTurn(square) {
     turn += 1;
     if (!td_array.includes("") && !checkWinner()) {
       setMessage("Tie game.");
+      $("#save").click();
       resetBoard();
       turn = 0;
     } else if (checkWinner()) {
       checkWinner();
+      $("#save").click();
       resetBoard();
       turn = 0;
     }
@@ -101,6 +105,7 @@ function resetBoard() {
   $("td")[6].innerHTML = ""
   $("td")[7].innerHTML = ""
   $("td")[8].innerHTML = ""
+  current_id = undefined;
 }
 
 function attachListeners() {
@@ -142,6 +147,29 @@ function attachListeners() {
     move(td_nine);
   });
 
+  $("#previous").on("click", function() {
+    $.get('/games', function(data){
+      //debugger;
+      data["data"].forEach(function(element){
+        //debugger;
+        ids = []
+        for (i = 0; i < $(".load-button").length; i++) {
+          ids.push($(".load-button")[i]["attributes"]["data-id"].value);
+        }
+        if(!ids.includes(element["id"])) {
+          previous_game = '<button href="games/'
+            + element["id"] +
+            '" class="load-button" data-id="'
+            + element["id"] +
+            '">' + element["id"] + '</button>';
+            //console.log(previous_game)
+          $("#games").append(previous_game);
+        }
+      });
+    });
+
+  });
+
   $("#save").on("click", function(){
     var td_one = $("td")[0].innerHTML
     var td_two = $("td")[1].innerHTML
@@ -154,17 +182,25 @@ function attachListeners() {
     var td_nine = $("td")[8].innerHTML
     var td_array = [td_one,td_two,td_three,td_four,td_five,td_six,td_seven,td_eight,td_nine]
     var values = { 'state':  td_array}
-    var posting = $.post('/games', values)
+
+    //console.log(current_id == undefined)
+    if (current_id == undefined){
+      var posting = $.post('/games', values)
+    } else {
+      var posting = $.ajax('/games/' + current_id, {
+        method: 'PATCH',
+        data: values
+      })
+    }
 
     posting.done(function(data){
       debugger;
-      previous_game = '<a href="games/'
-        + data["data"]["id"] +
-        '" class="load-button" data-id="'
-        + data["data"]["id"] +
-        '">' + data["data"]["id"] + '</a>';
-      $("#games").append(previous_game);
+      current_id = data["data"]["id"]
     });
+  });
+
+  $("#clear").on("click", function(){
+    resetBoard();
   });
 
 }
