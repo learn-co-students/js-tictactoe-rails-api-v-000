@@ -58,12 +58,58 @@ function checkWinner() {
     }
   });
 
-  console.log(winner)
-
   if (winner) {
     return true
   } else {
     return false
   }
+}
+
+function doTurn(square) {
+  updateState(square);
+  var td_one = $("td")[0].innerHTML
+  var td_two = $("td")[1].innerHTML
+  var td_three = $("td")[2].innerHTML
+  var td_four = $("td")[3].innerHTML
+  var td_five = $("td")[4].innerHTML
+  var td_six = $("td")[5].innerHTML
+  var td_seven = $("td")[6].innerHTML
+  var td_eight = $("td")[7].innerHTML
+  var td_nine = $("td")[8].innerHTML
+  var td_array = [td_one,td_two,td_three,td_four,td_five,td_six,td_seven,td_eight,td_nine]
+  turn += 1;
+  if (!td_array.includes("") && !checkWinner()) {
+    setMessage("Tie game.")
+  } else if (checkWinner()) {
+    checkWinner();
+    resetBoard();
+    turn = 0;
+  }
+}
+
+function resetBoard() {
+  $("td")[0].innerHTML = ""
+  $("td")[1].innerHTML = ""
+  $("td")[2].innerHTML = ""
+  $("td")[3].innerHTML = ""
+  $("td")[4].innerHTML = ""
+  $("td")[5].innerHTML = ""
+  $("td")[6].innerHTML = ""
+  $("td")[7].innerHTML = ""
+  $("td")[8].innerHTML = ""
+}
+
+function attachListeners() {
+  var td_one = $("td")[0]
+  var td_two = $("td")[1]
+  var td_three = $("td")[2]
+  var td_four = $("td")[3]
+  var td_five = $("td")[4]
+  var td_six = $("td")[5]
+  var td_seven = $("td")[6]
+  var td_eight = $("td")[7]
+  var td_nine = $("td")[8]
+
+  
 
 }
