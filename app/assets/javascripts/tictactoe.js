@@ -137,7 +137,7 @@ function saveGame(){
 }
 
 function attachListeners(){
-
+  let $theBoard = $("table")
   let $squares = $("td")
   let $saveButton = $("button#save")
   let $previousButton = $("button#previous")
@@ -157,7 +157,11 @@ function attachListeners(){
     let boardState = boardToArray()
     let submissionParams = {state: boardState}
     let posting = $.post("/games", submissionParams, function(data){
-
+      debugger
+      if (!$theBoard.data("game-id")){
+        $theBoard.attr("data-game-id", data["data"]["id"])
+        debugger
+      }
       console.log(data)
     });
   });
