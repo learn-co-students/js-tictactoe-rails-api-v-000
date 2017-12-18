@@ -34,28 +34,36 @@ function checkWinner() {
     [2,4,6]
   ]
 
-  var td_one = $("td")[0].innerHTML
-  var td_two = $("td")[1].innerHTML
-  var td_three = $("td")[2].innerHTML
-  var td_four = $("td")[3].innerHTML
-  var td_five = $("td")[4].innerHTML
-  var td_six = $("td")[5].innerHTML
-  var td_seven = $("td")[6].innerHTML
-  var td_eight = $("td")[7].innerHTML
-  var td_nine = $("td")[8].innerHTML
-  var td_array = [td_one,td_two,td_three,td_four,td_five,td_six,td_seven,td_eight,td_nine]
-
-  console.log(td_array)
-
-  WIN_COMBINATIONS.forEach (function(win_combo) {
-    debugger;
-    //if (td_array[win_combo[0]] == "X" && td_array[win_combo[1]] == "X" && td_array[win_combo[2]] === "X") {
-    //  return true
-    //else (td_array[win_combo[0]] == "O" && td_array[win_combo[1]] == "O" && (td_array[win_combo[2]] == "O")
-    //  return true
-    //}
+  var winner = WIN_COMBINATIONS.some(function(win_combo) {
+    var td_one = $("td")[0].innerHTML
+    var td_two = $("td")[1].innerHTML
+    var td_three = $("td")[2].innerHTML
+    var td_four = $("td")[3].innerHTML
+    var td_five = $("td")[4].innerHTML
+    var td_six = $("td")[5].innerHTML
+    var td_seven = $("td")[6].innerHTML
+    var td_eight = $("td")[7].innerHTML
+    var td_nine = $("td")[8].innerHTML
+    var td_array = [td_one,td_two,td_three,td_four,td_five,td_six,td_seven,td_eight,td_nine]
+    //debugger;
+    //console.log(win_combo)
+    if (td_array[win_combo[0]] == "X" && td_array[win_combo[1]] == "X" && td_array[win_combo[2]] === "X") {
+      //console.log("pass")
+      setMessage("Player X Won!");
+      return true
+    } else if (td_array[win_combo[0]] == "O" && td_array[win_combo[1]] == "O" && td_array[win_combo[2]] == "O") {
+      //console.log("pass")
+      setMessage("Player O Won!");
+      return true
+    }
   });
 
-  return false
+  console.log(winner)
+
+  if (winner) {
+    return true
+  } else {
+    return false
+  }
 
 }
