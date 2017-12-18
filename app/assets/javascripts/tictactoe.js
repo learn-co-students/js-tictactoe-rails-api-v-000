@@ -215,7 +215,6 @@ function attachListeners(){
             }
             turn = newTurnCount
             $theBoard.attr("data-game-id", this.dataset.gameId)
-            debugger
           })
         });
       }
