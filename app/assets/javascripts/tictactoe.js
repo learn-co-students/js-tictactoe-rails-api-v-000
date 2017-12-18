@@ -137,12 +137,14 @@ function saveGame(){
 }
 
 function attachListeners(){
-  let $theBoard = $("td")
+
+  let $squares = $("td")
   let $saveButton = $("button#save")
   let $previousButton = $("button#previous")
   let $clearButton = $("button#clear")
+  let $games = $("div#games")
 
-  for (let i of $theBoard){
+  for (let i of $squares){
     $(i).on("click", function(e) {
       // set up to not "DO TURN" if a winner is detected
       if (!checkWinner()){
@@ -155,13 +157,24 @@ function attachListeners(){
     let boardState = boardToArray()
     let submissionParams = {state: boardState}
     let posting = $.post("/games", submissionParams, function(data){
+
       console.log(data)
     });
   });
 
   $previousButton.on("click", function(e){
-    $.get("/games", function(data){
-      console.log(data)
+    $.get("/games", function(resp){
+      // for (const game in data){
+      //   console.log(game)
+      // }
+      let gamesList = ""
+      if (resp["data"].length > 0) {
+        for (const game of resp["data"]){
+          let newDiv = `<button>Game ${game["id"]}</button><br>`
+          gamesList += newDiv
+        }
+        $games.html(gamesList)
+      }
     })
   });
 
