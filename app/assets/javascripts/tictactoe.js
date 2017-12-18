@@ -19,9 +19,11 @@ function doTurn(square){
   checkCatsGame() ? tied = true : null;
 
   if (won === true) {
+    saveGame()
     clearBoard();
   } else if (tied === true){
     setMessage("Tie game.");
+    saveGame()
     clearBoard()
   } else {
     turn++;
@@ -89,7 +91,6 @@ function player(){
 
 function updateState(element){
   if ($(element).text() === ""){
-    //needs to actually update the game object in the database
 
     $(element).text(player())
     // CAPTURE THE ELEMENT'S DATASET IN VARIABLES, then put them into DOMCoordinatesMapper
@@ -187,12 +188,38 @@ function attachListeners(){
       let gamesList = ""
       if (resp["data"].length > 0) {
         for (const game of resp["data"]){
-          let newDiv = `<button>Game ${game["id"]}</button><br>`
+          let newDiv = `<button class="js-game-button" data-game-id="${game["id"]}">Game ${game["id"]}</button><br>`
           gamesList += newDiv
         }
         $games.html(gamesList)
       }
-    })
+    }).done(function(){
+      let $gameButtonsList = $("button.js-game-button")
+      for (let button of $gameButtonsList){
+        button.addEventListener("click", function(e){
+          clearBoard();
+          // debugger
+          let $theBoard = $("table")
+          $squares = $("td");
+          $.get(`/games/${this.dataset.gameId}`, (resp) => {
+            let gameState = resp.data.attributes.state
+            for (let s of $squares){
+              let xCoord = parseInt(s.dataset["x"])
+              let yCoord = parseInt(s.dataset["y"])
+              let boardArrayCoord = DOMCoordinatesMapper(xCoord,yCoord)
+              s.innerText = gameState[boardArrayCoord]
+            }
+            let newTurnCount = 0
+            for (let sq of gameState){
+              sq !== "" ? newTurnCount++ : null;
+            }
+            turn = newTurnCount
+            $theBoard.attr("data-game-id", this.dataset.gameId)
+            debugger
+          })
+        });
+      }
+    });
   });
 
   $clearButton.on("click", function(e){
