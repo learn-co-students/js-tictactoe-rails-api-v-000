@@ -2,7 +2,7 @@
 var turn = 0
 
 $( function(){
-
+  attachListeners();
 });
 
 function player() {
@@ -66,24 +66,28 @@ function checkWinner() {
 }
 
 function doTurn(square) {
-  updateState(square);
-  var td_one = $("td")[0].innerHTML
-  var td_two = $("td")[1].innerHTML
-  var td_three = $("td")[2].innerHTML
-  var td_four = $("td")[3].innerHTML
-  var td_five = $("td")[4].innerHTML
-  var td_six = $("td")[5].innerHTML
-  var td_seven = $("td")[6].innerHTML
-  var td_eight = $("td")[7].innerHTML
-  var td_nine = $("td")[8].innerHTML
-  var td_array = [td_one,td_two,td_three,td_four,td_five,td_six,td_seven,td_eight,td_nine]
-  turn += 1;
-  if (!td_array.includes("") && !checkWinner()) {
-    setMessage("Tie game.")
-  } else if (checkWinner()) {
-    checkWinner();
-    resetBoard();
-    turn = 0;
+  if (square.innerHTML == "") {
+    updateState(square);
+    var td_one = $("td")[0].innerHTML
+    var td_two = $("td")[1].innerHTML
+    var td_three = $("td")[2].innerHTML
+    var td_four = $("td")[3].innerHTML
+    var td_five = $("td")[4].innerHTML
+    var td_six = $("td")[5].innerHTML
+    var td_seven = $("td")[6].innerHTML
+    var td_eight = $("td")[7].innerHTML
+    var td_nine = $("td")[8].innerHTML
+    var td_array = [td_one,td_two,td_three,td_four,td_five,td_six,td_seven,td_eight,td_nine]
+    turn += 1;
+    if (!td_array.includes("") && !checkWinner()) {
+      setMessage("Tie game.");
+      resetBoard();
+      turn = 0;
+    } else if (checkWinner()) {
+      checkWinner();
+      resetBoard();
+      turn = 0;
+    }
   }
 }
 
@@ -110,6 +114,63 @@ function attachListeners() {
   var td_eight = $("td")[7]
   var td_nine = $("td")[8]
 
-  
+  $(td_one).on("click", function(){
+    move(td_one);
+  });
+  $(td_two).on("click", function(){
+    move(td_two);
+  });
+  $(td_three).on("click", function(){
+    move(td_three);
+  });
+  $(td_four).on("click", function(){
+    move(td_four);
+  });
+  $(td_five).on("click", function(){
+    move(td_five);
+  });
+  $(td_six).on("click", function(){
+    move(td_six);
+  });
+  $(td_seven).on("click", function(){
+    move(td_seven);
+  });
+  $(td_eight).on("click", function(){
+    move(td_eight);
+  });
+  $(td_nine).on("click", function(){
+    move(td_nine);
+  });
 
+  $("#save").on("click", function(){
+    var td_one = $("td")[0].innerHTML
+    var td_two = $("td")[1].innerHTML
+    var td_three = $("td")[2].innerHTML
+    var td_four = $("td")[3].innerHTML
+    var td_five = $("td")[4].innerHTML
+    var td_six = $("td")[5].innerHTML
+    var td_seven = $("td")[6].innerHTML
+    var td_eight = $("td")[7].innerHTML
+    var td_nine = $("td")[8].innerHTML
+    var td_array = [td_one,td_two,td_three,td_four,td_five,td_six,td_seven,td_eight,td_nine]
+    var values = { 'state':  td_array}
+    var posting = $.post('/games', values)
+
+    posting.done(function(data){
+      debugger;
+      previous_game = '<a href="games/'
+        + data["data"]["id"] +
+        '" class="load-button" data-id="'
+        + data["data"]["id"] +
+        '">' + data["data"]["id"] + '</a>';
+      $("#games").append(previous_game);
+    });
+  });
+
+}
+
+function move(square) {
+  if (!checkWinner()) {
+    doTurn(square);
+  }
 }
