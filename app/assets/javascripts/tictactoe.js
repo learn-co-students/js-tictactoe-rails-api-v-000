@@ -105,6 +105,7 @@ function resetBoard() {
   $("td")[6].innerHTML = ""
   $("td")[7].innerHTML = ""
   $("td")[8].innerHTML = ""
+  turn = 0;
   current_id = undefined;
 }
 
@@ -159,7 +160,7 @@ function attachListeners() {
         if(!ids.includes(element["id"])) {
           previous_game = '<button href="games/'
             + element["id"] +
-            '" class="load-button" data-id="'
+            '" class="load-button" onclick="load_game(' + element["id"] + ');" data-id="'
             + element["id"] +
             '">' + element["id"] + '</button>';
             //console.log(previous_game)
@@ -203,6 +204,20 @@ function attachListeners() {
     resetBoard();
   });
 
+}
+
+function load_game(data_id) {
+  turn = 0;
+  $.get("/games/" + data_id, function(data) {
+    debugger;
+    current_id = data["data"]["id"];
+    for (i = 0; i < data["data"]["attributes"]["state"].length; i++) {
+      $("td")[i].innerHTML = data["data"]["attributes"]["state"][i]
+      if (data["data"]["attributes"]["state"][i] == "X" || data["data"]["attributes"]["state"][i] == "O") {
+        turn++;
+      }
+    }
+  });
 }
 
 function move(square) {
