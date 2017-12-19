@@ -195,7 +195,7 @@ function attachListeners() {
     }
 
     posting.done(function(data){
-      debugger;
+      //debugger;
       current_id = data["data"]["id"]
     });
   });
@@ -209,7 +209,7 @@ function attachListeners() {
 function load_game(data_id) {
   turn = 0;
   $.get("/games/" + data_id, function(data) {
-    debugger;
+    //debugger;
     current_id = data["data"]["id"];
     for (i = 0; i < data["data"]["attributes"]["state"].length; i++) {
       $("td")[i].innerHTML = data["data"]["attributes"]["state"][i]
