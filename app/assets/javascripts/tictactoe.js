@@ -12,12 +12,11 @@ function player() {
 }
 
 function updateState(sq) {
-  var result = player();
-  sq.innerHTML = result;
+  sq.innerHTML = player();
 }
 
 function setMessage(string) {
-  $('div#message').append(string);
+  $('#message').append(string);
 }
 
 function checkWinner() {
@@ -47,55 +46,104 @@ function checkWinner() {
   return win;
 }
 
+function resetBoard() {
+  $('td').empty();  
+  turn = 0;
+  currentGameId = 0;
+  setMessage('');
+}
+
 function doTurn(sq) {
-  turn ++;
-  updateState(sq);
-  if (checkWinner()) {  //someone won 
-    $('td').text("");  
-    turn = 0;
+  if (sq.innerHTML === "") {
+    turn ++;
+    updateState(sq);
+  }
+  if (checkWinner()) {
+    saveGame();
+    resetBoard();
   } else if (turn === 9) {
     setMessage("Tie game.");
+    saveGame();
+    resetBoard();
   }
+
 }
 
 $(document).ready(function() {
   attachListeners();
 });
 
-function attachListeners() {
-  $('td').on('click', function() {
-    doTurn(this);
-  });
-
-  $('#save').on('click', function() {
+function saveGame() {
+  // $('#save').on('click', function() {
     //get current board status as array 
-    var gameStatus = [];
-    $('td').text().split("").forEach(char => gameStatus.push(char))
-    var gameParams = {state: gameStatus}
-    if (currentGameId !== 0) {
+    var gameState = [];
+    var tdAry = $('td').toArray()
+    tdAry.forEach(square => { gameState.push(square.innerText)})
+
+    // $('td').text().split("").forEach(char => gameStatus.push(char))
+    var gameParams = {state: gameState}
+    // debugger;
+    if (currentGameId) {
+      // {debugger};
       $.ajax({
         type: 'PATCH',
         url: `/games/${currentGameId}`,
         data: gameParams
       })
     } else {
-      var posting = $.post('/games', gameParams);
-      posting.done(function(data) {
-        console.log(data);
-        currentGameId = data.data.id 
-        {debugger};
+      // {debugger};
+      $.post('/games', gameParams, function(game) { 
+        currentGameId = game.data.id;
       });
+    
+
+      //   type: 'POST',
+      //   url: '/games',
+      //   data: gameParams
+      // })
+
+
+      // var posting = $.post('/games', gameParams);
+      // posting.done(function(game) {
+      //   console.log(game);
+      //   currentGameId = game.data.id 
+      //   {debugger};
+      // });
+    }
+  // });
+}
+
+function attachListeners() {
+  $('td').on('click', function() {
+    if (!checkWinner()) {
+    doTurn(this);
     }
   });
+
+  $('#save').on('click', () => saveGame());
 
   $('#previous').on('click', function() {
     var games = $.get('/games')
     $('#games').empty();
     games.done(function(data) {
-      {debugger};
       data.data.forEach((game) => {
         $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+        $(`#gameid-${game.id}`).on('click', function() {
+          var currentGame = $.get(`/games/${game.id}`);      
+          var gameState = game.attributes.state; 
+          //populate board 
+          gameState.forEach((mark, index) => {
+            $('td')[index].innerHTML = mark
+          });
+          //set game id and turn
+          currentGameId = game.id 
+          if (gameState.filter(sq => sq !== "").length % 2 == 0) {
+            turn = 2
+          } else {
+            turn = 1
+          }
         })
+      })
     });
 
   });
@@ -103,9 +151,9 @@ function attachListeners() {
   $('#clear').on('click', function() {
     $('td').text("");  
     turn = 0;
+    currentGameId = 0;
     // {debugger};
   });
-
 
 }
 
