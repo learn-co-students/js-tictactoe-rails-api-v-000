@@ -71,17 +71,19 @@ function saveGame(){
   let state = getBoard()
 
   if (!currGameId){
-  return fetch('/games', {
+  fetch('/games', {
     method: 'POST',
     body: JSON.stringify({state: state}),
     headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'authenticity_token': '<%= form_authenticity_token %>'
     }
     })
     .then(res => {
-     window.alert("Saved")
      return res.json()
+    }).then(responseJson => {
+      console.log(responseJson)
     })
   }
 
@@ -108,8 +110,9 @@ function showPreviousGames(){
 
 function listGames(games){
   $('#games').append("<ul>")
-  games.map(game => {
-    $('#games ul').append('<li><button data-gameId="${game.id}">${game.id}</button><br></li>' )
+  games.data.map(game => {
+    
+    $('#games ul').append(`<li><button data-gameId="${game.id}">${game.id}</button><br></li>` )
     $('ul[data-gameId="${game.id}"]').on('click', () => loadGame(game.id))
   })
 }
@@ -125,11 +128,16 @@ function fetchGame(gameId){
 }
 
 function getGames() {
-  return fetch('/games', {accept: 'application/json'})
-  .then(res => {
-    listGames(res.json())
-  })
+  fetch('/games', {accept: 'application/json'})
+    .then(res => {
+      return res.json()
+    }).then(responseJson => {
+      listGames(responseJson)
+    })
 }
+
+
+   
 
 function getGame(gameId) {
   
