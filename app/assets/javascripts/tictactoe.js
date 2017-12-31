@@ -1,5 +1,5 @@
 // // Code your JavaScript / jQuery solution here
-var origBoard = []
+var origBoard = ["", "", "", "","", "", "", "",""]
 const playerone = 'O'
 const playertwo = 'X' 
 var turn = 0
@@ -30,12 +30,12 @@ attachListeners()
   
   
       function doTurn(square){
-        debugger
+        
         updateState(square)
-        // if (checkWinner() === true){
-        //   var origBoard = Array.from(Array(9).keys())
-        //   // var turn = 0
-        // }
+        if (checkWinner() === true){
+          // var origBoard = Array.from(Array(9).keys())
+          var turn = 0
+        }
         setMessage("Tie game.")
         turn++
       }
@@ -52,18 +52,23 @@ attachListeners()
       }
 
       function updateState(square){
-        // console.log(square)
-        // var token = player()
-        
-        square.innerText = player()
+       square.innerText = player()
+       debugger
+       origBoard.push(square)
+       debugger
       }
 
       function setMessage(message){
         $('#message').append(message)
       }//done
 
-      function checkWinner(){
-      
+      function checkWinner(origBoard){
+        for(var i = 0; i < winCombos.length; i++)
+        debugger
+        // if (origBoard === winCombos[i])
+        // {return true}
+        // else 
+        // {return false}
       }
   
 
