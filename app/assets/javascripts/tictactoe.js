@@ -22,8 +22,9 @@ var winningCombo = [
 
 var squares = document.getElementsByTagName('td');
 
+
 ////////////////////////////////////////////////////////
-// Global Functions
+// Global General Functions
 ////////////////////////////////////////////////////////
 
 function toArr(collection){
@@ -31,9 +32,34 @@ function toArr(collection){
 	return arr.map(function(a) { return a.textContent; })
 }
 
-// Returns 'X' when even, 'O' when odd.
 function isEven(num) {
   return num % 2 === 0;
+}
+
+
+
+////////////////////////////////////////////////////////
+// Global Game Functions
+////////////////////////////////////////////////////////
+
+function resetBoard(){
+  for(var sq of squares) {
+	   $(sq).text('');
+     turn = 0;
+  };
+}
+
+function doTurn(move) {
+  if (updateState(move)) {
+      turn += 1;
+  }
+
+  let won = checkWinner();
+  if (won) {
+    resetBoard();
+  } else if (turn === 9) {
+    setMessage('Tie game.');
+  }
 }
 
 function player() {
@@ -42,7 +68,10 @@ function player() {
 
 var updateState = (square) => {
   let playerToken = player();
-  $(square).text(playerToken);
+  if ( $(square).is(':empty') ) {
+    $(square).text(playerToken);
+    return true;
+  }
 };
 
 var setMessage = (msg) => {
@@ -53,25 +82,59 @@ function checkWinner(){
   let token = player();
   let table = toArr(squares);
   for(let combo of winningCombo) {
-    if (table[combo[0]] !== "" && table[combo[0]] === table[combo[1]] && table[combo[1]] === table[combo[2]]) {
+    if (table[combo[0]] !== '' && table[combo[0]] === table[combo[1]] && table[combo[1]] === table[combo[2]]) {
+        setMessage(`Player ${table[combo[0]]} Won!`);
         return true;
       }
     }
   return false;
 }
 
+////////////////////////////////////////////////////////
+// Event Listeners
+////////////////////////////////////////////////////////
+
+function tableListener() {
+  $('table').on('click', 'td', function(e) {
+    if (!checkWinner()) {
+      doTurn(e.target);
+    }
+  });
+}
+
+function clearBtnListener() {
+  $('#clear').on('click', resetBoard);
+}
+
+function saveBtnListener() {
+  $('#save').on('click', function(e) {
+    let data = toArr(squares);
+    postSave(data)
+  });
+}
+
+function attachListeners() {
+  tableListener();
+  clearBtnListener();
+  saveBtnListener();
+}
+
+////////////////////////////////////////////////////////
+// AJAX Requests
+////////////////////////////////////////////////////////
+
+// 'POST', '/games' action: create
+function postSave(data){
+  $.post('/games', {state: data}, function(game) {
+
+  });
+}
+
+////////////////////////////////////////////////////////
+// DOM Ready()
+////////////////////////////////////////////////////////
+
 $(function() {
-
-  ////////////////////////////////////////////////////////
-  // Event Listeners
-  ////////////////////////////////////////////////////////
-
-  // $(table).on('click', 'td', function(e) {
-  //   $target = $(e.target);
-  //   xCoord = $target.data("x");
-  //   yCoord = $target.data("y");
-  //
-  // });
-
+  attachListeners();
 
 }); // End of  .ready() function
