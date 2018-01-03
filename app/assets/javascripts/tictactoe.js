@@ -5,6 +5,7 @@
 ////////////////////////////////////////////////////////
 
 var turn = 0;
+var currentGameId = 0;
 var winningCombo = [
   [0,1,2], // TOP ROW
   [3,4,5], // MIDDLE ROW
@@ -46,6 +47,7 @@ function resetBoard(){
   for(var sq of squares) {
 	   $(sq).text('');
      turn = 0;
+     currentGameId = 0;
   };
 }
 
@@ -53,12 +55,12 @@ function doTurn(move) {
   if (updateState(move)) {
       turn += 1;
   }
-
-  let won = checkWinner();
-  if (won) {
+  if (checkWinner()) {
+    autoSave();
     resetBoard();
   } else if (turn === 9) {
     setMessage('Tie game.');
+    autoSave();
   }
 }
 
@@ -67,12 +69,17 @@ function player() {
 }
 
 var updateState = (square) => {
-  let playerToken = player();
   if ( $(square).is(':empty') ) {
-    $(square).text(playerToken);
+    $(square).text(player());
     return true;
   }
 };
+
+function setBoard(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    squares[i].textContent = arr[i];
+  }
+}
 
 var setMessage = (msg) => {
   $('#message').html(msg);
@@ -88,6 +95,18 @@ function checkWinner(){
       }
     }
   return false;
+}
+
+function buildBtn(id) {
+  return `<button id="${id}">Game ${id}</button>`;
+}
+
+function appendGamesBtn(btn) {
+  $('#games').append(btn);
+}
+
+function autoSave() {
+  postSave();
 }
 
 ////////////////////////////////////////////////////////
@@ -107,9 +126,18 @@ function clearBtnListener() {
 }
 
 function saveBtnListener() {
-  $('#save').on('click', function(e) {
-    let data = toArr(squares);
-    postSave(data)
+  $('#save').on('click', postSave);
+}
+
+function previousButton() {
+  $('#previous').on('click', getGames);
+}
+
+function gameButtons() {
+  $('#games').on('click', 'button', function(e) {
+    // autoSave current game if not saved.
+    let id = $(e.target).attr('id');
+    getGame(id);
   });
 }
 
@@ -117,6 +145,8 @@ function attachListeners() {
   tableListener();
   clearBtnListener();
   saveBtnListener();
+  previousButton();
+  gameButtons();
 }
 
 ////////////////////////////////////////////////////////
@@ -124,11 +154,56 @@ function attachListeners() {
 ////////////////////////////////////////////////////////
 
 // 'POST', '/games' action: create
-function postSave(data){
-  $.post('/games', {state: data}, function(game) {
+function postSave(){
+  let data = toArr(squares);
+  if (currentGameId) {
 
-  });
+    $.ajax({
+      type: 'PATCH',
+      url: '/games/' + currentGameId,
+      dataType: 'json',
+      data: {state: data}
+    }).done(function(game) {
+      let gameData = game.data;
+      currentGameId = gameData.id;
+    });
+
+  } else {
+
+    $.post('/games', {state: data}, function(game) {
+        // store in CurrentGameId variable.
+        let id = game.data.id;
+        currentGameId = id;
+        appendGamesBtn(buildBtn(id));
+    });
+  }
 }
+
+function getGames() {
+  $.get('/games')
+    .done(function(data) {
+      let gameData = data.data;
+      let gameBtns = toArr( $('#games').children('button') );
+      for (let game of gameData) {
+        if (gameBtns.indexOf(`Game ${game.id}`) === -1) {
+          appendGamesBtn(buildBtn(game.id));
+        }
+      }
+
+    });
+}
+
+function getGame(id) {
+  $.get('/games/' + id)
+    .done(function(data) {
+      let gameData = data.data;
+      let gameState = gameData.attributes.state;
+      currentGameId = gameData.id;
+      setBoard(gameState);
+    });
+}
+
+
 
 ////////////////////////////////////////////////////////
 // DOM Ready()
