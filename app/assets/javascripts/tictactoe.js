@@ -60,6 +60,7 @@ function doTurn(move) {
     resetBoard();
   } else if (turn === 9) {
     setMessage('Tie game.');
+    resetBoard();
     autoSave();
   }
 }
@@ -70,14 +71,14 @@ function player() {
 
 var updateState = (square) => {
   if ( $(square).is(':empty') ) {
-    $(square).text(player());
+    $(square).html(player())
     return true;
   }
 };
 
 function setBoard(arr) {
   for (let i = 0; i < arr.length; i++) {
-    squares[i].textContent = arr[i];
+    $(squares[i]).html( arr[i] );
   }
 }
 
@@ -108,6 +109,8 @@ function appendGamesBtn(btn) {
 function autoSave() {
   postSave();
 }
+
+
 
 ////////////////////////////////////////////////////////
 // Event Listeners
@@ -142,12 +145,14 @@ function gameButtons() {
 }
 
 function attachListeners() {
-  tableListener();
-  clearBtnListener();
-  saveBtnListener();
-  previousButton();
   gameButtons();
+  clearBtnListener();
+  tableListener();
+  previousButton();
+  saveBtnListener();
 }
+
+
 
 ////////////////////////////////////////////////////////
 // AJAX Requests
@@ -198,6 +203,7 @@ function getGame(id) {
     .done(function(data) {
       let gameData = data.data;
       let gameState = gameData.attributes.state;
+      turn = gameState.filter((value) => value !== "").length;
       currentGameId = gameData.id;
       setBoard(gameState);
     });
@@ -211,5 +217,4 @@ function getGame(id) {
 
 $(function() {
   attachListeners();
-
 }); // End of  .ready() function
