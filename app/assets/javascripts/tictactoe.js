@@ -1,7 +1,7 @@
 // Code your JavaScript / jQuery solution here
   $(document).ready(attachListeners);
-  window.upAndRunning = false;
-  window.activeGameId = undefined;
+  window.upAndRunning = false; //upAndRunning means a game can be modified
+  window.activeGameId = undefined; //activeGameId is the id of any loaded game or currently played and already saved game
 // Determine Player
   function player() {
       window.turn = this.turn || 0
@@ -67,7 +67,7 @@
       };
   };
 
-//reset squares, turn, message, hidey
+//reset squares, turn, activeGameId
   function clear() {
     var squares = $('td');
     $(squares).text("");
@@ -76,7 +76,7 @@
     window.turn = 0;
   };
 //
-//check to see if game has been saved before
+//check to see if game has been saved before - NOT BEING USED
   function checkSave() {
       if (activeGameId == undefined) {
           return false;
@@ -85,9 +85,9 @@
       };
   };
 
+// send PATCH with current game layout
   function updateGame() {
       var currentGame = statify();
-
       $.ajax({
           url: "/games/" + activeGameId,
           data: {
@@ -103,21 +103,26 @@
       if (checkTie() == true || checkWinner() == true) {
           window.upAndRunning = false;
       };
-
+//if clicked space is empty add token
       if (clicked.innerHTML == "") {
           this.updateState(clicked);
+          // check to see if it's the winning move
           if (checkWinner()) {
-              // if game not saved yet save now
+              // WINNER! if game not saved yet save now
               if (activeGameId == undefined) {
                   saveGame();
               } else {
                   // if game already saved update as a winner
                   updateGame();
               };
+              //reset the game board after a win
               clear();
           } else {
+              //NOT a winner increment turn count
               window.turn += 1;
+              //check to see if game is tied
               if (window.turn == 9) {
+                  //TIE!
                   setMessage("Tie game.");
                   // if game not saved yet save now
                   if (activeGameId == undefined) {
@@ -126,6 +131,7 @@
                       // if game already saved update as a tie
                       updateGame();
                   };
+                  //reset game board after a tie
                   clear();
               };
           };
@@ -142,6 +148,7 @@
       return gamestate;
   };
 
+// save game with state and set window activeGameId
 function saveGame() {
     var currentGame = statify();
     $.post("/games", {state: currentGame}).done(function(resp) {
@@ -159,7 +166,7 @@ function saveGame() {
       });
   };
 
-// set the turn for a loaded game
+// set the turn for a saved and loaded game
   function setTurn(arr) {
       var counter = 0;
       for (var i = 0; i <= arr.length; i++) {
@@ -172,52 +179,57 @@ function saveGame() {
 
 
   function attachListeners() {
+    //click on board for a move
     $('td').click(function(event) {
         if (window.upAndRunning == true) {
         this.addEventListener('click', doTurn(this), false)
         };
     });
 
+    // click save button
     $('#save').click (function(event) {
+        // no activeGameId means not yet saved to db
         if (activeGameId == undefined) {
               saveGame();
         } else {
+        // an activeGameId means saved game and upAndRunning means not yet won or tied
             if (window.upAndRunning == true) {
             updateGame();
             };
         };
     });
 
-
+    // click previous button
     $('#previous').click (function(event) {
-          let allofem = $.get("/games");
+          let allofem = $.get("/games");  //get all games from db
           allofem.done(function(data) {
               var echGm = data['data']
-              var replace = ""
+              var replace = ""            //empty string needs to be accessible
               echGm.forEach(function(el) {
-                  replace += "<button>" + el.id + "</button><br>";
+                  replace += "<button>" + el.id + "</button><br>"; //make a button with each id from response
               });
-              $("#games").html(replace);
+              $("#games").html(replace);  //replace html in the games div
           });
     });
 
+    // add functionality to buttons in games div
     $("#games").on('click', 'button', (function() {
-          var gameid = $(this).text();
+          var gameid = $(this).text(); //grab text from button to use as game id
           $.get('/games/' + gameid).done(function(resp) {
                var kickback = resp;
                var test = kickback['data']['id'];
-               activeGameId = test;
+               activeGameId = test;  //could have just set this from text above instead of resonse
                var pieces = kickback['data']['attributes']['state'];
-               setTurn(pieces);
-               populateBrd(pieces);
+               setTurn(pieces);  //determine turn and thus next player's piece
+               populateBrd(pieces); //convert game's state into a populated game board
               if (checkWinner() == false && checkTie() == false) {
-                  window.upAndRunning = true;
+                  window.upAndRunning = true; //allows for repopulating board with won and tied games
               };
           });
       }));
-
+    // click on clear button
     $('#clear').click (function(event) {
-        clear();
+        clear(); //wanted the clear function to be available within other functions.
     });
   };
 
