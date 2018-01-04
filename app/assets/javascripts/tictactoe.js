@@ -15,27 +15,64 @@ const winCombos = [
   [0,4,8],
   [2,4,6]
 ]
-attachListeners()
+// var cell = document.getElementsByTagName('td')
 
+// function Game(squares){
+//   this.squares = ["", "", "", "","", "", "", "",""]
+// }
+function Game (state){
+  this.state = state
+}
+
+var game = new Game
+
+const cell = document.getElementsByTagName('td')
+
+$(function(){
+attachListeners()
+startGame()
+})
+
+  // function newGame(){
+  //   console.log('test')
+    
+  // }
   function attachListeners(){
-    var cell = document.getElementsByTagName('td')
-      for(var i = 0; i < cell.length; i++)
-       {
-     cell[i].addEventListener('click', function(){
-       square = this
-        doTurn(square)
-     })
+    var arr = [].slice.call(cell) 
+    
+       arr.forEach(function(squares){
+         
+         squares.addEventListener('click', function(){
+           square = this
+           doTurn(square)
+         })
+             
+   })
+        
+
+    
+  } 
+  function startGame(){
+    origBoard = Array.from(Array(9).keys())
+    $(cell).each(function (i, square){
+
+    })
+      
+    
+    for(var i = 0; i< cell.length; i++){
+      cell[i].innerText = ''
     }
   }
-  
+    
   
       function doTurn(square){
-        
+
         updateState(square)
-        if (checkWinner() === true){
-          // var origBoard = Array.from(Array(9).keys())
-          var turn = 0
-        }
+        // if (checkWinner() === true){
+        //   // var origBoard = Array.from(Array(9).keys())
+        //   var turn = 0
+        // }
+
         setMessage("Tie game.")
         turn++
       }
@@ -53,9 +90,8 @@ attachListeners()
 
       function updateState(square){
        square.innerText = player()
-       debugger
-       origBoard.push(square)
-       debugger
+       
+      //  game.push(square)
       }
 
       function setMessage(message){
@@ -63,15 +99,45 @@ attachListeners()
       }//done
 
       function checkWinner(origBoard){
-        for(var i = 0; i < winCombos.length; i++)
-        debugger
+        // for(var i = 0; i < winCombos.length; i++)
+        
         // if (origBoard === winCombos[i])
         // {return true}
         // else 
         // {return false}
       }
-  
-
+  $(function(){
+    $('#save').on('click', function(e){
+      e.preventDefault()
+      var cell = document.getElementsByTagName('td')
+      
+        $.ajax({
+          
+          url: "http://localhost:3000/" + "games",
+          method: 'POST',
+          dataType: 'json',
+        
+        }).done(function(json){
+          debugger
+      })
+    })
+    $(function(){
+      $('#previous').on('click', function(e){
+        e.preventDefault()
+        $.ajax({
+          dataType: 'json',
+          url: 'http://localhost:3000/games',
+        }).done(function(json){
+          debugger
+          json.forEach(function(game){
+            debugger
+            var gameLi = game.renderLi()
+          })
+        })
+      })
+    })
+  })
+      
     
 
 
