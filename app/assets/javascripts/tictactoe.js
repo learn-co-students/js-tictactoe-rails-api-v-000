@@ -1,7 +1,5 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
-var board = document.querySelectorAll('td')
-
 var winningBoard = [
    [0,1,2],
    [3,4,5],
@@ -12,6 +10,20 @@ var winningBoard = [
    [0,4,8],
    [2,4,6]
  ]
+
+$(document).ready(function(){
+  attachListeners();
+});
+
+function attachListeners(){
+  $('td').each(function(key, value){
+    this.addEventListener("click", function(){
+      if(!checkWinner() && !checkTie()){
+        doTurn(this);
+      }}
+    )
+  })
+}
 
 function isEven(turn) {
   return turn % 2 === 0;
@@ -26,7 +38,7 @@ function updateState(position){
 }
 
 function setMessage(string){
-  $("#message").html(string);
+  $("#message").text(string);
 }
 
 function setBoard(){
@@ -36,52 +48,41 @@ function setBoard(){
 }
 
 function checkWinner(){
+  var win = false;
   var currentBoard = setBoard();
 	function winningCombo(currentVal) {
 		if (currentBoard[currentVal[0]] === currentBoard[currentVal[1]] && currentBoard[currentVal[1]] === currentBoard[currentVal[2]] && currentBoard[currentVal[0]] !== "") {
-      winner = currentBoard[currentVal[0]]
-      setMessage(`Player ${winner} Won!`);
-      return true;
+      setMessage(`Player ${currentBoard[currentVal[0]]} Won!`);
+      return win = true;
 		}
 	}
 	return winningBoard.some(winningCombo)
 }
 
-function tieGame(){
-  var currentBoard = setBoard();
-  if (currentBoard.every(x => x !== "")){
-    setMessage("Tie game.");
-  }
+function checkTie(){
+  return turn === 9;
 }
 
 function doTurn(position){
-  //doTurn() increments the value of the "turn" variable
-  turn++;
-  //doTurn() invokes the checkWinner() function
-  //doTurn() resets the board and the "turn" counter when a game is won
 
-  //doTurn() invokes the updateState() function
-  updateState(position);
-  //doTurn() invokes the setMessage() function with the argument "Tie game." when the game is tied
-  tieGame();
-
-  if (checkWinner()){
-    $('td').each(function(i, val) {
-    	val.innerHTML = "";
-    })
-    turn = 0;
-  };
-
+  if (position.innerHTML === ""){
+    //doTurn() invokes the updateState() function
+    updateState(position);
+    //doTurn() increments the value of the "turn" variable
+    turn++;
+    //doTurn() invokes the setMessage() function with the argument "Tie game." when the game is tied
+    //doTurn() invokes the checkWinner() function
+    //doTurn() resets the board and the "turn" counter when a game is won
+    if(checkWinner()){
+      resetBoard();
+    } else if (checkTie()){
+      setMessage("Tie game.");
+      resetBoard();
+    }
+  }
 }
 
-$(document).ready(function(){
-
-}
-
-function attachListeners(){
-	for (var i = 0; i < board.length; i++) {
-  		board[i].addEventListener("click", function() {
-    	doTurn(this)
-    	});
-	}
+function resetBoard(){
+  $('td').empty();
+  turn = 0;
 }
