@@ -1,10 +1,10 @@
-// Code your JavaScript / jQuery solution here
 let turn = 0
 
 $(document).ready(function(){
   attachListeners();
 });
 
+//attaches click event listeners
 function attachListeners(){
   $('td').click(function(){
     if(!checkWinner() && !checkTie()){
@@ -13,51 +13,29 @@ function attachListeners(){
   )
 }
 
+//determines player based on turn
 function player(){
   return turn % 2 === 0 ? 'X' : 'O';
 }
 
+//updates player token
 function updateState(position){
   position.innerHTML = player();
 }
 
+//sets message based on submitted string
 function setMessage(string){
   $("#message").text(string);
 }
 
-function setBoard(){
-  let board = []
-  $('td').toArray().forEach(x => board.push(x.innerHTML))
-  return board
-}
-
-function checkWinner(){
-  let winningBoard = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-  let win = false;
-  let currentBoard = setBoard();
-	function winningCombo(currentVal) {
-		if (currentBoard[currentVal[0]] === currentBoard[currentVal[1]] && currentBoard[currentVal[1]] === currentBoard[currentVal[2]] && currentBoard[currentVal[0]] !== "") {
-      setMessage(`Player ${currentBoard[currentVal[0]]} Won!`);
-      return win = true;
-		}
-	}
-	return winningBoard.some(winningCombo)
-}
-
-function checkTie(){
-  return turn === 9;
-}
-
+// responsible for each turn in game
 function doTurn(position){
-
   if (position.innerHTML === ""){
-    //doTurn() invokes the updateState() function
+    // Updates board based on clicked element and increases turn counter
     updateState(position);
-    //doTurn() increments the value of the "turn" variable
     turn++;
-    //doTurn() invokes the setMessage() function with the argument "Tie game." when the game is tied
-    //doTurn() invokes the checkWinner() function
-    //doTurn() resets the board and the "turn" counter when a game is won
+
+    //checks for win or tie and resets board/set's message if either state is met
     if(checkWinner()){
       resetBoard();
     } else if (checkTie()){
@@ -67,6 +45,29 @@ function doTurn(position){
   }
 }
 
+//compares current board against winning board combinations
+function checkWinner(){
+  let winningBoard = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+  let currentBoard = $('td');
+
+  //iterates through winning board combos, checking to see if any board matches are present.
+  //if so, sets message and returns true
+
+  return winningBoard.some(function(currentVal) {
+		if (currentBoard[currentVal[0]].innerHTML === currentBoard[currentVal[1]].innerHTML && currentBoard[currentVal[1]].innerHTML === currentBoard[currentVal[2]].innerHTML && currentBoard[currentVal[0]].innerHTML !== "") {
+      setMessage(`Player ${currentBoard[currentVal[0]].innerHTML} Won!`);
+      return true;
+		}
+	})
+}
+
+//checks to see if turn counter reaches 9 (max turns)
+function checkTie(){
+  return turn === 9;
+}
+
+
+// resets turn counter and empties all board elements
 function resetBoard(){
   $('td').empty();
   turn = 0;
