@@ -2,7 +2,12 @@ let turn = 0
 
 $(document).ready(function(){
   attachListeners();
+  $('#save').click(saveGame);
+  $('#previous').click(prevButton);
+  $('#clear').click(clearButton);
 });
+
+// HELPER FUNCTIONS
 
 //attaches click event listeners
 function attachListeners(){
@@ -37,6 +42,7 @@ function doTurn(position){
 
     //checks for win or tie and resets board/set's message if either state is met
     if(checkWinner()){
+      saveGame();
       resetBoard();
     } else if (checkTie()){
       setMessage("Tie game.");
@@ -71,4 +77,39 @@ function checkTie(){
 function resetBoard(){
   $('td').empty();
   turn = 0;
+}
+
+
+//EVENT LISTENERS
+
+function saveGame(){
+  boardState = []
+
+  $('td').each(function(){
+    boardState.push(this.innerHTML);
+  });
+
+  $.post({
+    url: '/games',
+    data: {state: boardState},
+  }).done(function(){
+    resetBoard();
+  })
+}
+
+function prevButton(){
+  // $.get("/games", function (gameObj) {
+  //   if (gameObj.data.length > 0){
+  //     $('#games').append('<ul>').append(function(){
+  //       gameObj.data.forEach(game, index => )
+  //       $('#games ul').append(function(){
+  //
+  //       })
+  //     })
+  //   }
+  // })
+}
+
+function clearButton(){
+  resetBoard()
 }
