@@ -15,7 +15,7 @@ function attachListeners(){
 
 //determines player based on turn
 function player(){
-  return turn % 2 === 0 ? 'X' : 'O';
+  return turn % 2 ? 'O' : 'X';
 }
 
 //updates player token
