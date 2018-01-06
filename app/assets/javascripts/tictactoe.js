@@ -60,17 +60,28 @@ function doTurn(position){
   //doTurn() invokes the checkWinner() function
   //doTurn() resets the board and the "turn" counter when a game is won
 
-  if (checkWinner()){
-    $('td').html("")
-    turn = 0;
-  };
   //doTurn() invokes the updateState() function
   updateState(position);
   //doTurn() invokes the setMessage() function with the argument "Tie game." when the game is tied
   tieGame();
 
+  if (checkWinner()){
+    $('td').each(function(i, val) {
+    	val.innerHTML = "";
+    })
+    turn = 0;
+  };
+
+}
+
+$(document).ready(function(){
+
 }
 
 function attachListeners(){
-
+	for (var i = 0; i < board.length; i++) {
+  		board[i].addEventListener("click", function() {
+    	doTurn(this)
+    	});
+	}
 }
