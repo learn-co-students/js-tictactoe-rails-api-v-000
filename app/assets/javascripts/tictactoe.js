@@ -84,21 +84,32 @@ function resetBoard(){
 
 function saveGame(){
   boardState = [];
-
   //push current board state to array for post and patch requests
   $('td').each(function(){
     boardState.push(this.innerHTML);
   });
 
-  //post request for new game
+  if ($('#games')[0].className !== ""){
+    //Patch request to update game
+    var id = $('#games')[0].className
+    $.ajax({
+      url: `/games/${id}`,
+      data: {state: boardState},
+      type: 'PATCH'
+    })
+  } else {
+    //post request for new game
+    $.post({
+      url: '/games',
+      data: {state: boardState},
+    })
+  }
 
-  $.post({
-    url: '/games',
-    data: {state: boardState},
-  })
 
 
-  //Patch request to update game
+
+
+
 
 }
 
@@ -117,6 +128,7 @@ function getPreviousGames(){
         $('#games ul').append(`<li id="game-${game.id}"> ${game.id} </li>`);
         //add click listener to each li item, which triggers a game load to the board
         $(`#game-${game.id}`).click({id: game.id}, function(){
+          $("#games").removeClass().addClass(`${game.id}`)
         	$.get('/games/' + game.id, function(data) {
         		var arr = data.data.attributes.state;
         		populateBoard(arr);
