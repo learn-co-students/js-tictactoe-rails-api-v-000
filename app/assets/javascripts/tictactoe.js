@@ -86,7 +86,6 @@ function saveGame(){
   boardState = [];
 
   //push current board state to array for post and patch requests
-
   $('td').each(function(){
     boardState.push(this.innerHTML);
   });
@@ -98,6 +97,10 @@ function saveGame(){
   }).done(function(){
     resetBoard();
   })
+
+
+  //Patch request to update game
+
 }
 
 function prevButton(){
@@ -113,7 +116,9 @@ function getPreviousGames(){
         //append each saved game, adding custom id
         $('#games ul').append(`<li id="game-${game.id}"> ${game.id} </li>`);
         //add click listener to each li item, which triggers a game load to the board
-
+        $(`#game-${game.id}`).click({id: game.id}, function(){
+          debugger;
+        });
       });
     }})
 }
