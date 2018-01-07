@@ -111,10 +111,8 @@ startGame()
     $('#save').on('click', function(e){
       e.preventDefault()
       
-        $.ajax({url: "http://localhost:3000/games",
+        $.post({url: "http://localhost:3000/games",
           data: {data: JSON.stringify(origBoard)}, 
-          method: "POST",
-          dataType: "json",
         }).done(function(json){
           debugger
       })
