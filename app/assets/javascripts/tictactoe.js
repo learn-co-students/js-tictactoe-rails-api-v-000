@@ -46,6 +46,7 @@ function doTurn(position){
       resetBoard();
     } else if (checkTie()){
       setMessage("Tie game.");
+      saveGame();
       resetBoard();
     }
   }
@@ -76,6 +77,7 @@ function checkTie(){
 // resets turn counter and empties all board elements
 function resetBoard(){
   $('td').empty();
+  $("#games").removeClass();
   turn = 0;
 }
 
@@ -88,27 +90,25 @@ function saveGame(){
   $('td').each(function(){
     boardState.push(this.innerHTML);
   });
-
-  if ($('#games')[0].className !== ""){
-    //Patch request to update game
+  if ($('#games')[0].className === ""){
+  	//post request for new game
+    $.ajax({
+      type: 'POST',
+      url: '/games',
+      data: {state: boardState}
+    }).done(function(data) {
+    	var id = data.data.id;
+    	$("#games").removeClass().addClass(`${id}`);
+    })
+  } else {
+  	//Patch request to update game
     var id = $('#games')[0].className
     $.ajax({
       url: `/games/${id}`,
       data: {state: boardState},
       type: 'PATCH'
     })
-  } else {
-    //post request for new game
-    $.post({
-      url: '/games',
-      data: {state: boardState},
-    })
   }
-
-
-
-
-
 
 
 }
@@ -122,10 +122,9 @@ function getPreviousGames(){
     //if any previously saved games exist, append a ul and populate with games list indeces
     if (gameObj.data.length > 0){
     	$('#games').empty();
-      $('#games').append('<ul>');
       gameObj.data.forEach(function(game){
         //append each saved game, adding custom id
-        $('#games ul').append(`<li id="game-${game.id}"> ${game.id} </li>`);
+        $('#games').append(`<button id="game-${game.id}"> ${game.id} </button>`);
         //add click listener to each li item, which triggers a game load to the board
         $(`#game-${game.id}`).click({id: game.id}, function(){
           $("#games").removeClass().addClass(`${game.id}`)
@@ -139,8 +138,12 @@ function getPreviousGames(){
 }
 
 function populateBoard(arr) {
+  turn = 0;
   for (let i = 0; i < 9; i++) {
-  	var squares = $('td');
+    var squares = $('td');
+    if (arr[i] !== ""){
+      turn++;
+    }
     squares[i].innerHTML = arr[i];
   }
 }
