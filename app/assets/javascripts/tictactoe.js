@@ -53,7 +53,7 @@ function doTurn(position){
 
 //compares current board against winning board combinations
 function checkWinner(){
-  let winningBoard = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+  let winningBoard = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   let currentBoard = $('td');
 
   //iterates through winning board combos, checking to see if any board matches are present.
@@ -83,12 +83,15 @@ function resetBoard(){
 //EVENT LISTENERS
 
 function saveGame(){
-  boardState = []
+  boardState = [];
+
+  //push current board state to array for post and patch requests
 
   $('td').each(function(){
     boardState.push(this.innerHTML);
   });
 
+  //post request for new game
   $.post({
     url: '/games',
     data: {state: boardState},
@@ -98,16 +101,21 @@ function saveGame(){
 }
 
 function prevButton(){
-  // $.get("/games", function (gameObj) {
-  //   if (gameObj.data.length > 0){
-  //     $('#games').append('<ul>').append(function(){
-  //       gameObj.data.forEach(game, index => )
-  //       $('#games ul').append(function(){
-  //
-  //       })
-  //     })
-  //   }
-  // })
+  getPreviousGames();
+}
+
+function getPreviousGames(){
+  $.get("/games", function (gameObj) {
+    //if any previously saved games exist, append a ul and populate with games list indeces
+    if (gameObj.data.length > 0){
+      $('#games').append('<ul>');
+      gameObj.data.forEach(function(game){
+        //append each saved game, adding custom id
+        $('#games ul').append(`<li id="game-${game.id}"> ${game.id} </li>`);
+        //add click listener to each li item, which triggers a game load to the board
+
+      });
+    }})
 }
 
 function clearButton(){
