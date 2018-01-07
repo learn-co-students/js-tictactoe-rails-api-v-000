@@ -60,9 +60,10 @@ startGame()
   } 
   function startGame(){
     origBoard = Array.from(Array(9).keys())
-          
+    setMessage("")
     for(var i = 0; i< cell.length; i++){
       cell[i].innerText = ''
+      cell[i].id = i
     }
   }
     
@@ -89,7 +90,8 @@ startGame()
 
       function updateState(square){
        square.innerText = player()
-       
+        var number = square.id
+        origBoard[number] = square
       //  game.push(square)
       }
 
@@ -104,20 +106,17 @@ startGame()
         // {return true}
         // else 
         // {return false}
-      }
+     }
   $(function(){
     $('#save').on('click', function(e){
       e.preventDefault()
-      var cell = document.getElementsByTagName('td')
       
-        $.ajax({
-          
-          url: "http://localhost:3000/" + "games",
-          method: 'POST',
-          dataType: 'json',
-        
+        $.ajax({url: "http://localhost:3000/games",
+          data: {data: JSON.stringify(origBoard)}, 
+          method: "POST",
+          dataType: "json",
         }).done(function(json){
-          
+          debugger
       })
     })
     $(function(){
@@ -128,7 +127,7 @@ startGame()
           url: 'http://localhost:3000/games',
         }).done(function(json){
           
-          json.forEach(function(game){
+          json.data.forEach(function(game){
             
             var gameLi = game.renderLi()
           })
