@@ -91,11 +91,10 @@ function saveGame(){
   });
 
   //post request for new game
+
   $.post({
     url: '/games',
     data: {state: boardState},
-  }).done(function(){
-    resetBoard();
   })
 
 
@@ -111,16 +110,27 @@ function getPreviousGames(){
   $.get("/games", function (gameObj) {
     //if any previously saved games exist, append a ul and populate with games list indeces
     if (gameObj.data.length > 0){
+    	$('#games').empty();
       $('#games').append('<ul>');
       gameObj.data.forEach(function(game){
         //append each saved game, adding custom id
         $('#games ul').append(`<li id="game-${game.id}"> ${game.id} </li>`);
         //add click listener to each li item, which triggers a game load to the board
         $(`#game-${game.id}`).click({id: game.id}, function(){
-          debugger;
+        	$.get('/games/' + game.id, function(data) {
+        		var arr = data.data.attributes.state;
+        		populateBoard(arr);
+        	})
         });
       });
     }})
+}
+
+function populateBoard(arr) {
+  for (let i = 0; i < 9; i++) {
+  	var squares = $('td');
+    squares[i].innerHTML = arr[i];
+  }
 }
 
 function clearButton(){
