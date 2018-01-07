@@ -44,7 +44,13 @@ startGame()
          
          squares.addEventListener('click', function(){
            square = this
+           setMessage("")
+           if (square.innerText === ""){
            doTurn(square)
+           }
+           else {
+             setMessage("not a valid move")
+           }
          })
              
    })
@@ -54,11 +60,7 @@ startGame()
   } 
   function startGame(){
     origBoard = Array.from(Array(9).keys())
-    $(cell).each(function (i, square){
-
-    })
-      
-    
+          
     for(var i = 0; i< cell.length; i++){
       cell[i].innerText = ''
     }
@@ -66,12 +68,9 @@ startGame()
     
   
       function doTurn(square){
-
+        
         updateState(square)
-        // if (checkWinner() === true){
-        //   // var origBoard = Array.from(Array(9).keys())
-        //   var turn = 0
-        // }
+        checkWinner() 
 
         setMessage("Tie game.")
         turn++
@@ -118,7 +117,7 @@ startGame()
           dataType: 'json',
         
         }).done(function(json){
-          debugger
+          
       })
     })
     $(function(){
@@ -128,9 +127,9 @@ startGame()
           dataType: 'json',
           url: 'http://localhost:3000/games',
         }).done(function(json){
-          debugger
+          
           json.forEach(function(game){
-            debugger
+            
             var gameLi = game.renderLi()
           })
         })
