@@ -95,6 +95,26 @@ function checkWinner() {
     });
 };
 
+function doTurn(position) {
+    if (position.innerHTML === "") {
+        updateState(position);
+        turn++;
+
+        if (checkWinner()) {
+            //saveGame();
+            resetBoard();
+        } else if (turn === 9) {
+            setMessage('Tie game.');
+            //saveGame();
+            resetBoard();
+        };
+    };
+};
+
+function resetBoard() {
+    $('td').html("")
+    turn = 0
+};
     // doTurn() = increment turnCounter
         // invoke checkWinner()
         // invoke updateState
