@@ -42,9 +42,9 @@ function tableBtn() {
 };
 
 // Game Variables
-let turnCounter = 0;
-let gameID = 0;
-let winningCombo = [  
+var turn = 0;
+var gameID = 0;
+var winningCombo = [  
     [0,1,2],
     [3,4,5],
     [6,7,8],
@@ -55,8 +55,16 @@ let winningCombo = [
     [2,4,6] 
 ];
 
+// Helper Functions
+function isEven(num) {
+    return num % 2 === 0;
+};
+
 // Game Functions
-    // player() = determines if even (X) or odd (O)
+function player() { // player() = determines if even (X) or odd (O)
+    return isEven(turn) ? "X" : "O";
+};
+    
     // updateState(td) = add current player token to selected td element
     // setMessage() = sets a provided string as the innerHTML of the div#message element
     // checkWinner() = returns true if thers 3 in a row, false if no winning combination is present
