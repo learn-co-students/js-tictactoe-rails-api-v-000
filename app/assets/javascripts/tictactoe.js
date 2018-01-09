@@ -32,14 +32,14 @@ function tableBtn() {
             doTurn(this);
         };
     });
-
+};
 // function gamesBtn() {
     // $('#games').click(function() {
         // Get ID of selected game
             // loadGame(id);
     // });
 // };    
-};
+
 
 // Game Variables
 var turn = 0;
@@ -60,28 +60,47 @@ function isEven(num) {
     return num % 2 === 0;
 };
 
+function boardToArr() {
+    let currentBoard = $('td').map(function(e) {
+        return e.innerHTML
+    });
+    return currentBoard;
+};
+
 // Game Functions
-// player() = determines if even (X) or odd (O)
 function player() { 
     return isEven(turn) ? "X" : "O";
 };
 
-// updateState(td) = add current player token to selected td element
 function updateState(position) {
     if (position !== "") {
         position.innerHTML = player();
     };
 };
 
-// setMessage() = sets a provided string as the innerHTML of the div#message element
 function setMessage(string) {
-    $('#message').text(string);
+    $('#message').html(string);
 };
 
 function checkWinner() {
+    var status = false;
+    const table = boardToArr();
+    let win = winningCombo.forEach(function(combo) {
+        var winId0 = combo[0];
+        var winId1 = combo[1];
+        var winId2 = combo[2];
 
-};
-    
+        var pos0 = table[winId0];
+        var pos1 = table[winId1];
+        var pos2 = table[winId2];
+
+        if (pos0 != "" && pos0 === pos1 && pos1 === pos2) {
+            setMessage(`Player ${pos0} Won!`);
+            status = true;
+        };
+    });
+    return status;
+};    
     // checkWinner() = returns true if thers 3 in a row, false if no winning combination is present
         // if winner
         // set message to "Player [winning player] Won!"
