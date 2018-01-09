@@ -15,11 +15,7 @@ const winCombos = [
   [0,4,8],
   [2,4,6]
 ]
-// var cell = document.getElementsByTagName('td')
 
-// function Game(squares){
-//   this.squares = ["", "", "", "","", "", "", "",""]
-// }
 function Game (state){
   this.state = state
 }
@@ -91,14 +87,12 @@ startGame()
       function updateState(square){
        square.innerText = player()
         var number = square.id
-
         origBoard[number] = square
-      //  game.push(square)
       }
 
       function setMessage(message){
         $('#message').append(message)
-      }//done
+      }
 
       function checkWinner(origBoard){
       
@@ -106,19 +100,19 @@ startGame()
   $(function(){
     $('#save').on('click', function(e){
       e.preventDefault()
-      $('td').each(function(box){
-        origBoard.push($('td')[box].innerText)
+      var board = []
+      $('td').each(function(){
+        board.push(this.innerText)
         
-      })
-      
+      })      
         $.post({
-          url: "http://localhost:3000/games",
+          url: "/games",
           data: {
-               state: origBoard
+               state: board
             
           }
         }).done(function(json){
-          debugger
+          
       })
     })
     $(function(){
@@ -128,60 +122,27 @@ startGame()
           dataType: 'json',
           url: 'http://localhost:3000/games',
         }).done(function(json){
-          
           json.data.forEach(function(game){
+            var games = document.getElementById('games')
+            games.append(`
+            <input type="button" value="${game.id}>${game.id}</input>
+            `)
             
             var gameLi = game.renderLi()
           })
         })
       })
     })
-  })
-      
     
-
-
-
-
-      // $(document).ready(function attachlisteners(){
-      //   // function attachListeners(){
-//   $('td').eq(function(){
-//     debugger
-//     // var window = $(this).attr({num1: 'data-x',num2: 'data-y'})
-//     // $('#'+window).append('clicked here')
-//      console.log(this)
-//     // alert("you clicked (this.")
-//       })
-//   // save button
-//        $('#save').on('click', function (){
-//         //  alert('clicked')
-//        })
-//       //  show previous game
-//     $('#previous').on('click', function (){
-//     //  alert('clicked previous')
-//         })
-//         //  clear current
-//     $('#clear').on('click', function (){
-//       //  alert('clicked')
-//       })
-
-//   })
-// })
-// // startGame()
-// // const cells = document.querySelectorAll('table')
-// // startGame()
-
-// // function startGame(){
-// //   cells.addEventListener('click', turnClick, false)
-// // }
-
-
-// // function turnClick(click){
-// //   console.log(click.target.id)
-// // 
-// const route = 
-// $.ajax({
-//   url: 'http://local/games'
-
-// }).done(function(){
-//   $(this).append()
+    $(function(){
+    $('#clear').on('click', function (e){
+      e.preventDefault()
+      
+      $('td').each(function(){
+        this.innerHTML = ""
+        turn = 0
+        startGame()
+      })
+     })
+    })
+  })

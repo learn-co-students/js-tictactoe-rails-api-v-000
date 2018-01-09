@@ -11,8 +11,6 @@ class GamesController < ApplicationController
   end
 
   def create
-    # game = JSON.parse(game_params)
-    binding.pry
     game = Game.create(game_params)
     render json: game, status: 201
   end
