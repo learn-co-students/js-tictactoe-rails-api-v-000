@@ -67,14 +67,21 @@ function player() {
 };
 
 // updateState(td) = add current player token to selected td element
-function updateState(position) { 
-    position.innerHTML = player();
+function updateState(position) {
+    if (position !== "") {
+        position.innerHTML = player();
+    };
 };
-    
+
+// setMessage() = sets a provided string as the innerHTML of the div#message element
 function setMessage(string) {
     $('#message').text(string);
 };
-    // setMessage() = sets a provided string as the innerHTML of the div#message element
+
+function checkWinner() {
+
+};
+    
     // checkWinner() = returns true if thers 3 in a row, false if no winning combination is present
         // if winner
         // set message to "Player [winning player] Won!"
