@@ -60,13 +60,6 @@ function isEven(num) {
     return num % 2 === 0;
 };
 
-function boardToArr() {
-    let currentBoard = $('td').map(function(e) {
-        return e.innerHTML
-    });
-    return currentBoard;
-};
-
 // Game Functions
 function player() { 
     return isEven(turn) ? "X" : "O";
@@ -83,27 +76,16 @@ function setMessage(string) {
 };
 
 function checkWinner() {
-    var status = false;
-    const table = boardToArr();
-    let win = winningCombo.forEach(function(combo) {
-        var winId0 = combo[0];
-        var winId1 = combo[1];
-        var winId2 = combo[2];
+    let currentBoard = $('td');
 
-        var pos0 = table[winId0];
-        var pos1 = table[winId1];
-        var pos2 = table[winId2];
-
-        if (pos0 != "" && pos0 === pos1 && pos1 === pos2) {
-            setMessage(`Player ${pos0} Won!`);
-            status = true;
+    return winningCombo.some(function(pos) {
+        if (currentBoard[pos[0]].innerHTML === currentBoard[pos[1]].innerHTML && currentBoard[pos[1]].innerHTML === currentBoard[pos[2]].innerHTML && currentBoard[pos[0]].innerHTML !== "") {
+            setMessage(`Player ${currentBoard[pos[0]].innerHTML} Won!`);
+            return true;
         };
     });
-    return status;
-};    
-    // checkWinner() = returns true if thers 3 in a row, false if no winning combination is present
-        // if winner
-        // set message to "Player [winning player] Won!"
+};
+
     // doTurn() = increment turnCounter
         // invoke checkWinner()
         // invoke updateState
