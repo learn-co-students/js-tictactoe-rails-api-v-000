@@ -1,5 +1,5 @@
 // // Code your JavaScript / jQuery solution here
-var origBoard = ["", "", "", "","", "", "", "",""]
+var origBoard = []
 const playerone = 'O'
 const playertwo = 'X' 
 var turn = 0
@@ -7,7 +7,7 @@ var square
 
 const winCombos = [
   [0,1,2],
-  [3,4,5],
+  [3,4,5],  
   [6,7,8],
   [0,3,6],
   [1,4,7],
@@ -59,11 +59,11 @@ startGame()
     
   } 
   function startGame(){
-    origBoard = Array.from(Array(9).keys())
     setMessage("")
     for(var i = 0; i< cell.length; i++){
       cell[i].innerText = ''
-      cell[i].id = i
+      // cell[i].id = i
+      
     }
   }
     
@@ -91,6 +91,7 @@ startGame()
       function updateState(square){
        square.innerText = player()
         var number = square.id
+
         origBoard[number] = square
       //  game.push(square)
       }
@@ -100,19 +101,22 @@ startGame()
       }//done
 
       function checkWinner(origBoard){
-        // for(var i = 0; i < winCombos.length; i++)
-        
-        // if (origBoard === winCombos[i])
-        // {return true}
-        // else 
-        // {return false}
+      
      }
   $(function(){
     $('#save').on('click', function(e){
       e.preventDefault()
+      $('td').each(function(box){
+        origBoard.push($('td')[box].innerText)
+        
+      })
       
-        $.post({url: "http://localhost:3000/games",
-          data: {data: JSON.stringify(origBoard)}, 
+        $.post({
+          url: "http://localhost:3000/games",
+          data: {
+               state: origBoard
+            
+          }
         }).done(function(json){
           debugger
       })
