@@ -4,7 +4,9 @@ $(document).ready(function() {
     attachListeners();
 });
 
+///////////////////////////////
 // Listeners
+///////////////////////////////
 function attachListeners() {
     saveBtn();
     previousBtn();
@@ -13,7 +15,9 @@ function attachListeners() {
     // gamesBtn()
 };
 
+///////////////////////////////
 // Listener Functions
+///////////////////////////////
 function saveBtn() {
     $('#save').click(saveGame);
 };
@@ -40,8 +44,9 @@ function tableBtn() {
     // });
 // };    
 
-
+///////////////////////////////
 // Game Variables
+///////////////////////////////
 var turn = 0;
 var gameID = 0;
 var winningCombo = [  
@@ -55,12 +60,16 @@ var winningCombo = [
     [2,4,6] 
 ];
 
+///////////////////////////////
 // Helper Functions
+///////////////////////////////
 function isEven(num) {
     return num % 2 === 0;
 };
 
+///////////////////////////////
 // Game Functions
+///////////////////////////////
 function player() { 
     return isEven(turn) ? "X" : "O";
 };
