@@ -61,11 +61,19 @@ function isEven(num) {
 };
 
 // Game Functions
-function player() { // player() = determines if even (X) or odd (O)
+// player() = determines if even (X) or odd (O)
+function player() { 
     return isEven(turn) ? "X" : "O";
 };
+
+// updateState(td) = add current player token to selected td element
+function updateState(position) { 
+    position.innerHTML = player();
+};
     
-    // updateState(td) = add current player token to selected td element
+function setMessage(string) {
+    $('#message').text(string);
+};
     // setMessage() = sets a provided string as the innerHTML of the div#message element
     // checkWinner() = returns true if thers 3 in a row, false if no winning combination is present
         // if winner
