@@ -158,7 +158,7 @@ function updateState(e) {
 function currentBoard() {
   var board = [];
 
-  $('td').each(function(space) {
+  $('td').each(function() {
     board.push(this.innerHTML);
   });
 
