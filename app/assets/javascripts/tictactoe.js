@@ -4,18 +4,16 @@ $(document).ready(function() {
     attachListeners();
 });
 
-// Listeners => attachListeners
-    // save
-    // previous
-    // clear
-    // table for turns
+// Listeners
 function attachListeners() {
     saveBtn();
     previousBtn();
     clearBtn();
     tableBtn();
-};     
+    // gamesBtn()
+};
 
+// Listener Functions
 function saveBtn() {
     $('#save').click(saveGame);
 };
@@ -30,9 +28,17 @@ function clearBtn() {
 
 function tableBtn() {
     $('td').click(function() {
-        //if there is no winner
-        // doTurn(td)
+        if (!checkWinner()) {
+            doTurn(this);
+        };
     });
+
+// function gamesBtn() {
+    // $('#games').click(function() {
+        // Get ID of selected game
+            // loadGame(id);
+    // });
+// };    
 };
 
 // Game Variables
@@ -62,9 +68,11 @@ let winningCombo = [
         // invoke setMessage
             // with "Tie Game" if game ends in tie
         //  reset board and turnCounter when a game is won
+    // resetBoard
 
 
 // AJAX Functions
     // saveGame
-    // previousGames = g
+    // previousGames
+    // loadGame(id) from gamesBtn()
 
