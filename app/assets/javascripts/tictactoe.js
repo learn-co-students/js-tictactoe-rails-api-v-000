@@ -1,1 +1,70 @@
 // Code your JavaScript / jQuery solution here
+
+$(document).ready(function() {
+    attachListeners();
+});
+
+// Listeners => attachListeners
+    // save
+    // previous
+    // clear
+    // table for turns
+function attachListeners() {
+    saveBtn();
+    previousBtn();
+    clearBtn();
+    tableBtn();
+};     
+
+function saveBtn() {
+    $('#save').click(saveGame);
+};
+
+function previousBtn() {
+    $('#previous').click(previousGames);
+};
+
+function clearBtn() {
+    $('#clear').click(clearGame);
+};
+
+function tableBtn() {
+    $('td').click(function() {
+        //if there is no winner
+        // doTurn(td)
+    });
+};
+
+// Game Variables
+let turnCounter = 0;
+let gameID = 0;
+let winningCombo = [  
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6] 
+];
+
+// Game Functions
+    // player() = determines if even (X) or odd (O)
+    // updateState(td) = add current player token to selected td element
+    // setMessage() = sets a provided string as the innerHTML of the div#message element
+    // checkWinner() = returns true if thers 3 in a row, false if no winning combination is present
+        // if winner
+        // set message to "Player [winning player] Won!"
+    // doTurn() = increment turnCounter
+        // invoke checkWinner()
+        // invoke updateState
+        // invoke setMessage
+            // with "Tie Game" if game ends in tie
+        //  reset board and turnCounter when a game is won
+
+
+// AJAX Functions
+    // saveGame
+    // previousGames = g
+
