@@ -100,16 +100,14 @@ startGame()
   $(function(){
     $('#save').on('click', function(e){
       e.preventDefault()
-      var board = []
       $('td').each(function(){
-        board.push(this.innerText)
+        origBoard.push(this.innerText)
         
       })      
         $.post({
           url: "/games",
           data: {
-               state: board
-            
+               state: origBoard
           }
         }).done(function(json){
           
@@ -122,14 +120,17 @@ startGame()
           dataType: 'json',
           url: 'http://localhost:3000/games',
         }).done(function(json){
-          json.data.forEach(function(game){
-            var games = document.getElementById('games')
-            games.append(`
-            <input type="button" value="${game.id}>${game.id}</input>
-            `)
+          var games = json.data
             
-            var gameLi = game.renderLi()
-          })
+            var gamesDiv = document.getElementById('games')
+            debugger
+            let renderGames = games.forEach(function(game){
+              '<li>' + game.id + '</li>'
+            })
+            debugger
+            gamesDiv.append(renderGames)
+            
+          
         })
       })
     })
