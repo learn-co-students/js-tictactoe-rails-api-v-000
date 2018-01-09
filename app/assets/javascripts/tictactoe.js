@@ -1,8 +1,8 @@
 // // Code your JavaScript / jQuery solution here
-var origBoard = []
+var origBoard = ['','','','','','','','','']
 const playerone = 'O'
 const playertwo = 'X' 
-var turn = 0
+var turn = 1
 var square
 
 const winCombos = [
@@ -40,8 +40,8 @@ startGame()
          
          squares.addEventListener('click', function(){
            square = this
-           setMessage("")
-           if (square.innerText === ""){
+           setMessage('')
+           if (square.innerText === ''){
            doTurn(square)
            }
            else {
@@ -55,10 +55,11 @@ startGame()
     
   } 
   function startGame(){
-    setMessage("")
+    setMessage('')
     for(var i = 0; i< cell.length; i++){
       cell[i].innerText = ''
-      // cell[i].id = i
+      cell[i].id = i
+      turn = 1
       
     }
   }
@@ -67,13 +68,18 @@ startGame()
       function doTurn(square){
         
         updateState(square)
-        checkWinner() 
+        //  if (checkWinner() === true){
+        //  debugger 
+         
+        //   }
+         
 
         setMessage("Tie game.")
         turn++
       }
       function player (){
-        if(turn % 2 === 0 )
+        // debugger
+        if(turn % 2 == 0 )
         {
           return 'X';
         }
@@ -85,29 +91,47 @@ startGame()
       }
 
       function updateState(square){
+        // debugger
        square.innerText = player()
         var number = square.id
-        origBoard[number] = square
+        // debugger
+        origBoard[number] = square.innerText
+        
       }
 
       function setMessage(message){
         $('#message').append(message)
       }
 
-      function checkWinner(origBoard){
-      
+      function checkWinner(){
+            debugger
+            var player = player()
+            debugger
+          let plays = origBoard.reduce((a, e, i) =>
+            (e === player)  ? a.concat(i) : a,  [])
+          let gameWon = null;
+          for (let [index, win] of winCombos.entries()){
+            if(win.every(elm => plays.indexOf(elm) > -1 )){
+              debugger
+            // gameWon = {index: index, player: player};
+            break;
+          }
+        
+        }
+        return gameWon
      }
   $(function(){
     $('#save').on('click', function(e){
       e.preventDefault()
+      var board = []
       $('td').each(function(){
-        origBoard.push(this.innerText)
+        board.push(this.innerText)
         
       })      
         $.post({
           url: "/games",
           data: {
-               state: origBoard
+               state: board
           }
         }).done(function(json){
           
@@ -123,11 +147,11 @@ startGame()
           var games = json.data
             
             var gamesDiv = document.getElementById('games')
-            debugger
+            
             let renderGames = games.forEach(function(game){
               '<li>' + game.id + '</li>'
             })
-            debugger
+            
             gamesDiv.append(renderGames)
             
           
@@ -140,8 +164,8 @@ startGame()
       e.preventDefault()
       
       $('td').each(function(){
-        this.innerHTML = ""
-        turn = 0
+        this.innerHTML = ''
+        turn = 1
         startGame()
       })
      })
