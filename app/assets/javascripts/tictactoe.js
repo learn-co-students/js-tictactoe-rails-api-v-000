@@ -12,7 +12,6 @@ function attachListeners() {
     previousBtn();
     clearBtn();
     tableBtn();
-    // gamesBtn();
 };
 
 ///////////////////////////////
@@ -38,9 +37,6 @@ function tableBtn() {
     });
 };
 
-//function gamesBtn() {
-
-//};
 
 ///////////////////////////////
 // Game Variables
@@ -145,13 +141,22 @@ function previousGames() {
     $('#games').empty();
     $.get('/games', function(resp) {
         resp.data.forEach(function(game) {
-            $('#games').append(`<button data-id="${game.id} onclick="loadGame(${game.id})">${game.id}</button>`);
+            $('#games').append(`<button data-id="${game.id}" onclick="loadGame(${game.id})">${game.id}</button>`);
         });
     });
 };
 
-
-// loadGame(id) from gamesBtn()
-    // (in the div#games element) sends a GET request to the "/games/:id" route
-    // loads the saved game's state into the board
-    // marks the newly-loaded game state such that clicking the "save" button after loading a game sends a PATCH request
+function loadGame(id) {
+    gameId = id;
+    turn = 0
+    $.get(`/games/${id}`, function(resp) {
+        let data = resp.data.attributes.state
+        for (let i = 0; i < 9; i++) {
+            let squares = $('td');
+            if (data[i] !== "") {
+                turn++;
+            };
+            squares[i].innerHTML = data[i];
+        };
+    });
+};
