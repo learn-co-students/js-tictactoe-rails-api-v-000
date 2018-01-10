@@ -12,7 +12,7 @@ function attachListeners() {
     previousBtn();
     clearBtn();
     tableBtn();
-    // gamesBtn()
+    gamesBtn();
 };
 
 ///////////////////////////////
@@ -32,13 +32,13 @@ function clearBtn() {
 
 function tableBtn() {
     $('td').click(function() {
-        if (!checkWinner()) {
+        if (!checkWinner() && !checkTie()) {
             doTurn(this);
         };
     });
 };
-// function gamesBtn() {
-    // $('#games').click(function() {
+//function gamesBtn() {
+    //$('#games').click(function() {
         // Get ID of selected game
             // loadGame(id);
     // });
@@ -48,7 +48,7 @@ function tableBtn() {
 // Game Variables
 ///////////////////////////////
 var turn = 0;
-var gameID = 0;
+var gameId = 0;
 var winningCombo = [  
     [0,1,2],
     [3,4,5],
@@ -65,6 +65,14 @@ var winningCombo = [
 ///////////////////////////////
 function isEven(num) {
     return num % 2 === 0;
+};
+
+function checkTie() {
+    return turn === 9;
+};
+
+function currentBoard() {
+    return $('td')
 };
 
 ///////////////////////////////
@@ -85,11 +93,11 @@ function setMessage(string) {
 };
 
 function checkWinner() {
-    let currentBoard = $('td');
+    let board = currentBoard();
 
-    return winningCombo.some(function(pos) {
-        if (currentBoard[pos[0]].innerHTML === currentBoard[pos[1]].innerHTML && currentBoard[pos[1]].innerHTML === currentBoard[pos[2]].innerHTML && currentBoard[pos[0]].innerHTML !== "") {
-            setMessage(`Player ${currentBoard[pos[0]].innerHTML} Won!`);
+    return winningCombo.some(function(position) {
+        if (board[position[0]].innerHTML === board[position[1]].innerHTML && board[position[1]].innerHTML === board[position[2]].innerHTML && board[position[0]].innerHTML !== "") {
+            setMessage(`Player ${board[position[0]].innerHTML} Won!`);
             return true;
         };
     });
@@ -103,7 +111,7 @@ function doTurn(position) {
         if (checkWinner()) {
             //saveGame();
             resetBoard();
-        } else if (turn === 9) {
+        } else if (checkTie()) {
             setMessage('Tie game.');
             //saveGame();
             resetBoard();
@@ -112,20 +120,38 @@ function doTurn(position) {
 };
 
 function resetBoard() {
-    $('td').html("")
+    let board = currentBoard();
+    board = Array.prototype.map.call(board, function(e) {
+        e.innerHTML = "";
+    });
     turn = 0
+    gameId = 0
 };
-    // doTurn() = increment turnCounter
-        // invoke checkWinner()
-        // invoke updateState
-        // invoke setMessage
-            // with "Tie Game" if game ends in tie
-        //  reset board and turnCounter when a game is won
-    // resetBoard
 
+function savedBoard() {
+    let board = currentBoard();
+    board = Array.prototype.map.call(board, function(e) {
+        return e.innerHTML;
+    });
+    return board;
+};
 
+///////////////////////////////
 // AJAX Functions
-    // saveGame
-    // previousGames
-    // loadGame(id) from gamesBtn()
+///////////////////////////////
 
+// saveGame -
+    // when the current game has not been saved, send a POST request to "/games"
+    // when the current game already exists in the database, send a PATCH request to the "/games/:id"
+// previousGames -
+    // sends a GET request to the "/games" route
+    // when no previously-saved games exist in the database does not add any children to the div#games element in the DOM
+    // when previously-saved games exist in the database adds those previous games as buttons in the DOM's div#games element
+    // when previously-saved games exist in the database does not re-add saved games already present in the div#games element when the "previous" button is clicked a second time
+// loadGame(id) from gamesBtn()
+    // (in the div#games element) sends a GET request to the "/games/:id" route
+    // loads the saved game's state into the board
+    // marks the newly-loaded game state such that clicking the "save" button after loading a game sends a PATCH request
+// clearGame -
+    // when an unsaved game is in progress clears the game board
+    // when the in-progress game has already been saved fully resets the game board so that the next press of the "save" button results in a new game being saved
