@@ -12,7 +12,7 @@ function attachListeners() {
     previousBtn();
     clearBtn();
     tableBtn();
-    gamesBtn();
+    // gamesBtn()
 };
 
 ///////////////////////////////
@@ -23,7 +23,7 @@ function saveBtn() {
 };
 
 function previousBtn() {
-    $('#previous').click(previousGames);
+    //$('#previous').click(previousGames);
 };
 
 function clearBtn() {
@@ -32,17 +32,11 @@ function clearBtn() {
 
 function tableBtn() {
     $('td').click(function() {
-        if (!checkWinner() && !checkTie()) {
+        if (!checkWinner()) {
             doTurn(this);
         };
     });
 };
-//function gamesBtn() {
-    //$('#games').click(function() {
-        // Get ID of selected game
-            // loadGame(id);
-    // });
-// };    
 
 ///////////////////////////////
 // Game Variables
@@ -67,14 +61,6 @@ function isEven(num) {
     return num % 2 === 0;
 };
 
-function checkTie() {
-    return turn === 9;
-};
-
-function currentBoard() {
-    return $('td')
-};
-
 ///////////////////////////////
 // Game Functions
 ///////////////////////////////
@@ -93,11 +79,11 @@ function setMessage(string) {
 };
 
 function checkWinner() {
-    let board = currentBoard();
+    let currentBoard = $('td');
 
-    return winningCombo.some(function(position) {
-        if (board[position[0]].innerHTML === board[position[1]].innerHTML && board[position[1]].innerHTML === board[position[2]].innerHTML && board[position[0]].innerHTML !== "") {
-            setMessage(`Player ${board[position[0]].innerHTML} Won!`);
+    return winningCombo.some(function(pos) {
+        if (currentBoard[pos[0]].innerHTML === currentBoard[pos[1]].innerHTML && currentBoard[pos[1]].innerHTML === currentBoard[pos[2]].innerHTML && currentBoard[pos[0]].innerHTML !== "") {
+            setMessage(`Player ${currentBoard[pos[0]].innerHTML} Won!`);
             return true;
         };
     });
@@ -109,36 +95,47 @@ function doTurn(position) {
         turn++;
 
         if (checkWinner()) {
-            //saveGame();
-            resetBoard();
-        } else if (checkTie()) {
+            saveGame();
+            clearGame();
+        } else if (turn === 9) {
             setMessage('Tie game.');
-            //saveGame();
-            resetBoard();
+            saveGame();
+            clearGame();
         };
     };
 };
 
-function resetBoard() {
-    let board = currentBoard();
-    board = Array.prototype.map.call(board, function(e) {
-        e.innerHTML = "";
-    });
-    turn = 0
+function clearGame() {
+    $('td').html("")
+    turn = 0;
     gameId = 0
-};
-
-function savedBoard() {
-    let board = currentBoard();
-    board = Array.prototype.map.call(board, function(e) {
-        return e.innerHTML;
-    });
-    return board;
 };
 
 ///////////////////////////////
 // AJAX Functions
 ///////////////////////////////
+
+function saveGame() {
+    var saveState = []
+    $('td').each(function() {
+        saveState.push(this.innerHTML)
+    });
+    if (gameId === 0) {
+        $.ajax({
+            method: 'POST',
+            url: '/games',
+            data: {state: saveState}
+        }).done(function(data) {
+            gameId = data.data.id;
+        });
+    } else {
+        $.ajax({
+            method: 'PATCH',
+            url: `/games/${gameId}`,
+            data: {state: saveState}
+        });
+    };
+};
 
 // saveGame -
     // when the current game has not been saved, send a POST request to "/games"
