@@ -148,11 +148,14 @@ startGame()
             
             var gamesDiv = document.getElementById('games')
             
-            let renderGames = games.forEach(function(game){
-              '<li>' + game.id + '</li>'
-            })
-            
-            gamesDiv.append(renderGames)
+            let renderGames = `${games.map(function(game){
+              return `<li><input type="button" value="Game ${game.id}"></li>`
+              
+            }).join('')
+          }`
+            debugger
+            document.getElementById('games').innerHTML = renderGames
+            // gamesDiv.append(renderGames)
             
           
         })
