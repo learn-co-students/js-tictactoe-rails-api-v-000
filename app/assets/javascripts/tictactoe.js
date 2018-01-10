@@ -12,7 +12,7 @@ function attachListeners() {
     previousBtn();
     clearBtn();
     tableBtn();
-    // gamesBtn()
+    // gamesBtn();
 };
 
 ///////////////////////////////
@@ -23,7 +23,7 @@ function saveBtn() {
 };
 
 function previousBtn() {
-    //$('#previous').click(previousGames);
+    $('#previous').click(previousGames);
 };
 
 function clearBtn() {
@@ -37,6 +37,10 @@ function tableBtn() {
         };
     });
 };
+
+//function gamesBtn() {
+
+//};
 
 ///////////////////////////////
 // Game Variables
@@ -137,18 +141,17 @@ function saveGame() {
     };
 };
 
-// saveGame -
-    // when the current game has not been saved, send a POST request to "/games"
-    // when the current game already exists in the database, send a PATCH request to the "/games/:id"
-// previousGames -
-    // sends a GET request to the "/games" route
-    // when no previously-saved games exist in the database does not add any children to the div#games element in the DOM
-    // when previously-saved games exist in the database adds those previous games as buttons in the DOM's div#games element
-    // when previously-saved games exist in the database does not re-add saved games already present in the div#games element when the "previous" button is clicked a second time
+function previousGames() {
+    $('#games').empty();
+    $.get('/games', function(resp) {
+        resp.data.forEach(function(game) {
+            $('#games').append(`<button data-id="${game.id} onclick="loadGame(${game.id})">${game.id}</button>`);
+        });
+    });
+};
+
+
 // loadGame(id) from gamesBtn()
     // (in the div#games element) sends a GET request to the "/games/:id" route
     // loads the saved game's state into the board
     // marks the newly-loaded game state such that clicking the "save" button after loading a game sends a PATCH request
-// clearGame -
-    // when an unsaved game is in progress clears the game board
-    // when the in-progress game has already been saved fully resets the game board so that the next press of the "save" button results in a new game being saved
