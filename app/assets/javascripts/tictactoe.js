@@ -7,7 +7,6 @@ var WIN_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
 
 var turn = 0;
 var gameId = 0;
-var previousGame = 0;
   
   $(document).ready(function() {
       attachListeners();
@@ -20,14 +19,29 @@ var previousGame = 0;
         }
     })
 
-    $("#previous").click(function() {
-        $.getJSON('/games', function(resp) {
-            $("#games").empty()
+    $('#save').on('click', function() {
+        saveGame();
+    })
 
+    
+
+    $('#clear').on('click',function(){
+        resetGame();
+    })
+
+    $("#previous").click(function() {
+        $.getJSON('/games', function(response) {
+            $("#games").empty()
+            response.data.forEach(function(game) {
+                $("#games").append(`<button data-id="${game.id}" onclick = "loadGame(${game.id})">${game.id}</button>`)
             })
         })
     })
+
   }
+
+  
+  
 
 
   function player(){
@@ -61,8 +75,9 @@ var previousGame = 0;
   }
 
   function resetGame() {
-      $("td").toArray().forEach((box) => {box.innerHTML = ""})
-      turn = 0
+    $('td').empty();
+    turn = 0
+    gameId = 0
   }
   
   function updateState(box){
@@ -96,21 +111,42 @@ var previousGame = 0;
 
   }
 
-  function saveGame(){
-      let game = {"state": currentBoard()}
+  function saveGame() {
+    var board = currentBoard()
+    
+    if (gameId) {
+      $.ajax({
+        type: 'PATCH',
+        url: `/games/${gameId}`,
+        data: { state: board }
+      });
+    } else {
+      $.post('/games', { state: board }, function(game) {
+        gameId = game.data.id;
+      });
+    }
+  }
+  
 
-      if (gameId) {
-        $.ajax({
-            url: `/games/${gameId}`,
-            method: "PATCH",
-            data: game
+
+  
+
+  function loadGame(id) {
+    gameId = id
+    var total = 0
+    $.getJSON(`/games/${gameId}`, function(response) {
+        response.data.attributes.state.forEach(function(element) {
+            if (element !== "") {
+                total += 1
+
+            }
+            return total
         })
-      } else {
-        $.post("/games", game, function(resp) {
-            //debugger;
-            gameID = parseInt(resp.data.id)
-        })
-      }
+        turn = total
+        //debugger;
+
+        $("td").toArray().forEach((token, index) => { token.innerHTML = response.data.attributes.state[index]})
+    })
   }
 
   
