@@ -2,14 +2,15 @@
 var turn = 0;
 // var squares = document.querySelectorAll('td'); //why won't this load
 var winCombinations = [[0,1,2],[3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
-
+var squares = document.querySelectorAll('td'); //why won't this load
 // window.onload = function() {
 //   console.log("window got loaded");
 //   var squares = document.querySelectorAll('td'); //why won't this load
 // }
 
 $(document).ready(function() {
-  console.log("ready!");
+  console.log("ready")
+  attachListeners();
   saveGame();
 });
 
@@ -54,6 +55,17 @@ function doTurn(square) {
     turn = 0;
   }
 }
+
+function attachListeners() {
+  $("td").on('click', function() {
+    //this...magically knows that you clicked on a specific square??
+    //ANSWER: td is a square, not a table
+    if (this.innerText === "" && checkWinner() === false && turn !== 9) {
+      doTurn(this);
+    }
+  })
+}
+
 
 function saveGame() {
   $("#save").on('click', function() {
