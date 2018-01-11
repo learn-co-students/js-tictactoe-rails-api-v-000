@@ -19,6 +19,30 @@ $(document).ready(function() {
 
 function saveGame() {
   $("#save").on('click', function() {
-    console.log("save game got clicked!");
+    // debugger;
+    // let params = $('table').serialize();
+    let postRequest = $.post('/games', { 'state[]': [ "", "", "", "", "", "", "", "", ""] })
+
+    postRequest.done(function(response) {
+      console.log("my hypothetical game got saved");
+    })
   });
 }
+
+// <script type="text/javascript" charset="utf-8">
+//   $(function() {
+//     $('form').submit(function(event) {
+//       event.preventDefault();
+//       var params = $(this).serialize();
+//       var postRequest = $.post('/products', params);
+//
+//       postRequest.done(function(renderedJSONHash) {
+//         var product = renderedJSONHash;
+//         $("#productName").text(product["name"]);
+//         $("#productInventory").text(product["inventory"]);
+//         $("#productPrice").text("$" + product["price"]);
+//         $("#productDescription").text(product["description"]);
+//       });
+//     });
+//   });
+// </script>
