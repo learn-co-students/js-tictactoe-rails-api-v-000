@@ -27,23 +27,23 @@
   }
 
   function setMessage(string){
-    document.getElementById("message").innerHTML = string
+    $("#message").text(string);
   }
 
   function getBoard() {
-    return $("td").toArray().map(element => element.innerHTML)
+    return $("td").toArray().map(element => element.innerHTML);
   }
 
   function checkWinner(){
-    let board = getBoard()
-    let winner = false
-    for(let winning of winCombos) {
-      if(board[winning[0]] === board[winning[1]] && board[winning[1]] === board[winning[2]] && board[winning[0]]!==""){
-        winner = true
-        setMessage(`Player ${board[winning[0]]} Won!`)
+    let board = getBoard();
+    let winner = false;
+    for(let combo of winCombos) {
+      if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+        winner = true;
+        setMessage(`Player ${board[combo[0]]} Won!`);
       }
     }
-    return winner
+    return winner;
   }
 
   function doTurn(space){
