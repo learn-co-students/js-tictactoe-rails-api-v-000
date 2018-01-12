@@ -1,5 +1,5 @@
 // Code your JavaScript / jQuery solution here
-
+  let gameId = 1;
   var turn = 0;
 
   var winCombos = [
@@ -14,8 +14,9 @@
   ]
 
   function resetGame(){
-    turn = 0
-    $("td").text("")
+    turn = 0;
+    $("td").text("");
+    gameId += 1;
   }
 
   function player(){
@@ -62,8 +63,21 @@
     $("td").click(function() {
       doTurn(this);
     })
+    $("#save").click(function () {
+      let values = $('td');
+      let postRequest = $.post('/games', values);
+    });
+    $("#previous").click(function () {
+      // postRequest.done(function() {
+        
+      // })
+    });
+    $("#clear").click(function () {
+      
+    });
   }
 
   $(function() {
     attachListeners();
   })
+
