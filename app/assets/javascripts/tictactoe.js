@@ -13,7 +13,7 @@ $(document).ready(function() {
   loadSavedGame();
   // squares = document.querySelectorAll('td'); //hoisting trick pt 2.
 });
-
+//new comment
 function player() {
   return turn % 2 === 0 ? "X" : "O";
 }
