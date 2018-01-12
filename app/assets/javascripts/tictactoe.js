@@ -1,6 +1,7 @@
 // Code your JavaScript / jQuery solution here
-  let gameId = 1;
   var turn = 0;
+
+  var gameId = 0;
 
   var winCombos = [
      [0,1,2],
@@ -14,9 +15,9 @@
   ]
 
   function resetGame(){
+    gameId = 0;
     turn = 0;
     $("td").text("");
-    gameId += 1;
   }
 
   function player(){
@@ -51,30 +52,62 @@
     if (updateState(space)){
       turn += 1;
       if(checkWinner()) {
+        saveGame();
         resetGame();
       } else if(turn === 9){
         setMessage("Tie game.");
+        saveGame();
         resetGame();
       }
     }
   }
 
+  function getGame(id) {
+    gameId = id;
+    turn = 0;
+    $.get(`/games/${id}`, function(data) {
+      let tds = $('td').toArray();
+      data['data']['attributes']['state'].forEach(function(space, idx) {
+        space !== "" ? turn += 1 : turn = turn;
+        $(tds[idx]).text(space);
+      });
+    });
+  }
+
+  function saveGame() {
+    let board = {state: getBoard()};
+    if (gameId === 0) {
+      $.post('/games', board).done(function(data) {
+        gameId = data['data']['id'];
+      });
+      
+    } else {
+      $.ajax({
+        type: "PATCH",
+        url: `/games/${gameId}`,
+        data: board
+      })
+    }
+  }
+
   function attachListeners(){
     $("td").click(function() {
-      doTurn(this);
+      checkWinner() ? false : doTurn(this);
     })
-    $("#save").click(function () {
-      let values = $('td');
-      let postRequest = $.post('/games', values);
+
+    $("#save").click(saveGame);
+
+    $("#previous").on("click", function () {
+      $.get("/games", function(data) {
+        $("#games").text("");
+        data['data'].forEach(function(game) { 
+          let id = game['id'];
+          $("#games").append(`<button data-id='${id}' onclick='getGame(${id})'>${id}</button><br>`);
+        });
+      });
     });
-    $("#previous").click(function () {
-      // postRequest.done(function() {
-        
-      // })
-    });
-    $("#clear").click(function () {
-      
-    });
+
+    $("#clear").click(resetGame);
   }
 
   $(function() {
