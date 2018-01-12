@@ -19,11 +19,7 @@
   }
 
   function player(){
-    if (turn % 2 == 0) {
-      return 'X'
-    }else {
-      return 'O'
-    }
+    return turn % 2 == 0 ? 'X' : 'O';
   }
 
   function updateState(space){
