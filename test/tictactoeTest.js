@@ -1,3 +1,4 @@
+//THESE TESTS PASS WHEN OPENING test/fixtures/index-test.html then running mocha.run() in the console, but not by doing npm test
 try {
   // If window is defined, it means we're running the tests in the browser, so we should use Mocha's BDD interface.
   window.document;
