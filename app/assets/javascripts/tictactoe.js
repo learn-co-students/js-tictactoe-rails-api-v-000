@@ -66,15 +66,19 @@ function attachListeners() {
 
 function saveGame() {
   $("#save").on('click', function() {
+
     var board = $("table").children().children().children();
     var boardArr = [];
     for (square of board) {
       boardArr.push(square.innerHTML);
     }
-    // debugger;
-    $.post('/games', { 'state[]': boardArr })
-  });
-}
+    var postRequest = $.post('/games', { 'state[]': boardArr })
+    postRequest.done(function(renderedJSONHash) {
+      var id = renderedJSONHash.data.id;
+      $("table").attr("gameId", id);
+    })
+  }); //onclick
+} //saveGame
 
 function getPreviousGame() {
   $("#previous").on('click', function() {
