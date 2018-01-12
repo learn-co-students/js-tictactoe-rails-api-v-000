@@ -8,8 +8,9 @@ $(document).ready(function() {
   console.log("ready")
   attachListeners();
   saveGame();
-  getPreviousGame();
+  getPreviousGames();
   clearBoard();
+  loadSavedGame();
   // squares = document.querySelectorAll('td'); //hoisting trick pt 2.
 });
 
@@ -98,13 +99,13 @@ function saveBoardState() {
   }
 }
 
-function getPreviousGame() {
+function getPreviousGames() {
   $("#previous").on('click', function() {
     $("#games").empty();
     $.get('/games', function(resp) {
       var games = resp.data;
-      games.map((game => $("#games").append("<button data-id=" + game.id + ">" + game.id +"</button><br>")))
-    })
+      games.map((game => $("#games").append("<button class=js-load data-id=" + game.id + ">" + game.id +"</button><br>")))
+    });
   });
 }
 
@@ -113,5 +114,32 @@ function clearBoard() {
     $('td').empty();
     $('table').removeAttr('gameid');
     turn = 0;
+  });
+}
+
+function setTurn() {
+  var turnCount = 0;
+  var board = $("table").children().children().children();
+  for (square of board) {
+    if (square.innerHTML !== "") {
+      turnCount ++;
+    }
+  }
+  turn = turnCount;
+  console.log("The turn is", turn);
+}
+
+function loadSavedGame() {
+  $("#games").on('click', "button.js-load", function() {
+    var id = $(this).attr('data-id');
+    $.get('/games/' + id, function(resp) {
+      var savedBoard = resp.data.attributes.state
+      var boardOnDisplay = $("table").children().children().children();
+      for (var i = 0; i < boardOnDisplay.length; i++) {
+        boardOnDisplay[i].innerHTML = savedBoard[i];
+      }
+      setTurn();
+      $("table").attr("gameid", id);
+    });
   });
 }
