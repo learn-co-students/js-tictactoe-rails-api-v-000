@@ -126,7 +126,6 @@ function setTurn() {
     }
   }
   turn = turnCount;
-  console.log("The turn is", turn);
 }
 
 function loadSavedGame() {

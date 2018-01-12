@@ -146,6 +146,7 @@ describe('tictactoe.js', () => {
       expect(window.checkWinner()).to.be.true;
     });
 
+    // passes in mocha browser, but not in learn
     it('returns false if no winning combination is present on the board', () => {
       expect(window.checkWinner()).to.equal(false);
 
