@@ -72,11 +72,26 @@ function saveGame() {
     for (square of board) {
       boardArr.push(square.innerHTML);
     }
-    var postRequest = $.post('/games', { 'state[]': boardArr })
-    postRequest.done(function(renderedJSONHash) {
-      var id = renderedJSONHash.data.id;
-      $("table").attr("gameId", id);
-    })
+
+    // debugger;
+    if ($("table").attr("gameid")) {
+      var id = $("table").attr("gameid");
+      var patchRequest = $.ajax({
+        url: '/games/' + id,
+        data: { 'state[]' : boardArr },
+        type: 'PATCH',
+        contentType : 'application/json',
+        processData: false,
+        dataType: 'json'
+      })
+    } else {
+      var postRequest = $.post('/games', { 'state[]': boardArr })
+      postRequest.done(function(renderedJSONHash) {
+        var id = renderedJSONHash.data.id;
+        $("table").attr("gameid", id);
+      })
+  }
+
   }); //onclick
 } //saveGame
 
