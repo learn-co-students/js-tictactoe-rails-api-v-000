@@ -23,7 +23,7 @@
   }
 
   function updateState(space){
-    $(space).text(player())
+    return $(space).text() !== "" ? false : $(space).text(player());
   }
 
   function setMessage(string){
@@ -47,16 +47,23 @@
   }
 
   function doTurn(space){
-    updateState(space);
-    turn += 1;
-    if(checkWinner()) {
-      resetGame();
-    } else if(turn === 9){
-      setMessage("Tie game.");
-      resetGame();
+    if (updateState(space)){
+      turn += 1;
+      if(checkWinner()) {
+        resetGame();
+      } else if(turn === 9){
+        setMessage("Tie game.");
+        resetGame();
+      }
     }
   }
 
   function attachListeners(){
-    
+    $("td").click(function() {
+      doTurn(this);
+    })
   }
+
+  $(function() {
+    attachListeners();
+  })
