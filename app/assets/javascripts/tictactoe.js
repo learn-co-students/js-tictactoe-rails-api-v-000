@@ -9,6 +9,7 @@ $(document).ready(function() {
   attachListeners();
   saveGame();
   getPreviousGame();
+  clearBoard();
   // squares = document.querySelectorAll('td'); //hoisting trick pt 2.
 });
 
@@ -34,6 +35,7 @@ function checkWinner() {
     return (squares[combo[0]].innerText === squares[combo[1]].innerText && squares[combo[1]].innerText === squares[combo[2]].innerText && checkPositionTaken(squares[combo[0]]))
   });
   if (winnerPresent.length > 0) {
+    saveBoardState();
     setMessage(`Player ${squares[winnerPresent[0][0]].innerText} Won!`);
     return true;
   } else {
@@ -48,6 +50,7 @@ function doTurn(square) {
     $('td').empty();
     turn = 0;
   } else if (turn === 9 ) {
+    saveBoardState();
     setMessage('Tie game.');
     $('td').empty();
     turn = 0;
@@ -66,34 +69,34 @@ function attachListeners() {
 
 function saveGame() {
   $("#save").on('click', function() {
-
-    var board = $("table").children().children().children();
-    var boardArr = [];
-    for (square of board) {
-      boardArr.push(square.innerHTML);
-    }
-
-    // debugger;
-    if ($("table").attr("gameid")) {
-      var id = $("table").attr("gameid");
-      var patchRequest = $.ajax({
-        url: '/games/' + id,
-        data: { 'state[]' : boardArr },
-        type: 'PATCH',
-        contentType : 'application/json',
-        processData: false,
-        dataType: 'json'
-      })
-    } else {
-      var postRequest = $.post('/games', { 'state[]': boardArr })
-      postRequest.done(function(renderedJSONHash) {
-        var id = renderedJSONHash.data.id;
-        $("table").attr("gameid", id);
-      })
-  }
-
+    saveBoardState();
   }); //onclick
 } //saveGame
+
+function saveBoardState() {
+  var board = $("table").children().children().children();
+  var boardArr = [];
+  for (square of board) {
+    boardArr.push(square.innerHTML);
+  }
+  if ($("table").attr("gameid")) {
+    var id = $("table").attr("gameid");
+    var patchRequest = $.ajax({
+      url: '/games/' + id,
+      data: { 'state[]' : boardArr },
+      type: 'PATCH',
+      contentType : 'application/json',
+      processData: false,
+      dataType: 'json'
+    })
+  } else {
+    var postRequest = $.post('/games', { 'state[]': boardArr })
+    postRequest.done(function(renderedJSONHash) {
+      var id = renderedJSONHash.data.id;
+      $("table").attr("gameid", id);
+    })
+  }
+}
 
 function getPreviousGame() {
   $("#previous").on('click', function() {
@@ -102,5 +105,13 @@ function getPreviousGame() {
       var games = resp.data;
       games.map((game => $("#games").append("<button data-id=" + game.id + ">" + game.id +"</button><br>")))
     })
+  });
+}
+
+function clearBoard() {
+  $("#clear").on('click', function() {
+    $('td').empty();
+    $('table').removeAttr('gameid');
+    turn = 0;
   });
 }
