@@ -48,12 +48,12 @@
 
   function doTurn(space){
     updateState(space);
-    turn += 1
+    turn += 1;
     if(checkWinner()) {
-      resetGame()
+      resetGame();
     } else if(turn === 9){
-      setMessage("Tie game.")
-      resetGame()
+      setMessage("Tie game.");
+      resetGame();
     }
   }
 
