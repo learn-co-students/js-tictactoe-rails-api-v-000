@@ -13,6 +13,7 @@ function player() {
 
 function updateState(cell) {
   cell.innerHTML = player();
+  turn++;
 }
 
 function setMessage(message) {
@@ -32,4 +33,64 @@ function checkWinner() {
       return return_value;
     }
   })
+}
+
+function resetBoard() {
+  turn = 0;
+  document.querySelectorAll('td').forEach(function(square) {
+    square.innerHTML = ""
+  })
+}
+
+function doTurn(cell) {
+  updateState(cell);
+  if (checkWinner()) {
+    resetBoard();
+  } else if (turn === 9) {
+    setMessage('Tie game.');
+    resetBoard();
+  }
+}
+
+$(function(){
+  attachListeners();
+})
+
+function attachListeners() {
+  $('td').click(function() {
+    if (this.innerHTML === "" && !checkWinner()) {
+      doTurn(this);
+    }
+  });
+
+  $("#save").click(function() {
+    saveGame();
+  });
+
+  $("#previous").click(function() {
+    previousGame();
+  });
+
+  $("#clear").click(function() {
+    clearGame();
+  });
+}
+
+function previousGame() {
+  $("#games").html("")
+  $.get("/games", function(games){
+    if (games.data.length) {addGamesButtons(games)};
+  })
+}
+
+function addGamesButtons(games) {
+  var gamesHTML = "";
+  games.data.forEach(function(game) {
+    gamesHTML += "<button>" + game.id + "</button><br>"
+  })
+  $("#games").append(gamesHTML)
+}
+
+function saveGame() {
+  
 }
