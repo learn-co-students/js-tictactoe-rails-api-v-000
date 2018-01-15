@@ -51,6 +51,7 @@ function doTurn(square) {
   } else if (turn === 9) {
     setMessage("Tie game.")
     saveGame();
+    clearBoard()
   }
 }
 
@@ -82,8 +83,16 @@ function previousGames() {
   $('#games').empty()
   $.get("/games", function (resp) {
     resp.data.forEach(function(game) {
-      $("#games").append(`<button data-id="${game.id}" onclick="savedGame(${game.id})">${game.id}</button>`).val()
+      $("#games").append(`<button data-id="${game.id}" onclick="previousGame(${game.id})">${game.id}</button>`).val()
     })
+  })
+}
+
+function previousGame(id) {
+  gameId = id
+  let game = $.get(`/games/${id}`, function(resp) {
+    $('td').toArray().forEach((el, index) => {el.innerHTML = resp.data.attributes.state[index]
+      if (el.innerHTML != "") {turn++}})
   })
 }
 
