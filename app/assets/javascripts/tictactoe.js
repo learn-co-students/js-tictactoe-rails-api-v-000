@@ -24,6 +24,7 @@ var game = new Game
 
 const cell = document.getElementsByTagName('td')
 
+
 $(function(){
 attachListeners()
 startGame()
@@ -69,7 +70,7 @@ startGame()
         
         updateState(square)
         //  if (checkWinner() === true){
-        //  debugger 
+        //  d 
          
         //   }
          
@@ -78,7 +79,7 @@ startGame()
         turn++
       }
       function player (){
-        // debugger
+        // d
         if(turn % 2 == 0 )
         {
           return 'X';
@@ -91,10 +92,10 @@ startGame()
       }
 
       function updateState(square){
-        // debugger
+        // d
        square.innerText = player()
         var number = square.id
-        // debugger
+        // d
         origBoard[number] = square.innerText
         
       }
@@ -104,15 +105,15 @@ startGame()
       }
 
       function checkWinner(){
-            debugger
+            
             var player = player()
-            debugger
+            d
           let plays = origBoard.reduce((a, e, i) =>
             (e === player)  ? a.concat(i) : a,  [])
           let gameWon = null;
           for (let [index, win] of winCombos.entries()){
             if(win.every(elm => plays.indexOf(elm) > -1 )){
-              debugger
+              d
             // gameWon = {index: index, player: player};
             break;
           }
@@ -142,23 +143,38 @@ startGame()
         e.preventDefault()
         $.ajax({
           dataType: 'json',
-          url: 'http://localhost:3000/games',
+          url: '/games',
         }).done(function(json){
-          var games = json.data
+          if (json.data.length >0){
+          let games = json.data
             
             var gamesDiv = document.getElementById('games')
             
             let renderGames = `${games.map(function(game){
-              return `<li><input type="button" value="Game ${game.id}"></li>`
+              return `<li><input type="button" id="${game.id}" value="Game ${game.id}"></li>`
               
             }).join('')
           }`
-            debugger
+            
             document.getElementById('games').innerHTML = renderGames
             // gamesDiv.append(renderGames)
             
-          
+          }
         })
+        
+      })
+    })
+    $(function(){
+      $('#games').on('click', $('#game'), function(e){
+        let gameId = e.target.id
+        $.ajax({
+          url:"/games/" + gameId,
+          dataType: 'json'
+      }).done(json => {
+        let gameData = json.data.attributes.state
+        origBoard = gameData
+        
+       })
       })
     })
     
