@@ -53,8 +53,38 @@ function doTurn(square) {
   }
 }
 
-function saveGame() {
+function currentBoard() {
+  let squares = window.document.querySelectorAll('td')
+  var currentSquares = Array.prototype.map.call(squares, function(obj) {
+    return obj.innerHTML
+  })
+  return currentSquares
+}
 
+function saveGame() {
+  let game = {state: currentBoard()}
+  let gameId = 0
+
+  if (gameId === 0) {
+    $.post("/games", game, function(resp) {
+      gameId = parseInt(resp.data.id)
+    })
+  } else {
+    $.ajax({
+      url: `/games/${gameId}`,
+      method: "PATCH",
+      data: game
+    })
+  }
+}
+
+function previousGames() {
+  $('#games').empty()
+  $.get("/games", function (resp) {
+    resp.data.forEach(function(game) {
+      $("#games").append(`<button data-id="${game.id}" onclick="savedGame(${game.id})">${game.id}</button>`).val()
+    })
+  })
 }
 
 function clearBoard() {
@@ -81,7 +111,7 @@ function attachListeners(){
 
   $('#clear').on('click', function(e){
     e.preventDefault()
-    clearGame()
+    clearBoard()
   })
 
   $('td').on('click', function() {
