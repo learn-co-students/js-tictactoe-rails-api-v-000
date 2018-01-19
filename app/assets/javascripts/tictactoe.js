@@ -1,20 +1,25 @@
-function attachListeners() { 
-    // var el = document.getElementsByTagName('td') 
-    // el.onclick = doTurn(el)  
+function attachListeners() {  
+    var cells = $("td")
+    cells.on('click', function(e) { 
+        debugger;
+        doTurn(e.target) 
+    })
     // var clear = document.getElementById("clear") 
     // clear.onclick = reset(board) 
     // var save = document.getElementById("save") 
     // // add logic to save a game 
-    var previous = $(previous);
-    previous.on('click', function() { 
-         $.get("/games", function(data) { 
+    var previous = $("#previous");
+    previous.on('click', function() {  
+         $.get("/games", function(data) {  
             console.log(data) 
          })
     })  
     
 }
 
-window.onload = attachListeners() 
+$(document).ready(function(){  
+    attachListeners() 
+})
 
 var board = document.getElementsByTagName('td') 
 
@@ -74,7 +79,6 @@ function doTurn(el) {
     if (!checkWinner() && el.innerHTML === ""){
         updateState(el) 
         turn ++ 
-        debugger;
     } else if (checkWinner()) { 
         turn = 0;
         reset(board);
