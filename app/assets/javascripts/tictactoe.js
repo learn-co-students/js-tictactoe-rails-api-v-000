@@ -1,3 +1,21 @@
+function attachListeners() { 
+    // var el = document.getElementsByTagName('td') 
+    // el.onclick = doTurn(el)  
+    // var clear = document.getElementById("clear") 
+    // clear.onclick = reset(board) 
+    // var save = document.getElementById("save") 
+    // // add logic to save a game 
+    var previous = $(previous);
+    previous.on('click', function() { 
+         $.get("/games", function(data) { 
+            console.log(data) 
+         })
+    })  
+    
+}
+
+window.onload = attachListeners() 
+
 var board = document.getElementsByTagName('td') 
 
 var turn = 0;
@@ -41,19 +59,28 @@ function checkWinner() {
     return false; 
 } 
 
-function isTaken(space) { 
-    space.innerHTML !== "" 
+// function isTaken(element, index, array) { 
+//   return element.innerHTML !== "" 
+// }
+
+function reset(board) { 
+    for (let i=0; i<board.length; i++) { 
+        board[i].innerHTML = ""
+    }
 }
     
 
-function doTurn(el) { 
+function doTurn(el) {  
     if (!checkWinner() && el.innerHTML === ""){
         updateState(el) 
         turn ++ 
-    } else if (checkWinner()) {
-        turn = 0 
-    } else if (board.every(isTaken())) {
-        turn = 0 
-        setMessage("Tie game.")
+        debugger;
+    } else if (checkWinner()) { 
+        turn = 0;
+        reset(board);
+    } else if (turn === 8) {
+        turn = 0;
+        reset(board);
+        setMessage("Tie game.");
     }
 }
