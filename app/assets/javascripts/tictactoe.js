@@ -1,11 +1,12 @@
 function attachListeners() {  
     var cells = $("td")
     cells.on('click', function(e) { 
-        debugger;
         doTurn(e.target) 
     })
-    // var clear = document.getElementById("clear") 
-    // clear.onclick = reset(board) 
+    var clear = $("#clear") 
+    clear.on('click', function() { 
+        reset(board) 
+    })
     // var save = document.getElementById("save") 
     // // add logic to save a game 
     var previous = $("#previous");
@@ -64,9 +65,6 @@ function checkWinner() {
     return false; 
 } 
 
-// function isTaken(element, index, array) { 
-//   return element.innerHTML !== "" 
-// }
 
 function reset(board) { 
     for (let i=0; i<board.length; i++) { 
