@@ -1,4 +1,6 @@
-var board = document.getElementsByTagName('td')
+var board = document.getElementsByTagName('td') 
+
+var turn = 0;
 
 var winCombinations = [ 
     [board[0], board[1], board[2]], 
@@ -37,4 +39,21 @@ function checkWinner() {
         }
     } 
     return false; 
+} 
+
+function isTaken(space) { 
+    space.innerHTML !== "" 
+}
+    
+
+function doTurn(el) { 
+    if (!checkWinner() && el.innerHTML === ""){
+        updateState(el) 
+        turn ++ 
+    } else if (checkWinner()) {
+        turn = 0 
+    } else if (board.every(isTaken())) {
+        turn = 0 
+        setMessage("Tie game.")
+    }
 }
