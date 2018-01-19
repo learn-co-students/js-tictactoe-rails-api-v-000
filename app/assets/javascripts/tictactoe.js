@@ -7,8 +7,13 @@ function attachListeners() {
     clear.on('click', function() { 
         reset(board) 
     })
-    // var save = document.getElementById("save") 
-    // // add logic to save a game 
+    var save = $("#save") 
+    save.on('click', function(){ 
+        $.post("/games", data) 
+    }).done(function(data) { 
+        console.log(data) 
+    })
+     
     var previous = $("#previous");
     previous.on('click', function() {  
          $.get("/games", function(data) {  
@@ -68,7 +73,8 @@ function checkWinner() {
 
 function reset(board) { 
     for (let i=0; i<board.length; i++) { 
-        board[i].innerHTML = ""
+        board[i].innerHTML = "" 
+        turn = 0;
     }
 }
     
@@ -78,10 +84,8 @@ function doTurn(el) {
         updateState(el) 
         turn ++ 
     } else if (checkWinner()) { 
-        turn = 0;
         reset(board);
     } else if (turn === 8) {
-        turn = 0;
         reset(board);
         setMessage("Tie game.");
     }
