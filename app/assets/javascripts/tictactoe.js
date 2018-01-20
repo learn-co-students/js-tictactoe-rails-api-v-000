@@ -114,7 +114,7 @@ function saveGame() {
     $.post('/games', gameData, function(game) {
       currentGame = game.data.id;
       $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
-      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+      $("#gameid-" + game.data.id).on('click', () => reloadPreviousGame(game.data.id));
     });
 
   }
@@ -124,19 +124,19 @@ function showPreviousGames() {
   $('#games').empty();
   $.get('/games', (savedGames) => {
     if (savedGames.data.length) {
-      savedGames.data.forEach(buttonizePreviousGame);
+      savedGames.data.forEach(previousGameButton);
     }
   });
 }
 
-function buttonizePreviousGame(game) {
+function previousGameButton(game) {
   $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
-  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+  $(`#gameid-${game.id}`).on('click', () => reloadPreviousGame(game.id));
 }
 
 
 
-function reloadGame(gameID) {
+function reloadPreviousGame(gameID) {
   document.getElementById('message').innerHTML = '';
 
   const xhr = new XMLHttpRequest;
