@@ -1,7 +1,6 @@
 function attachListeners() {  
     var cells = $("td");
     cells.on('click', function(e) {   
-        debugger;
         doTurn(e.target) 
     })
     
@@ -66,7 +65,9 @@ function setMessage(string) {
 
 function checkWinner() { 
     for (let i= 0; i < winCombinations.length; i++) { 
-        if (winCombinations[i][0].innerHTML === winCombinations[i][1].innerHTML && winCombinations[i][1].innerHTML === winCombinations[i][2].innerHTML && winCombinations[i][2].innerHTML !== "") { 
+        if (winCombinations[i][0].innerHTML === winCombinations[i][1].innerHTML &&
+        winCombinations[i][1].innerHTML === winCombinations[i][2].innerHTML &&
+        winCombinations[i][2].innerHTML !== "") { 
             setMessage("Player " + winCombinations[i][0].innerHTML + " Won!");
             return true;
         }
