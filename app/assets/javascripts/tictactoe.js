@@ -1,23 +1,28 @@
 function attachListeners() {  
-    var cells = $("td")
-    cells.on('click', function(e) { 
+    var cells = $("td");
+    cells.on('click', function(e) {   
+        debugger;
         doTurn(e.target) 
     })
+    
     var clear = $("#clear") 
     clear.on('click', function() { 
         reset(board) 
     })
+    
     var save = $("#save") 
     save.on('click', function(){ 
-        $.post("/games", data) 
-    }).done(function(data) { 
-        console.log(data) 
+       $.post("/games", cells) 
     })
+     
      
     var previous = $("#previous");
     previous.on('click', function() {  
-         $.get("/games", function(data) {  
-            console.log(data) 
+         $.get("/games", function(response) { 
+             var games = response["data"]
+             for(i=0; i<games.length; i++) { 
+                $("#games").append('<button>' + games[i]["id"] + '</button>' + '<br>')
+             }
          })
     })  
     
@@ -62,7 +67,6 @@ function setMessage(string) {
 function checkWinner() { 
     for (let i= 0; i < winCombinations.length; i++) { 
         if (winCombinations[i][0].innerHTML === winCombinations[i][1].innerHTML && winCombinations[i][1].innerHTML === winCombinations[i][2].innerHTML && winCombinations[i][2].innerHTML !== "") { 
-            // debugger;
             setMessage("Player " + winCombinations[i][0].innerHTML + " Won!");
             return true;
         }
