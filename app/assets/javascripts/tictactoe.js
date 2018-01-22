@@ -23,16 +23,24 @@ function attachListeners() {
     var previous = $("#previous");
     previous.on('click', function() {  
          $.get("/games", function(response) { 
-             var games = response["data"]
+             var games = response["data"];
              for(i=0; i<games.length; i++) { 
-                $("#games").append('<button class="saved">' + games[i]["id"] + '</button>' + '<br>')
+                $("#games").append('<button class="saved">' + games[i]["id"] + '</button>' + '<br>');
              }
          })
     })  
-     
-     $("#games").on('click', function(e) {
-        console.log(e)
+    
+    $("#games").on('click', $(".saved"), function(e) { 
+        $.get("/games/" + e.target.innerHTML, function(response) { 
+          var currentState =  response["data"]["attributes"]["state"]
+            for (let i = 0; i < board.length; i++) { 
+                debugger;
+                board[i].innerHTML = currentState[i]
+            }
+        }) 
+            
     })
+     
 }
 
 $(document).ready(function(){  
