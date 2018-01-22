@@ -15,13 +15,16 @@ function attachListeners() {
      
      
     var previous = $("#previous");
-    previous.on('click', function() {  
-         $.get("/games", function(response) { 
-             var games = response["data"];
-             for(i=0; i<games.length; i++) { 
-                $("#games").append('<button class="saved">' + games[i]["id"] + '</button>' + '<br>');
-             }
-         })
+    previous.on('click', function() { 
+        if ($("#games")[0]["children"].length === 0) {
+            $.get("/games", function(response) { 
+                var games = response["data"];
+                for(i=0; i<games.length; i++) { 
+                    $("#games").append('<button class="saved">' + games[i]["id"] + '</button>' + '<br>'); 
+                }
+            })
+        }
+            
     })  
     
     $("#games").on('click', $(".saved"), function(e) { 
@@ -121,10 +124,12 @@ function doTurn(el) {
     if (!checkWinner() && turn !== 9 && el.innerHTML === ""){
         updateState(el) 
         turn ++ 
-    } else if (checkWinner()) { 
+    } else if (checkWinner()) {  
+        saveGame()
         reset(board);
-    } else if (turn === 9) {
-        reset(board);
+    } else if (turn === 9) { 
         setMessage("Tie game.");
+        saveGame()
+        reset(board);
     }
 }
