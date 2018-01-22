@@ -12,11 +12,18 @@ function attachListeners() {
     save.on('click', function(){ 
        let state = []
         for (let i = 0; i < $("td").length; i++) { 
-            debugger; 
-            state.push($("td")[i].innerHTML)
+            state.push($("td")[i].innerHTML) 
         }
-        debugger; 
-      $.post("/games", {state: state}) 
+        if (saved === null) { 
+            $.post("/games", {state: state}).done(function(response) {  
+                saved = response["data"]["id"]
+            })
+             
+        } else { 
+            $.ajax({url: "/games/" + saved,
+            data: {state: state}, 
+            method: "PATCH"})
+        }
     })
      
      
@@ -32,9 +39,9 @@ function attachListeners() {
     
     $("#games").on('click', $(".saved"), function(e) { 
         $.get("/games/" + e.target.innerHTML, function(response) { 
+            saved = e.target.innerHTML
           var currentState =  response["data"]["attributes"]["state"]
             for (let i = 0; i < board.length; i++) { 
-                debugger;
                 board[i].innerHTML = currentState[i]
             }
         }) 
@@ -46,6 +53,8 @@ function attachListeners() {
 $(document).ready(function(){  
     attachListeners() 
 })
+
+var saved = null;
 
 var board = document.getElementsByTagName('td'); 
 
@@ -96,18 +105,19 @@ function checkWinner() {
 function reset(board) { 
     for (let i=0; i<board.length; i++) { 
         board[i].innerHTML = "" 
-        turn = 0;
-    }
+    } 
+    turn = 0; 
+    saved = null
 }
     
 
 function doTurn(el) {  
-    if (!checkWinner() && el.innerHTML === ""){
+    if (!checkWinner() && turn !== 9 && el.innerHTML === ""){
         updateState(el) 
         turn ++ 
     } else if (checkWinner()) { 
         reset(board);
-    } else if (turn === 8) {
+    } else if (turn === 9) {
         reset(board);
         setMessage("Tie game.");
     }
