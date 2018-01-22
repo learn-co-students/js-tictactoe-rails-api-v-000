@@ -10,20 +10,7 @@ function attachListeners() {
     
     var save = $("#save") 
     save.on('click', function(){ 
-       let state = []
-        for (let i = 0; i < $("td").length; i++) { 
-            state.push($("td")[i].innerHTML) 
-        }
-        if (saved === null) { 
-            $.post("/games", {state: state}).done(function(response) {  
-                saved = response["data"]["id"]
-            })
-             
-        } else { 
-            $.ajax({url: "/games/" + saved,
-            data: {state: state}, 
-            method: "PATCH"})
-        }
+       saveGame()
     })
      
      
@@ -69,7 +56,26 @@ var winCombinations = [
     [2, 5, 8],
     [0, 4, 8],
     [2, 4, 6]
-]
+] 
+
+function saveGame() { 
+    let state = []
+    for (let i = 0; i < $("td").length; i++) { 
+        state.push($("td")[i].innerHTML) 
+    }
+    if (saved === null) { 
+        $.post("/games", {state: state}).done(function(response) {  
+            saved = response["data"]["id"]
+        })
+             
+    } else { 
+        $.ajax({url: "/games/" + saved,
+        data: {state: state}, 
+        method: "PATCH"})
+    }
+}
+   
+    
 
 function player(turn) { 
     if (turn % 2 === 0) { 
