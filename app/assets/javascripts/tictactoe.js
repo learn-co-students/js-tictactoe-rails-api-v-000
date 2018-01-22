@@ -10,7 +10,13 @@ function attachListeners() {
     
     var save = $("#save") 
     save.on('click', function(){ 
-       $.post("/games", $("td")) 
+       let state = []
+        for (let i = 0; i < $("td").length; i++) { 
+            debugger; 
+            state.push($("td")[i].innerHTML)
+        }
+        debugger; 
+      $.post("/games", {state: state}) 
     })
      
      
@@ -19,11 +25,14 @@ function attachListeners() {
          $.get("/games", function(response) { 
              var games = response["data"]
              for(i=0; i<games.length; i++) { 
-                $("#games").append('<button>' + games[i]["id"] + '</button>' + '<br>')
+                $("#games").append('<button class="saved">' + games[i]["id"] + '</button>' + '<br>')
              }
          })
     })  
-    
+     
+     $("#games").on('click', function(e) {
+        console.log(e)
+    })
 }
 
 $(document).ready(function(){  
