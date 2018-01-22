@@ -10,7 +10,7 @@ function attachListeners() {
     
     var save = $("#save") 
     save.on('click', function(){ 
-       $.post("/games", board) 
+       $.post("/games", $("td")) 
     })
      
      
