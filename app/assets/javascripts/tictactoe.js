@@ -1,6 +1,5 @@
 function attachListeners() {  
-    var cells = $("td");
-    cells.on('click', function(e) {   
+    $("td").on('click', function(e) {    
         doTurn(e.target) 
     })
     
@@ -11,7 +10,7 @@ function attachListeners() {
     
     var save = $("#save") 
     save.on('click', function(){ 
-       $.post("/games", cells) 
+       $.post("/games", board) 
     })
      
      
@@ -31,19 +30,19 @@ $(document).ready(function(){
     attachListeners() 
 })
 
-var board = document.getElementsByTagName('td') 
+var board = document.getElementsByTagName('td'); 
 
-var turn = 0;
+let turn = 0;
 
 var winCombinations = [ 
-    [board[0], board[1], board[2]], 
-    [board[3], board[4], board[5]],
-    [board[6], board[7], board[8]],
-    [board[0], board[3], board[6]],
-    [board[1], board[4], board[7]],
-    [board[2], board[5], board[8]],
-    [board[0], board[4], board[8]],
-    [board[2], board[4], board[6]]
+    [0, 1, 2], 
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
 ]
 
 function player(turn) { 
@@ -65,10 +64,11 @@ function setMessage(string) {
 
 function checkWinner() { 
     for (let i= 0; i < winCombinations.length; i++) { 
-        if (winCombinations[i][0].innerHTML === winCombinations[i][1].innerHTML &&
-        winCombinations[i][1].innerHTML === winCombinations[i][2].innerHTML &&
-        winCombinations[i][2].innerHTML !== "") { 
-            setMessage("Player " + winCombinations[i][0].innerHTML + " Won!");
+        
+        if (board[winCombinations[i][0]].innerHTML === board[winCombinations[i][1]].innerHTML &&
+        board[winCombinations[i][1]].innerHTML === board[winCombinations[i][2]].innerHTML &&
+        board[winCombinations[i][2]].innerHTML !== "") { 
+            setMessage("Player " + board[winCombinations[i][0]].innerHTML + " Won!");
             return true;
         }
     } 
