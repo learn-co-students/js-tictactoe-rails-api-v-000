@@ -110,12 +110,14 @@ function doTurn(element) {
   turn += 1;
   updateState(element);
   if (checkWinner() == true) {
-    turn = 0;
-    state = ["", "", "", "", "", "", "", "", ""];
+    saveGame();
+    clearGame();
+    console.log('Won game saved.');
   };
   if (checkWinner() == false && turn == 9) {
     setMessage('Tie game.');
     saveGame();
+    clearGame();
     console.log('Tie game saved.');
   };
 };
@@ -147,8 +149,6 @@ function checkWinner() {
     {
       var token = state[combo[0]];
       setMessage("Player " + token +  " Won!");
-      saveGame();
-      console.log('Won game saved.');
       console.log(combo);
       return true;
     }
