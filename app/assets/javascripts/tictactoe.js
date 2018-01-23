@@ -53,13 +53,72 @@ function saveGame() {
   }
 };
 
+// clear game board and start new game
+
+function clearGame() {
+  event.preventDefault();
+  console.log("Game has been cleared");
+  game_id = null;
+  state = ["", "", "", "", "", "", "", "", ""];
+  $('td').html("");
+  turn = 0;
+};
+
+// show previous games
+
+function showPreviousGames() {
+  event.preventDefault();
+  var games = $.get('/games')
+
+  games.done(function(data) {
+    console.log(data);
+    var html = [];
+    for (var game of data.data) {
+      if (game != null) {
+        game = `<a href="/games/${game.id}" onClick="loadGame(event.target);"> Game ${game.id} </a>`;
+        html += game;
+      }
+    }
+    $('div#games').html(html);
+  });
+
+};
+
+function loadGame(target) {
+  event.preventDefault();
+  var game = $.get(target.href)
+
+  game.done(function(data) {
+    console.log(data.data.attributes.state);
+    state = data.data.attributes.state;
+    populateBoard(state);
+  });
+
+};
+
+function populateBoard(array) {
+  let squares = window.document.querySelectorAll('td');
+  for (let i = 0; i < 9; i++) {
+    squares[i].innerHTML = array[i];
+    window.state[i] = array[i];
+  }
+};
+
 // doTurn()
 
 function doTurn(element) {
   turn += 1;
   updateState(element);
-  checkWinner();
-}
+  if (checkWinner() == true) {
+    turn = 0;
+    state = ["", "", "", "", "", "", "", "", ""];
+  };
+  if (checkWinner() == false && turn == 9) {
+    setMessage('Tie game.');
+    saveGame();
+    console.log('Tie game saved.');
+  };
+};
 
 // updateState()
 
@@ -88,6 +147,9 @@ function checkWinner() {
     {
       var token = state[combo[0]];
       setMessage("Player " + token +  " Won!");
+      saveGame();
+      console.log('Won game saved.');
+      console.log(combo);
       return true;
     }
   }
@@ -98,7 +160,7 @@ function checkWinner() {
 
 function setMessage(message) {
   $('div#message').text(message);
-}
+};
 
 // Add put and delete methods to jQuery
 // data must be an object (a hash), as in {satay: satay}
