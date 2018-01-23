@@ -92,12 +92,18 @@ startGame()
       }
 
       function updateState(square){
-        // d
+        
        square.innerText = player()
-        var number = square.id
+        let number = square.id
         // d
         origBoard[number] = square.innerText
         
+      }
+      function previousGame(square){
+        for(var i = 0; i< cell.length; i++){
+          debugger
+          cell[i].innerText = square
+        }
       }
 
       function setMessage(message){
@@ -144,13 +150,13 @@ startGame()
         $.ajax({
           dataType: 'json',
           url: '/games',
-        }).done(function(json){
-          if (json.data.length >0){
+        }).done((json) => {
+          if (json.data.length > 0){
           let games = json.data
             
             var gamesDiv = document.getElementById('games')
             
-            let renderGames = `${games.map(function(game){
+            let renderGames = `${games.map((game)=> {
               return `<li><input type="button" id="${game.id}" value="Game ${game.id}"></li>`
               
             }).join('')
@@ -160,20 +166,32 @@ startGame()
             // gamesDiv.append(renderGames)
             
           }
+          else {
+            setMessage(`no Previous Games `)
+          }
         })
+        
         
       })
     })
     $(function(){
       $('#games').on('click', $('#game'), function(e){
+        
         let gameId = e.target.id
+        
         $.ajax({
-          url:"/games/" + gameId,
+          url:'/games/' + gameId,
           dataType: 'json'
       }).done(json => {
+        
         let gameData = json.data.attributes.state
         origBoard = gameData
-        
+        debugger
+           origBoard.map(function(square){
+              
+            previousGame(square)
+            })
+         
        })
       })
     })
