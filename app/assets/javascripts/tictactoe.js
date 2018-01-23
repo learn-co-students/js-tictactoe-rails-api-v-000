@@ -30,14 +30,10 @@ attachListeners()
 startGame()
 })
 
-  // function newGame(){
-  //   console.log('test')
-    
-  // }
   function attachListeners(){
     var arr = [].slice.call(cell) 
     
-       arr.forEach(function(squares){
+       arr.forEach((squares)=>{
          
          squares.addEventListener('click', function(){
            square = this
@@ -99,11 +95,10 @@ startGame()
         origBoard[number] = square.innerText
         
       }
-      function previousGame(square){
-        for(var i = 0; i< cell.length; i++){
-          debugger
-          cell[i].innerText = square
-        }
+      function previousGame(squares){
+        for(i =0; i < squares.length; i++){
+          cell[i].innerText = squares[i]
+        }         
       }
 
       function setMessage(message){
@@ -161,10 +156,7 @@ startGame()
               
             }).join('')
           }`
-            
             document.getElementById('games').innerHTML = renderGames
-            // gamesDiv.append(renderGames)
-            
           }
           else {
             setMessage(`no Previous Games `)
@@ -185,14 +177,11 @@ startGame()
       }).done(json => {
         
         let gameData = json.data.attributes.state
-        origBoard = gameData
-        debugger
-           origBoard.map(function(square){
-              
-            previousGame(square)
+                
+            previousGame(gameData)
             })
          
-       })
+       
       })
     })
     
