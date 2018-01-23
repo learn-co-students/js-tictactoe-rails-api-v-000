@@ -1,6 +1,10 @@
 function attachListeners() {  
-    $("td").on('click', function(e) {    
+    $("td").on('click', function(e) { 
         doTurn(e.target) 
+        if (checkWinner() || turn === 9) { 
+            reset(board) 
+            saveGame() 
+        } 
     })
     
     var clear = $("#clear") 
@@ -48,7 +52,7 @@ var saved = null;
 
 var board = document.getElementsByTagName('td'); 
 
-let turn = 0;
+let turn = 1;
 
 var winCombinations = [ 
     [0, 1, 2], 
@@ -115,7 +119,7 @@ function reset(board) {
     for (let i=0; i<board.length; i++) { 
         board[i].innerHTML = "" 
     } 
-    turn = 0; 
+    turn = 1; 
     saved = null
 }
     
