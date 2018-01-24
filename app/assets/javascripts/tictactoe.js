@@ -34,12 +34,24 @@ $(function(){
 });
 
 /////getAttribute = .attr
+/////finding out if the box is X or O
 $("table tr td").click(function(){
-  var mark = $(this).attr('data-x')
-  var yark = $(this).attr('data-y')
-  alert("mark me");
+  let mark = $(this).attr('data-x');
+  let yark = $(this).attr('data-y');
+  alert("this is " + mark + yark);
 })
 
+//Get each table td box, add 1 to its position, then filter/compare to the winning combo
+//$("td")
+//=>[0,1,2,3,4,5,6,7,8] 9 boxes
+
+//add the token to the td's index
+//$("td")[0].innerHTML = "X"
+const myBoard = $("td")
+
+for (const tokenPiece of myBoard) {
+  console.log(tokenPiece);
+}
 
 
 function updateState(){
