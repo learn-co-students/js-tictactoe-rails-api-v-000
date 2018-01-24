@@ -1,9 +1,8 @@
 // Code your JavaScript / jQuery solution here
 
-const turn = 0;
-const gameId = 0;
-
-const winningCombo = [
+var turn = 0;
+var gameId = 0;
+var winningCombo = [
   [0, 1, 2], // first row across
   [3, 4, 5], // second ""
   [6, 7, 8], // third ""
@@ -14,16 +13,34 @@ const winningCombo = [
   [6, 4, 2]  // diagonal from right
 ]
 
+///ON LOAD ///
+//template ~> window.onload = () => {}
 
-function player(){
-  //returns "X" when turn count is even
-  //returns "O" when turn count is odd
-  // if turn % 2 {
-  //   return "X";
-  // } else {
-  //   return "O";
-  // }
-}
+var player = () => (turn % 2) ? "O" : "X"
+
+// function player(turn){
+//   // returns "X" when turn count is even
+//   // returns "O" when turn count is odd
+//   if (turn % 2 === 0) {
+//     return "X";
+//   } else {
+//     return "O";
+//   };
+// }
+
+//document ready for Events
+$(function(){
+  attachListeners();
+});
+
+/////getAttribute = .attr
+$("table tr td").click(function(){
+  var mark = $(this).attr('data-x')
+  var yark = $(this).attr('data-y')
+  alert("mark me");
+})
+
+
 
 function updateState(){
   //player clicks on a box, the box gets an X or O depending on turn count(which tells us which player is playing in player())
@@ -70,29 +87,25 @@ function doTurn(){
 
 
 
-
-
-//Document Ready for Events
-$(function(){
-  attachListeners();
-})
-
 function attachListeners(){
 
   $("#save").on("click", function(e){
     e.preventDefault;
-    gameId++;
+    // gameId++;
+    alert("save")
   });
 
   $("#previous").on("click", function(e){
     e.preventDefault;
-    --gameId;
+    // --gameId;
+    alert("previous")
   });
 
   $("#clear").on("click", function(e){
     e.preventDefault;
-    $("td").empty();
+    // $("td").empty();
+    alert("clear")
   });
 
-  $("td").doTurn();
+  // $("td").doTurn();
 }
