@@ -106,22 +106,26 @@ startGame()
       }
 
       function checkWinner(){
+        let won = false
           winCombos.forEach(win =>{
+            
             winIndex1 = win[0]
             winIndex2 = win[1]
             winIndex3 = win[2]
-
           position1 = cell[winIndex1].innerText
           position2 = cell[winIndex2].innerText
           position3 = cell[winIndex3].innerText
-          })
-          if (position1 === "X" && position2 === "X" && position3 === "X"){
-            return true
-          }
-          else if (position1 === "O" && position2 === "O" && position3 === "O"){
-            return true
+          
+          
+          if ((position1 === "X" && position2 === "X" && position3 === "X") ||
+          (position1 === "O" && position2 === "O" && position3 === "O")){
+            
+            setMessage(`Player ${position1} Won!`)
+            return won = true;
           }
           
+        })
+        return won
      }
   $(function(){
     $('#save').on('click', function(e){
