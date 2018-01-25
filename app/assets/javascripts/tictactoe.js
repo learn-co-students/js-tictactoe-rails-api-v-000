@@ -65,13 +65,12 @@ startGame()
       function doTurn(square){
         
         updateState(square)
-        //  if (checkWinner() === true){
-        //  d 
-         
-        //   }
+         if (checkWinner() === true){
+         setMessage("Winner")
+          }
          
 
-        setMessage("Tie game.")
+        // setMessage("Tie game.")
         turn++
       }
       function player (){
@@ -91,10 +90,11 @@ startGame()
         
        square.innerText = player()
         let number = square.id
-        // d
+        
         origBoard[number] = square.innerText
         
       }
+
       function previousGame(squares){
         for(i =0; i < squares.length; i++){
           cell[i].innerText = squares[i]
@@ -106,21 +106,22 @@ startGame()
       }
 
       function checkWinner(){
-            
-            var player = player()
-            d
-          let plays = origBoard.reduce((a, e, i) =>
-            (e === player)  ? a.concat(i) : a,  [])
-          let gameWon = null;
-          for (let [index, win] of winCombos.entries()){
-            if(win.every(elm => plays.indexOf(elm) > -1 )){
-              d
-            // gameWon = {index: index, player: player};
-            break;
+          winCombos.forEach(win =>{
+            winIndex1 = win[0]
+            winIndex2 = win[1]
+            winIndex3 = win[2]
+
+          position1 = cell[winIndex1].innerText
+          position2 = cell[winIndex2].innerText
+          position3 = cell[winIndex3].innerText
+          })
+          if (position1 === "X" && position2 === "X" && position3 === "X"){
+            return true
           }
-        
-        }
-        return gameWon
+          else if (position1 === "O" && position2 === "O" && position3 === "O"){
+            return true
+          }
+          
      }
   $(function(){
     $('#save').on('click', function(e){
@@ -167,12 +168,12 @@ startGame()
       })
     })
     $(function(){
-      $('#games').on('click', $('#game'), function(e){
+      $('#button').on('click', function(e){
         
         let gameId = e.target.id
         
         $.ajax({
-          url:'/games/' + gameId,
+          url:'games/' + gameId,
           dataType: 'json'
       }).done(json => {
         
