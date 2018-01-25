@@ -2,7 +2,8 @@
 var origBoard = ['','','','','','','','','']
 const playerone = 'O'
 const playertwo = 'X' 
-var turn = 1
+let gameId = 1
+var turn = 0
 var square
 
 const winCombos = [
@@ -32,7 +33,6 @@ startGame()
 
   function attachListeners(){
     var arr = [].slice.call(cell) 
-    
        arr.forEach((squares)=>{
          
          squares.addEventListener('click', function(){
@@ -47,6 +47,8 @@ startGame()
          })
              
    })
+   $('#save').on('click',  saveGame)
+
         
 
     
@@ -56,8 +58,9 @@ startGame()
     for(var i = 0; i< cell.length; i++){
       cell[i].innerText = ''
       cell[i].id = i
-      turn = 1
-      
+      turn = 0
+      gameId++
+
     }
   }
     
@@ -65,16 +68,21 @@ startGame()
       function doTurn(square){
         
         updateState(square)
-         if (checkWinner() === true){
-         setMessage("Winner")
-          }
-         
-
-        // setMessage("Tie game.")
         turn++
+        if (checkWinner() === true){
+          saveGame()
+          startGame()
+          turn = 0
+        } else if (turn === 9)
+        setMessage("Tie game.")
+        saveGame()
+     
+        
+      }
+      function tie (){
+        
       }
       function player (){
-        // d
         if(turn % 2 == 0 )
         {
           return 'X';
@@ -127,23 +135,24 @@ startGame()
         })
         return won
      }
-  $(function(){
-    $('#save').on('click', function(e){
-      e.preventDefault()
+  function saveGame(){
       var board = []
-      $('td').each(function(){
+      
         board.push(this.innerText)
-        
-      })      
-        $.post({
-          url: "/games",
-          data: {
-               state: board
-          }
-        }).done(function(json){
+        var board = []
+        $('td').each(function(){
+          board.push(this.innerText)
           
-      })
-    })
+        })      
+          $.post({
+            url: "/games",
+            data: {
+                 state: board
+            }
+          }).done(function(json){
+            
+        })
+      }
     $(function(){
       $('#previous').on('click', function(e){
         e.preventDefault()
@@ -174,7 +183,7 @@ startGame()
     $(function(){
       $('#button').on('click', function(e){
         
-        let gameId = e.target.id
+        // let gameId = e.target.id
         
         $.ajax({
           url:'games/' + gameId,
@@ -196,9 +205,9 @@ startGame()
       
       $('td').each(function(){
         this.innerHTML = ''
-        turn = 1
+        turn = 0
         startGame()
       })
      })
     })
-  })
+  
