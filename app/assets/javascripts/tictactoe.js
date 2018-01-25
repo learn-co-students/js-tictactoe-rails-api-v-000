@@ -24,7 +24,41 @@ $(function(){
     // the board has nine squares but eight in computer speak
     // each square ('td') has its own index
     // so... define the board & make the squares clickable
-const squares = document.getElementsByTagName('td'); //=> [td, td, td, td, td, td, td, td, td]
+const board = document.getElementsByTagName('td'); //=> [td, td, td, td, td, td, td, td, td]
+
+    // board is actually an Array-like object
+    // how do I define this board as an array of indexes?
+function setBoard(board){
+  for (const square of board){
+    console.log(index);
+  }
+}
+
+  //how do I make the squares turn into an index
+function turnElementToIndex(clickedElement){
+  console.log('what')
+}
+
+function setBoard(board){
+  Array.prototype.slice.call(datasets);
+}
+
+Array.prototype.setSquares = function(){
+  for (i = 0; i < this.length; i++) {
+      this[i] = this[i].to_s;
+  }
+}
+
+board.setSquares
+
+/////getAttribute = .attr
+$("table tr td").click(function(){
+  let mark = $(this).attr('data-x');
+  let yark = $(this).attr('data-y');
+  alert("this is " + (mark+yark));
+})
+
+
 
   /// Set the turnCount ///
     // to determine the currentPlayer
@@ -62,12 +96,7 @@ function updateState(){
   //   }
   // })
 
-    /////getAttribute = .attr
-    // $("table tr td").click(function(){
-    //   let mark = $(this).attr('data-x');
-    //   let yark = $(this).attr('data-y');
-    //   alert("this is " + mark + yark);
-    // })
+
 }
 
 function setMessage(){
@@ -109,14 +138,27 @@ function checkWinner(){
       //setMessage(winner);
 }
 
+  /// Players take Turns playing ///
+    // First Player sets their token on a square
+      // turnCount increments
+      // Second Player sets their token on another square
+        // turnCount increments
 
 
-function doTurn(){
-
-  //invokes updateState() & passes the element that was clicked
-  updateState(board)
-
+function doTurn(move){
+  move = $("td").on("click", function(e){
+    e.preventDefault;
+    this.textContent
+  })
   //increments value of "turn" variable
+  turn += 1
+
+  // invokes updateState() & passes the element that was clicked
+  // if updateState(clickMove) === 0
+
+  doTurn()
+
+
   //invokes checkWinner()
 
   //invokes setMessage()
