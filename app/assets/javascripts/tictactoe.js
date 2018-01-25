@@ -24,38 +24,7 @@ $(function(){
     // the board has nine squares but eight in computer speak
     // each square ('td') has its own index
     // so... define the board & make the squares clickable
-const board = document.getElementsByTagName('td'); //=> [td, td, td, td, td, td, td, td, td]
-
-    // board is actually an Array-like object
-    // how do I define this board as an array of indexes?
-    // how do I make the squares turn into an index
-      //...so it can be clickable and passable within doTurn()
-function setBoard(board){
-  for (const square of board){
-    console.log(index);
-  }
-}
-
-function setBoard(board){
-  Array.prototype.slice.call(datasets);
-}
-
-Array.prototype.setSquares = function(){
-  for (i = 0; i < this.length; i++) {
-      this[i] = this[i].to_s;
-  }
-}
-
-board.setSquares
-
-/////getAttribute = .attr
-$("table tr td").click(function(){
-  let mark = $(this).attr('data-x');
-  let yark = $(this).attr('data-y');
-  alert("this is " + (mark+yark));
-})
-
-
+const square = $('td'); //=> [td, td, td, td, td, td, td, td, td]
 
   /// 3. Set the turnCount ///
     // to determine the currentPlayer
@@ -81,26 +50,15 @@ function player(){
       //the PASSED "clicked element" can't change the token once it's been set
         //if the PASSED "clicked element" is empty, then set the token
         //otherwise show the existing token
-function updateState(){
-  doTurn(passedElement).click(function(){
-    this.html = player();
-  });
-  // let isSquareTaken = board.click(function(){
-  //   if (this.textContent === "X" || "O") {
-  //     this.textContent;
-  //   } else {
-  //     this.textContent = player();
-  //   }
-  // })
-
-
+function updateState(position){
+  $(position).text(player());
 }
 
   /// Calling the winner ///
     // if winner is "X" setMessage() "Player X Won!";
     // if winner is "O" setMessage() "Player O Won!";
-function setMessage(){
-  $("#message").innerHTML = `Player ${winner} Won!`
+function setMessage(message){
+  $("div#message").text(message)
 }
 
   /// Checking the Winner ///
@@ -110,35 +68,8 @@ function setMessage(){
       // when player wins diagonally return true
       // when player wins vertically return true
       // return false if no winning combination is present
-
-
-      //define callback for the boardCombo
-      //turn = aggregate; el = element; i = index; square = current array
 function checkWinner(){
 
-  const getSquaresToken = function(el, i, square){
-    console.log('the token', el);
-    console.log('the tokens index', i);
-    console.log('the current array', square);
-  };
-    //define iteration of the squares with the callback
-  const myForEach = function(square, getSquaresToken){
-    for (const token of square){
-      getSquaresToken(token, square.indexOf(token), square);
-    }
-  };
-
-  myForEach(square, getSquaresToken);
-
-  setBoard() filter to compare with winningCombo
-    //compare/filter the results of myForEach to winningCombos
-    // $("table td").filter(function(){
-      // this.winningCombo = winningCombo
-      // winningCombo.filter
-    // })
-        //if winner is "X" setMessage() "Player X Won!";
-        //if winner is "O" setMessage() "Player O Won!";
-      //setMessage(winner);
 }
 
   /// Players take Turns playing ///
@@ -154,17 +85,14 @@ function checkWinner(){
         //...invokes checkWinner() to find a Tie
           // iteration stopped at the setBoard's length + 1
 function doTurn(move){
-  move = $("td").on("click", function(e){
-    e.preventDefault;
-    this.textContent
-  })
+
   //increments value of "turn" variable
-  turn += 1
+
 
   // invokes updateState() & passes the element that was clicked
   // if updateState(clickMove) === 0
 
-  doTurn()
+
 
 }
 
