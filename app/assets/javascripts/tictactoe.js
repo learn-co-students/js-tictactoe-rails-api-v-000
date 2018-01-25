@@ -15,12 +15,12 @@ const winningCombo = [
 ]
 
 /// ON LOAD ///
-  // document ready for Events
+  // 1. document ready for Events
 $(function(){
   attachListeners();
 });
 
-  /// Set the Board ///
+  /// 2. Set the Board ///
     // the board has nine squares but eight in computer speak
     // each square ('td') has its own index
     // so... define the board & make the squares clickable
@@ -28,15 +28,12 @@ const board = document.getElementsByTagName('td'); //=> [td, td, td, td, td, td,
 
     // board is actually an Array-like object
     // how do I define this board as an array of indexes?
+    // how do I make the squares turn into an index
+      //...so it can be clickable and passable within doTurn()
 function setBoard(board){
   for (const square of board){
     console.log(index);
   }
-}
-
-  //how do I make the squares turn into an index
-function turnElementToIndex(clickedElement){
-  console.log('what')
 }
 
 function setBoard(board){
@@ -60,14 +57,14 @@ $("table tr td").click(function(){
 
 
 
-  /// Set the turnCount ///
+  /// 3. Set the turnCount ///
     // to determine the currentPlayer
     // turn will increment in doTurn()
 function turnCount(turn){
   turn % 2 === 0
 }
 
-  /// Set the currentPlayer
+  /// 4. Set the currentPlayer
     // based on turnCount
       // returns "X" when turnCount is even
       // returns "O" when turnCount is odd
@@ -78,14 +75,14 @@ function player(){
 /// STARTING THE GAME ///
 
   /// Place the Player's token on the board's squares ///
-    // doTurn() PASSES "clicked element"; it will be invoked by updateState()
-    // Player clicks on PASSED element
-    // the PASSED element gets token ("X" or "O") based on turn count, which is incremented in doTurn()
-      //the PASSED element can't change the token once it's been set
-        //if the PASSED element is empty, then set the token
+    // doTurn() PASSES "clicked element" (the square itself from setBoard())
+    // Player clicks on PASSED "clicked element"; it will be invoked by updateState()
+    // the PASSED "clicked element" gets token ("X" or "O") based on turn count, which is incremented in doTurn()
+      //the PASSED "clicked element" can't change the token once it's been set
+        //if the PASSED "clicked element" is empty, then set the token
         //otherwise show the existing token
 function updateState(){
-  passedElement.click(function(){
+  doTurn(passedElement).click(function(){
     this.html = player();
   });
   // let isSquareTaken = board.click(function(){
@@ -99,22 +96,26 @@ function updateState(){
 
 }
 
+  /// Calling the winner ///
+    // if winner is "X" setMessage() "Player X Won!";
+    // if winner is "O" setMessage() "Player O Won!";
 function setMessage(){
-  //if winner is "X" setMessage() "Player X Won!";
-  //if winner is "O" setMessage() "Player O Won!";
   $("#message").innerHTML = `Player ${winner} Won!`
 }
 
-/// Checking the Winner ///
-function checkWinner(){
-  //check the boardCombo
-    //when player wins horizontally return true
-    //when player wins diagonally return true
-    //when player wins vertically return true
-    //return false if no winning combination is present
+  /// Checking the Winner ///
+    // Compare the setBoard()'s indexes to those of winningCombo
+    // setBoard and winningCombo are both nested arrays
+      // when player wins horizontally return true
+      // when player wins diagonally return true
+      // when player wins vertically return true
+      // return false if no winning combination is present
 
-    //define callback for the boardCombo
-    //turn = aggregate; el = element; i = index; square = current array
+
+      //define callback for the boardCombo
+      //turn = aggregate; el = element; i = index; square = current array
+function checkWinner(){
+
   const getSquaresToken = function(el, i, square){
     console.log('the token', el);
     console.log('the tokens index', i);
@@ -128,6 +129,8 @@ function checkWinner(){
   };
 
   myForEach(square, getSquaresToken);
+
+  setBoard() filter to compare with winningCombo
     //compare/filter the results of myForEach to winningCombos
     // $("table td").filter(function(){
       // this.winningCombo = winningCombo
@@ -139,12 +142,17 @@ function checkWinner(){
 }
 
   /// Players take Turns playing ///
-    // First Player sets their token on a square
-      // turnCount increments
-      // Second Player sets their token on another square
+    // Iteration of gamePlay:
+      // First Player sets their token on a square
         // turnCount increments
-
-
+        // Second Player sets their token on another square
+          // turnCount increments
+      // iteration stops
+        //...invokes checkWinner() to find a Winner
+          // invokes setMessage()
+          // RESETS board and turnCount when game is won
+        //...invokes checkWinner() to find a Tie
+          // iteration stopped at the setBoard's length + 1
 function doTurn(move){
   move = $("td").on("click", function(e){
     e.preventDefault;
@@ -157,16 +165,6 @@ function doTurn(move){
   // if updateState(clickMove) === 0
 
   doTurn()
-
-
-  //invokes checkWinner()
-
-  //invokes setMessage()
-    //"Tie game" if tied
-  //resets board and "turn" counter when game is Won
-
-
-
 
 }
 
