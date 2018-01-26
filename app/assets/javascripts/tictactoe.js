@@ -20,11 +20,28 @@ $(function(){
   attachListeners();
 });
 
-  /// 2. Set the Board ///
+  /// 2A. Set the Board ///
     // the board has nine squares but eight in computer speak
     // each square ('td') has its own index
     // so... define the board & make the squares clickable
-const square = document.getElementsByTagName('td'); //=> [td, td, td, td, td, td, td, td, td]
+const board = document.getElementsByTagName('td'); //=> [td, td, td, td, td, td, td, td, td]
+
+  /// 2B. Set the board's square to be clickable
+    /// !!!!!! DO NOT DELETE THIS COMMENT ///
+
+    // $('td').click(function(){
+    //   this
+    // }) .... this.innerHTML = " " will be filled in via updateState() within doTurn()
+
+  //passes the clicked-on td element to doTurn() as position
+  //need to define position
+  //the event listeners that invoke doTurn() when a square is clicked on
+function theSquare(){
+  let move = $('td').on("click", function(e){
+    e.preventDefault;
+    doTurn(this)
+  })
+}
 
   /// 3. Set the turnCount ///
     // to determine the currentPlayer
@@ -41,24 +58,6 @@ function player(){
   return turnCount(turn) ? "X" : "O";
 }
 
-  /// 5. Set the square to be clickable
-    /// !!!!!! DO NOT DELETE THIS COMMENT ///
-
-    // $('td').click(function(){
-    //   this
-    // }) .... this.innerHTML = " " will be filled in via updateState() within doTurn()
-
-  //passes the clicked-on td element to doTurn() as position
-  //need to define position
-  //the event listeners that invoke doTurn() when a square is clicked on
-function theMove(){
-  let move = $('td').on("click", function(e){
-    e.preventDefault;
-    doTurn(this)
-  })
-}
-
-
 /// STARTING THE GAME ///
 
   /// Place the Player's token on the board's squares ///
@@ -68,8 +67,8 @@ function theMove(){
       //the PASSED "clicked square" can't change the token once it's been set
         //if the PASSED "clicked square" is empty, then set the token
         //otherwise show the existing token
-function updateState(position){
-  $(position).text(player());
+function updateState(move){
+  $(move).text(player());
 }
 
   /// Calling the winner ///
@@ -79,6 +78,7 @@ function setMessage(message){
   $("div#message").text(message)
 }
 
+
   /// Checking the winner ///
     // Compare the setBoard()'s indexes to those of winningCombo
     // setBoard and winningCombo are both nested arrays
@@ -87,6 +87,7 @@ function setMessage(message){
       // when player wins vertically return true
       // return false if no winning combination is present
 function checkWinner(){
+
 
   // setMessage(`Player ${winner} Won!`);
 
@@ -105,41 +106,12 @@ function checkWinner(){
         //...invokes checkWinner() to find a Tie
           // iteration stopped at the setBoard's length + 1
 function doTurn(move){
-  updateState(move); //first token placed (x)
-  turn++; // turn + 1
-
-  //then checks a valid position
+  updateState(move); //first token placed ("X")
+  turn++; // turn + 1; now it's ('O')'s turn
+  //second token checks for a valid position
     //if position is valid (position is blank)
       //make a move => updateState(move)
       //otherwise don't update position (position = position)
-
-
-
-
-  ///callback for doturn?
-
-    // function position_taken(move){
-    //   $(move).innerHTML = move.innerHTML
-    //   console.log(move.innerHTML)
-      // if (squareContent === " "){
-      //   updateState(move);
-      //   turn++;
-      // } else (squareContent === "X" || squareContent === "O"){
-      //   squareContent;
-      // }
-    // }
-
-    // function valid_move(move){
-    //   move && !position_taken(move)
-    // }
-    //
-    // // is 1 true? and 0 false
-    // if (valid_move(move) === 1){
-    //   updateState(move);
-    //   turn++;
-    // } else {
-    //   doTurn(move)
-    // }
 
   // if won {
   //   resetBoard();
@@ -149,11 +121,6 @@ function doTurn(move){
   // if tied {
   //   setMessage("Tie game");
   // }
-
-  // let won = square[i[0]] === square[i[1]] && square[i[1]] === square[i[2]] && square[i[2]] === square[i[0]]
-  // let full = index === "X" || "O"
-  // let draw = full && !won
-  // let over = won? || draw?
 
 }
 
@@ -204,6 +171,6 @@ function attachListeners(){
     clearGame();
   });
 
-  theMove(); //invoke the passed element of td into doTurn() which is invoked in theMove() upabove under ON LOAD
+  theSquare(); //invoke the passed element of td into doTurn() which is invoked in theMove() upabove under ON LOAD
 
 }
