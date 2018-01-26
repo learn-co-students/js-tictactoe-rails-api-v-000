@@ -41,6 +41,24 @@ function player(){
   return turnCount(turn) ? "X" : "O";
 }
 
+  /// 5. Set the square to be clickable
+    /// !!!!!! DO NOT DELETE THIS COMMENT ///
+
+    // $('td').click(function(){
+    //   this
+    // }) .... this.innerHTML = " " will be filled in via updateState() within doTurn()
+
+  //passes the clicked-on td element to doTurn() as position
+  //need to define position
+  //the event listeners that invoke doTurn() when a square is clicked on
+function theMove(){
+  let move = $('td').on("click", function(e){
+    e.preventDefault;
+    doTurn(this)
+  })
+}
+
+
 /// STARTING THE GAME ///
 
   /// Place the Player's token on the board's squares ///
@@ -86,10 +104,42 @@ function checkWinner(){
           // RESETS board and turnCount when game is won
         //...invokes checkWinner() to find a Tie
           // iteration stopped at the setBoard's length + 1
-function doTurn(position){
-  updateState(position);
-  turn++;
+function doTurn(move){
+  updateState(move); //first token placed (x)
+  turn++; // turn + 1
 
+  //then checks a valid position
+    //if position is valid (position is blank)
+      //make a move => updateState(move)
+      //otherwise don't update position (position = position)
+
+
+
+
+  ///callback for doturn?
+
+    // function position_taken(move){
+    //   $(move).innerHTML = move.innerHTML
+    //   console.log(move.innerHTML)
+      // if (squareContent === " "){
+      //   updateState(move);
+      //   turn++;
+      // } else (squareContent === "X" || squareContent === "O"){
+      //   squareContent;
+      // }
+    // }
+
+    // function valid_move(move){
+    //   move && !position_taken(move)
+    // }
+    //
+    // // is 1 true? and 0 false
+    // if (valid_move(move) === 1){
+    //   updateState(move);
+    //   turn++;
+    // } else {
+    //   doTurn(move)
+    // }
 
   // if won {
   //   resetBoard();
@@ -154,19 +204,6 @@ function attachListeners(){
     clearGame();
   });
 
-    //passes the clicked-on td element to doTurn() as position
-    //need to define position
-    //the event listeners that invoke doTurn() when a square is clicked on
-  let position = $('td').on("click", function(e){
-    e.preventDefault;
-    doTurn(this)
-  })
-
-/// !!!!!! DO NOT DELETE THIS COMMENT ///
-  /// the clicked square on board ///
-
-  // $('td').click(function(){
-  //   this.innerHTML = "x"
-  // })
+  theMove(); //invoke the passed element of td into doTurn() which is invoked in theMove() upabove under ON LOAD
 
 }
