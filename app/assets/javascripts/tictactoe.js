@@ -24,7 +24,14 @@ $(function(){
     // the board has nine squares but eight in computer speak
     // each square ('td') has its own index
     // so... define the board & make the squares clickable
-const board = document.getElementsByTagName('td'); //=> [td, td, td, td, td, td, td, td, td]
+const boardState = [" "," "," "," "," "," "," "," "," "]; //=> [td, td, td, td, td, td, td, td, td]
+
+///boardState = [ ] 9 empty states
+// const boardState = ["" , ..]
+//every turn a state is updated
+// checkwinner() checks boardState
+// does checkwinner compare with winningCombo?
+
 
   /// 2B. Set the board's square to be clickable
     /// !!!!!! DO NOT DELETE THIS COMMENT ///
@@ -60,6 +67,52 @@ function player(){
 
 /// STARTING THE GAME ///
 
+//pushing object (board) into new array to compare the index with winningCombo
+//determine the board's indexes => Object.keys
+  //these indexes help compare the indexes of winningCombo
+//define a new board to push the new indexes
+// let a = {};
+// let b = (a[0] = board);
+// let boardIndex = Object.keys(b);
+// let newBoard = [];
+//
+// let bed = parseInt(boardIndex[0])
+//
+// //  newBoard.push(boardIndex)
+// //
+// // newBoard;
+//
+// function map (array, callback) {
+//   const newArr = [];
+//
+//   for (const element of array) {
+//     newArr.push(callback(element));
+//   }
+//
+//   return newArr;
+// }
+//
+// const newBoard = map(board, function(ind){
+//   return ind;
+// })
+// newBoard;
+//
+// const newA = map(board, function(ind){
+//   return ind[i];
+// })
+// newA;
+//
+// newBoard[1] = [boardIndex[0], boardIndex[1], boardIndex[2]]
+// newBoard[2] =  [boardIndex[3], boardIndex[4], boardIndex[5]]
+// newBoard[3] =  [boardIndex[6], boardIndex[7], boardIndex[8]]
+// newBoard[4] =  [boardIndex[0], boardIndex[3], boardIndex[6]]
+// newBoard[5] =  [boardIndex[1], boardIndex[4], boardIndex[7]]
+// newBoard[6] =  [boardIndex[2], boardIndex[5], boardIndex[8]]
+// newBoard[7] =  [boardIndex[0], boardIndex[4], boardIndex[8]]
+// newBoard[8] =  [boardIndex[6], boardIndex[4], boardIndex[2]]
+
+
+
   /// Place the Player's token on the board's squares ///
     // doTurn() PASSES "clicked square" (the square itself from setBoard())
     // Player clicks on PASSED "clicked square"; it will be invoked by updateState()
@@ -68,7 +121,10 @@ function player(){
         //if the PASSED "clicked square" is empty, then set the token
         //otherwise show the existing token
 function updateState(move){
-  $(move).text(player());
+  // debugger;
+  $(move).text(player()); //the user is clicking on the square (clicked element is 'td'); once clicked, the player places their token within the text attribute of td
+  const index = $(move).data('index'); //we've added a new data attribute to td (data-index); we are defining the index as the attribute
+  boardState[index] = player(); // now we're calling the boardState's index as the newly add data attribute of 'data-index'; then we say that empty boardState is equal to the player's token
 }
 
   /// Calling the winner ///
@@ -88,49 +144,6 @@ function setMessage(message){
       // return false if no winning combination is present
 function checkWinner(move){
 
-  //pushing object (board) into new array to compare the index with winningCombo
-  //determine the board's indexes => Object.keys
-    //these indexes help compare the indexes of winningCombo
-  //define a new board to push the new indexes
-  let a = {};
-  let b = (a[0] = board);
-  let boardIndex = Object.keys(b);
-  let newBoard = [];
-
-  let bed = parseInt(boardIndex[0])
-
-  //  newBoard.push(boardIndex)
-  //
-  // newBoard;
-
-  function map (array, callback) {
-    const newArr = [];
-
-    for (const element of array) {
-      newArr.push(callback(element));
-    }
-
-    return newArr;
-  }
-
-  const newBoard = map(board, function(ind){
-    return ind;
-  })
-  newBoard;
-
-  const newA = map(board, function(ind){
-    return ind[i];
-  })
-  newA;
-
-  newBoard[1] = [boardIndex[0], boardIndex[1], boardIndex[2]]
-  newBoard[2] =  [boardIndex[3], boardIndex[4], boardIndex[5]]
-  newBoard[3] =  [boardIndex[6], boardIndex[7], boardIndex[8]]
-  newBoard[4] =  [boardIndex[0], boardIndex[3], boardIndex[6]]
-  newBoard[5] =  [boardIndex[1], boardIndex[4], boardIndex[7]]
-  newBoard[6] =  [boardIndex[2], boardIndex[5], boardIndex[8]]
-  newBoard[7] =  [boardIndex[0], boardIndex[4], boardIndex[8]]
-  newBoard[8] =  [boardIndex[6], boardIndex[4], boardIndex[2]]
 
   // setMessage(`Player ${winner} Won!`);
 
