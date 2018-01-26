@@ -212,7 +212,7 @@ describe('tictactoe.js', () => {
 
       window.doTurn(squares[8]);
 
-      expect(spy.calledOnce).to.be.true;
+      expect(spy.called).to.be.true;
     });
 
     it('invokes the updateState() function', () => {
