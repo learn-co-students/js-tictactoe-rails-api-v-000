@@ -159,7 +159,7 @@ function attachListeners(){
     //the event listeners that invoke doTurn() when a square is clicked on
   let position = $('td').on("click", function(e){
     e.preventDefault;
-    doTurn(this.innerHTML)
+    doTurn(this)
   })
 
 /// !!!!!! DO NOT DELETE THIS COMMENT ///
