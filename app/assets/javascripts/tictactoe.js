@@ -86,7 +86,7 @@ function setMessage(message){
       // when player wins diagonally return true
       // when player wins vertically return true
       // return false if no winning combination is present
-function checkWinner(){
+function checkWinner(move){
 
   //pushing object (board) into new array to compare the index with winningCombo
   //determine the board's indexes => Object.keys
@@ -95,13 +95,42 @@ function checkWinner(){
   let a = {};
   let b = (a[0] = board);
   let boardIndex = Object.keys(b);
-  let newBoard = []
+  let newBoard = [];
 
-  [boardIndex[0], boardIndex[1], boardIndex[2]]
-  [boardIndex[3], boardIndex[4], boardIndex[5]]
-  [boardIndex[6], boardIndex[7], boardIndex[8]]
+  let bed = parseInt(boardIndex[0])
 
+  //  newBoard.push(boardIndex)
+  //
+  // newBoard;
 
+  function map (array, callback) {
+    const newArr = [];
+
+    for (const element of array) {
+      newArr.push(callback(element));
+    }
+
+    return newArr;
+  }
+
+  const newBoard = map(board, function(ind){
+    return ind;
+  })
+  newBoard;
+
+  const newA = map(board, function(ind){
+    return ind[i];
+  })
+  newA;
+
+  newBoard[1] = [boardIndex[0], boardIndex[1], boardIndex[2]]
+  newBoard[2] =  [boardIndex[3], boardIndex[4], boardIndex[5]]
+  newBoard[3] =  [boardIndex[6], boardIndex[7], boardIndex[8]]
+  newBoard[4] =  [boardIndex[0], boardIndex[3], boardIndex[6]]
+  newBoard[5] =  [boardIndex[1], boardIndex[4], boardIndex[7]]
+  newBoard[6] =  [boardIndex[2], boardIndex[5], boardIndex[8]]
+  newBoard[7] =  [boardIndex[0], boardIndex[4], boardIndex[8]]
+  newBoard[8] =  [boardIndex[6], boardIndex[4], boardIndex[2]]
 
   // setMessage(`Player ${winner} Won!`);
 
@@ -126,7 +155,7 @@ function doTurn(move){
     //if position is valid (position is blank)
       //make a move => updateState(move)
       //otherwise don't update position (position = position)
-
+  checkWinner(move);
   // if won {
   //   resetBoard();
   //   turn = 0
