@@ -633,7 +633,7 @@ describe('AJAX interactions with the Rails API', () => {
       const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
 
       gameButtons[0].click();
-
+      
       expect(requests[1].method).to.equal('GET');
       expect(requests[1].url).to.equal('/games/1');
     });

@@ -1,9 +1,8 @@
 const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 let current_game = 0;
-let turn = 0;
 
-$(document).ready(attachListeners(), window.turn = 0)
+$(document).ready(function() { attachListeners(), window.turn = 0 })
 
 function attachListeners() {
 	let cells = $("td");
@@ -14,6 +13,7 @@ function attachListeners() {
 	}
 	$("#clear").on("click", () => clearBoard());
 	$("#save").on("click", () => saveGame());
+	$("#previous").on("click", () => showPreviousGames());
 }
 
 // Gameplay Functions
@@ -85,6 +85,7 @@ function doTurn(cell) {
 }
 
 function clearBoard() {
+	$("#message").empty();
 	window.turn = 0;
 	$("td").empty();
 	current_game = 0;
@@ -98,25 +99,37 @@ function saveGame() {
 
  	if(current_game === 0) {
  		$.post('/games', values, function(game) {
-      		current_game = game.data.id;
-      		$('#games').append(`<button id="gameId-${game.data.id}">${game.data.id}</button>`);
-      		$("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
-    	});
+      	current_game = game.data.id;
+      	$('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      	$("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
  	} else {
- 		debugger;
  		$.ajax({url: "/games/" + current_game, data: values, method: "PATCH"});
  	}
 }
 
 function reloadGame(gameId) {
-	debugger;
+	$("#message").empty();
 	let cells = $("td");
-	let board = $.get(("/games/" + gameId), function() {
-		alert("success")
-	})
+	$.get(("/games/" + gameId), function(game) {
+		current_game = game.data.id;
+		for (let i = 0; i < cells.length; i++) {
+			cells[i].innerHTML = game.data.attributes.state[i];
+			if(game.data.attributes.state[i] === "X" || "O" === game.data.attributes.state[i]) {
+				window.turn += 1;
+			}
+		}
+	});
+}
 
-	current_game = board.id;
-	for (let i = 0; i < cells.length; i++) {
-		cells[i] = board.state[i];
-	}
+function showPreviousGames() {
+	$("#games").empty();
+  	$.get('/games', function(games) {
+    	if (games.data.length) {
+      		games.data.forEach(function(game) {
+      			$('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+  				$(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+      		});
+    	}
+  	});
 }
