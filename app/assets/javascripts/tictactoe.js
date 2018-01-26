@@ -88,6 +88,20 @@ function setMessage(message){
       // return false if no winning combination is present
 function checkWinner(){
 
+  //pushing object (board) into new array to compare the index with winningCombo
+  //determine the board's indexes => Object.keys
+    //these indexes help compare the indexes of winningCombo
+  //define a new board to push the new indexes
+  let a = {};
+  let b = (a[0] = board);
+  let boardIndex = Object.keys(b);
+  let newBoard = []
+
+  [boardIndex[0], boardIndex[1], boardIndex[2]]
+  [boardIndex[3], boardIndex[4], boardIndex[5]]
+  [boardIndex[6], boardIndex[7], boardIndex[8]]
+
+
 
   // setMessage(`Player ${winner} Won!`);
 
