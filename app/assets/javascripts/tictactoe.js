@@ -4,7 +4,7 @@ $(function() {
 })
 
 var turn = 0;
-var currentGame;
+var currentGame = 0;
 var winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [6,4,2]];
 
 function player() {
@@ -24,7 +24,7 @@ function setMessage(str) {
 }
 
 function checkWinner() {
-  let winner = false
+  let winner = false;
   const board = $("td").map(function() { return $(this).html() }).toArray();
   winCombinations.some(function(combo) {
     if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
@@ -95,7 +95,7 @@ function showGame(event) {
 function clearGame() {
   $("td").empty();
   turn = 0;
-  currentGame = undefined;
+  currentGame = 0;
 }
 
 function saveGame() {
@@ -108,8 +108,10 @@ function saveGame() {
       data: gameState
     });
   } else {
-    $.post("/games", gameState).done(function(game) {
+    $.post("/games", gameState, function(game) {
       currentGame = game.data.id;
+      $("#games").append(`<button id="gameId-${currentGame}" data-id="${currentGame}">Game ${currentGame}</button><br>`);
+      $(`#gameId-${currentGame}`).on('click', showGame);
     });
   };
 }
