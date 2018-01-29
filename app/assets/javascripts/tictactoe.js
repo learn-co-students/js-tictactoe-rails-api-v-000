@@ -26,8 +26,6 @@ $(function(){
     // so... define the board & make the squares clickable
 const boardState = [" "," "," "," "," "," "," "," "," "]; //=> [td, td, td, td, td, td, td, td, td]
 
-///boardState = [ ] 9 empty states
-// const boardState = ["" , ..]
 //every turn a state is updated
 // checkwinner() checks boardState
 // does checkwinner compare with winningCombo?
@@ -122,7 +120,7 @@ function resetBoard(){
 
 
   /// Place the Player's token on the board's squares ///
-    // doTurn() PASSES "clicked square" (the square itself from setBoard())
+    // doTurn() PASSES "clicked square" (the square itself from boardState())
     // Player clicks on PASSED "clicked square"; it will be invoked by updateState()
     // the PASSED "clicked square" gets token ("X" or "O") based on turn count, which is incremented in doTurn()
       //the PASSED "clicked square" can't change the token once it's been set
@@ -142,8 +140,8 @@ function setMessage(message){
 }
 
   /// Checking the winner ///
-    // Compare the setBoard()'s indexes to those of winningCombo
-    // setBoard and winningCombo are both nested arrays
+    // Compare the boardState()'s indexes to those of winningCombo
+    // boardState and winningCombo are both nested arrays
       // when player wins horizontally return true
       // when player wins diagonally return true
       // when player wins vertically return true
@@ -151,8 +149,9 @@ function setMessage(message){
 function checkWinner(move){
   let token = player();
   for(let combo of winningCombo) {
-    if (setBoard[combo[0]] !== "" && setBoard[combo[0]]=== setBoard[combo[1]] && setBoard[combo[1]] === setBoard[combo[2]]) {
-      setMessage(`Player ${setBoard[combo[0]]} Won!`);
+    debugger;
+    if (boardState[combo[0]] !== "" && boardState[combo[0]]=== boardState[combo[1]] && boardState[combo[1]] === boardState[combo[2]]) {
+      setMessage(`Player ${boardState[combo[0]]} Won!`);
     }
   }
 
@@ -169,7 +168,7 @@ function checkWinner(move){
           // invokes setMessage()
           // RESETS board and turnCount when game is won
         //...invokes checkWinner() to find a Tie
-          // iteration stopped at the setBoard's length + 1
+          // iteration stopped at the boardState's length + 1
 function doTurn(move){
   updateState(move); //first token placed ("X")
   turn++; // turn + 1; now it's ('O')'s turn
