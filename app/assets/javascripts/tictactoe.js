@@ -65,6 +65,14 @@ function player(){
   return turnCount(turn) ? "X" : "O";
 }
 
+  /// 5. Set the resetBoard
+function resetBoard(){
+  $("td").each(function(){
+    $(this).empty();
+  });
+}
+
+
 /// STARTING THE GAME ///
 
 //pushing object (board) into new array to compare the index with winningCombo
@@ -121,7 +129,6 @@ function player(){
         //if the PASSED "clicked square" is empty, then set the token
         //otherwise show the existing token
 function updateState(move){
-  // debugger;
   $(move).text(player()); //the user is clicking on the square (clicked element is 'td'); once clicked, the player places their token within the text attribute of td
   const index = $(move).data('index'); //we've added a new data attribute to td (data-index); we are defining the index as the attribute
   boardState[index] = player(); // now we're calling the boardState's index as the newly add data attribute of 'data-index'; then we say that empty boardState is equal to the player's token
@@ -134,7 +141,6 @@ function setMessage(message){
   $("div#message").text(message)
 }
 
-
   /// Checking the winner ///
     // Compare the setBoard()'s indexes to those of winningCombo
     // setBoard and winningCombo are both nested arrays
@@ -143,9 +149,12 @@ function setMessage(message){
       // when player wins vertically return true
       // return false if no winning combination is present
 function checkWinner(move){
-
-
-  // setMessage(`Player ${winner} Won!`);
+  let token = player();
+  for(let combo of winningCombo) {
+    if (setBoard[combo[0]] !== "" && setBoard[combo[0]]=== setBoard[combo[1]] && setBoard[combo[1]] === setBoard[combo[2]]) {
+      setMessage(`Player ${setBoard[combo[0]]} Won!`);
+    }
+  }
 
 }
 
@@ -180,11 +189,6 @@ function doTurn(move){
 
 }
 
-function resetBoard(){
-  $("td").each(function(){
-    $(this).empty();
-  });
-}
 
 /// Actions for the buttons ///
 // function saveGame(){
