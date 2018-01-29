@@ -2,8 +2,8 @@
 
 /// GLOBAL VARIABLES///
 let turn = 0;
-let gameId = 0;
-const winningCombo = [
+let game = 0;
+var winningCombo = [
   [0, 1, 2], // first row across
   [3, 4, 5], // second ""
   [6, 7, 8], // third ""
@@ -29,7 +29,6 @@ const boardState = [" "," "," "," "," "," "," "," "," "]; //=> [td, td, td, td, 
 //every turn a state is updated
 // checkwinner() checks boardState
 // does checkwinner compare with winningCombo?
-
 
   /// 2B. Set the board's square to be clickable
     /// !!!!!! DO NOT DELETE THIS COMMENT ///
@@ -68,6 +67,8 @@ function resetBoard(){
   $("td").each(function(){
     $(this).empty();
   });
+  turn = 0;
+  game = 0;
 }
 
 
@@ -147,14 +148,13 @@ function setMessage(message){
       // when player wins vertically return true
       // return false if no winning combination is present
 function checkWinner(move){
-  let token = player();
-  for(let combo of winningCombo) {
-    debugger;
-    if (boardState[combo[0]] !== "" && boardState[combo[0]]=== boardState[combo[1]] && boardState[combo[1]] === boardState[combo[2]]) {
-      setMessage(`Player ${boardState[combo[0]]} Won!`);
-    }
-  }
-
+  // let token = player();
+  // for(let combo of winningCombo) {
+  //   // debugger;
+  //   if (boardState[combo[0]] !== "" && boardState[combo[0]]=== boardState[combo[1]] && boardState[combo[1]] === boardState[combo[2]]) {
+  //     setMessage(`Player ${boardState[combo[0]]} Won!`);
+  //   }
+  // }
 }
 
   /// Players take Turns playing ///
@@ -176,7 +176,7 @@ function doTurn(move){
     //if position is valid (position is blank)
       //make a move => updateState(move)
       //otherwise don't update position (position = position)
-  checkWinner(move);
+  // checkWinner(move);
   // if won {
   //   resetBoard();
   //   turn = 0
@@ -190,46 +190,28 @@ function doTurn(move){
 
 
 /// Actions for the buttons ///
-// function saveGame(){
-//   // $("td")
-//   gameId++;
-//   // this.id = gameId
-//   setMessage("")
-// }
-//
-// function previousGame(){
-//   $("td").empty();
-//   turn = 0;
-//   setMessage("")
-// }
-//
-// function clearGame(){
-//   // $("td").empty();
-//   turn = 0;
-//   setMessage("")
-// }
+function saveGame(){
+  $("button#save").on("click", function(){
+
+  });
+}
+
+function previousGame(){
+  $("button#previous").on("click", function(){
+
+  });
+}
+
+function clearGame(){
+  $("button#clear").on("click", function(){
+
+  });
+}
 
 /// Buttons ////
 function attachListeners(){
-  $("#save").on("click", function(e){
-    e.preventDefault;
-    // gameId++;
-    saveGame();
-    alert("save")
-  });
-
-  $("#previous").on("click", function(e){
-    e.preventDefault;
-    // --gameId;
-    previousGame();
-    alert("previous")
-  });
-
-  $("#clear").on("click", function(e){
-    e.preventDefault;
-    clearGame();
-  });
-
   theSquare(); //invoke the passed element of td into doTurn() which is invoked in theMove() upabove under ON LOAD
-
+  saveGame();
+  previousGame();
+  clearGame();
 }
