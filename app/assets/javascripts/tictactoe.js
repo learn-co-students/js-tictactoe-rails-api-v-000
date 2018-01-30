@@ -2,7 +2,6 @@
 var origBoard = ['','','','','','','','','']
 const playerone = 'O'
 const playertwo = 'X' 
-let gameId = 1
 var turn = 0
 var square
 
@@ -33,6 +32,7 @@ startGame()
 
   function attachListeners(){
     var arr = [].slice.call(cell) 
+    
        arr.forEach((squares)=>{
          
          squares.addEventListener('click', function(){
@@ -47,17 +47,9 @@ startGame()
          })
                    
    })
-<<<<<<< HEAD
-   $('#save').on('click', saveGame)
-   $('#clear').on('click', clearGame)
-   $('#previous').on('click', previousGame)    
-=======
-   $('#save').on('click',  saveGame)
-
-        
-
-    
->>>>>>> 32564a3aac3fb2d3e0b5edc751826ae4f13fc6cc
+      $('#save').on('click', saveGame)
+      $('#clear').on('click', clearGame)
+      $('#previous').on('click', previousGame)    
   } 
   function startGame(){
     setMessage('')
@@ -65,30 +57,27 @@ startGame()
       cell[i].innerText = ''
       cell[i].id = i
       turn = 0
-      gameId++
-
+      
     }
   }
     
   
       function doTurn(square){
         
-        updateState(square)
+       if(updateState(square)){
+         turn++
+       }
+         if (checkWinner() === true){
+            saveGame()
+            startGame()
+          }
+          else if (turn === 8){
+            setMessage("Tie game.")
+          }
         turn++
-        if (checkWinner() === true){
-          saveGame()
-          startGame()
-          turn = 0
-        } else if (turn === 9)
-        setMessage("Tie game.")
-        saveGame()
-     
-        
-      }
-      function tie (){
-        
       }
       function player (){
+        // d
         if(turn % 2 == 0 )
         {
           return 'X';
@@ -97,14 +86,10 @@ startGame()
         {
           return 'O'
         }
-        
       }
-
       function updateState(square){
-        
        square.innerText = player()
         let number = square.id
-        
         origBoard[number] = square.innerText
         
       }
@@ -114,11 +99,9 @@ startGame()
           cell[i].innerText = squares[i]
         }         
       }
-
       function setMessage(message){
         $('#message').append(message)
       }
-
       function checkWinner(){
         let won = false
           winCombos.forEach(win =>{
@@ -141,33 +124,31 @@ startGame()
         })
         return won
      }
+
   function saveGame(){
       var board = []
-      
+      $('td').each(function(){
         board.push(this.innerText)
-        var board = []
-        $('td').each(function(){
-          board.push(this.innerText)
-          
-<<<<<<< HEAD
+        
+      })
+      if (gameId === 0){
+        $.post({
+          url: "/games",
+          data: {
+               state: board
+          }, function(json){
+          gameID = json.data.id
+          }
+        })
+    } else {
+      $.ajax({
+        type: 'PATCH',
+        url: `/games/${gameID}`,
+        data: {state: board}
       })
     }
+    }
   function previousGame(){
-=======
-        })      
-          $.post({
-            url: "/games",
-            data: {
-                 state: board
-            }
-          }).done(function(json){
-            
-        })
-      }
-    $(function(){
-      $('#previous').on('click', function(e){
-        e.preventDefault()
->>>>>>> 32564a3aac3fb2d3e0b5edc751826ae4f13fc6cc
         $.ajax({
           dataType: 'json',
           url: '/games',
@@ -188,47 +169,26 @@ startGame()
             setMessage(`no Previous Games `)
           }
         })
-        
-        
       }
-  
-    $(function(){
-      $('#button').on('click', function(e){
-<<<<<<< HEAD
-        debugger
-        let gameId = e.target.id
-=======
-        
-        // let gameId = e.target.id
->>>>>>> 32564a3aac3fb2d3e0b5edc751826ae4f13fc6cc
-        
-        $.ajax({
-          url:'games/' + gameId,
-          dataType: 'json'
-      }).done(json => {
-        
-        let gameData = json.data.attributes.state
-                
-            previousGame(gameData)
-            })
-         
-       
-      })
-    })
     
     function clearGame(){
-      
-<<<<<<< HEAD
         startGame()
       }
-     
-=======
-      $('td').each(function(){
-        this.innerHTML = ''
-        turn = 0
-        startGame()
+      $(function(){
+        $('#games').on('click', function(e){
+          debugger
+          let gameId = e.target.id
+          
+          $.ajax({
+            url:'games/' + gameId,
+            dataType: 'json'
+        }).done(json => {
+          
+          let gameData = json.data.attributes.state
+                  
+              previousGame(gameData)
+            })
+          
+        })
       })
-     })
-    })
-  
->>>>>>> 32564a3aac3fb2d3e0b5edc751826ae4f13fc6cc
+     
