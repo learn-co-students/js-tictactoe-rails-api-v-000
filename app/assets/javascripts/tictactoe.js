@@ -39,7 +39,7 @@ startGame()
          squares.addEventListener('click', function(){
            square = this
            setMessage('')
-           if (square.innerText === ''){
+           if (square.innerText === '' && !checkWinner()){
            doTurn(square)
            }
            else {
@@ -58,7 +58,6 @@ startGame()
     for(var i = 0; i< cell.length; i++){
       cell[i].innerText = ''
       cell[i].id = i
-      
     }      
     turn = 0
     gameId = 0
