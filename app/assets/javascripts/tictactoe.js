@@ -4,7 +4,7 @@ const playerone = 'O'
 const playertwo = 'X' 
 var turn = 0
 var square
-let gameId = 0
+var gameId = 0
 
 const winCombos = [
   [0,1,2],
@@ -21,7 +21,7 @@ function Game (state){
   this.state = state
 }
 
-var game = new Game
+// var game = new Game
 
 const cell = document.getElementsByTagName('td')
 
@@ -58,30 +58,29 @@ startGame()
     for(var i = 0; i< cell.length; i++){
       cell[i].innerText = ''
       cell[i].id = i
-      turn = 0
       
-    }
+    }      
+    turn = 0
+    gameId = 0
   }
     
   
       function doTurn(square){
-        
-       if(updateState(square)){
+        updateState(square)
          turn++
-       }
+       
          if (checkWinner() === true){
             saveGame()
             startGame()
           }
-          else if (turn === 8){
+          else if (turn === 9){
             setMessage("Tie game.")
             saveGame()
           }
-        turn++
       }
       function player (){
-        // d
-        if(turn % 2 == 0 )
+        
+        if(turn % 2 === 0 )
         {
           return 'X';
         }
@@ -133,7 +132,7 @@ startGame()
      }
 
   function saveGame(){
-      var board = []
+      let board = []
       $('td').each(function(){
         board.push(this.innerText)
         
@@ -148,7 +147,7 @@ startGame()
           gameId = json.data.id
           }
         })
-    } else {
+    } else if (gameId !== 0) {
       $.ajax({
         type: 'PATCH',
         url: `/games/${gameId}`,
@@ -157,6 +156,7 @@ startGame()
     }
     }
   function previousGame(){
+    if ($('#games').children().length === 0){
         $.ajax({
           dataType: 'json',
           url: '/games',
@@ -179,6 +179,7 @@ startGame()
           }
         })
       }
+    }
     
   function clearGame(){
         startGame()
@@ -195,7 +196,7 @@ startGame()
           let data = json.data
           startGame()
                setGame(data)
-            
+
            })
         }
       
