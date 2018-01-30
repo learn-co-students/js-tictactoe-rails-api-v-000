@@ -45,11 +45,11 @@ startGame()
              setMessage("not a valid move")
            }
          })
-             
+                   
    })
-        
-
-    
+   $('#save').on('click', saveGame)
+   $('#clear').on('click', clearGame)
+   $('#previous').on('click', previousGame)    
   } 
   function startGame(){
     setMessage('')
@@ -127,9 +127,7 @@ startGame()
         })
         return won
      }
-  $(function(){
-    $('#save').on('click', function(e){
-      e.preventDefault()
+  function saveGame(){
       var board = []
       $('td').each(function(){
         board.push(this.innerText)
@@ -143,10 +141,8 @@ startGame()
         }).done(function(json){
           
       })
-    })
-    $(function(){
-      $('#previous').on('click', function(e){
-        e.preventDefault()
+    }
+  function previousGame(){
         $.ajax({
           dataType: 'json',
           url: '/games',
@@ -169,11 +165,11 @@ startGame()
         })
         
         
-      })
-    })
+      }
+  
     $(function(){
       $('#button').on('click', function(e){
-        
+        debugger
         let gameId = e.target.id
         
         $.ajax({
@@ -190,15 +186,8 @@ startGame()
       })
     })
     
-    $(function(){
-    $('#clear').on('click', function (e){
-      e.preventDefault()
+    function clearGame(){
       
-      $('td').each(function(){
-        this.innerHTML = ''
-        turn = 1
         startGame()
-      })
-     })
-    })
-  })
+      }
+     
