@@ -1,12 +1,11 @@
 // // Code your JavaScript / jQuery solution here
 var origBoard = ['','','','','','','','','']
-const playerone = 'O'
-const playertwo = 'X' 
+
 var turn = 0
 var square
-var gameId = 0
+var gameId
 
-const winCombos = [
+var winCombos = [
   [0,1,2],
   [3,4,5],  
   [6,7,8],
@@ -16,14 +15,7 @@ const winCombos = [
   [0,4,8],
   [2,4,6]
 ]
-
-function Game (state){
-  this.state = state
-}
-
-// var game = new Game
-
-const cell = document.getElementsByTagName('td')
+var cell = document.getElementsByTagName('td')
 
 
 $(function(){
@@ -34,7 +26,7 @@ startGame()
   function attachListeners(){
     var arr = [].slice.call(cell) 
     
-       arr.forEach((squares)=>{
+       arr.forEach(function(squares){
          
          squares.addEventListener('click', function(){
            square = this
@@ -67,14 +59,14 @@ startGame()
       function doTurn(square){
         updateState(square)
          turn++
-       
-         if (checkWinner() === true){
+         if (checkWinner()){
             saveGame()
             startGame()
           }
           else if (turn === 9){
             setMessage("Tie game.")
             saveGame()
+            startGame()
           }
       }
       function player (){
@@ -90,16 +82,19 @@ startGame()
       }
       function updateState(square){
        square.innerText = player()
-        let number = square.id
-        origBoard[number] = square.innerText
+        var number = square.id
+        origBoard[number] = square.innerHTML
         
       }
 
       function setGame(data){
         
-        let squares = data.attributes.state
-        for(i =0; i < squares.length; i++){
-          cell[i].append(squares[i])
+        var squares = data.attributes.state
+        
+  
+          for(i =0; i < squares.length; i++){
+            // debugger
+            cell[i].innerHTML = squares[i]
         }         
         gameId = data.id
       }
@@ -108,8 +103,8 @@ startGame()
         $('#message').append(message)
       }
       function checkWinner(){
-        let won = false
-          winCombos.forEach(win =>{
+        var won = false
+          winCombos.forEach(function(win){
             
             winIndex1 = win[0]
             winIndex2 = win[1]
@@ -131,53 +126,54 @@ startGame()
      }
 
   function saveGame(){
-      let board = []
+    
+      var board = []
       $('td').each(function(){
         board.push(this.innerText)
         
       })
-      
-      if (gameId === 0){
-        $.post({
-          url: "/games",
-          data: {
-               state: board
-          }, function(json){
-          gameId = json.data.id
-          }
-        })
-    } else if (gameId !== 0) {
-      $.ajax({
+      // debugger
+      if (gameId){
+        $.ajax({
         type: 'PATCH',
+        dataType: JSON,
         url: `/games/${gameId}`,
         data: {state: board}
       })
-    }
-    }
+    
+
+    } else  {
+      $.post({
+        url: "/games",
+        data: {
+             state: board
+        }
+      }).done(function(json){
+          // debugger
+        gameId = json.data.id
+        
+        })
+      }
+  }
   function previousGame(){
+    
     if ($('#games').children().length === 0){
         $.ajax({
           dataType: 'json',
           url: '/games',
-        }).done((json) => {
+        }).done(function(json){
           if (json.data.length > 0){
-          let games = json.data
-            
+          var games = json.data
             var gamesDiv = document.getElementById('games')
-            
-            let renderGames = `${games.map((game)=> {
+            var renderGames = `${games.map(function(game){
               return `<button id="${game.id}">Game ${game.id} </button>`
               
             }).join('')
           }`
           $('#games').append(renderGames)
-            // document.getElementById('games').innerHTML = renderGames
-          }
-          else {
-            setMessage(`no Previous Games `)
           }
         })
-      }
+      }      
     }
     
   function clearGame(){
@@ -190,13 +186,11 @@ startGame()
           $.ajax({
             url:'/games/' + id,
             dataType: 'json'
-        }).done((json) => {
+        }).done(function(json){
           
-          let data = json.data
+          var data = json.data
           startGame()
                setGame(data)
 
            })
-        }
-      
-     
+          }

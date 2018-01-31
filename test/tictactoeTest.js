@@ -502,7 +502,7 @@ describe('AJAX interactions with the Rails API', () => {
         );
 
         saveButton.click();
-
+        // debugger
         expect(requests[0].method).to.equal('POST');
         expect(requests[0].url).to.equal('/games');
 
@@ -517,8 +517,9 @@ describe('AJAX interactions with the Rails API', () => {
       xhr = sinon.useFakeXMLHttpRequest();
       requests = [];
       xhr.onCreate = req => requests.push(req);
+      
     });
-
+    
     afterEach(() => {
       xhr.restore();
       resetFixtures();
@@ -530,7 +531,7 @@ describe('AJAX interactions with the Rails API', () => {
         window.turn = 1;
 
         clearButton.click();
-
+        
         const board = Array.from(squares).map(s => s.innerHTML);
 
         expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);
@@ -658,7 +659,7 @@ describe('AJAX interactions with the Rails API', () => {
         { 'Content-Type': 'application/json' },
         jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
       );
-
+      // debugger
       const board = Array.from(squares).map(s => s.innerHTML);
 
       expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', 'O', '']);
@@ -685,7 +686,7 @@ describe('AJAX interactions with the Rails API', () => {
         { 'Content-Type': 'application/json' },
         jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
       );
-
+      debugger
       saveButton.click();
 
       expect(requests[2].method).to.equal('PATCH');
