@@ -61,6 +61,21 @@ function doTurn(cell) {
   }
 }
 
+function saveGame() {
+  // if (params[:id]) {
+  //   $.patch('/games/' + params[:id])
+  // }
+  // if the game has been saved -- update it
+  // else create it
+  //this. table. td
+  var values = $("td").serialize();
+  var posting = $.post('/games', values);
+  posting.done(function(data) {
+    console.log(data)
+    alert("Saved!");
+  });
+}
+
 function attachListeners() {
   // each square on the gameboard
   $("td").on("click", function() {
@@ -70,15 +85,7 @@ function attachListeners() {
   // save game button
   $("button#save").on("click", function(event) {
     event.preventDefault();
-    //
-    // if (params[:id]) {
-    //   $.patch('/games/' + params[:id])
-    // }
-    // if the game has been saved -- update it
-    // else create it
-    $.post('/games', function(data) {
-      alert("Saved!");
-    });
+    saveGame();
   });
   // previous games button
   $("button#previous").on("click", function() {
@@ -109,3 +116,7 @@ function attachListeners() {
 }
 
 $(function() { attachListeners() });
+//
+// $(document).ready(function() {
+//   attachListeners();
+// });
