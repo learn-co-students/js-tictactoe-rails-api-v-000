@@ -1,4 +1,5 @@
 var turn = 0;
+var currentGame = 0;
 var WIN_COMBINATIONS = [
   [0, 1, 2],
   [3, 4, 5],
@@ -45,6 +46,7 @@ function checkWinner() {
 function resetBoard() {
   $("td").empty();
   turn = 0;
+  currentGame = 0;
 }
 
 function doTurn(cell) {
@@ -53,27 +55,36 @@ function doTurn(cell) {
     turn += 1;
   }
   if (checkWinner()) {
-    //save game & reset board
+    saveGame();
     resetBoard();
   } else if (turn === 9) {
     setMessage("Tie game.");
+    saveGame();
     resetBoard();
   }
 }
 
 function saveGame() {
-  // if (params[:id]) {
-  //   $.patch('/games/' + params[:id])
-  // }
-  // if the game has been saved -- update it
-  // else create it
-  //this. table. td
-  var values = $("td").serialize();
-  var posting = $.post('/games', values);
-  posting.done(function(data) {
-    console.log(data)
-    alert("Saved!");
+  var state = [];
+  var gameData;
+
+  $("td").text(function(index, square) {
+    state.push(square);
   });
+
+  gameData = { state: state };
+
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+    });
+  }
 }
 
 function attachListeners() {
@@ -88,11 +99,11 @@ function attachListeners() {
     saveGame();
   });
   // previous games button
-  $("button#previous").on("click", function() {
+  $("button#previous").on("click", function(event) {
     event.preventDefault;
     $.get('/games', function(data) {
-      if (data) {
-        var games = data;
+      var games = data;
+      if (games.data.length) {
         var $div = $("div#games");
         $div.html("");
         for(var game of games.data) {
@@ -103,7 +114,15 @@ function attachListeners() {
           var id = $(this).data("id");
           $.get("/games/" + id, function(data) {
             var game = data;
-            game.data.attributes.state;
+            var state = game.data.attributes.state;
+            var cells = $("td");
+            var i = 0;
+            for (var cell of cells) {
+              $(cell).text(state[i]);
+              i++;
+            }
+            turn = state.join('').length;
+            currentGame = id;
           });
         });
       }
@@ -116,7 +135,3 @@ function attachListeners() {
 }
 
 $(function() { attachListeners() });
-//
-// $(document).ready(function() {
-//   attachListeners();
-// });
