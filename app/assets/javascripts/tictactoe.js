@@ -11,13 +11,10 @@ $(document).ready(function(){
 
 function attachListeners(){
   $('td').on('click', function(event){
-
-    doTurn(event.target)
+    if (!checkWinner() || !fullBoard()){
+      doTurn(event.target)
+    }
   })
-
-  // document.getElementById("board").addEventListener("click", function(){
-  //   doTurn(event.toElement.id)
-  // })
 
   document.getElementById("save").addEventListener("click", function(){
     saveGame()
@@ -31,6 +28,8 @@ function attachListeners(){
     clearBoard()
   })
 }
+
+var turn = 0
 
 var win_combinations = [
    [0,1,2],
@@ -50,7 +49,6 @@ function saveGame() {
   var gameData = {state: state}
 
   if (gameID === 0){
-
     $.ajax({
       type: 'POST',
       url: "/games",
@@ -60,17 +58,16 @@ function saveGame() {
     }});
   }
   else{
-    debugger
     var url = '/games/'+gameID
+
     $.ajax({
-      type: 'PATCH',
       url: url,
-      data: gameData,
+      type: 'PATCH',
+      data: {gameData: gameData, gameID: gameID, _method: "PATCH",
        success: function(result){
-
+         console.log(result)
        }
-
-    })
+    }})
   }
 }
 
@@ -102,19 +99,27 @@ function restoreGame(id){
   for(var index=0;index<data.data.attributes.state.length;index++){
     tags[index].innerHTML = data.data.attributes.state[index]
   }
-  gameID = data.id
+  gameID = data.data.id
+  turn = getTurnCount()
   })
+
+}
+
+function getTurnCount(){
+  var board = getCurrentBoard()
+  var turnNumber = board.filter(function(el){
+    return(el === '')
+  })
+  return 9 - turnNumber.length
 }
 
 function clearBoard() {
   board = $.map( $('td'), function( n ) {
     return n.innerHTML = '';
   });
-  gameID = 0
-  turn = 0
+  gameID = 0;
+  turn = 0;
 }
-
-var turn = 0
 
 function player(){
   if (turn === 0 || turn%2 === 0 ){
@@ -133,23 +138,25 @@ function updateState(location){
 function doTurn(location){
   if(location.innerHTML === ''){
     updateState(location)
+      // turn = getTurnCount()
+
+  }
     winner = checkWinner()
-    turn++
+    turn = getTurnCount()
     if (winner !== false) {
       saveGame()
       clearBoard()
-      clearMessage()
       // var gameVar = setTimeout(function(){
       //
       // }, 2000)
     } else if (fullBoard() === -1){
       var gameOver = "Tie game."
-      setMessage(gameOver)
       saveGame()
+      setMessage(gameOver)
       clearBoard()
       clearMessage()
     }
-  }
+
 }
 
 function setMessage(msg){
@@ -174,7 +181,7 @@ function checkWinner(){
     position_3 = state[win_position_3]
 
     if ((position_1 === "X" && position_2 === "X" && position_3 === "X") || (position_1 === "O" && position_2 === "O" && position_3 === "O")){
-      Object.freeze(state)
+
       message = 'Player ' + position_1 + " Won!"
       setMessage(message)
       return true

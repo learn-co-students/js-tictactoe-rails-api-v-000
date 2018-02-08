@@ -320,8 +320,9 @@ describe('Gameplay', () => {
     //  O | O |
 
     squares[4].click();
-
+debugger
     expect(squares[4].innerHTML).to.equal('');
+
     expect(window.turn).to.equal(5);
   });
 
