@@ -5,10 +5,19 @@ $(document).ready(function(){
   // document.addEventListener("click", function(){
   //   doTurn(event.toElement.id)
   // });
+  attachListeners()
 
-  document.getElementById("board").addEventListener("click", function(){
-    doTurn(event.toElement.id)
+})
+
+function attachListeners(){
+  $('td').on('click', function(event){
+
+    doTurn(event.target)
   })
+
+  // document.getElementById("board").addEventListener("click", function(){
+  //   doTurn(event.toElement.id)
+  // })
 
   document.getElementById("save").addEventListener("click", function(){
     saveGame()
@@ -21,8 +30,7 @@ $(document).ready(function(){
   document.getElementById("clear").addEventListener("click", function(){
     clearBoard()
   })
-
-})
+}
 
 var win_combinations = [
    [0,1,2],
@@ -40,6 +48,7 @@ function saveGame() {
   // event.preventDefault()
   var state = getCurrentBoard()
   var gameData = {state: state}
+
   if (gameID === 0){
 
     $.ajax({
@@ -47,23 +56,21 @@ function saveGame() {
       url: "/games",
       data: gameData,
        success: function(result){
-
+         gameID = result.data.id
     }});
-
-    // var posting = $.post('/games', { 'state': state } );
-    // posting.done(function(data) {
-    //   gameID = data.data.id
-    //
-    //   //data.id = game id
-    //   console.log(data.state)
-    // })
   }
   else{
-    var posting = $.post('/games/' + gameID, { _method: 'PATCH' }, { 'state': state, 'gameID': gameID } );
+    debugger
+    var url = '/games/'+gameID
+    $.ajax({
+      type: 'PATCH',
+      url: url,
+      data: gameData,
+       success: function(result){
 
-    posting.done(function(data){
+       }
+
     })
-
   }
 }
 
@@ -71,32 +78,31 @@ function saveGame() {
 function getCurrentBoard(){
   var board = []
   board = $.map( $('td'), function( n ) {
-    return n.innerText;
+    return n.innerHTML;
 });
   return board
 }
 
 function getPreviousGames(){
-  var games = $.get('/games')
-  games.done(function(data){
+  var games = $.get('/games', function(data){
     $('#games')[0].innerHTML = ''
 
-  for(var index=0; index<data.data.length; index++) {
-
-    $('#games')[0].innerHTML += "<p>Game " + data.data[index].id + ". <button onClick='restoreGame("+ data.data[index].id +")'>Select Game </button></p>"
-  }
+    for(var index=0; index<data.data.length; index++){
+      $('#games')[0].innerHTML += "Game " + data.data[index].id + ". <button onClick='restoreGame("+ data.data[index].id +")'>Select Game </button>"
+    }
   })
 }
 
 function restoreGame(id){
+
   var game = $.get('/games/'+id)
 
   game.done(function(data) {
-
     var tags = $('td')
   for(var index=0;index<data.data.attributes.state.length;index++){
     tags[index].innerHTML = data.data.attributes.state[index]
   }
+  gameID = data.id
   })
 }
 
@@ -105,12 +111,13 @@ function clearBoard() {
     return n.innerHTML = '';
   });
   gameID = 0
-  turnCount = 0
+  turn = 0
 }
 
-var turnCount = 0
+var turn = 0
+
 function player(){
-  if (turnCount === 0 || turnCount%2 === 0 ){
+  if (turn === 0 || turn%2 === 0 ){
     return "X"
   }
   else {
@@ -119,32 +126,29 @@ function player(){
 }
 
 function updateState(location){
-    var turn = player()
-    $('#'+location)[0].innerHTML = turn
-    return turn
+    var token = player()
+    location.innerHTML = token
 }
 
 function doTurn(location){
-  if($('#'+location)[0].innerHTML === ''){
+  if(location.innerHTML === ''){
     updateState(location)
-
-    if (checkWinner() !== false) {
-      setMessage("We have a winner")
+    winner = checkWinner()
+    turn++
+    if (winner !== false) {
       saveGame()
-      var gameVar = setTimeout(function(){
-        clearBoard()
-        clearMessage()
-      }, 2000)
+      clearBoard()
+      clearMessage()
+      // var gameVar = setTimeout(function(){
+      //
+      // }, 2000)
     } else if (fullBoard() === -1){
-      var gameOver = "Cats game"
+      var gameOver = "Tie game."
       setMessage(gameOver)
       saveGame()
-      var endVar = setTimeout(function(){
-        clearBoard()
-        clearMessage()
-      }, 2000)
+      clearBoard()
+      clearMessage()
     }
-    turnCount++
   }
 }
 
@@ -158,9 +162,9 @@ function clearMessage() {
 
 function checkWinner(){
   var state = getCurrentBoard()
-  var winner
   var full = fullBoard()
   for(var i=0; i<win_combinations.length; i++){
+
     win_position_1 = win_combinations[i][0]
     win_position_2 = win_combinations[i][1]
     win_position_3 = win_combinations[i][2]
@@ -168,17 +172,19 @@ function checkWinner(){
     position_1 = state[win_position_1]
     position_2 = state[win_position_2]
     position_3 = state[win_position_3]
+
     if ((position_1 === "X" && position_2 === "X" && position_3 === "X") || (position_1 === "O" && position_2 === "O" && position_3 === "O")){
+      Object.freeze(state)
+      message = 'Player ' + position_1 + " Won!"
+      setMessage(message)
       return true
-    // winner = 'Player ' + position_1 + " Won!"
-    // return winner
-  } else { return false }
+      }
     }
+   return false
   }
 
 //checks if the boad is full
 function fullBoard(){
-
   var state = getCurrentBoard()
   return $.inArray('', state)
 }

@@ -9,7 +9,7 @@ class GamesController < ApplicationController
 
 # get game_path games/:id
   def show
-    
+
     render json: @game
   end
 
@@ -21,6 +21,7 @@ class GamesController < ApplicationController
 
 # put/patch game_path games/:id
   def update
+    binding.pry
     @game.update(game_params)
     render json: @game, status: 201
   end
