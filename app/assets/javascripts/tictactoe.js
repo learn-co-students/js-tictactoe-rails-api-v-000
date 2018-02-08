@@ -109,7 +109,6 @@ function clearBoard() {
 }
 
 var turnCount = 0
-
 function player(){
   if (turnCount === 0 || turnCount%2 === 0 ){
     return "X"
@@ -121,19 +120,16 @@ function player(){
 
 function updateState(location){
     var turn = player()
-
+    $('#'+location)[0].innerHTML = turn
     return turn
 }
 
 function doTurn(location){
-  debugger
   if($('#'+location)[0].innerHTML === ''){
-    turn = updateState()
-    $('#'+location)[0].innerHTML = turn
-    winner = checkWinner()
+    updateState(location)
 
-    if (checkWinner !== false) {
-      setMessage(winner)
+    if (checkWinner() !== false) {
+      setMessage("We have a winner")
       saveGame()
       var gameVar = setTimeout(function(){
         clearBoard()
@@ -148,6 +144,7 @@ function doTurn(location){
         clearMessage()
       }, 2000)
     }
+    turnCount++
   }
 }
 
