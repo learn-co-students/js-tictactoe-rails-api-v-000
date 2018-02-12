@@ -1,12 +1,56 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
 
+//Great memoization but breaks the test
+// var memos = {}
+
+// function memoize(game) {
+// 	memos[game["id"]] = {state: game["attributes"]["state"]}
+// }
+
+// function retreaveMemo(id) {
+// 	$('table').data('game-id', id);
+// 	updateTableDom(memos[id].state);
+// 	calculateTurn();
+// }
+
+function doTurn(td) {
+	var gameOver = false;
+
+	if (updateState(td)) {
+	
+		if (checkWinner()) {
+			gameOver = true;
+		} else if (checkTie()) {
+			gameOver = true;
+		}
+	
+		if (!gameOver) {
+			turn++
+		} else {
+			saveGame();
+			newGame();
+		}
+	
+	}
+}
+
+function newGame() {
+	$('table').data('game-id', "");
+	$('td').text("");
+	turn = 0;
+}
+
 function calculateTurn() {
 	var arr = tableAsArray();
 	var xs = arr.filter((e)=> e == 'X')
 	var os = arr.filter((e)=> e == 'O')
 
 	turn = xs.length + os.length;
+
+	if (!checkWinner() && !checkTie()) {
+		setMessage("");
+	}
 }
 
 function player() {
@@ -15,19 +59,6 @@ function player() {
 	} else {
 		return 'O'
 	}
-}
-
-function updateState(td) {
-	if (td.innerHTML != "") {
-		return false
-	} else {
-		td.innerHTML = player(); 
-		return true
-	}
-}
-
-function setMessage(message) {
-	$('#message').text(message)
 }
 
 function checkWinner() {
@@ -47,6 +78,7 @@ function checkWinner() {
 
 function checkTie() {
 	if (turn >= 8) {
+		setMessage('Tie game.')
 		return true;
 	}
 	return false
@@ -61,26 +93,17 @@ function moveIsInvalid() {
 	}) || turn == 9;
 }
 
-function doTurn(td) {
-	var gameOver = false;
-
-	if (updateState(td)) {
-	
-		if (checkWinner()) {
-			gameOver = true;
-		} else if (checkTie()) {
-			setMessage('Tie game.')
-			gameOver = true;
-		}
-	
-		if (!gameOver) {
-			turn++
-		} else {
-			saveGame();
-			newGame();
-		}
-	
+function updateState(td) {
+	if (td.innerHTML != "") {
+		return false
+	} else {
+		td.innerHTML = player(); 
+		return true
 	}
+}
+
+function setMessage(message) {
+	$('#message').text(message)
 }
 
 function tableAsArray() {
@@ -95,12 +118,6 @@ function updateTableDom(array) {
 	$('td').each(function(i){
 		$(this).text(array[i]);
 	});
-}
-
-function newGame() {
-	$('table').data('game-id', "");
-	$('td').text("");
-	turn = 0;
 }
 
 function saveGame(){
@@ -132,20 +149,29 @@ function attachListeners() {
 	$("#previous").on("click", function(){
 		$.get('/games', function(response){
 			var games = response["data"];
-			var last_saved= Number($('#games button:last-child').text()) || -1;
+			var last_saved = Number($('#games button').last().data('id')) || -1;
+
 			for (var i = 0; i < games.length; i++) {
-				if (last_saved < Number(games[i]["id"]))
-					$('#games').append('<button>' + games[i]["id"] + '</button>');
+				if (last_saved < Number(games[i]["id"])) {
+					// memoize(games[i]);
+					$('#games').append('<button data-id=' + games[i]["id"] + '>' + games[i]["id"] + '. created at: ' + games[i]["attributes"]["created-at"] + '</button><br>');
+				}
 			}
+
 			$('#games button').on('click', function(){
-				var id = this.innerHTML;
-				$.get('/games/' + id, function(data) {
-					$('table').data('game-id', id);
-					updateTableDom(data["data"]["attributes"]["state"]);
-					calculateTurn();
-				});
+				var id = $(this).data('id');
+				// if (memos[id]) {
+				// 	retreaveMemo(id)
+				// } else {
+					$.get('/games/' + id, function(data) {
+						$('table').data('game-id', id);
+						updateTableDom(data["data"]["attributes"]["state"]);
+						calculateTurn();
+					});
+				// }
 			});
 		});
+
 	});
 
 	$("#clear").on("click", newGame);	
@@ -156,4 +182,3 @@ $(function(){
 	$('table').data('game-id', "")
 	attachListeners();
 });
-
