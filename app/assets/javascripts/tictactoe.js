@@ -1,5 +1,5 @@
 var turn = 0
-var id = false //when we click a previous game button, turns to that buttons game id
+var id = false
 
 function player() {
   if(turn == 0){
@@ -61,7 +61,7 @@ function full() {
     }
 }
 
-function updateOrCreateGame() { //updates or creates game
+function updateOrCreateGame() {
   var values = {}
   values["state"] = getBoard()
   if(id) {
@@ -71,7 +71,7 @@ function updateOrCreateGame() { //updates or creates game
   }
 }
 
-function doTurn(square) { //autosave function not working
+function doTurn(square) {
   if(validMove(square)) {
     updateState(square)
     if(checkWinner()) {
@@ -89,7 +89,7 @@ function doTurn(square) { //autosave function not working
   }
 }
 
-function updateGame(values, id) { //updates game with ajax request
+function updateGame(values, id) {
   $.ajax({
     type: "PATCH",
     url: "/games/" + id,
@@ -98,7 +98,7 @@ function updateGame(values, id) { //updates game with ajax request
   })
 }
 
-function newGame(values) { //creates game with Ajax request
+function newGame(values) {
   $.post("/games", values, function(data) {
     id = data.data.id
   })
@@ -111,15 +111,8 @@ function resetGame() {
 }
 
 function attachListeners() {
-  $("td").on('click', function(){//working in server, not in tests (Gameplay test)
+  $("td").on('click', function(){
     checkWinner() || full() ? null : doTurn(this)
-
-
-    //doTurn(this)
-    //var message = $("#message").text()
-    // if(message != "") {
-    //   $("td").off()
-    // }
   })
 
   $("#clear").on('click', function(event) {
@@ -145,7 +138,7 @@ function attachListeners() {
 })
 
    $("#previous").on('click', function(){
-     $.get("/games", function(data){ //shows buttons
+     $.get("/games", function(data){
        var games = data.data
        var gameList = ""
        games.forEach(game => {
@@ -160,18 +153,18 @@ function attachListeners() {
 function attachButtonListeners() {
   $("button[data-game]").on('click', function() {
     id = this.dataset.game
-    $.get("/games/"+id, function(data){ //loading the data
+    $.get("/games/"+id, function(data){
       var board = data.data.attributes.state
       var squares = $("td")
       for(var i =0; i < squares.length; i++) {
         for(var i = 0; i < board.length; i++) {
           squares[i].innerHTML = board[i]
-        }//for
-      }//for
+        }
+      }
       setTurn(board)
-    })//get
-  })//event listener
-}//main function
+    })
+  })
+}
 
 function setTurn(board) {
   if(board) {
