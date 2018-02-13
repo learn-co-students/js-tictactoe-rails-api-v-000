@@ -1,5 +1,17 @@
-var turn = 0
-var board = ["", "", "", "", "", "", "", "", ""]
+$(document).ready(function() {
+  attachListeners();
+});
+
+var turn = 0;
+
+var gameCount = 0;
+
+var board = ["", "", "", "", "", "", "", "", ""];
+
+var winCombo = [[0,1,2], [3,4,5], [6,7,8],
+                [0,3,6], [1,4,7], [2,5,8],
+                [0,4,8], [2,4,6]];
+
 
 // Returns the token of the player whose turn it is, 'X' when even, '0' when odd
 function player() {
@@ -31,11 +43,10 @@ function setMessage(msg) {
 function checkWinner() {
   var winner = false;
 
-  const winCombo = [[0,1,2], [3,4,5], [6,7,8],
-                    [0,3,6], [1,4,7], [2,5,8],
-                    [0,4,8], [2,4,6]];
-
-  $('td').text((index, td) => board[index] = td)
+  var squares = $('td')
+  squares.text(function(index, td) {
+    board[index] = td;
+  })
 
   winCombo.some(function(combo) {
     if (board[combo[0]] == board[combo[1]] && board[combo[1]] == board[combo[2]] && board[combo[0]] != "") {
@@ -56,10 +67,11 @@ function doTurn(td) {
   turn += 1;
 
   if (checkWinner()) {
-    //reset board and counter
+    saveGame();
     clearGame();
   } else if (turn === 9) {
     setMessage("Tie game.")
+    saveGame();
     clearGame();
   }
 }
@@ -67,50 +79,103 @@ function doTurn(td) {
 // Attaches the appropriate event listeners to the squares of the game board as well as for the button#save, button#previous, and button#clear elements
 // When a user clicks on a square on the game board, the event listener should invoke doTurn() function and pass it in the element that was clicked
 // Must be invoked inside either a $(document).ready() for jQuery, or a window.onload = () => {} for vanilla JavaScript
-$(document).ready(function() {
-  attachListeners();
-});
-
 function attachListeners() {
   const squares = $('td')
 
   for (var i = 0; i < squares.length; i++) {
     $(squares[i]).on('click', function(event) {
-
-      //var token = player();
-      //var index = 0
-
-      //  board[0] | board[1] | board[2]
-      // --------------------------------
-      //  board[3] | board[4] | board[5]
-      // --------------------------------
-      //  board[6] | board[7] | board[8]
-
-      //if (this.dataset['y'] === "1") {
-      //  index = parseInt(this.dataset['x']) + 3;
-      //} else if (this.dataset['y'] === "2") {
-      //  index = parseInt(this.dataset['x']) + 6;
-      //} else {
-      //  index = parseInt(this.dataset['x'])
-      //}
       if ($.text(this) == "" && !checkWinner()) {
         doTurn(this);
-      }
-    })
-  }
+      };
+    });
+  };
 
-	//$('td').on('click', function() {
-		//var col = $(this).data("x");
-		//var row = $(this).data("y");
-		//})
-  //})
+  $('#save').on('click', function() {
+    saveGame();
+  });
+
+  $('#previous').on('click', function() {
+    previousGames();
+  });
+
+  $('#clear').on('click', function() {
+    clearGame();
+  });
 }
 
+// When the current game has not yet been saved sends a POST request to the "/games" route
+// When the current game already exists in the database sends a PATCH request to the "/games/:id" route
 function saveGame() {
+  // ex. state = ["X", "X", "O", "", "", "", "", "", ""]
+  var state = []
 
+  var squares = $('td')
+  squares.text(function(index, square) {
+    state.push(square);
+  });
+
+  // Create game object
+  var gameData = { state: state }
+
+  if (gameCount) {
+    $.ajax({
+      type: 'PATCH',
+      url: '/games/' + gameCount,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game){
+      gameCount = game.data.id
+      $("#games").append(`<button id="game-${gameCount}">Game: ${gameCount}</button><br/>`);
+      $("#game-" + gameCount).on('click', function(){
+        reloadGame(gameCount);
+      });
+    });
+  }
+}
+
+// Sends a GET request to the "/games" route
+// When no previously-saved games exist in the database does not add any children to the div#games element in the DOM
+// When previously-saved games exist in the database adds those previous games as buttons in the DOM's div#games element
+// When previously-saved games exist in the database does not re-add saved games already present in the div#games element when the "previous" button is clicked a second time
+function previousGames() {
+  $('#games').empty();
+  $.get('/games', function(game) {
+    //debugger
+    for (var i = 0; i < game.data.length; i++) {
+      $('#games').append(`<button id="gameid-${game.data[i].id}">Game: ${game.data[i].id}</button><br>`)
+      $('#gameid-' + game.data[i].id).on('click', { id: game.data[i].id }, function(data) {
+        //debugger
+        reloadGame(data.data.id)
+      })
+    }
+  })
+}
+
+function reloadGame(gameId) {
+  //debugger
+  clearGame();
+  $.get('/games/' + gameId, function(data) {
+    const squares = $('td')
+
+    for (var i = 0; i < data.data.attributes.state.length; i++) {
+      $(squares[i]).append(data.data.attributes.state[i])
+    }
+    gameCount = data.data.id
+
+    var state = [];
+    for (var i = 0; i < data.data.attributes.state.length; i++) {
+      if (data.data.attributes.state[i] !== "") {
+        //debugger
+        state.push(data.data.attributes.state[i]);
+      };
+    }
+    turn = state.length;
+  })
 }
 
 function clearGame() {
   $('td').empty();
   turn = 0;
+  gameCount = 0;
 }
