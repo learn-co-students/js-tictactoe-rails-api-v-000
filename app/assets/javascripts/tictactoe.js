@@ -1,17 +1,39 @@
+var turn = 0;
+var currentGameId = 0;
+var board = ["", "", "", "", "", "", "", "", ""];
+var winCombo = [[0,1,2], [3,4,5], [6,7,8], // horizontal wins
+                [0,3,6], [1,4,7], [2,5,8], // vertical wins
+                [0,4,8], [2,4,6]]; // diagonal wins
+
 $(document).ready(function() {
   attachListeners();
 });
 
-var turn = 0;
+// Attaches the appropriate event listeners to the squares of the game board as well as for the button#save, button#previous, and button#clear elements
+// When a user clicks on a square on the game board, the event listener should invoke doTurn() function and pass it in the element that was clicked
+function attachListeners() {
+  const squares = $('td')
 
-var gameCount = 0;
+  for (var i = 0; i < squares.length; i++) {
+    $(squares[i]).on('click', function(event) {
+      if ($.text(this) == "" && !checkWinner()) {
+        doTurn(this);
+      };
+    });
+  };
 
-var board = ["", "", "", "", "", "", "", "", ""];
+  $('#save').on('click', function() {
+    saveGame();
+  });
 
-var winCombo = [[0,1,2], [3,4,5], [6,7,8],
-                [0,3,6], [1,4,7], [2,5,8],
-                [0,4,8], [2,4,6]];
+  $('#previous').on('click', function() {
+    previousGames();
+  });
 
+  $('#clear').on('click', function() {
+    clearGame();
+  });
+}
 
 // Returns the token of the player whose turn it is, 'X' when even, '0' when odd
 function player() {
@@ -23,14 +45,14 @@ function player() {
 }
 
 // Invokes player() and adds the returned string ('X' or 'O') to the clicked square on the game board
-function updateState(td) {
+function updateState(square) {
   var token = ""
   if (player() === 'X') {
     token = 'X';
   } else {
     token = 'O';
   }
-  $(td).append(token);
+  $(square).append(token);
 }
 
 // Accepts a string and adds it to the div#message element in the DOM
@@ -61,8 +83,8 @@ function checkWinner() {
 // Increments the turn variable by 1
 // Invokes the updateState() function, passing it the element that was clicked
 // Invokes the checkWinner() function, determining whether the move results in a winning play
-function doTurn(td) {
-  updateState(td);
+function doTurn(square) {
+  updateState(square);
 
   turn += 1;
 
@@ -74,33 +96,6 @@ function doTurn(td) {
     saveGame();
     clearGame();
   }
-}
-
-// Attaches the appropriate event listeners to the squares of the game board as well as for the button#save, button#previous, and button#clear elements
-// When a user clicks on a square on the game board, the event listener should invoke doTurn() function and pass it in the element that was clicked
-// Must be invoked inside either a $(document).ready() for jQuery, or a window.onload = () => {} for vanilla JavaScript
-function attachListeners() {
-  const squares = $('td')
-
-  for (var i = 0; i < squares.length; i++) {
-    $(squares[i]).on('click', function(event) {
-      if ($.text(this) == "" && !checkWinner()) {
-        doTurn(this);
-      };
-    });
-  };
-
-  $('#save').on('click', function() {
-    saveGame();
-  });
-
-  $('#previous').on('click', function() {
-    previousGames();
-  });
-
-  $('#clear').on('click', function() {
-    clearGame();
-  });
 }
 
 // When the current game has not yet been saved sends a POST request to the "/games" route
@@ -117,18 +112,18 @@ function saveGame() {
   // Create game object
   var gameData = { state: state }
 
-  if (gameCount) {
+  if (currentGameId) {
     $.ajax({
       type: 'PATCH',
-      url: '/games/' + gameCount,
+      url: '/games/' + currentGameId,
       data: gameData
     });
   } else {
     $.post('/games', gameData, function(game){
-      gameCount = game.data.id
-      $("#games").append(`<button id="game-${gameCount}">Game: ${gameCount}</button><br/>`);
-      $("#game-" + gameCount).on('click', function(){
-        reloadGame(gameCount);
+      currentGameId = game.data.id
+      $("#games").append(`<button id="gameid-${currentGameId}">Game: ${currentGameId}</button><br/>`);
+      $("#gameid-" + currentGameId).on('click', function(){
+        reloadGame(currentGameId);
       });
     });
   }
@@ -161,7 +156,7 @@ function reloadGame(gameId) {
     for (var i = 0; i < data.data.attributes.state.length; i++) {
       $(squares[i]).append(data.data.attributes.state[i])
     }
-    gameCount = data.data.id
+    currentGameId = data.data.id
 
     var state = [];
     for (var i = 0; i < data.data.attributes.state.length; i++) {
@@ -177,5 +172,5 @@ function reloadGame(gameId) {
 function clearGame() {
   $('td').empty();
   turn = 0;
-  gameCount = 0;
+  currentGameId = 0;
 }
