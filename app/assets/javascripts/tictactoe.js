@@ -1,6 +1,12 @@
 // Code your JavaScript / jQuery solution here
-function player() {
+var turn;
 
+function player() {
+  if (turn % 2 == 0) {
+    return "X"
+  } else {
+    return "O"
+  }
 }
 
 function updateState() {
