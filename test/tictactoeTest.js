@@ -228,12 +228,12 @@ describe('tictactoe.js', () => {
 
       const spy = sandbox.spy(window, 'setMessage');
 
-      populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-      //  X | O | X 
+      populateBoard(['O', 'X', 'O', 'O', 'X', 'O', 'X', '', 'X']);
+      //  O | X | O 
       // -----------
-      //  X | O | X 
+      //  O | X | O 
       // -----------
-      //  O |   | O 
+      //  X |   | X 
 
       window.turn = 8;
       window.doTurn(squares[7]);
