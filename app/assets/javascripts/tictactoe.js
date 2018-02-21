@@ -12,38 +12,44 @@
  	});
 
  	$("#save").click(function(){
- 		saveGame()
+ 		save()
  	});
 
  	$("#clear").click(function(){
- 		saveGame();
+ 		
 	 	turn = 0;
+
 	 	board = {}
 	 	$("td").html("")
  	});
 
- 	$("#previous").click(function(){
- 		for(const key in store){
- 			$('div#games').append(store[key])
- 			console.log(store[key])
- 		};
- 	});
+ 	// $("#previous").click(function(){
+ 	// 	for(const key in store){
+ 	// 		$('div#games').append(store[key])
+ 	// 		console.log(store[key])
+ 	// 	};
+ 	// });
 };
 
 var turn = 0;
 var gameId = 0
-var store = {games: []}
+var store = {game: []}
 
+function save(){
+	if(!this.id ){	
+		new saveGame()
+	}else (console.log("what the hell???"))
+}
+}
 
-function saveGame(){
- 	if (this.gameId===0){
+class saveGame {
+	constructor(){
     this.id = ++gameId
     this.board = $('td')
  		
-    store.games.push(this.id, this.board)
-    
-  } else {this.board = $('td')}
-}
+    store.game.push(this)
+  };
+};
 
 function player(){
 	return (turn % 2 === 0 ? "X" : "O");
@@ -54,7 +60,7 @@ function doTurn(args){
 	 updateState(args)
 	 
 	 if (checkWinner()){
-	 	saveGame();
+	 	save();
 	 	turn = 0;
 	 	board = {}
 	 	$("td").html("")
@@ -62,7 +68,7 @@ function doTurn(args){
 
 	 else if (turn === 9){
 	 	setMessage("Tie game.")
-	 	saveGame();
+	 	save();
 	 };
 };
 
@@ -73,6 +79,7 @@ function updateState(args){
 };
 
 function setMessage(message){
+	save()
 	alert(message)
 	 $('#message').append(innerHTML = message)
 };
