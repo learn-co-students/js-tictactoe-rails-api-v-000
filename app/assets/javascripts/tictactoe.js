@@ -1,140 +1,155 @@
- $(document).ready(attachListeners)
-
-
- function attachListeners(){
- 	
- 	$("td").click(function(){
- 	 		if(this.innerHTML === ""){
- 	 		doTurn(this)
- 		}else{
-  alert("can't go there");	
-		};
- 	});
-
- 	$("#save").click(function(){
- 		save()
- 	});
-
- 	$("#clear").click(function(){
- 		
-	 	turn = 0;
-
-	 	board = {}
-	 	$("td").html("")
- 	});
-
- 	// $("#previous").click(function(){
- 	// 	for(const key in store){
- 	// 		$('div#games').append(store[key])
- 	// 		console.log(store[key])
- 	// 	};
- 	// });
-};
+$(document).ready(attachListeners)
 
 var turn = 0;
-var gameId = 0
-var store = {game: []}
+var currentGame = 0;
 
-function save(){
-	if(!this.id ){	
-		new saveGame()
-	}else (console.log("what the hell???"))
-}
-}
+var player = () => turn % 2 ? 'O' : 'X';
 
-class saveGame {
-	constructor(){
-    this.id = ++gameId
-    this.board = $('td')
- 		
-    store.game.push(this)
-  };
-};
+function attachListeners(){   
+	
+	$("td").click(function(){
+	if(this.innerHTML === "" && !checkWinner()){
+		doTurn(this)
+	} else{
+			alert("can't go there");
+		};
+	}); 
 
-function player(){
-	return (turn % 2 === 0 ? "X" : "O");
-};
+	$("#save").click(function(){
+		saveGame()
+	});
 
-function doTurn(args){
-	turn++;
-	 updateState(args)
-	 
-	 if (checkWinner()){
-	 	save();
-	 	turn = 0;
-	 	board = {}
-	 	$("td").html("")
-	 }
+	$("#clear").click(function(){
+  	$("td").empty()
+	  turn = 0;
+    currentGame = 0
+  });
 
-	 else if (turn === 9){
-	 	setMessage("Tie game.")
-	 	save();
-	 };
+	$("#previous").click(function(){
+		showPreviousGames()
+	});
 };
 
 function updateState(args){
 	let selectedSquare = args
-	selectedSquare.append(player())
-	
+  selectedSquare.append(player())
 };
+
+function doTurn(square){
+	updateState(square)
+	turn++;
+	if (checkWinner()){
+  	saveGame();
+		$("td").empty();
+	  turn = 0;
+    currentGame = 0
+  } else if (turn === 9){
+	  setMessage("Tie game.");
+	  saveGame();
+    $("td").empty();
+		turn = 0;
+    currentGame = 0;
+   };
+}; 
+
+function saveGame() {
+  
+  let state = [];
+  
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+
+  let gameData = {state};
+
+  if (currentGame) {
+    $.ajax({type: 'PATCH', url: "/games/" + currentGame , data: gameData});
+  } else {
+    $.post("/games", gameData, function(game) {
+      
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => showPreviousGames(game.data.id));
+      currentGame = game.data.id;
+    });
+  };
+};
+
 
 function setMessage(message){
-	save()
-	alert(message)
-	 $('#message').append(innerHTML = message)
+  alert(message)
+  $('#message').append(innerHTML = message)
 };
 
+function showPreviousGames() {
+ $('#games').empty();
+  $.get('/games', (savedGames) => {
+ 	if (savedGames) {
+  	savedGames.data.forEach(function(game) {
+    $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+    
+    $(`#gameid-${game.id}`).click(function() {
+    	
+    	$.get( `/games/${game.id}`, function(dataResult) {
+			  
+				const id = dataResult.data.id;
+  			const gameState = dataResult.data.attributes.state;
+    
+  			let index = 0;
+  
+	 				for (let y = 0; y < 3; y++) {
+	    			for (let x = 0; x < 3; x++) {
+	     			 
+	     			 document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = gameState[index];
+	    
+	    		index++;
+
+	    		turn = gameState.join('').length;
+	    		currentGame = id;
+	      		};
+    			};
+  			});
+   		});
+  	 });
+   };
+ });
+};
 
 function checkWinner(){
+	
 	let board = {}
 	let winner = false
-	$('td').text((index, square) => board[index] = square);
-	
-	if (board[0] ==="X" && board[1] ==="X" & board[2] ==="X"){setMessage("Player X Won!");;  return winner = true}
-	else if (board[3] ==="X" && board[4] ==="X" & board[5] ==="X"){setMessage("Player X Won!");return winner = true}
-	else if (board[6] ==="X" && board[7] ==="X" & board[8] ==="X"){setMessage("Player X Won!");return winner = true}
-	else if (board[0] ==="X" && board[3] ==="X" & board[6] ==="X"){setMessage("Player X Won!");return winner = true}
-	else if (board[1] ==="X" && board[4] ==="X" & board[7] ==="X"){setMessage("Player X Won!");return winner = true}
-	else if (board[2] ==="X" && board[5] ==="X" & board[8] ==="X"){setMessage("Player X Won!");return winner = true}
-	else if (board[0] ==="X" && board[4] ==="X" & board[8] ==="X"){setMessage("Player X Won!");return winner = true}
-	else if (board[6] ==="X" && board[4] ==="X" & board[2] ==="X"){setMessage("Player X Won!");return winner = true}
 
-	else if (board[0] ==="O" && board[1] ==="O" & board[2] ==="O"){setMessage("Player O Won!");return winner = true}
-	else if (board[3] ==="O" && board[4] ==="O" & board[5] ==="O"){setMessage("Player O Won!");return winner = true}
-	else if (board[6] ==="O" && board[7] ==="O" & board[8] ==="O"){setMessage("Player O Won!");return winner = true}
-	else if (board[0] ==="O" && board[3] ==="O" & board[6] ==="O"){setMessage("Player O Won!");return winner = true}
-	else if (board[1] ==="O" && board[4] ==="O" & board[7] ==="O"){setMessage("Player O Won!");return winner = true}
-	else if (board[2] ==="O" && board[5] ==="O" & board[8] ==="O"){setMessage("Player O Won!");return winner = true}
-	else if (board[0] ==="O" && board[4] ==="O" & board[8] ==="O"){setMessage("Player O Won!");return winner = true}
-	else if (board[6] ==="O" && board[4] ==="O" & board[2] ==="O"){setMessage("Player O Won!"); return winner = true}
-	else {return winner=false}
+  $('td').text((index, square) => board[index] = square);    
+
+  if (board[0] ==="X" && board[1] ==="X" & board[2] ==="X"){setMessage("Player X Won!");;  return winner = true}
+
+  else if (board[3] ==="X" && board[4] ==="X" & board[5] ==="X"){setMessage("Player X Won!");return winner = true}
+
+  else if (board[6] ==="X" && board[7] ==="X" & board[8] ==="X"){setMessage("Player X Won!");return winner = true}
+
+  else if (board[0] ==="X" && board[3] ==="X" & board[6] ==="X"){setMessage("Player X Won!");return winner = true}
+
+  else if (board[1] ==="X" && board[4] ==="X" & board[7] ==="X"){setMessage("Player X Won!");return winner = true}
+
+  else if (board[2] ==="X" && board[5] ==="X" & board[8] ==="X"){setMessage("Player X Won!");return winner = true}
+
+  else if (board[0] ==="X" && board[4] ==="X" & board[8] ==="X"){setMessage("Player X Won!");return winner = true}
+
+  else if (board[6] ==="X" && board[4] ==="X" & board[2] ==="X"){setMessage("Player X Won!");return winner = true}    else if (board[0] ==="O" && board[1] ==="O" & board[2] ==="O"){setMessage("Player O Won!");return winner = true}
+
+  else if (board[3] ==="O" && board[4] ==="O" & board[5] ==="O"){setMessage("Player O Won!");return winner = true}
+
+  else if (board[6] ==="O" && board[7] ==="O" & board[8] ==="O"){setMessage("Player O Won!");return winner = true}
+
+  else if (board[0] ==="O" && board[3] ==="O" & board[6] ==="O"){setMessage("Player O Won!");return winner = true}
+
+  else if (board[1] ==="O" && board[4] ==="O" & board[7] ==="O"){setMessage("Player O Won!");return winner = true}
+
+  else if (board[2] ==="O" && board[5] ==="O" & board[8] ==="O"){setMessage("Player O Won!");return winner = true}
+
+  else if (board[0] ==="O" && board[4] ==="O" & board[8] ==="O"){setMessage("Player O Won!");return winner = true}
+
+  else if (board[6] ==="O" && board[4] ==="O" & board[2] ==="O"){setMessage("Player O Won!"); return winner = true}
+
+  else {return winner=false}
 };
-
-
-
-
-//------------------------------------------------
-
-//const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
-//                        [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
-
-
-//this looks better but only works with combo 0,1,2
-
-// function checkWinner(){
-// 	let board = {}
-// 	let winner = false
-// 	$('td').text((index, square) => board[index] = square);
-
-// 	for (const element of WINNING_COMBOS) {
-		
-
-// 		if(board[element[0]]==="X" && board[element[1]] === "X" & board[element[2]]==="X"){
-//   			return winner = true && setMessage("Player X Won!")
-//   		} else if (board[element[0]]==="O" && board[element[1]] === "O" & board[element[2]]==="O"){
-//   			return winner = true && setMessage("Player O Won!")
-//   		} else{
-//   			return winner = false
-//   		};
-// 		};
-// 	};
