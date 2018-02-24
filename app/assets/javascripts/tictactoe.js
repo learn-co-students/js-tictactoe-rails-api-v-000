@@ -11,6 +11,7 @@ $(document).ready(function() {
 });
 
 function attachListeners(){
+  
 
   $('#save').on('click', function() {
     saveGame();
@@ -45,7 +46,7 @@ function doTurn(){
 function updateState(){
   //invokes player()
   return player()
-  //adds X or O to clicked square 
+  //adds X or O to clicked square
 };
 
 function checkWinner(){
