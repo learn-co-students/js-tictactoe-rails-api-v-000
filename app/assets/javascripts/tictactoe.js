@@ -1,9 +1,13 @@
 var turn = 0;
 var gameId = 0;
-var board = $('td')
+var board = $('td');
 const winCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
                    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-                   [0, 4, 8], [2, 4, 6]]
+                   [0, 4, 8], [2, 4, 6]];
+
+$(document).ready(function() {
+  attachListeners();
+});
 
 function player() {
 //Returns the token of the player whose turn it is, 'X' when the turn variable is even and 'O' when it is odd.
@@ -37,7 +41,7 @@ function checkWinner() {
 }
 
 function newGame() {
-  board.empty()
+  board.empty();
   turn = 0;
   gameId = 0;
 }
@@ -64,7 +68,6 @@ function saveGame() {
       gameId = game.data.id
     })
   }
-
 }
 
 function tieGame() {
@@ -73,7 +76,7 @@ function tieGame() {
     return true;
   }
   else {
-    return false
+    return false;
   }
 }
 
@@ -86,11 +89,54 @@ function doTurn(square) {
     turn++;
   }
 
-
+  if (checkWinner()) {
+    saveGame();
+    newGame();
+  }
+  else if (tieGame()) {
+    setMessage('Tie game.');
+    newGame();
+  }
 }
+function showGame(id) {
+  board.each(function() {
+    $(this).html("");
+  });
+  $.get("/games/" + id, function(data) {
+    let state = data.data.attributes.state
+    let count = 0;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        $("[data-x=" + j + "][data-y=" + i + "]").html(state[count]);
+         count++;
+      };
+    };
+    gameId = id;
+    turn = state.join('').length;
+  });
+};
+
+function prevGames() {
+  $('#games').html('');
+  $.get('/games', function (data) {
+    for(let i = 0; i < data.data.length; i++) {
+     $('#games').append(`<button data-id="${data.data[i].id}" onclick="showGame(${data.data[i].id})">Game:  ${data.data[i].id}</button>`);
+  };
+ });
+};
 
 function attachListeners() {
 // Attaches the appropriate event listeners to the squares of the game board as well as for the button#save, button#previous, and button#clear elements.
 // When a user clicks on a square on the game board, the event listener should invoke doTurn() and pass it the element that was clicked.
-// NOTE: attachListeners() must be invoked inside either a $(document).ready() (jQuery) or a window.onload = () => {} (vanilla JavaScript). Otherwise, a number of the tests will fail (not to mention that your game probably won't function in the browser).
+//  attachListeners() must be invoked inside either a $(document).ready() (jQuery) or a window.onload = () => {} (vanilla JavaScript). Otherwise, a number of the tests will fail (not to mention that your game probably won't function in the browser).
+
+  board.on('click', function () {
+    if (!$.text(this) && !checkWinner() ) {
+      doTurn(this);
+    };
+  });
+
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => prevGames());
+  $('#clear').on('click', () => newGame());
 }
