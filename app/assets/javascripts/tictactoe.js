@@ -10,11 +10,9 @@ function attachListeners(){
     if($.text(this) === ""){
         doTurn(this)
     }
-})
-  $('#save').on("click", saveGame())
-  $('#previous').on('click', function(){
-    showPreviousGames()
   })
+  $('#save').on("click", saveGame)
+  $('#previous').on('click', showPreviousGames)
   $('#clear').on('click', () => resetBoard())
 }
 
@@ -22,7 +20,13 @@ var winningCombo =
   [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
   [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
-var player = () => turn % 2 ? 'O' : 'X';
+function player(){
+  if(turn % 2 === 0){
+    return 'X'
+  } else {
+    return 'O'
+  }
+}
 
 function doTurn(square){
   updateState(square)
@@ -99,22 +103,36 @@ function saveGame(){
   }
 }
 
+function showPreviousGames(){
+  $('#games').empty()
+  $.get("/games", function(savedGames){
+    if(savedGames.data){
+      savedGames.data.forEach(buttonizePreviousGame)
+    }
+  })
+}
+function buttonizePreviousGame(game){
+  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id))
+}
+
+
 function reloadGame(gameId){
-  $('#message').text("")
+  document.getElementById('message').innerHTML = "";
 
   var req = new XMLHttpRequest()
   req.open("GET", `/games/${gameId}`)
 
   req.onload = () => {
-    const data = JSON.parse(req.responseText).data;
-    const id = data.id
-    const state = data.attributes.state
+    var data = JSON.parse(req.responseText).data;
+    var id = data.id
+    var state = data.attributes.state
     var index = 0;
     for(var y = 0; y < 3; y++){
       for(var x = 0; x < 3; x++){
         document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index]
+        index++
       }
-      index++
     }
 
   turn = state.join('').length
@@ -128,18 +146,3 @@ function reloadGame(gameId){
   req.send(null)
 
 }
-
-function showPreviousGames(){
-  $.get("/games", function(savedGames){
-    if(savedGames){
-      savedGames.data.forEach(buttonizePreviousGame)
-    }
-  })
-}
-function buttonizePreviousGame(game){
-  $('#games').append(`<button id="gameid=${game.id}">${game.id}</button><br>`)
-  $(`#gameid-${game.id}`).on("click", () => reloadGame(game.id))
-}
-
-
-
