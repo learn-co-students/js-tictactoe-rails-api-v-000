@@ -12,11 +12,8 @@ $(document).ready(function() {
 
 function attachListeners(){
 
-
   $('#save').on('click', function() { saveGame();});
-
   $('#previous').on('click', function() {previousGames();});
-
   $('#clear').on('click', function() {clearGame();});
 }
 
@@ -30,43 +27,16 @@ function player(){
 };
 
 function doTurn(square){
-  turn += 1
-
-  updateState(square) //pass element that was clicked
-
-  if (checkWinner()) {
-    saveGame()
-    clearGame()
-  } else if (turn === 9) {
-    setMessage("Tie Game.")
-    saveGame()
-    clearGame()
-    }
 };
 
 function updateState(square){
-  $(square).text(player())
 };
 
 function checkWinner(){
-  var winner = false;
-  var squares = $('td')
-    squares.text(function(index, square) {
-      board[index] = square;
-    })
-
- winningCombo.some(function(combo) {
-   if (board[combo[0]] == board[combo[1]] && board[combo[1]] == board[combo[2]] && board[combo[0]] != "") {
-     winner = true;
-     setMessage("Player " + board[combo[0]] + " Won!");
-   };
- });
-
- return winner;
 };
 
-function setMessage(string){
-  $('#message').append(string);
+function setMessage(msg){
+  $('#message').append(msg);
 };
 
 function saveGame(){
@@ -83,7 +53,4 @@ function previousGames(){
 };
 
 function clearGame(){
-  $('td').empty();
-   turn = 0;
-   currentGameId = 0;
-};
+  };
