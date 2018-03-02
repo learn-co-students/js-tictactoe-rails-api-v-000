@@ -11,6 +11,10 @@ $(document).ready(function() {
 });
 
 function attachListeners(){
+ //attach event listeners for each sqauare on board
+ //when square is clicked doTurn() should be invoked
+
+  //event listeners for buttons
   $('#save').on('click', function() { saveGame();});
   $('#previous').on('click', function() {previousGames();});
   $('#clear').on('click', function() {clearGame();});
@@ -25,19 +29,30 @@ function player(){
   }
 };
 
-function doTurn(square){
+function doTurn(){
+  //pass square that was clicked
+  //increase turn by 1
+  //updateState()
+  //checkWinner()
+
 };
 
-function updateState(square){
+function updateState(){
+  //player()
+  //adds returned value from player() to clicked on square
 };
 
 function checkWinner(){
+  //returns true if winning combo exists
+  //if winner invoke setMessage(), passing string Player _ Won!
 };
 
 function setMessage(msg){
-  $('#message').append(msg);
+  $('#message').append(msg); //accepts string and adds it to the div#message
 };
 
+
+//buttons
 function saveGame(){
   //should save current game's state
   //update if game already exists
