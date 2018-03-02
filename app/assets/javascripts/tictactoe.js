@@ -1,6 +1,6 @@
-let turn = 0; //even = X, odd = O
+var turn = 0; //even = X, odd = O
 let currntGameID = 0; //set gameID to pull previous games
-let board = document.getElementsByTagName('td');  //creates board positions
+let squares = document.getElementsByTagName('td');  //creates squares
 
 const winningCombo = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]; //all possible winning combos
 
@@ -15,9 +15,15 @@ function attachListeners(){
  //when square is clicked doTurn() should be invoked
 
   //event listeners for buttons
-  $('#save').on('click', function() { saveGame();});
-  $('#previous').on('click', function() {previousGames();});
-  $('#clear').on('click', function() {clearGame();});
+  $('#save').on('click', function() {
+    saveGame()
+    });
+  $('#previous').on('click', function() {
+    previousGames()
+  });
+  $('#clear').on('click', function() {
+    clearGame()
+  });
 }
 
 //returns token of the player whose turn it is
@@ -52,8 +58,11 @@ function setMessage(msg){
 };
 
 
+
 //buttons
+
 function saveGame(){
+
   //should save current game's state
   //update if game already exists
   //doesn't already exists, persist to database
@@ -67,4 +76,6 @@ function previousGames(){
 };
 
 function clearGame(){
+  turn = 0;
+  currentGameId = 0;
   };
