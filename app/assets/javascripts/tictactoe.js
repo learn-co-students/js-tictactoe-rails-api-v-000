@@ -1,6 +1,6 @@
 
 var turn = 0;
-var id = 0;
+var gameId = 0;
 
 function doTurn(td) {
   updateState(td);
@@ -14,9 +14,10 @@ function doTurn(td) {
     if (tie) {
       setMessage("Tie game.");
     }
+    saveGame();
     $("td").empty();
     turn = 0;
-    saveGame();
+    gameId = 0;
   }
 }
 
@@ -28,9 +29,13 @@ function setMessage(msg) {
   $("div#message").html(msg);
 }
 
-function checkWinner() {
+function getBoardArray() {
   var tds = Array.from(document.getElementsByTagName("td"));
-  var board = tds.map(td => td.innerHTML);
+  return tds.map(td => td.innerHTML);
+}
+
+function checkWinner() {
+  var board = getBoardArray();
   var winningCombos = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]];;
 
   var x = 0;
@@ -54,7 +59,35 @@ function player() {
 }
 
 function saveGame() {
+  var currentGame = { "state": getBoardArray() };
 
+  if (gameId === 0) {
+    // create a new instance the game
+     $.post("/games", currentGame, function(resp) {
+       gameId = parseInt(resp.data.id);
+     })
+   } else {
+    //  if the game has update been saved to the db and the user clicks save, update it
+     $.ajax({
+       url: `/games/${gameId}`,
+       method: "PATCH",
+       data: currentGame
+     })
+  }
+}
+
+function loadBoard(id) {
+  gameId = id
+
+  $.get(`/games/${id}`, function(resp) {
+    $('td').toArray().forEach((el, i) => {
+      el.innerHTML = resp.data.attributes.state[i];
+
+      if (el.innerHTML != "") {
+        turn++;
+      }
+    })
+  })
 }
 
 function attachListeners() {
@@ -69,23 +102,33 @@ function attachListeners() {
   $("#previous").on("click", function(e) {
     // previous button click handler
       // AJAX interactions with the Rails API Clicking the button#previous element sends a GET request to the "/games" route: (clear children before attaching)
+      $("#games").empty();
 
       $.get("/games", function(response) {
         console.log(response)
+        var buttons = "";
+
+        response.data.forEach(game => {
+          $("#games").append(`<button data-id="${game.id}" onclick="loadBoard(${game.id})">${game.id}</button>`)
+        })
 
       });
   })
 
   // save button
-  $("save").on("click", function(e) {
+  $("#save").on("click", function() {
     // save button click handler
       // button#save element when the current game has not yet been saved sends a POST request to the "/games" route:
+      console.log("save")
+      saveGame();
   })
 
   // clear button
-  $("clear").on("click", function(e) {
+  $("#clear").on("click", function(e) {
     // clear button click handler
       //  when an unsaved game is in progress clears the game
+    $("td").empty();
+    gameId = 0;
   })
 }
 
