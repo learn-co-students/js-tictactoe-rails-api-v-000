@@ -15,10 +15,14 @@ function doTurn(td) {
       setMessage("Tie game.");
     }
     saveGame();
-    $("td").empty();
-    turn = 0;
-    gameId = 0;
+    resetBoard();
   }
+}
+
+function resetBoard() {
+  $("td").empty();
+  turn = 0;
+  gameId = 0;
 }
 
 function updateState(td) {
@@ -93,14 +97,12 @@ function loadBoard(id) {
 function attachListeners() {
   $("td").on("click", function(e) {
     e.preventDefault();
-    if (this.innerHTML === "") {
+    if (this.innerHTML === "" && !checkWinner()) {
       doTurn(this)
     }
   })
 
-  // previous button
   $("#previous").on("click", function(e) {
-    // previous button click handler
       // AJAX interactions with the Rails API Clicking the button#previous element sends a GET request to the "/games" route: (clear children before attaching)
       $("#games").empty();
 
@@ -115,20 +117,15 @@ function attachListeners() {
       });
   })
 
-  // save button
   $("#save").on("click", function() {
-    // save button click handler
       // button#save element when the current game has not yet been saved sends a POST request to the "/games" route:
       console.log("save")
       saveGame();
   })
 
-  // clear button
   $("#clear").on("click", function(e) {
-    // clear button click handler
       //  when an unsaved game is in progress clears the game
-    $("td").empty();
-    gameId = 0;
+      resetBoard();
   })
 }
 
