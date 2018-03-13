@@ -1,5 +1,10 @@
 // Code your JavaScript / jQuery solution here
+$(document).ready(() => {
+  attachListeners()
+})
+
 var turn = 0
+var currentGame = null
 
 const winningCombinations = [
   [0, 1, 2],
@@ -39,6 +44,7 @@ function gameState() {
 }
 
 function resetGame() {
+  currentGame = null
   turn = 0
   return [...document.querySelectorAll("td")].forEach(elem => elem.innerHTML = "")
 }
@@ -47,10 +53,12 @@ function doTurn(square) {
   updateState(square)
   turn++
   if (checkWinner()) {
+    saveGame()
     resetGame()
   } else {
     if (fullGame()) {
       setMessage("Tie game.")
+      saveGame()
       resetGame()
     }
   }
@@ -64,8 +72,45 @@ function attachListeners() {
   $("td").on("click", function (event) {
     if (event.currentTarget.innerHTML === "" && !fullGame() && !checkWinner()) doTurn(event.currentTarget)
   })
+  $("#previous").on("click", renderGames)
+  $("#save").on("click", saveGame)
+  $("#clear").on("click", resetGame)
+  $("#games").on("click", ".load", loadGame)
 }
 
-$(document).ready(() => {
-  attachListeners()
-})
+function renderGames() {
+  $.getJSON("/games", (responseData) => {
+    $("#games").html("")
+    responseData.data.forEach((game, index) => {
+      $("#games").append(`<button class="load" data-id="${game.id}">Load Game ${index}</button>`)
+    })
+  })
+}
+
+function saveGame() {
+  if (currentGame) {
+    $.ajax({
+      url: `/games/${currentGame}`,
+      data: {
+        state: gameState()
+      },
+      type: "PATCH",
+      dataType: "json"
+    })
+  } else {
+    $.post("/games", {
+      state: gameState()
+    }, function (resp) {
+      currentGame = resp.data.id
+    });
+  }
+}
+
+function loadGame() {
+  const gameId = $(this).data().id
+  $.get(`/games/${gameId}`, function (resp) {
+    [...document.querySelectorAll("td")].forEach((elem, i) => elem.innerHTML = resp.data.attributes.state[i])
+    currentGame = resp.data.id
+    turn = resp.data.attributes.state.filter(position => position !== "").length
+  })
+}

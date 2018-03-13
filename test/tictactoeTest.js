@@ -76,8 +76,8 @@ describe('tictactoe.js', () => {
 
     it("adds the current player's token to the passed-in <td> element", () => {
       sandbox.stub(window, 'player').
-        onFirstCall().returns('X').
-        onSecondCall().returns('O');
+      onFirstCall().returns('X').
+      onSecondCall().returns('O');
 
       window.updateState(squares[8]);
       window.updateState(squares[0]);
@@ -410,8 +410,9 @@ describe('AJAX interactions with the Rails API', () => {
         previousButton.click();
 
         requests[0].respond(
-          200,
-          { 'Content-Type': 'application/json' },
+          200, {
+            'Content-Type': 'application/json'
+          },
           jsonifyGames([])
         );
 
@@ -424,8 +425,9 @@ describe('AJAX interactions with the Rails API', () => {
         previousButton.click();
 
         requests[0].respond(
-          200,
-          { 'Content-Type': 'application/json' },
+          200, {
+            'Content-Type': 'application/json'
+          },
           jsonifyGames([
             ['', '', '', '', '', '', '', '', ''],
             ['O', 'X', 'O', '', 'X', 'X', '', 'X', 'O'] // 'X' wins
@@ -441,8 +443,9 @@ describe('AJAX interactions with the Rails API', () => {
         previousButton.click();
 
         requests[0].respond(
-          200,
-          { 'Content-Type': 'application/json' },
+          200, {
+            'Content-Type': 'application/json'
+          },
           jsonifyGames([
             ['', '', '', '', '', '', '', '', ''],
             ['O', 'X', 'O', '', 'X', 'X', '', 'X', 'O'], // 'X' wins
@@ -453,8 +456,9 @@ describe('AJAX interactions with the Rails API', () => {
         previousButton.click();
 
         requests[1].respond(
-          200,
-          { 'Content-Type': 'application/json' },
+          200, {
+            'Content-Type': 'application/json'
+          },
           jsonifyGames([
             ['', '', '', '', '', '', '', '', ''],
             ['O', 'X', 'O', '', 'X', 'X', '', 'X', 'O'], // 'X' wins
@@ -496,8 +500,9 @@ describe('AJAX interactions with the Rails API', () => {
         saveButton.click();
 
         requests[0].respond(
-          201,
-          { 'Content-Type': 'application/json' },
+          201, {
+            'Content-Type': 'application/json'
+          },
           jsonifyGame(['', '', '', '', '', '', '', '', ''])
         );
 
@@ -549,8 +554,9 @@ describe('AJAX interactions with the Rails API', () => {
         saveButton.click();
 
         requests[0].respond(
-          201,
-          { 'Content-Type': 'application/json' },
+          201, {
+            'Content-Type': 'application/json'
+          },
           jsonifyGame(['', '', '', '', '', '', '', '', ''])
         );
 
@@ -623,8 +629,9 @@ describe('AJAX interactions with the Rails API', () => {
       previousButton.click();
 
       requests[0].respond(
-        200,
-        { 'Content-Type': 'application/json' },
+        200, {
+          'Content-Type': 'application/json'
+        },
         jsonifyGames([
           ['', '', '', '', 'X', '', '', 'O', '']
         ])
@@ -642,8 +649,9 @@ describe('AJAX interactions with the Rails API', () => {
       previousButton.click();
 
       requests[0].respond(
-        200,
-        { 'Content-Type': 'application/json' },
+        200, {
+          'Content-Type': 'application/json'
+        },
         jsonifyGames([
           ['', '', '', '', 'X', '', '', 'O', '']
         ])
@@ -654,8 +662,9 @@ describe('AJAX interactions with the Rails API', () => {
       gameButtons[0].click();
 
       requests[1].respond(
-        200,
-        { 'Content-Type': 'application/json' },
+        200, {
+          'Content-Type': 'application/json'
+        },
         jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
       );
 
@@ -669,8 +678,9 @@ describe('AJAX interactions with the Rails API', () => {
       previousButton.click();
 
       requests[0].respond(
-        200,
-        { 'Content-Type': 'application/json' },
+        200, {
+          'Content-Type': 'application/json'
+        },
         jsonifyGames([
           ['', '', '', '', 'X', '', '', 'O', '']
         ])
@@ -681,8 +691,9 @@ describe('AJAX interactions with the Rails API', () => {
       gameButtons[0].click();
 
       requests[1].respond(
-        200,
-        { 'Content-Type': 'application/json' },
+        200, {
+          'Content-Type': 'application/json'
+        },
         jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
       );
 
