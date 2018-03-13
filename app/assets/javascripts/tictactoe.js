@@ -39,6 +39,7 @@ function gameState() {
 }
 
 function resetGame() {
+  turn = 0
   return [...document.querySelectorAll("td")].forEach(elem => elem.innerHTML = "")
 }
 
@@ -46,11 +47,11 @@ function doTurn(square) {
   updateState(square)
   turn++
   if (checkWinner()) {
-    turn = 0
     resetGame()
   } else {
     if (fullGame()) {
       setMessage("Tie game.")
+      resetGame()
     }
   }
 }
@@ -61,7 +62,7 @@ function fullGame() {
 
 function attachListeners() {
   $("td").on("click", function (event) {
-    doTurn(event.currentTarget)
+    if (event.currentTarget.innerHTML === "" && !fullGame() && !checkWinner()) doTurn(event.currentTarget)
   })
 }
 
