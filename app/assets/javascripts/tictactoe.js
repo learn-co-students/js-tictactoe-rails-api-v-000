@@ -1,15 +1,16 @@
 const WINNING_COMBOS = [
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,3,6],
-    [1,4,7],
-    [2,5,8],
-    [0,4,8],
-    [6,4,2]
-  ]
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [6, 4, 2]
+]
 
 var turn = 0;
+var currentGameId = 0;
 
 function player() {
   if (turn % 2 === 0) {
@@ -55,13 +56,54 @@ function doTurn(square) {
   }
 }
 
+function saveGame() {
+  var state = [];
+  var gameData;
+
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+
+  gameData = { state: state };
+
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
+  }
+}
+
+
 $(document).ready(function() {
   attachListeners();
-})
+});
 
-let attachListeners = function() {
+var attachListeners = function() {
   $("tbody").click(function(e) {
-   if (e.target.innerHTML == "" && !checkWinner()){
-    doTurn(e.target);
-   }
- })
+    if (e.target.innerHTML == "" && !checkWinner()) {
+      doTurn(e.target);
+    }
+  });
+
+  $("#save").click(function() {
+    save();
+
+  });
+
+  $("#previous").click(function() {
+    showAllGames();
+
+  });
+
+  $("#clear").click(function() {
+    clearGame();
+  });
+}
