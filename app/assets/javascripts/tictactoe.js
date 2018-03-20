@@ -49,8 +49,19 @@ function doTurn(square) {
   turn++;
   if (checkWinner()) {
     $('td').empty();
-    turn = 0;    
+    turn = 0;
   } else if (turn === 9) {
     setMessage("Tie game.")
   }
 }
+
+$(document).ready(function() {
+  attachListeners();
+})
+
+let attachListeners = function() {
+  $("tbody").click(function(e) {
+   if (e.target.innerHTML == "" && !checkWinner()){
+    doTurn(e.target);
+   }
+ })
