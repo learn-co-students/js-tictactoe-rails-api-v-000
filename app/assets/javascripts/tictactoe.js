@@ -81,29 +81,64 @@ function saveGame() {
   }
 }
 
+function showPreviousGames() {
+  $('#games').empty();
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(buttonizePreviousGame);
+    }
+  });
+}
+
+function buttonizePreviousGame(game) {
+  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+}
+
+function reloadGame(gameID) {
+  document.getElementById('message').innerHTML = '';
+
+  const xhr = new XMLHttpRequest;
+  xhr.overrideMimeType('application/json');
+  xhr.open('GET', `/games/${gameID}`, true);
+  xhr.onload = () => {
+    const data = JSON.parse(xhr.responseText).data;
+    const id = data.id;
+    const state = data.attributes.state;
+
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+
+    turn = state.join('').length;
+    currentGame = id;
+
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
+    }
+  };
+
+  xhr.send(null);
+}
 
 $(document).ready(function() {
   attachListeners();
 });
 
-var attachListeners = function() {
-  $("tbody").click(function(e) {
-    if (e.target.innerHTML == "" && !checkWinner()) {
-      doTurn(e.target);
+function attachListeners() {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
     }
   });
 
-  $("#save").click(function() {
-    save();
+  $('#save').on('click', () => saveGame());
 
-  });
-
-  $("#previous").click(function() {
-    showAllGames();
-
-  });
-
-  $("#clear").click(function() {
-    clearGame();
-  });
+  $('#previous').on('click', () => showPreviousGames());
+  
+  $('#clear').on('click', () => resetBoard());
 }
