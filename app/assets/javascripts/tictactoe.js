@@ -10,7 +10,7 @@ const WINNING_COMBOS = [
 ]
 
 var turn = 0;
-var currentGameId = 0;
+var currentGame = 0;
 
 function player() {
   if (turn % 2 === 0) {
@@ -49,8 +49,8 @@ function doTurn(square) {
   updateState(square);
   turn++;
   if (checkWinner()) {
-    $('td').empty();
-    turn = 0;
+    saveGame();
+    resetBoard();
   } else if (turn === 9) {
     setMessage("Tie game.")
     saveGame();
