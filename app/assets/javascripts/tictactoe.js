@@ -53,6 +53,8 @@ function doTurn(square) {
     turn = 0;
   } else if (turn === 9) {
     setMessage("Tie game.")
+    saveGame();
+    resetBoard();
   }
 }
 
@@ -139,6 +141,6 @@ function attachListeners() {
   $('#save').on('click', () => saveGame());
 
   $('#previous').on('click', () => showPreviousGames());
-  
+
   $('#clear').on('click', () => resetBoard());
 }
