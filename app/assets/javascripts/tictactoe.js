@@ -85,9 +85,9 @@ function save() {
 function previous() {
   $('#games').append('<ul></ul>')
   //debugger;
-  $.get('/games', function(data) {
+  $.get('/games', function(games) {
     //debugger;
-    data.data.forEach(function(game){
+    games.data.forEach(function(game){
       $("#games ul").append(`<li>${game.id}</li>`)
     })
   })
