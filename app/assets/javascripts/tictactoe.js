@@ -50,5 +50,8 @@ function checkWinner() {
     
     return false;
     
+}
 
+function doTurn() {
+    
 }
