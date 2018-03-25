@@ -10,7 +10,7 @@ var winningCombos = [
   [2,4,6]
 ];
 
-// let emptyBoard = ["","","","","","","","",""];
+let emptyBoard = {state: ["","","","","","","","",""]};
 // the turn variable should be decided based on the state of the game?
 var turn = 0
 
@@ -27,15 +27,15 @@ function doTurn(cell) {
     updateState(cell);
     turn++;
     if(checkWinner()){
-      // reset the board and set turn counter to 0
-      resetBoard();
-      turn = 0;
+      saveGame();
+      newGame();
     } else if(checkTie()) {
       setMessage("Tie game.")
-      resetBoard();
-      turn = 0;
+      saveGame();
+      newGame();
     };
   }
+  // if the game is over then you need to prevent anything from happening after
 }
 
 function attachListeners(){
@@ -77,8 +77,13 @@ function getBoard() {
   return board;
 }
 
-function resetBoard() {
+function newGame() {
+  // empty the cells
   $('td').text("")
+  // reset turn count
+  turn = 0;
+  // clear id of table
+  $('table').attr("id", "")
 }
 
 function checkWinner() {
@@ -118,20 +123,66 @@ function setMessage(message) {
 }
 
 function saveGame() {
+  // figure out if the game already exists in the system
+  // figure out if there's a way to add a hidden object that indicates whether or not it's a saved game (i.e. hide id field?)
   alert("you clicked save")
+  // get the state of the board
+  var board = {state: getBoard()};
+  // var values = $(this).serialize();
+  var gameId = $('table').attr("id");
+  if (gameId === ""){
+    $.post('/games', board);
+  } else {
+    $.ajax({
+      url: '/games' + gameId,
+      method: 'PATCH',
+      data: board,
+      dataType: 'JSON'
+    });
+  }
+  // if not already a game then
+    // var posting = $.post('/games', values);
+  // if already a game then
+    // var updating = $.patch('/games' + id, values)
+
   // need to check if the game already exists, if it does then update
   // if game doesnt exist, create and save state
   // make call to API #update to save the state
 }
 
-function newGame() {
-  alert("you clicked clear")
-  // reset board to empty state
+function showPrevious() {
+  $.get('/games', function(data){
+    var $div = $('div#games')
+    var games = data["data"]
+    var list = document.querySelectorAll('div#games button').length
+    for(let i = list; i < games.length; i++) {
+      // do i need to look at the IDs on the page and start the iteration there?
+      // need to make sure not to repeat anything that's already listed
+      createButton($div, games[i]["id"])
+    }
+  })
 }
 
-function showPrevious() {
-  alert("you clicked show previous")
-  // make call to index and render list of games
+function createButton(div, game) {
+  var button = `<button id="${game}">${game}</button>`;
+  div.append(button);
+  $("button#" + game).on("click", function(e){
+    e.preventDefault();
+    var game = this.textContent
+    loadGame(game);
+  });
+}
+
+function loadGame(game) {
+  $.get("/games/" + game, function(data){
+    var state = data["data"]["attributes"]["state"]
+    let nodes = document.querySelectorAll('td');
+    var id = data["data"]["id"]
+    $('table').attr("id", id)
+    for(let i = 0; i < nodes.length; i++){
+      nodes[i].textContent = state[i];
+    };
+  });
 }
 
 $(function(){
