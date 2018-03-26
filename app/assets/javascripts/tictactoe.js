@@ -29,10 +29,7 @@ function checkWinner() {
     let currentBoard = [];
     const squares = window.document.querySelectorAll('td');
     squares.forEach(x => currentBoard.push(x.innerHTML));
-    // if (squares[0].innerHTML === squares[1].innerHTML === squares[2].innerHTML || squares[3].innerHTML === squares[4].innerHTML === squares[5].innerHTML || squares[6].innerHTML === squares[7].innerHTML === squares[8].innerHTML) {
-    //     // setMessage("Player" + squares[0].innerHTML +  "Won!")
-    //     return true;
-    // }
+
     for (let i=0; i < winCombinations.length; i++) {
         let win_index_1 = winCombinations[i][0]
         let win_index_2 = winCombinations[i][1]
@@ -52,19 +49,28 @@ function checkWinner() {
     
 }
 
-function doTurn() {
+function getCurrentBoard() {
+    let currentBoard = [];
+    const squares = window.document.querySelectorAll('td');
+    squares.forEach(x => currentBoard.push(x.innerHTML));
+    return currentBoard;
+}
+
+function resetBoard() {
+    const squares = window.document.querySelectorAll('td');
+    squares.forEach(x => x.innerHTML='');
+}
+
+function doTurn(element) {
+    updateState(element);
     turn = turn + 1;
-    updateState();
-    // let currentBoard = [];
-    // const squares = window.document.querySelectorAll('td');
-    // squares.forEach(x => currentBoard.push(x.innerHTML));
-    // if (checkWinner() === false) {
-    //     if (!currentBoard.includes("")) {
-    //         setMessage("Tie game.")
-    //     } else doTurn()
-    // } else {
-    //     turn = 0;
-    //     currentBoard = []
-    // }
     
+    if (checkWinner()) {
+        turn = 0;
+        resetBoard()
+    } else if (turn === 9 ) {
+        setMessage("Tie game.");
+        turn = 0;
+        resetBoard()
+    }
 }
