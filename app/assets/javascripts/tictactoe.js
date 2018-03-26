@@ -53,5 +53,18 @@ function checkWinner() {
 }
 
 function doTurn() {
+    turn = turn + 1;
+    updateState();
+    // let currentBoard = [];
+    // const squares = window.document.querySelectorAll('td');
+    // squares.forEach(x => currentBoard.push(x.innerHTML));
+    // if (checkWinner() === false) {
+    //     if (!currentBoard.includes("")) {
+    //         setMessage("Tie game.")
+    //     } else doTurn()
+    // } else {
+    //     turn = 0;
+    //     currentBoard = []
+    // }
     
 }
