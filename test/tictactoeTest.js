@@ -130,7 +130,7 @@ describe('tictactoe.js', () => {
       //    | O |   
       // -----------
       //  O | X |   
-
+      window.turn = 7;
       expect(window.checkWinner()).to.be.true;
     });
 
@@ -182,7 +182,7 @@ describe('tictactoe.js', () => {
       //  X | O | X 
       // -----------
       //  X |   | O 
-
+      window.turn = 7;
       window.checkWinner();
 
       expect(spy.firstCall.args[0]).to.equal('Player O Won!');
@@ -212,7 +212,7 @@ describe('tictactoe.js', () => {
 
       window.doTurn(squares[8]);
 
-      expect(spy.calledOnce).to.be.true;
+      expect(spy.calledTwice).to.be.true;
     });
 
     it('invokes the updateState() function', () => {
@@ -236,6 +236,7 @@ describe('tictactoe.js', () => {
       //  O |   | O 
 
       window.turn = 8;
+
       window.doTurn(squares[7]);
 
       expect(spy.firstCall.args[0]).to.equal('Tie game.');
@@ -255,7 +256,7 @@ describe('tictactoe.js', () => {
       window.doTurn(squares[6]);
 
       const board = Array.from(squares).map(s => s.innerHTML);
-
+      
       expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);
       expect(window.turn).to.equal(0);
     });
@@ -318,9 +319,7 @@ describe('Gameplay', () => {
     //    |   |   
     // -----------
     //  O | O |   
-
     squares[4].click();
-
     expect(squares[4].innerHTML).to.equal('');
     expect(window.turn).to.equal(5);
   });
