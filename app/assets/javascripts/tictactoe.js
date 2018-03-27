@@ -74,3 +74,19 @@ function doTurn(element) {
         resetBoard()
     }
 }
+
+function attachListeners() {
+    
+    $("tbody td").click(function() {
+        
+        console.log("Clicked");
+        doTurn(this)});
+}
+
+// $(document).ready(attachListeners());
+
+$(document).ready(function() {attachListeners()})
+
+// $( "#dataTable tbody tr" ).on( "click", function() {
+//   console.log( $( this ).text() );
+// });
