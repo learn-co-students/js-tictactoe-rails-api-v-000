@@ -687,9 +687,8 @@ describe('AJAX interactions with the Rails API', () => {
       );
 
       saveButton.click();
-      debugger;
-      expect(requests[2].method).to.equal('PATCH');
-      expect(requests[2].url).to.equal('/games/1');
+      expect(requests[requests.length-1].method).to.equal('PATCH');
+      expect(requests[requests.length-1].url).to.equal('/games/1');
     });
   });
 });
