@@ -13,7 +13,7 @@ var  winCombinations = [
                         ]
 
 var currentGame;
-
+var lastId = 0;
 function player() {
     return turn%2 === 0 ? 'X':'O';
 }
@@ -114,7 +114,7 @@ function doTurn(element) {
         // $("tbody td").off("click");
         saveGame();
         resetBoard();
-        debugger;
+        // debugger;
     } else if (turn === 9 ) {
         setMessage("Tie game.");
         saveGame();
@@ -128,14 +128,28 @@ function attachListeners() {
         doTurn(this)});
         
     $("button#save").click(function() {
-        saveGame()
-    })
+        saveGame();
+    });
+    
+    $("button#previous").click(function() {
+        $.get('/games', function(response) {
+            console.log(response.data);
+            if (response.data) {
+                // add each previous game as a button child of div#games
+                // lastId = $("div#games button").last().val()
+                response.data.forEach(function(element) {
+                    // debugger
+                    if (element.id > lastId) {
+                        $("div#games").append(`<button id="gameid-${element.id}" value="${element.id}">${element.id}</button><br>`)
+                        lastId = element.id
+                    }
+                })
+            }
+        });
+        // $.get('/games').each($("div#game").add('button'))
+    });
 }
 
-// $(document).ready(attachListeners());
 
 $(document).ready(function() {attachListeners()})
 
-// $( "#dataTable tbody tr" ).on( "click", function() {
-//   console.log( $( this ).text() );
-// });
