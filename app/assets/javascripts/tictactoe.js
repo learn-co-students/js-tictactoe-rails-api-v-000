@@ -72,7 +72,9 @@ function saveGame() {
     state.push(square);
   });
 
-  gameData = { state: state };
+  gameData = {
+    state: state
+  };
 
   if (currentGame) {
     $.ajax({
