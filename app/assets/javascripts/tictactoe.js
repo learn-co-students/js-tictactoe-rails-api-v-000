@@ -139,7 +139,7 @@ function attachListeners() {
                 // lastId = $("div#games button").last().val()
                 response.data.forEach(function(element) {
                     // debugger
-                    if (element.id > lastId) {
+                    if (element.id >= lastId) {
                         $("div#games").append(`<button id="gameid-${element.id}" value="${element.id}">${element.id}</button><br>`)
                         lastId = element.id
                     }
