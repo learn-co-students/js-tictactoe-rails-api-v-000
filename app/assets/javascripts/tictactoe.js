@@ -146,8 +146,14 @@ function attachListeners() {
                 })
             }
         });
-        // $.get('/games').each($("div#game").add('button'))
     });
+    
+    $("button#clear").click(function() {
+        currentGame = null;
+        resetBoard();
+        
+    });
+    
 }
 
 
