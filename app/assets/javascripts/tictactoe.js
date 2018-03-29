@@ -123,28 +123,28 @@ function doTurn(element) {
     
 }
 
-function display(game) {
-     document.querySelector(`[data-x=0][data-y=0]`).innerHTML = game[0];
+function display(gameArray, id) {
+    var tdElements = $('td');
+    var count = 0;
+    for (let i = 0; i < tdElements.length; i++) {
+         tdElements[i].innerHTML = gameArray[i];
+         if (gameArray[i] != '') {
+             count ++;
+         }
+     }
+     turn = count;
+     currentGame = id
 }
 
 function myButton(element) {
     // console.log(element.value);
     var gameId = element.value;
     $.get("/games/" + gameId, function(resp) {
-        console.log(resp.data.attributes.state);
-        // display(resp.data.attributes.state);
+        // console.log(resp.data.attributes.state);
+        display(resp.data.attributes.state, resp.data.id);
     })   
 }      
        
-       
-    //     $.get("/posts/" + nextId + ".json", function(data) {
-    //   $(".authorName").text(data["author"]["name"]);
-    //   $(".postTitle").text(data["title"]);
-    //   $(".postBody").text(data["description"]);
-    //   // re-set the id to current on the link
-    //   $(".js-next").attr("data-id", data["id"]);
-    // });
-   
 
 
 function attachListeners() {
@@ -152,6 +152,8 @@ function attachListeners() {
         doTurn(this)});
         
     $("button#save").click(function() {
+        
+        display(getCurrentBoard(), currentGame);
         saveGame();
     });
     
@@ -160,8 +162,7 @@ function attachListeners() {
             $("div#games").empty();
             console.log(response.data);
             if (response.data) {
-                // add each previous game as a button child of div#games
-                // lastId = $("div#games button").last().val()
+
                 response.data.forEach(function(element) {
                     // debugger
                     // if (element.id >= lastId) {
