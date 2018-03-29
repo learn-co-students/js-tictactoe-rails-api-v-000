@@ -401,6 +401,7 @@ describe('AJAX interactions with the Rails API', () => {
     it('sends a GET request to the "/games" route', () => {
       previousButton.click();
       //debugger;
+      setTimeout(function(){}, 1000)
       expect(requests[0].method).to.equal('GET');
       expect(requests[0].url).to.equal('/games');
     });

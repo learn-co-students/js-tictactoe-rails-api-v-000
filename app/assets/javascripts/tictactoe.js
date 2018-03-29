@@ -1,6 +1,8 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
-squares = window.document.querySelectorAll('td')
+//var squares = window.document.querySelectorAll('td')
+var spaces = null
+
 function player() {
   // squares.forEach (function(square) {
   //   if (square.innerHTML !== "") {
@@ -15,7 +17,10 @@ function player() {
 }
 function updateState(square) {
   let move = player()
-  square.innerHTML = move
+  if (square.innerHTML === '') {
+    turn += 1
+    square.innerHTML = move
+  }
 }
 function setMessage(message) {
   $("#message").text(message)
@@ -26,11 +31,10 @@ var winningCombinations =[ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8],
 var status = false
 winningCombinations.forEach(function(winIndex) {
   //debugger;
-  // squares = window.document.querySelectorAll('td')
-  if ((squares[winIndex[0]].innerHTML === "X" && squares[winIndex[1]].innerHTML === "X" && squares[winIndex[2]].innerHTML === "X") ||
-  (squares[winIndex[0]].innerHTML === "O" && squares[winIndex[1]].innerHTML === "O" && squares[winIndex[2]].innerHTML === "O")) {
+  if ((spaces[winIndex[0]].innerHTML === "X" && spaces[winIndex[1]].innerHTML === "X" && spaces[winIndex[2]].innerHTML === "X") ||
+  (spaces[winIndex[0]].innerHTML === "O" && spaces[winIndex[1]].innerHTML === "O" && spaces[winIndex[2]].innerHTML === "O")) {
     status = true
-    setMessage(`Player ${squares[winIndex[0]].innerHTML} Won!`)
+    setMessage(`Player ${spaces[winIndex[0]].innerHTML} Won!`)
   }
 
 })
@@ -39,25 +43,28 @@ return status
 }
 function clearBoard() {
   turn = 0;
-  squares.forEach(function(square){
+  spaces.forEach(function(square){
     square.innerHTML = ''
   })
   //attachListeners()
 }
 
 function doTurn(element) {
+  //setMessage('');
   updateState(element);
-  turn += 1
+  //turn += 1
   if (checkWinner()) {
     clearBoard();
   } else if (turn === 9) {
     setMessage('Tie game.')
+    clearBoard();
   } else {
 
   }
 }
 $(document).ready(function() {
   attachListeners()
+  spaces = window.document.querySelectorAll('td')
 }
 
   )
@@ -65,7 +72,7 @@ function attachListeners() {
   //$('td').forEach(function(square){
     $('td').on('click', function(e) {
       doTurn(this);
-      $(this).off();
+      //$(this).off();
     })
     $('#save').on('click', function(e) {
       save();
@@ -76,19 +83,22 @@ function attachListeners() {
 }
 
 function save() {
-  array = Array.prototype.map.call(squares, function(square) {
+  array = Array.prototype.map.call(spaces, function(square) {
     return square.innerHTML })
   game = $.post('/games', {state: array})
   clearBoard();
 }
 
 function previous() {
-  $('#games').append('<ul></ul>')
   //debugger;
-  $.get('/games', function(games) {
+  $.get('/games', {}, function(games) {
     //debugger;
-    games.data.forEach(function(game){
-      $("#games ul").append(`<li>${game.id}</li>`)
-    })
+    var buttons = games.data.map(function(game){
+      return `<li><button id=${game.id}>${game.id}</button></li>` }).join("")
+      //debugger;
+    $("#games").html(`<ul> ${buttons} </ul>`)
+
+    //return games
   })
+  //$('#previous').off();
 }
