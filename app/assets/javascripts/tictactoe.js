@@ -123,10 +123,29 @@ function doTurn(element) {
     
 }
 
-function myButton(element) {
-    console.log("clicked");
-    console.log(element);
+function display(game) {
+     document.querySelector(`[data-x=0][data-y=0]`).innerHTML = game[0];
 }
+
+function myButton(element) {
+    // console.log(element.value);
+    var gameId = element.value;
+    $.get("/games/" + gameId, function(resp) {
+        console.log(resp.data.attributes.state);
+        // display(resp.data.attributes.state);
+    })   
+}      
+       
+       
+    //     $.get("/posts/" + nextId + ".json", function(data) {
+    //   $(".authorName").text(data["author"]["name"]);
+    //   $(".postTitle").text(data["title"]);
+    //   $(".postBody").text(data["description"]);
+    //   // re-set the id to current on the link
+    //   $(".js-next").attr("data-id", data["id"]);
+    // });
+   
+
 
 function attachListeners() {
     $("tbody td").click(function() {
@@ -138,16 +157,17 @@ function attachListeners() {
     
     $("button#previous").click(function() {
         $.get('/games', function(response) {
+            $("div#games").empty();
             console.log(response.data);
             if (response.data) {
                 // add each previous game as a button child of div#games
                 // lastId = $("div#games button").last().val()
                 response.data.forEach(function(element) {
                     // debugger
-                    if (element.id >= lastId) {
+                    // if (element.id >= lastId) {
                         $("div#games").append(`<button id="gameid-${element.id}" value="${element.id}" onclick="myButton(this)">${element.id}</button><br>`)
-                        lastId = element.id
-                    }
+                        // lastId = element.id
+                    // }
                 })
             }
         });
@@ -160,20 +180,13 @@ function attachListeners() {
             });
     }
     
-    var buttons = $("div#games :button");
-    for(let i = 0; i< buttons.length; i++) {
-        buttons[i].click(function(event) {
-                console.log("clicked");
-            })
-    }
- 
-        //     debugger
-        //     console.log(event);
-        //     // alert(event);
-        //     // var buttonId = parseInt(event.innerText);
-        // }
-
-    
+    // var buttons = $("div#games :button");
+    // for(let i = 0; i< buttons.length; i++) {
+    //     buttons[i].click(function(event) {
+    //             console.log("clicked");
+    //         })
+    // }
+  
     
     $("button#clear").click(function() {
         currentGame = null;
