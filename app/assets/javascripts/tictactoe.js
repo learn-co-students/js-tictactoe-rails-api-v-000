@@ -123,6 +123,11 @@ function doTurn(element) {
     
 }
 
+function myButton(element) {
+    console.log("clicked");
+    console.log(element);
+}
+
 function attachListeners() {
     $("tbody td").click(function() {
         doTurn(this)});
@@ -140,13 +145,35 @@ function attachListeners() {
                 response.data.forEach(function(element) {
                     // debugger
                     if (element.id >= lastId) {
-                        $("div#games").append(`<button id="gameid-${element.id}" value="${element.id}">${element.id}</button><br>`)
+                        $("div#games").append(`<button id="gameid-${element.id}" value="${element.id}" onclick="myButton(this)">${element.id}</button><br>`)
                         lastId = element.id
                     }
                 })
             }
         });
     });
+    
+    var preGames = $("div#games button");
+    for (let i = 0; i < preGames.length; i++) {
+            preGames[i].click(function() {
+                alert("you clicked"); 
+            });
+    }
+    
+    var buttons = $("div#games :button");
+    for(let i = 0; i< buttons.length; i++) {
+        buttons[i].click(function(event) {
+                console.log("clicked");
+            })
+    }
+ 
+        //     debugger
+        //     console.log(event);
+        //     // alert(event);
+        //     // var buttonId = parseInt(event.innerText);
+        // }
+
+    
     
     $("button#clear").click(function() {
         currentGame = null;
