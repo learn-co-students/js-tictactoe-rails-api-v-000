@@ -11,8 +11,7 @@ var winningCombos = [
 ];
 
 let emptyBoard = {state: ["","","","","","","","",""]};
-// the turn variable should be decided based on the state of the game?
-var turn = 0
+var turn = 0;
 
 function player() {
   return (turn % 2 === 0) ? "X" : "O"
@@ -35,7 +34,6 @@ function doTurn(cell) {
       newGame();
     };
   }
-  // if the game is over then you need to prevent anything from happening after
 }
 
 function attachListeners(){
@@ -56,17 +54,14 @@ function attachListeners(){
   });
   // add an event listener to all cells
   var td = document.querySelectorAll("td")
-  for(let i = 0; i < td.length; i++) {
-    td[i].addEventListener("click", function(e){
+  td.forEach(function(cell){
+    cell.addEventListener("click", function(e){
       e.preventDefault();
       var cell = this
       doTurn(cell);
-    })
-    // how can i ensure that inside doTurn() that the "this" value is kept?
-    // think i need to bind the call here?
-  };
+    });
+  });
 }
-// how do i collect all the values from the board => textContent!
 
 function getBoard() {
   let nodes = document.querySelectorAll('td');
@@ -84,11 +79,12 @@ function newGame() {
   turn = 0;
   // clear id of table
   $('table').attr("id", "")
+  // remove message from box
+  // need to prevent any other turns from being taken...
 }
 
 function checkWinner() {
-  // get the board => getBoard()
-  // then run the board against the winning combos
+  // get the board => getBoard() then run the board against the winning combos
   let board = getBoard();
   var result = false;
   // check if the board would even have a winner yet
@@ -123,31 +119,27 @@ function setMessage(message) {
 }
 
 function saveGame() {
-  // figure out if the game already exists in the system
-  // figure out if there's a way to add a hidden object that indicates whether or not it's a saved game (i.e. hide id field?)
-  alert("you clicked save")
-  // get the state of the board
   var board = {state: getBoard()};
-  // var values = $(this).serialize();
   var gameId = $('table').attr("id");
-  if (gameId === ""){
-    $.post('/games', board);
+  if (gameId === undefined || gameId === ""){
+    // maybe instead i need to see if there's a call to be made first?
+    var newGame = $.post('/games', board);
+    newGame.done(function(data){
+      var id = data["data"]["id"]
+      $('table').attr("id", id)
+    });
   } else {
-    $.ajax({
-      url: '/games' + gameId,
+    var updateGame = $.ajax({
+      url: '/games/' + gameId,
       method: 'PATCH',
       data: board,
       dataType: 'JSON'
     });
-  }
-  // if not already a game then
-    // var posting = $.post('/games', values);
-  // if already a game then
-    // var updating = $.patch('/games' + id, values)
-
-  // need to check if the game already exists, if it does then update
-  // if game doesnt exist, create and save state
-  // make call to API #update to save the state
+    updateGame.done(function(data){
+      var id = data["data"]["id"]
+      $('table').attr("id", id)
+    });
+  };
 }
 
 function showPrevious() {
@@ -166,7 +158,7 @@ function showPrevious() {
 function createButton(div, game) {
   var button = `<button id="${game}">${game}</button>`;
   div.append(button);
-  $("button#" + game).on("click", function(e){
+  $("button#" + game).click(function(e){
     e.preventDefault();
     var game = this.textContent
     loadGame(game);
@@ -182,9 +174,12 @@ function loadGame(game) {
     for(let i = 0; i < nodes.length; i++){
       nodes[i].textContent = state[i];
     };
+    $('div#message').text("")
+    turn = state.filter(c => c === "X" || c === "O").length
   });
 }
 
 $(function(){
+  // wait until the document is ready before attaching the event listeners
   attachListeners();
 })
