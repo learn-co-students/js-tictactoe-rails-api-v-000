@@ -1,20 +1,29 @@
 const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
-var turn = 1;
+//Increment after turn, so start at 1 vs. 0
+var turn = 0;
+//This is how we'll track & display the clickable game number on-screen
 var currentGame = 0;
 
+//call to listener function when document is loaded
 $(document).ready(function() {
   attachListeners();
 });
 
 function attachListeners() {
+  //if box is clicked, check if there is text & check if the game has a winner
+  //if both are false then call to the turn function
   $('td').on('click', function() {
     if (!$.text(this) && !checkWinner()) {
       doTurn(this);
     }
   });
 
-  $('#save').on('click', saveGame());
+  //if any of the other buttons are clicked, call to functions
+  $('#save').on('click', () => saveGame());
+  // $('#save').on('click', function() {
+  //   saveGame();
+  // });
   $('#previous').on('click', () => showPreviousGames());
   $('#clear').on('click', () => resetBoard());
 }
@@ -24,6 +33,7 @@ function player() {
   return (turn % 2 ? "O" : "X");
 }
 
+//update element clicked on
 function updateState(tdElement) {
   let token = player();
   $(tdElement).text(token);
@@ -52,21 +62,20 @@ function checkWinner() {
 
 function doTurn(tdElement) {
   updateState(tdElement);
+  turn ++;
+  //checked before move, now check for winner after move
   if (checkWinner()) {
     saveGame();
     resetBoard();
-  } else if (turn === 8) {
+  } else if (turn === 9) {
     setMessage("Tie game.");
     saveGame();
     resetBoard();
-  } else {
-    turn ++;
   }
 }
 
 function saveGame() {
   var state = [];
-  var gameData;
 
   $('td').text((index, square) => {
     state.push(square);
@@ -79,7 +88,7 @@ function saveGame() {
       data: { state: state }
     });
   } else {
-    $.post('/games', gameData, function(game) {
+    $.post('/games', { state: state }, function(game) {
       currentGame = game.data.id;
       $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
       $("#gameid-" + game.data.id).on('click', () => showPreviousGames(game.data.id));
@@ -111,12 +120,12 @@ function loadGame(id) {
     let loadState = response["data"]["attributes"]["state"]
     window.turn = 9 - loadState.filter(cell => cell === '').length
     currentGame = parseInt(response["data"]["id"])
-    const squares = $('td')
+    let squares = $('td')
     for (let i = 0; i < 9; i++) {
       squares[i].innerHTML = loadState[i]
     }
-
-    setMessage('')
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
+    }
   })
-  
 }
