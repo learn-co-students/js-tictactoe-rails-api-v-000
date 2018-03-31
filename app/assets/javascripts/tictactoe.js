@@ -14,11 +14,12 @@ function attachListeners() {
     }
   });
 
-  $('#save').on('click', () => saveGame());
+  $('#save').on('click', saveGame());
   $('#previous').on('click', () => showPreviousGames());
   $('#clear').on('click', () => resetBoard());
 }
 
+//The below is that same as: var player = () => turn % 2 ? 'O' : 'X';
 function player() {
   return (turn % 2 ? "O" : "X");
 }
@@ -71,13 +72,11 @@ function saveGame() {
     state.push(square);
   });
 
-  gameData = { state: state };
-
   if (currentGame) {
     $.ajax({
       type: 'PATCH',
       url: `/games/${currentGame}`,
-      data: gameData
+      data: { state: state }
     });
   } else {
     $.post('/games', gameData, function(game) {
