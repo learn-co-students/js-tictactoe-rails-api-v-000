@@ -12,7 +12,6 @@ var winningCombos = [
 
 var turn = 0;
 var currentGame = 0;
-var cells = document.querySelectorAll('td')
 
 function attachListeners(){
   // add event listener to each button
@@ -30,7 +29,6 @@ function attachListeners(){
 
   $('td').on('click', function(){
     if(!$.text(this) && !checkWinner()){
-      // if there isn't already something in the cell and there is no winner, take the turn
       doTurn(this);
     };
   });
@@ -54,12 +52,12 @@ function player() {
 }
 
 function updateState(cell) {
-  $(cell).text(player())
+  $(cell).text(player());
 }
 
 function checkWinner() {
   let board = getBoard();
-  var result = false;
+  let result = false;
   winningCombos.forEach(function(combo){
     if(board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
       result = true;
@@ -74,17 +72,12 @@ function setMessage(message) {
 }
 
 function getBoard() {
+  let cells = document.querySelectorAll('td')
   let board = [];
   for(let i = 0; i < cells.length; i++){
     board.push(cells[i].textContent);
   };
   return board;
-}
-
-function setBoard(state) {
-  for(let i = 0; i < cells.length; i++){
-    cells[i].textContent = state[i];
-  };
 }
 
 function newGame() {
@@ -125,7 +118,7 @@ function showPrevious() {
 }
 
 function createButton(div, game) {
-  var button = `<button id="${game}">${game}</button>`;
+  let button = `<button id="${game}">${game}</button>`;
   div.append(button);
   $("button#" + game).click(function(e){
     let game = this.textContent
@@ -137,9 +130,13 @@ function loadGame(game) {
   $.get("/games/" + game, function(data){
     let state = data.data.attributes.state;
     let id = data.data.id;
+    $('div#message').text("");
     currentGame = id;
     turn = state.filter(c => c !== "").length;
-    setBoard(state);
+    let cells = document.querySelectorAll('td')
+    for(let i = 0; i < cells.length; i++){
+      cells[i].textContent = state[i];
+    };
   });
 }
 
