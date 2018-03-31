@@ -2,7 +2,7 @@
 var turn = 0
 //var squares = window.document.querySelectorAll('td')
 var spaces = null
-
+var current = null
 function player() {
   // squares.forEach (function(square) {
   //   if (square.innerHTML !== "") {
@@ -16,7 +16,7 @@ function player() {
   }
 }
 function updateState(square) {
-  let move = player()
+  var move = player()
   if (square.innerHTML === '') {
     turn += 1
     square.innerHTML = move
@@ -54,9 +54,11 @@ function doTurn(element) {
   updateState(element);
   //turn += 1
   if (checkWinner()) {
+    saveGame();
     clearBoard();
   } else if (turn === 9) {
     setMessage('Tie game.')
+    saveGame();
     clearBoard();
   } else {
 
@@ -75,30 +77,90 @@ function attachListeners() {
       //$(this).off();
     })
     $('#save').on('click', function(e) {
-      save();
+      saveGame();
     })
     $('#previous').on('click', function(e) {
-      previous();
+      previousGame();
+    })
+    $("#clear").on('click', function(e) {
+      clearGame();
     })
 }
 
-function save() {
-  array = Array.prototype.map.call(spaces, function(square) {
-    return square.innerHTML })
-  game = $.post('/games', {state: array})
-  clearBoard();
+function saveGame() {
+  if (current) {
+    var array = Array.prototype.map.call(spaces, function(square) {
+      return square.innerHTML })
+    //var game = $.put(`/games/${current.innerHTML}`, {state: array})
+    // fetch(`/games/${current.innerHTML}`, {
+    //   method: 'PATCH',
+    //   body: {state: array}
+    // })
+    $.ajax({url:`/games/${current}`,
+    type: 'PATCH',
+    data: {state: array}
+})
+    //clearBoard();
+   } else {
+     var array = Array.prototype.map.call(spaces, function(square) {
+       return square.innerHTML })
+     var game = $.post('/games', {state: array})
+     game.done(function(data){
+       current = data.data.id
+     })
+     //clearBoard();
+   }
 }
 
-function previous() {
-  //debugger;
-  $.get('/games', {}, function(games) {
-    //debugger;
-    var buttons = games.data.map(function(game){
-      return `<li><button id=${game.id}>${game.id}</button></li>` }).join("")
-      //debugger;
-    $("#games").html(`<ul> ${buttons} </ul>`)
+// hidden field that is set based on what game is selected; if it exists, the game is patched
 
-    //return games
+function previousGame() {
+  $.get('/games', {}, function(games) {
+
+    var buttons = games.data.map(function(game){
+      return `<button class="games" id=${game.id}>${game.id}</button>` }).join("")
+      if (buttons) {
+        $("#games").html(` ${buttons} `)
+        //debugger;
+        $(".games").on('click', function(e) {
+          //debugger;
+          displayGame(this);
+        })
+      }
+
   })
+
+
+  // $("#clear").on('click', function(e) {
+  //   debugger;
+  //   displayGame(this);
+  // })
   //$('#previous').off();
+}
+
+function clearGame() {
+  spaces.forEach(function(square) {
+    square.innerHTML = ''
+  })
+  current = null
+  turn = 0
+}
+
+function displayGame(element) {
+  turn = 0
+  //$("#message").html(`<div id="current" style="display:none">${element.id}</div>`)
+  current = element.id
+  $.get(`/games/${element.id}`, function(game){
+    //debugger;
+    var state = game.data.attributes.state
+    for (i=0; i < state.length; i++) {
+      spaces[i].innerHTML = state[i]
+    }
+    state.forEach(function(space) {
+      //debugger;
+      if (space !== '') {
+        turn += 1
+      }
+    })
+  })
 }

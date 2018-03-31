@@ -400,8 +400,8 @@ describe('AJAX interactions with the Rails API', () => {
 
     it('sends a GET request to the "/games" route', () => {
       previousButton.click();
-      //debugger;
-      setTimeout(function(){}, 1000)
+      //previous();
+      //setTimeout(function(){}, 1000)
       expect(requests[0].method).to.equal('GET');
       expect(requests[0].url).to.equal('/games');
     });
@@ -432,7 +432,7 @@ describe('AJAX interactions with the Rails API', () => {
             ['O', 'X', 'O', '', 'X', 'X', '', 'X', 'O'] // 'X' wins
           ])
         );
-
+        debugger;
         const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
 
         expect(gameButtons.length).to.equal(2);
