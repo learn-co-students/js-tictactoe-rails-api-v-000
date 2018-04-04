@@ -12,6 +12,7 @@ class GamesController < ApplicationController
 
   def create
     game = Game.create(game_params)
+    # so this sends back info but what am i supposed to do with it? and how do i see it?
     render json: game, status: 201
   end
 
