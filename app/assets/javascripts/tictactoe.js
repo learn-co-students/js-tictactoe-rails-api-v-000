@@ -29,7 +29,7 @@ window.onload = () => attachListeners()
 function attachListeners() {
   save.on('click', saveGame)
   td.on('click', function () {
-    if (!this.innerText) doTurn(this)
+    if (!this.innerText && !checkWinner()) doTurn(this)
   })
 }
 
