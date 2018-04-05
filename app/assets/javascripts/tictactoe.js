@@ -32,7 +32,7 @@ function attachListeners() {
   previous.on('click', previousGames)
   clear.on('click', clearGame)
   td.on('click', function () {
-    if (!this.innerText && !checkWinner()) doTurn(this)
+    if (!$(this).text() && !checkWinner()) doTurn(this)
   })
 }
 
@@ -93,17 +93,14 @@ function loadPreviousGame(id) {
 
 function clearGame() {
   td.toArray().forEach(square => {
-    square.innerText = ''
+    $(square).text('')
   })
   turn = 0
   game = null
 }
 
 function boardData() {
-  return td.toArray().map(square => {
-    // console.log(square)
-    return square.innerText
-  })
+  return td.toArray().map(square => $(square).text())
 }
 
 function setBoardData(state) {
@@ -120,7 +117,7 @@ function player() {
 }
 
 function updateState(square) {
-  square.innerText = player()
+  $(square).text(player())
 }
 
 function setMessage(text) {
