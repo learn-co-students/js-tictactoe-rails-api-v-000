@@ -30,6 +30,7 @@ window.onload = attachListeners
 function attachListeners() {
   save.on('click', saveGame)
   previous.on('click', previousGames)
+  clear.on('click', clearGame)
   td.on('click', function () {
     if (!this.innerText && !checkWinner()) doTurn(this)
   })
@@ -52,13 +53,12 @@ function updateGame() {
 function previousGames() {
   let resp = $.get('/games')
   resp.done(data => {
-    // debugger
-    data = data.data
-    if (data.length > 0) {
+    const d = data.data
+    if (d.length > 0) {
       const div = gDiv[0]
-      data.forEach(g => {
-        console.log(g)
-        div.innerHTML += `<div><strong>Game ${g.id}</strong></div>`
+      div.innerHTML = '<h4>Previous Games</h4>'
+      d.forEach(g => {
+        div.innerHTML += `<button>Game ${g.id}</button>`
       })
     }
   })
@@ -75,6 +75,14 @@ function createGame() {
     const newState = data.data.attributes.state
     game = new Game(newID, newState)
   })
+}
+
+function clearGame() {
+  td.toArray().forEach(square => {
+    square.innerText = ''
+  })
+  turn = 0
+  game = null
 }
 
 function boardData() {
@@ -117,14 +125,7 @@ function doTurn(square) {
   turn += 1
   if (turn == 9 || isWinner) {
     if (!isWinner) setMessage('Tie game.')
-    resetGame()
+    saveGame()
+    clearGame()
   }
-}
-
-function resetGame() {
-  td.toArray().forEach(square => {
-    // console.log(square)
-    square.innerText = ''
-  })
-  turn = 0
 }
