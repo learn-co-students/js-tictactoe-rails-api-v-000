@@ -4,7 +4,8 @@ const message = $('#message')
 const save = $('#save')
 const previous = $('#previous')
 const clear = $('#clear')
-var td = $('td')
+const td = $('td')
+const gDiv = $('#games')
 
 const combos = [
   [0, 1, 2],
@@ -24,10 +25,11 @@ class Game {
   }
 }
 
-window.onload = () => attachListeners()
+window.onload = attachListeners
 
 function attachListeners() {
   save.on('click', saveGame)
+  previous.on('click', previousGames)
   td.on('click', function () {
     if (!this.innerText && !checkWinner()) doTurn(this)
   })
@@ -47,13 +49,28 @@ function updateGame() {
   })
 }
 
+function previousGames() {
+  let resp = $.get('/games')
+  resp.done(data => {
+    // debugger
+    data = data.data
+    if (data.length > 0) {
+      const div = gDiv[0]
+      data.forEach(g => {
+        console.log(g)
+        div.innerHTML += `<div><strong>Game ${g.id}</strong></div>`
+      })
+    }
+  })
+}
+
 function createGame() {
   const val = {
     state: boardData()
   }
 
-  let r = $.post('/games', val)
-  r.done(data => {
+  let resp = $.post('/games', val)
+  resp.done(data => {
     const newID = data.data.id
     const newState = data.data.attributes.state
     game = new Game(newID, newState)
@@ -86,16 +103,10 @@ function checkWinner() {
     let a = board[combo[0]]
     let b = board[combo[1]]
     let c = board[combo[2]]
-    if ((a == b) && (b == c) && (a != '')) {
-      winner = a
-      return true
-    } else {
-      return false
-    }
+    winner = a
+    return (a == b) && (b == c) && (a != '')
   })
-  if (result) {
-    setMessage(`Player ${winner} Won!`)
-  }
+  if (result) setMessage(`Player ${winner} Won!`)
   return result
 }
 
