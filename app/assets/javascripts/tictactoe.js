@@ -50,6 +50,19 @@ function updateGame() {
   })
 }
 
+function createGame() {
+  const val = {
+    state: boardData()
+  }
+
+  let resp = $.post('/games', val)
+  resp.done(data => {
+    const newID = data.data.id
+    const newState = data.data.attributes.state
+    game = new Game(newID, newState)
+  })
+}
+
 function previousGames() {
   let resp = $.get('/games')
   resp.done(data => {
@@ -61,19 +74,6 @@ function previousGames() {
         div.innerHTML += `<button>Game ${g.id}</button>`
       })
     }
-  })
-}
-
-function createGame() {
-  const val = {
-    state: boardData()
-  }
-
-  let resp = $.post('/games', val)
-  resp.done(data => {
-    const newID = data.data.id
-    const newState = data.data.attributes.state
-    game = new Game(newID, newState)
   })
 }
 
