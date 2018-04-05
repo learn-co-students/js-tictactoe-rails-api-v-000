@@ -73,18 +73,21 @@ function createButtons(data) {
     const div = gDiv[0]
     div.innerHTML = '<h4>Previous Games</h4>'
     data.forEach(g => {
-      const bid = `b-${g.id}`
-      div.innerHTML += `<button id="${bid}">Game ${g.id}</button>`
-      $(`#${bid}`).on('click', () => loadPreviousGame(g.id))
+      div.innerHTML += `<button id="b-${g.id}">Game ${g.id}</button>`
+    })
+    data.forEach(g => {
+      let bid = `#b-${g.id}`
+      $(bid).on('click', () => loadPreviousGame(g.id))
     })
   }
 }
 
 function loadPreviousGame(id) {
-  // console.log(id)
   resp = $.get(`/games/${id}`)
   resp.done(data => {
-    console.log(data)
+    let newState = data.data.attributes.state
+    setBoardData(newState)
+    game = new Game(id, newState)
   })
 }
 
@@ -100,6 +103,15 @@ function boardData() {
   return td.toArray().map(square => {
     // console.log(square)
     return square.innerText
+  })
+}
+
+function setBoardData(state) {
+  [...Array(9).keys()].forEach(i => {
+    td[i].innerHTML = state[i]
+    if (state[i] != '') {
+      turn += 1
+    }
   })
 }
 
