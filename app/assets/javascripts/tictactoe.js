@@ -5,7 +5,7 @@ const save = $('#save')
 const previous = $('#previous')
 const clear = $('#clear')
 const td = $('td')
-const gDiv = $('#games')
+const divG = $('#games')
 
 const combos = [
   [0, 1, 2],
@@ -70,14 +70,10 @@ function previousGames() {
 
 function createButtons(data) {
   if (data.length > 0) {
-    const div = gDiv[0]
-    div.innerHTML = '<h4>Previous Games</h4>'
+    divG.html('<h4>Previous Games</h4>')
     data.forEach(g => {
-      div.innerHTML += `<button id="b-${g.id}">Game ${g.id}</button>`
-    })
-    data.forEach(g => {
-      let bid = `#b-${g.id}`
-      $(bid).on('click', () => loadPreviousGame(g.id))
+      divG.append(`<button id="b-${g.id}">Game ${g.id}</button>`)
+      $(`#b-${g.id}`).on('click', () => loadPreviousGame(g.id))
     })
   }
 }
@@ -141,7 +137,6 @@ function checkWinner() {
 function doTurn(square) {
   updateState(square)
   const isWinner = checkWinner()
-  const full = boardData().every(value => value != '')
   turn += 1
   if (turn == 9 || isWinner) {
     if (!isWinner) setMessage('Tie game.')
