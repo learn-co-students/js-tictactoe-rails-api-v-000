@@ -65,15 +65,26 @@ function createGame() {
 
 function previousGames() {
   let resp = $.get('/games')
+  resp.done(data => createButtons(data.data))
+}
+
+function createButtons(data) {
+  if (data.length > 0) {
+    const div = gDiv[0]
+    div.innerHTML = '<h4>Previous Games</h4>'
+    data.forEach(g => {
+      const bid = `b-${g.id}`
+      div.innerHTML += `<button id="${bid}">Game ${g.id}</button>`
+      $(`#${bid}`).on('click', () => loadPreviousGame(g.id))
+    })
+  }
+}
+
+function loadPreviousGame(id) {
+  // console.log(id)
+  resp = $.get(`/games/${id}`)
   resp.done(data => {
-    const d = data.data
-    if (d.length > 0) {
-      const div = gDiv[0]
-      div.innerHTML = '<h4>Previous Games</h4>'
-      d.forEach(g => {
-        div.innerHTML += `<button>Game ${g.id}</button>`
-      })
-    }
+    console.log(data)
   })
 }
 
