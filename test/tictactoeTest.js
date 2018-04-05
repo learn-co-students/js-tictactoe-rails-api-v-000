@@ -439,7 +439,7 @@ describe('AJAX interactions with the Rails API', () => {
 
       it('does not re-add saved games already present in the div#games element when the "previous" button is clicked a second time', () => {
         previousButton.click();
-
+        
         requests[0].respond(
           200,
           { 'Content-Type': 'application/json' },
