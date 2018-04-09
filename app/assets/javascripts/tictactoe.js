@@ -1,5 +1,5 @@
 var turn = 0;
-
+var currentGame = 0;
 
 var  winCombinations = [
   [0,1,2],
@@ -16,9 +16,8 @@ function player() {
   return turn %2 === 0 ? 'X':'O';
 }
 
-
 function updateState(cell) {
-  cell.innerHTML = player()
+  cell.innerHTML = player();
 }
 
 function setMessage(string) {
@@ -42,20 +41,21 @@ function checkWinner() {
   return winner;
 }
 
-
 function doTurn(square){
   updateState(square)
   turn++
   if(checkWinner()){
+    saveGame();
     resetBoard()
   } else if(turn === 9){
     setMessage('Tie game.')
+    saveGame();
     resetBoard()
   }
 }
 
 function resetBoard(){
-  $('td').empty()
+  $('td').empty();
   turn = 0;
   currentGame = 0;
 }
@@ -66,8 +66,63 @@ $(document).ready(function(){
 
 function attachListeners() {
   $("tbody td").click(function() {
-    if($.text(this) === ""){
-      doTurn(this)
+    if(!$.text(this) && !checkWinner()){
+      doTurn(this);
     }
+  });
+
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => showPreviousGames());
+  $('#clear').on('click', () => resetBoard());
+}
+
+function saveGame() {
+  var board = [];
+  var tds = $('td').toArray();
+  tds.forEach(function(td) {
+    board.push(td.innerHTML)
+  })
+  if(currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: {state: board}
+    })
+  } else {
+    $.post('/games', {state: board}).done(function(data) {
+      currentGame = data.data['id'];
+    })
+  }
+}
+
+function showPreviousGames() {
+  $("#games").empty();
+  $.get('/games', function(savedGames) {
+    if(savedGames.data.length) {
+      savedGames.data.forEach(makeButtons);
+    }
+  })
+}
+
+function makeButtons(game) {
+  $('#games').append(`<button id="${game.id}">${game.id}</button><br>`);
+  $(`#${game.id}`).on('click', function() {
+    reloadGame(this);
+  })
+}
+
+function reloadGame(button) {
+  $.get('/games/'+button.id, function(response) {
+    var index = 0;
+    currentGame = button.id;
+    turn = 0
+    response.data.attributes.state.forEach(function(el) {
+      console.log($('td')[index]);
+      $('td')[index].innerHTML = el;
+      index++;
+      if(el === "X" || el === "O") {
+        turn++;
+      }
+    })
   })
 }
