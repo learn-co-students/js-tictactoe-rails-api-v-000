@@ -43,8 +43,21 @@ function checkWinner() {
 }
 
 
-function doTurn() {
+function doTurn(square){
+  updateState(square)
+  turn++
+  if(checkWinner()){
+    resetBoard()
+  } else if(turn === 9){
+    setMessage('Tie game.')
+    resetBoard()
+  }
+}
 
+function resetBoard(){
+  $('td').empty()
+  turn = 0;
+  currentGame = 0;
 }
 
 function attachListeners() {
