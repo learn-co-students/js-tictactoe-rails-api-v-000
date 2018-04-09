@@ -4,13 +4,14 @@ function player() {
 }
 
 
-function updateState() {
-
+function updateState(cell) {
+  cell.innerHTML = player()
 }
 
-function setMessage() {
-
+function setMessage(string) {
+  $('#message').text(string);
 }
+
 
 function checkWinner() {
 
