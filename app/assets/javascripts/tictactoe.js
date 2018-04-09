@@ -60,6 +60,14 @@ function resetBoard(){
   currentGame = 0;
 }
 
-function attachListeners() {
+$(document).ready(function(){
+  attachListeners()
+});
 
+function attachListeners() {
+  $("tbody td").click(function() {
+    if($.text(this) === ""){
+      doTurn(this)
+    }
+  })
 }
