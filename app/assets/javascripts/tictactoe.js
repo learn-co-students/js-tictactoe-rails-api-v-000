@@ -54,11 +54,11 @@ function clear(){
 
 function player(){
   return turn % 2 === 0 ? "X" : "O"
+
 }
 
 function updateState(square){
-  let token = player(turn)
-  debugger
+  square.innerText = player(turn)
 }
 
 function setMessage(string){
