@@ -1,145 +1,126 @@
-var turn = 0
-var currentGame = 0
-const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
+var turn = 0;
 
-function player() {
-  if(turn % 2 === 0) {
-    return 'X'
-  } else {
-    return 'O'
+var currentGame = 0;
+
+WIN_COMBINATIONS = [
+    [0,1,2], // Top row
+    [3,4,5], // Middle row
+    [6,7,8], // Bottom row
+    [0,4,8], // Left diagonal
+    [0,3,6], // Left vertical
+    [1,4,7], // Middle vertical
+    [2,5,8], // right vertical
+    [2,4,6]  // right diagonal
+  ]
+
+  function resetGame(){
+    currentGame = 0;
+    turn = 0;
+    $("td").empty();
   }
-}
 
-function updateState(square) {
-  let token = player()
-  $(square).text(token)
-}
+  function player() {
+    if(turn % 2 != 0) {
+      return 'O'
+    } else {
+      return 'X'
+    };
+  };
 
-function setMessage(string) {
-  $("#message").text(string)
-}
+  function updateState(position){
+    return $(position).text() !== "" ? false : $(position).text(player());
+  };
 
-function checkWinner() {
-  let board = {}
-  let winner = false
+  function setMessage(string){
+    $("#message").text(string);
+  };
+
+  function getBoard() {
+    return $("td").toArray().map(element => element.innerHTML);
+  };
+
+  function checkWinner() {
+    let board = {}
+    let winner = false
+    
+    $('td').text(function (index, space) {
+      board[index] = space
+    });
   
-  $('td').text(function (index, square) {
-    board[index] = square
-  })
+    WIN_COMBINATIONS.forEach(function (combo) {
+      if(board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[0]] !== "") {
+        setMessage(`Player ${board[combo[0]]} Won!`)
+        $("#save").click()
+        return winner = true
+      };
+    });
+    return winner
+  };
 
-  WINNING_COMBOS.forEach(function (position) {
-    if(board[position[0]] === board[position[1]] && board[position[1]] === board[position[2]] && board[position[0]] !== "") {
-      setMessage(`Player ${board[position[0]]} Won!`)
-      $("#save").click()
-      return winner = true
-    }
-  })
-  return winner
-}
+  function doTurn(input){
+    if (updateState(input)){
+      turn ++ ;
+      if(checkWinner()) {
+        saveGame();
+        resetGame();
+      } else if(turn === 9){
+        setMessage("Tie game.");
+        saveGame();
+        resetGame();
+      };
+    };
+  };
 
-function doTurn(input) {
-  updateState(input)
+  function getGame(id) {
+    currentGame = id;
+    turn = 0;
+    $.get(`/games/${id}`, function(data) {
+      let tds = $('td').toArray();
+      data['data']['attributes']['state'].forEach(function(position, i) {
+        position !== "" ? turn += 1 : turn = turn;
+        $(tds[i]).text(position);
+      });
+    });
+  };
 
-  if (checkWinner() === true){
-    var x = document.getElementsByTagName("td")
-    $(x).empty()
-    $("#clear").click()
-  } else {
-    turn +=1
-        }
-  if (turn === 9 && checkWinner() === false){
-    setMessage("Tie game.");
-     $("#save").click()
-    var x = document.getElementsByTagName("td")
-    $(x).empty()
-    turn = 0
-   }
-}
-
-function attachListeners() {
-  $('td').on("click", function() {
-    if(!$.text(this) && !checkWinner()) {
-      doTurn(this)
-    }
-  })
-
-  $('#clear').click(function() {
-    var x = document.getElementsByTagName("td")
-    if (currentGame) {
-      currentGame = 0
-      $(x).empty();
-      turn = 0;
-      boardValues = 0
-      $.post('/games').done();
-    } else {
-      $(x).empty();
-      boardValues = 0
-      turn = 0;
-    }
-
-  });
-
-
-  $('#save').on('click', function() {
-    var state = []
-    for (let i = 0; i < 9; i++) {
-      state.push($('td')[i]["textContent"])
-    }
-
-    if(currentGame) {
-      $.ajax({
-        url: '/games/' + currentGame,
-        method: 'PATCH',
-        data: {state: state}
+  function saveGame() {
+    let board = {state: getBoard()};
+    if (currentGame === 0) {
+      $.post('/games', board).done(function(data) {
+        currentGame = data['data']['id'];
       })
+
     } else {
       $.ajax({
-        url: '/games',
-        method: 'POST',
-        data: {state: state}
-      }).done(function(data) {
-        currentGame = data["data"]["id"]
-      })
-    }
-  })
+        method: "PATCH",
+        url: `/games/${currentGame}`,
+        data: board
+      });
+    };
+  };
 
-  $('#previous').on('click', function() {
-    var posting = $.get('/games')
-    posting.done(function(data) {
-      var games = data["data"]
-      $('#games').empty()
-      games.forEach(function(game){
-        var button = $('<button type="button" id="game-' + game["id"] + '">Game ' + game["id"] + '</>')
-        $('#games').append(button)
-      })
-    })
-  })
+  function attachListeners() {
+    $("td").on('click', function() {
+      if (!$.text(this) && !checkWinner()) {
+        doTurn(this);
+      };
+    });
 
-  $('#games').on('click', ":button[id^='game-']", function() {
-    var getting = $.get('/games/' + this.id.substring(5))
-    getting.done(function(data) {
-      var game = data["data"]["attributes"]["state"]
-      currentGame = this.url.substring(7)
-      $("td:eq(0)").text(game[0])
-      $("td:eq(1)").text(game[1])
-      $("td:eq(2)").text(game[2])
-      $("td:eq(3)").text(game[3])
-      $("td:eq(4)").text(game[4])
-      $("td:eq(5)").text(game[5])
-      $("td:eq(6)").text(game[6])
-      $("td:eq(7)").text(game[7])
-      $("td:eq(8)").text(game[8])
-      turn = game.filter(Boolean).length=1
-      if (checkWinner() === true) {
-        $('td').unbind('click')
-      } else {
-        attachListeners()
-        turn = game.filter(Boolean).length
-      }
-    })
-  })
-}
+    $("#save").click(saveGame);
 
-$(document).ready(function() {
+    $("#previous").on("click", function () {
+      $.get("/games", function(data) {
+        $("#games").text("");
+        data['data'].forEach(function(game) { 
+          let id = game['id'];
+          $("#games").append(`<button data-id='${id}' onclick='getGame(${id})'>${id}</button><br>`);
+        });
+      });
+    });
+
+    $("#clear").click(resetGame);
+  }
+    
+  $(document).ready(function() {
     attachListeners();
 });
