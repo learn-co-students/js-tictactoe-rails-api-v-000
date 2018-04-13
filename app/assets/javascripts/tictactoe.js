@@ -140,7 +140,7 @@ function createPrevGameButton(prevGame) {
 
 //takes in the gameId and makes a get request to that id. then sets up the game be setting it's currentGame,state,turn, and all spaces on board.
 function reloadGame(gameId){
-  $.get(`/games/${gameId}`, function(game){
+  $.get(`/games/${gameId}`).done(function(game){
     currentGame = game.data.id
     const state = game.data.attributes.state
     turn  = 0
