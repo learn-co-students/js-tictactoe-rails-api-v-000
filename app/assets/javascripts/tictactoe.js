@@ -58,7 +58,7 @@ function updateState(thisSquare){
 }
 
 function setMessage(winnerString){
-  document.getElementById("message").innerHTML = winnerString
+  $("div#message").append(winnerString)
 }
 
 function checkWinner(){
@@ -66,8 +66,7 @@ function checkWinner(){
 
   function winCombo(){
     const winCombinations = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-    let winnerToken;
-    
+  
     function testToken(token){
       return function(combo){
         return combo.every((index)=> board()[index] === token)
@@ -75,20 +74,14 @@ function checkWinner(){
     }
 
     for (let combo of winCombinations){
-      if ( testToken("X")(combo) ){
-          return winnerToken = "X" 
-      } else if (testToken("O")(combo) ){
-          return winnerToken = "O"
-      } else {
-        false
-      }
+      if ( testToken("X")(combo) || testToken("O")(combo) ){ 
+        setMessage(`Player ${ player() } Won!`)
+        return true
+      } 
     }
   }
 
-    if ( winCombo() ){
-      setMessage(winnerString)
-      return true
-    } else if (boardFull()){
+    if (boardFull()){
       setMessage("Tie game.")
       return false
     } else {
@@ -105,8 +98,7 @@ function doTurn(element){
 
 function board(){
   let state = []
-  let boardArray = Array.from($("tbody").children("tr").children("td"))
-  boardArray.forEach(function(square){
+  $("td").toArray().forEach(function(square){
     state.push(square.innerText) 
   });
   return state
