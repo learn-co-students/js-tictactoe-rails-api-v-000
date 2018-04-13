@@ -62,32 +62,19 @@ function setMessage(winnerString){
 }
 
 function checkWinner(){
-  let winnerString = `Player ${ winCombo() } Won!`
-
-  function winCombo(){
-    const winCombinations = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-  
-    function testToken(token){
-      return function(combo){
-        return combo.every((index)=> board()[index] === token)
-      } 
-    }
-
-    for (let combo of winCombinations){
-      if ( testToken("X")(combo) || testToken("O")(combo) ){ 
-        setMessage(`Player ${ player() } Won!`)
-        return true
-      } 
-    }
+  const winCombinations = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+  for (let combo of winCombinations){
+    if ( testToken()(combo) ){ 
+      setMessage(`Player ${ player() } Won!`)
+    } 
   }
+} 
 
-    if (boardFull()){
-      setMessage("Tie game.")
-      return false
-    } else {
-      return false
-  }
-}
+function testToken(){
+  return function(combo){
+    return combo.every((index)=> board()[index] === player())
+  } 
+} 
 
 function doTurn(element){
   // debugger
