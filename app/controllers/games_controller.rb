@@ -12,6 +12,7 @@ class GamesController < ApplicationController
 
   def create
     game = Game.create(game_params)
+    print "saved new game"
     render json: game, status: 201
   end
 
