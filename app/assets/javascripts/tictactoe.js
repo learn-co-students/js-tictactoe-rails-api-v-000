@@ -4,7 +4,7 @@ window.onload = function(){
   attachListeners() 
 }
 var turn = 0
-
+const WINNING_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]  
 // EventListeners
 
 function attachListeners(){
@@ -61,29 +61,55 @@ function setMessage(winnerString){
   $("div#message").append(winnerString)
 }
 
-function checkWinner(){
-  const winCombinations = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-  for (let combo of winCombinations){
-    if ( testToken()(combo) ){ 
-      setMessage(`Player ${ player() } Won!`)
-    } 
-  }
-} 
+// function checkWinner(){
+//   const board = boardStatus()
+//   const WINCOMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]  
+//   let result = false;
+//   WINCOMBINATIONS.some(function(combo){
+//     if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]){
+//       setMessage(`Player ${board[combo[0]]} Won!`);
+//       return result = true
+//     }
+//   });
+//   return result;
+// }    
+  
+// function returnWinner(){
+// const WINCOMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]  
+// return WINCOMBINATIONS.some(function(combo){
+//   return board()[combo[0]] !== "" && board()[combo[0]] === board()[combo[1]] && board()[combo[1]] === board()[combo[2]]
+//        // if (board()[element] === token){
+//       // return board()[element] === board()[element+1] && board()[index+1] === board()[element+2]
+//   });
+// }
 
-function testToken(){
-  return function(combo){
-    return combo.every((index)=> board()[index] === player())
-  } 
-} 
+// function testToken(combo){
+//   return combo.every((element)=> board()[element] === player())
+// }
+function checkWinner() {
+  var board = {};
+  var winner = false;
+
+  $('td').text((index, square) => board[index] = square);
+
+  WINNING_COMBOS.some(function(combo) {
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      return winner = true;
+    }
+  });
+
+  return winner;
+}
 
 function doTurn(element){
-  // debugger
   updateState(element)
   checkWinner()
   turn += 1;
+  
 }
 
-function board(){
+function boardStatus(){
   let state = []
   $("td").toArray().forEach(function(square){
     state.push(square.innerText) 
@@ -91,20 +117,11 @@ function board(){
   return state
 }
 
-
 function boardFull(){
  return board().every(function(element){
     return element !== ""
   })
 }
-
-
-
-// function testToken(token){
-//   return function(combo){
-//     return combo.every((index)=> board()[index] === token)
-//   } 
-// }
 
 // class Game {
 //   constructor(id, state){
@@ -112,3 +129,4 @@ function boardFull(){
 //     this.state = state;
 //   }
 // }
+ 
