@@ -3,30 +3,64 @@ window.onload = function(){
   console.log("The window has loaded")
   attachListeners() 
 }
-var turn = 0
-const WINNING_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]  
+
+let turn = 0
+
+function player(){
+  return turn % 2 ? 'O' : 'X';
+}
+
 // EventListeners
 
 function attachListeners(){
   $("td").on("click", function(){
-    // debugger
-    doTurn(this)
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
   })
-  $("body").on("click", "button", function(){
-  
+  $("#save").on("click", ()=> saveGame())
+  $("#previous").on("click", ()=> previousGames())
+  $("#clear").on("click", ()=> clearGame())     
   // THIS IS A VULNERABILITY
-    window[`${this.id}`]()
-  })
+    // window[`${this.id}`]()
+
 }
 
-
 // Button Functions
+
+function checkWinner(){
+  let board = boardStatus();
+  const WINCOMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]  
+  let result = false;
+  WINCOMBINATIONS.some(function(combo){
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]){
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      result = true
+    }
+  });
+  // WINCOMBINATIONS.some(function(combo){
+  //   if (combo.every((element)=> board[element] === player())){
+  //     result = true
+  //     setMessage(`Player ${board[array[0]]} Won!`)
+  //   }    
+  // });
+  return result;
+} 
+
+function updateState(element){
+  const token = player()
+  $(element).text(token)  
+}
+
+function setMessage(messageString){
+  $("div#message").append(messageString)
+}
 
 function saveGame(){
   console.log("SAVE")
   let gameStatus = 
-  $.post("/games/", {
-    method: 'PUT',
+  $.post("/games", {
+    method: 'PATCH',
     body: boardStatus()
   })
 }
@@ -49,80 +83,35 @@ function clearGame(){
 
 // GamePlay Function
 
-function player(){
-  return turn % 2 === 0 ? 'X' : 'O';
-}
-
-function updateState(thisSquare){
-  return thisSquare.innerHTML = player()
-}
-
-function setMessage(winnerString){
-  $("div#message").append(winnerString)
-}
-
-// function checkWinner(){
-//   const board = boardStatus()
-//   const WINCOMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]  
-//   let result = false;
-//   WINCOMBINATIONS.some(function(combo){
-//     if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]){
-//       setMessage(`Player ${board[combo[0]]} Won!`);
-//       return result = true
-//     }
-//   });
-//   return result;
-// }    
-  
-// function returnWinner(){
-// const WINCOMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]  
-// return WINCOMBINATIONS.some(function(combo){
-//   return board()[combo[0]] !== "" && board()[combo[0]] === board()[combo[1]] && board()[combo[1]] === board()[combo[2]]
-//        // if (board()[element] === token){
-//       // return board()[element] === board()[element+1] && board()[index+1] === board()[element+2]
-//   });
-// }
-
-// function testToken(combo){
-//   return combo.every((element)=> board()[element] === player())
-// }
-function checkWinner() {
-  var board = {};
-  var winner = false;
-
-  $('td').text((index, square) => board[index] = square);
-
-  WINNING_COMBOS.some(function(combo) {
-    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
-      setMessage(`Player ${board[combo[0]]} Won!`);
-      return winner = true;
-    }
-  });
-
-  return winner;
-}
-
 function doTurn(element){
-  updateState(element)
-  checkWinner()
-  turn += 1;
+  updateState(element);
+  turn++ 
+  if (checkWinner() ){
+    resetBoard();
+  } else if ( turn === 9 ) {
+    setMessage("Tie game.");
+    resetBoard();
+  } else {   
+    
+  }
+}
+
   
+  
+function resetBoard(){
+  $('td').empty()
+  turn = 0;
 }
 
 function boardStatus(){
-  let state = []
-  $("td").toArray().forEach(function(square){
-    state.push(square.innerText) 
-  });
-  return state
+  let board = {};
+  $('td').text((index, text) => board[index] = text);
+  return board;
 }
 
-function boardFull(){
- return board().every(function(element){
-    return element !== ""
-  })
+function taken(element){
+  element.textContent !==  "" 
 }
-
 // class Game {
 //   constructor(id, state){
 //     this.id = id;
