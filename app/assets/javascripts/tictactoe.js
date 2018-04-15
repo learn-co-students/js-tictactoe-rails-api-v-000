@@ -4,7 +4,7 @@ window.onload = function(){
 }
 
 let turn = 0
-
+let gameId = 0
 function player(){
   return turn % 2 ? 'O' : 'X';
 }
@@ -26,20 +26,42 @@ function attachListeners(){
 
 function saveGame(){
   console.log("SAVE")
-  let gameStatus = 
-  $.post("/games", {
-    method: 'PATCH',
-    body: boardStatus()
-  })
+  if (gameId !== 0){
+    $.ajax({
+      url: `/games/${gameId}`,
+      method: 'PATCH',
+      data: {state: boardState()},
+      success: (data)=>console.log("Game Saved")
+    })
+  } else {
+    $.ajax({
+      url: '/games',
+      method: 'POST',
+      data: {state: boardState()}, 
+      success: (data)=> gameId = data.data.id
+    })
+  } 
 }
 
 function previousGames(){
   console.log("PREVIOUS")
   $.get("/games", function(data){
-    debugger
   })
 }
 
+function loadGameRequest(){
+  $.ajax({
+    method: 'GET',
+    url: `/games/${gameId}`
+  }).success(loadGameState)
+}
+
+function loadGameState(data){
+  gameId = data.data.id
+  data.data.attributes.state.forEach(function(value, index){
+    $('td')[index].innerText = value
+  })
+}
 function clearGame(){
   // start new game
   console.log("CLEAR")
@@ -49,11 +71,10 @@ function clearGame(){
   })
 }
 
-
 // GamePlay Function
 
 function checkWinner(){
-  let board = boardStatus();
+  let board = boardState();
   const WINCOMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]  
   let result = false;
   WINCOMBINATIONS.some(function(combo){
@@ -90,8 +111,8 @@ function resetBoard(){
   turn = 0;
 }
 
-function boardStatus(){
-  let board = {};
+function boardState(){
+  let board = [];
   $('td').text((index, text) => board[index] = text);
   return board;
 }
@@ -104,14 +125,12 @@ function createGame(){
     constructor(state){
       this.id = ++id
       this.state = state
-      debugger
       Game.addGame(this)
     }
     static addGame(game){
       allGames.push(game)
     }
     static All(){
-      debugger
       return allGames
     }
   }
