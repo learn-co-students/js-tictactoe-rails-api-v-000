@@ -274,6 +274,7 @@ describe('tictactoe.js', () => {
     it('attaches event listeners that invoke doTurn() when a square is clicked on', () => {
       var spy = sandbox.stub(window, 'doTurn');
 
+      
       squares[0].click();
 
       expect(spy.calledOnce).to.be.true;
@@ -282,7 +283,7 @@ describe('tictactoe.js', () => {
 
       expect(spy.calledTwice).to.be.true;
     });
-
+    
     it('passes the clicked-on <td> element to doTurn()', () => {
       var spy = sandbox.stub(window, 'doTurn');
 
@@ -633,7 +634,7 @@ describe('AJAX interactions with the Rails API', () => {
       const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
 
       gameButtons[0].click();
-
+      
       expect(requests[1].method).to.equal('GET');
       expect(requests[1].url).to.equal('/games/1');
     });
