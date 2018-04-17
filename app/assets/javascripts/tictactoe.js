@@ -30,7 +30,7 @@ window.onload = function(){
 }
 
 var turn = 0
-var gameId = 0
+var currentGame = 0
 function player(){
   return turn % 2 ? 'O' : 'X';
 }
@@ -53,9 +53,9 @@ function attachListeners(){
 function saveGame(){
   // console.log("SAVE") 
   let state = boardState()
-  if (gameId){
+  if (currentGame){
     $.ajax({
-      url: `/games/${gameId}`,
+      url: `/games/${currentGame}`,
       method: 'PATCH',
       data: {state: state},
       success: (data)=>console.log("Game Saved")
@@ -66,7 +66,7 @@ function saveGame(){
       method: 'POST',
       data: {state: state}
   }).done(function(data){
-        gameId = parseInt(data.data.id)
+        currentGame = parseInt(data.data.id)
         gameButton(data.data);
     })
   } 
@@ -101,17 +101,13 @@ function loadGameState(gameId){
       $('td')[index].innerText = value;
     });
     setTurn()
-    gameId = parseInt(response.data.id);
+    currentGame = parseInt(response.data.id);
   });
 }
 
 function setTurn(){
   let taken = Array.from($('td')).filter((element)=> element.innerText !== "")
   turn = taken.length
-
-}
-
-function reloadGame(){
 
 }
 
@@ -155,7 +151,7 @@ function boardState(){
 
 function resetBoard(){
   $('td').empty()
-  gameId = 0
+  currentGame = 0
   turn = 0
 }
 
