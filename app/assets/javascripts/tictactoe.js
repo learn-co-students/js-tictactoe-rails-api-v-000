@@ -11,8 +11,7 @@ $(document).ready(function() {
 var player = () => turn % 2 ? 'O' : 'X';
 
 function updateState(position) {
-  var token = player();
-  $(position).text(token);
+  position.innerHTML = player();
 }
 
 function setMessage(string) {
@@ -21,8 +20,7 @@ function setMessage(string) {
 }
 
 function checkWinner() {
-  var board = {};
-  $('td').text((index, square) => board[index] = square);
+  var board = currentBoard();
 
   for (combo of WINNING_COMBOS) {
     var position_1 = board[combo[0]];
@@ -63,16 +61,13 @@ function doTurn(position) {
 
 function resetBoard() {
   $('td').empty();
+  setMessage("New game has begun.");
   turn = 0;
   currentgameID = 0;
 }
 
 function saveGame() {
-  var state = [];
-
-  $('td').text((index, square) => {
-    state.push(square);
-  });
+  var state = currentBoard();
 
   var gameData = { state: state };
 
@@ -104,6 +99,16 @@ function addButton(game){
 //   var time = `<div id="${game.id}-time">${isoDateReviver(game.attributes.updated_at)}</div><br>`
 //   $("#games").append(time);
 // }
+// function isoDateReviver(value) {
+//   if (typeof value === 'string') {
+//     var a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:([\+-])(\d{2})\:(\d{2}))?Z?$/.exec(value);
+//       if (a) {
+//         var utcMilliseconds = Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]);
+//         return new Date(utcMilliseconds);
+//       }
+//   }
+//   return value;
+// }
 
 function showPreviousGames() {
   $('#games').empty();
@@ -114,32 +119,32 @@ function showPreviousGames() {
   });
 }
 
-function isoDateReviver(value) {
-  if (typeof value === 'string') {
-    var a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:([\+-])(\d{2})\:(\d{2}))?Z?$/.exec(value);
-      if (a) {
-        var utcMilliseconds = Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]);
-        return new Date(utcMilliseconds);
-      }
-  }
-  return value;
+function currentBoard(){
+  var board = {};
+  $('td').text((index, square) => board[index] = square);
+  return board;
+}
+
+function updateBoard(gameState){
+  for (let index = 0; index < gameState.length; index++) {
+    $("table td").eq(`${index}`).text(`${gameState[index]}`);
+  };
 }
 
 function reloadGame(gameID) {
   $.get(`/games/${gameID}`).done(function(game) {
     var state = game.data.attributes.state;
-    for (let index = 0; index < state.length; index++) {
-      $("table td").eq(`${index}`).text(`${state[index]}`);
-    };
+    updateBoard(state);
     turn = state.join('').length;
     currentgameID = game.data.id;
-    $('#message').empty();
     if (!checkWinner() && turn === 9) {
       setMessage('Tie game.');
+    }
+    else {
+      setMessage(`Game #${currentgameID} has been loaded.`)
     };
   });
 }
-
 
 function attachListeners() {
   $('#clear').on('click', () => resetBoard());
