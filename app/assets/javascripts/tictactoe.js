@@ -1,36 +1,36 @@
 // OO Classes
 
-function createGame(){
-  let allGames = []
-  return class Game{
-    constructor(id, state){
-      this.id = parseInt(id)
-      this.state = state
-      Game.AddGame(this)
-    }
-    static AddGame(game){
-      allGames.push(game)
-    }
-    static All(){
-      return allGames
-    }
-    static Finder(id){
-      return Game.All().find(function(element){
-        return element.id == id
-      })
-    }
-  }
-}
+// function createGame(){
+//   let allGames = []
+//   return class Game{
+//     constructor(id, state){
+//       this.id = parseInt(id)
+//       this.state = state
+//       Game.AddGame(this)
+//     }
+//     static AddGame(game){
+//       allGames.push(game)
+//     }
+//     static All(){
+//       return allGames
+//     }
+//     static Finder(id){
+//       return Game.All().find(function(element){
+//         return element.id == id
+//       })
+//     }
+//   }
+// }
 
-const Game = createGame()
+// const Game = createGame()
 
 window.onload = function(){
   console.log("The window has loaded")
   attachListeners() 
 }
 
-let turn = 0
-let gameId = 0
+var turn = 0
+var gameId = 0
 function player(){
   return turn % 2 ? 'O' : 'X';
 }
@@ -53,59 +53,67 @@ function attachListeners(){
 function saveGame(){
   // console.log("SAVE") 
   let state = boardState()
-  if (gameId !== 0){
+  if (gameId){
     $.ajax({
       url: `/games/${gameId}`,
       method: 'PATCH',
       data: {state: state},
       success: (data)=>console.log("Game Saved")
-    })
+    });
   } else {
     $.ajax({
       url: '/games',
       method: 'POST',
-      data: {state: state}, 
-      success: (data)=> gameId = data.data.id
+      data: {state: state}
+  }).done(function(data){
+        gameId = parseInt(data.data.id)
+        gameButton(data.data);
     })
   } 
 }
 
 function previousGames(){
+  $('#games').empty()
   $.ajax({
     url: "/games", 
-    method: "GET",
-    success: showGames
+    method: "GET"
+  }).done(function(data){
+    if (data.data.length){
+      data.data.forEach(gameButton)
+    }
   })
 }
 
-function loadGameRequest(){
-  $('button.load-game').on('click', function(){
-    alert("button pressed")  
-    $.ajax({
-    method: 'GET',
-    url: `/games/${____}`
-    }).success(loadGameState)
-  })
+function gameButton(game){
+  debugger
+  $('#games').append(`<button class="load-game" id="game-${game.id}">Game ${game.id}</button><br>`)
+  $(`#game-${game.id}`).on('click', () => loadGameState(game.id))
 }
-// OO Solutions
 
-// function showGames(data){
-//   data.data.forEach(function(game){
-//     let newGame = new Game(game.id, game.attributes.state);
-//     let gameString = `<button class="load-game" data-id="${newGame.id}">Game ${newGame.id}</button><br>`
-//     $('#games').append(gameString)
-//     $('button.load-game').on('click', loadGameState)
-//   })
-// }
-// function loadGameState(data){
-//   // debugger
-//   let game = Game.Finder(this.dataset.id)
-//   game.state.forEach(function(value, index){
-//     $('td')[index].innerText = value
-//   })
-// }
+function loadGameState(gameId){  
+// debugger 
+  $('#message').empty()
+  $.ajax({
+    url: `/games/${gameId}`,
+    method: 'GET'
+  }).done(function(response){       
+    response.data.attributes.state.forEach(function(value, index){
+      $('td')[index].innerText = value;
+    });
+    setTurn()
+    gameId = parseInt(response.data.id);
+  });
+}
 
+function setTurn(){
+  let taken = Array.from($('td')).filter((element)=> element.innerText !== "")
+  turn = taken.length
 
+}
+
+function reloadGame(){
+
+}
 
 // GamePlay Function
 
@@ -117,8 +125,10 @@ function doTurn(element){
   updateState(element);
   turn++ 
   if (checkWinner() ){
+    saveGame();
     resetBoard();
   } else if ( turn === 9 ) {
+    saveGame()
     setMessage("Tie game.");
     resetBoard();
   } 
@@ -145,8 +155,8 @@ function boardState(){
 
 function resetBoard(){
   $('td').empty()
-  turn = 0
   gameId = 0
+  turn = 0
 }
 
 function updateState(element){
@@ -154,5 +164,25 @@ function updateState(element){
   $(element).text(token)  
 }
 
-
+// function boardFull(){
+//   if (Array.from($('td')).every((element)=> element.innerText !== "")){
+//     setMessage("Tie game.");
+//   }
+// }
  
+// OO Solutions
+// function showGames(data){
+//   data.data.forEach(function(game){
+//     let newGame = new Game(game.id, game.attributes.state);
+//     let gameString = `<button class="load-game" data-id="${newGame.id}">Game ${newGame.id}</button><br>`
+//     $('#games').append(gameString)
+//     $('button.load-game').on('click', loadGameState)
+//   })
+// }
+// function loadGameState(data){
+//   // debugger
+//   let game = Game.Finder(this.dataset.id)
+//   game.state.forEach(function(value, index){
+//     $('td')[index].innerText = value
+//   })
+// }
