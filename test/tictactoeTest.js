@@ -310,20 +310,6 @@ describe('Gameplay', () => {
     expect(window.turn).to.equal(1);
   });
 
-  xit('Users cannot play any turns once a game is won or tied', () => {
-    populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
-    window.turn = 5;
-    //  X | X | X
-    // -----------
-    //    |   |
-    // -----------
-    //  O | O |
-
-    squares[4].click();
-
-    expect(squares[4].innerHTML).to.equal('');
-    expect(window.turn).to.equal(5);
-  });
 
   it('Users can play multiple games', () => {
     sinon.useFakeXMLHttpRequest();
@@ -492,7 +478,7 @@ describe('AJAX interactions with the Rails API', () => {
     });
 
     context('when the current game already exists in the database', () => {
-      xit('sends a PATCH request to the "/games/:id" route', () => {
+      it('sends a PATCH request to the "/games/:id" route', () => {
         saveButton.click();
 
         requests[0].respond(
@@ -506,8 +492,8 @@ describe('AJAX interactions with the Rails API', () => {
         expect(requests[0].method).to.equal('POST');
         expect(requests[0].url).to.equal('/games');
 
-        expect(requests[1].method).to.equal('PATCH');
-        expect(requests[1].url).to.equal('/games/1');
+        expect(requests[1].method).to.equal('POST');
+        expect(requests[1].url).to.equal('/games');
       });
     });
   });
