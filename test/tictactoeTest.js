@@ -114,33 +114,33 @@ describe('tictactoe.js', () => {
 
     it('returns true when a player wins horizontally', () => {
       populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
-      //  X | X | X 
+      //  X | X | X
       // -----------
-      //    |   |   
+      //    |   |
       // -----------
-      //  O | O |   
+      //  O | O |
 
       expect(window.checkWinner()).to.be.true;
     });
 
     it('returns true when a player wins diagonally', () => {
       populateBoard(['X', 'X', 'O', '', 'O', '', 'O', 'X', '']);
-      //  X | X | O 
+      //  X | X | O
       // -----------
-      //    | O |   
+      //    | O |
       // -----------
-      //  O | X |   
+      //  O | X |
 
       expect(window.checkWinner()).to.be.true;
     });
 
     it('returns true when a player wins vertically', () => {
       populateBoard(['O', '', 'X', '', 'O', 'X', 'O', '', 'X']);
-      //  O |   | X 
+      //  O |   | X
       // -----------
-      //    | O | X 
+      //    | O | X
       // -----------
-      //  O |   | X 
+      //  O |   | X
 
       expect(window.checkWinner()).to.be.true;
     });
@@ -169,7 +169,6 @@ describe('tictactoe.js', () => {
       //  O | O |   
 
       window.checkWinner();
-
       expect(spy.firstCall.args[0]).to.equal('Player X Won!');
     });
 
@@ -209,7 +208,6 @@ describe('tictactoe.js', () => {
 
     it('invokes the checkWinner() function', () => {
       const spy = sandbox.spy(window, 'checkWinner');
-
       window.doTurn(squares[8]);
 
       expect(spy.calledOnce).to.be.true;
@@ -273,7 +271,6 @@ describe('tictactoe.js', () => {
 
     it('attaches event listeners that invoke doTurn() when a square is clicked on', () => {
       var spy = sandbox.stub(window, 'doTurn');
-
       squares[0].click();
 
       expect(spy.calledOnce).to.be.true;
@@ -318,7 +315,6 @@ describe('Gameplay', () => {
     //    |   |   
     // -----------
     //  O | O |   
-
     squares[4].click();
 
     expect(squares[4].innerHTML).to.equal('');
@@ -337,7 +333,6 @@ describe('Gameplay', () => {
 
     window.turn = 8;
     window.doTurn(squares[7]);
-
     window.doTurn(squares[4]);
 
     const board = Array.from(squares).map(s => s.innerHTML);
@@ -451,7 +446,6 @@ describe('AJAX interactions with the Rails API', () => {
         );
 
         previousButton.click();
-
         requests[1].respond(
           200,
           { 'Content-Type': 'application/json' },
@@ -462,7 +456,6 @@ describe('AJAX interactions with the Rails API', () => {
             ['O', 'X', '', '', '', '', '', '', ''] // In-progress
           ])
         );
-
         const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
 
         expect(gameButtons.length).to.equal(4);
@@ -658,7 +651,6 @@ describe('AJAX interactions with the Rails API', () => {
         { 'Content-Type': 'application/json' },
         jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
       );
-
       const board = Array.from(squares).map(s => s.innerHTML);
 
       expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', 'O', '']);
