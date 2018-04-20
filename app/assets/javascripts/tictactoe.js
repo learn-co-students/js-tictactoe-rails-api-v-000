@@ -107,6 +107,7 @@ function previousGame(){
       data.data.forEach(function(game){
         //debugger
         if (data.data.length > document.getElementsByClassName('gameLoaded').length){
+          //debugger
         $('#games').append(`<button class="gameLoaded" id="gameid-${game.id}">Game ${game.id}</button><br>`);
         $(`#gameid-${game.id}`).on('click', function(){
           $.ajax({
