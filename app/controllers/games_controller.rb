@@ -1,3 +1,4 @@
+require 'pry'
 class GamesController < ApplicationController
   before_action :set_game, only: [:show, :update]
 
@@ -23,7 +24,7 @@ class GamesController < ApplicationController
   private
 
   def game_params
-    params.permit(state: [])
+    params.permit(state: [], :updated_at)
   end
 
   def set_game
