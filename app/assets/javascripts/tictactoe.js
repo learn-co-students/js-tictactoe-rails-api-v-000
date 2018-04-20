@@ -114,7 +114,7 @@ function previousGame(){
             url: `/games/${game.id}`
           }).done(function(data){
             board = data.data.attributes.state
-            debugger
+            //debugger
             gameId = data.data.id
             for (i = 0; i < board.length; i++){
               $('td')[i].innerHTML = board[i]
