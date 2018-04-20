@@ -82,12 +82,16 @@ function resetBoard(){
 // otherwise, patch it
 function saveGame(){
   var state = []
+  var date = Date($.now())
   $('td').text((index, square) => state[index] = square);
   if (gameId === 0){
     $.ajax({
       type: 'POST',
       url: '/games',
-      data: {state: state}
+      data: {
+        state: state,
+        updated_at: date
+      }
     }).done(function(data){
       gameId = data.data.id;
     });
@@ -95,7 +99,10 @@ function saveGame(){
      $.ajax({
        type: 'PATCH',
        url: `/games/${gameId}`,
-       data: {state: state}
+       data: {
+         state: state,
+         updated_at: date
+       }
      });
    }
  }
@@ -107,15 +114,13 @@ function previousGame(){
       data.data.forEach(function(game){
         //debugger
         if (data.data.length > document.getElementsByClassName('gameLoaded').length){
-          //debugger
-        $('#games').append(`<button class="gameLoaded" id="gameid-${game.id}">Game ${game.id}</button><br>`);
+        $('#games').append(`<button class="gameLoaded" id="gameid-${game.id}">Game ${game.id}</button> Updated at: ${game.attributes["updated-at"]}<br>`);
         $(`#gameid-${game.id}`).on('click', function(){
           $.ajax({
             method: 'GET',
             url: `/games/${game.id}`
           }).done(function(data){
             board = data.data.attributes.state
-            //debugger
             gameId = data.data.id
             for (i = 0; i < board.length; i++){
               $('td')[i].innerHTML = board[i]
