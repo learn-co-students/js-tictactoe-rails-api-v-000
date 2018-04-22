@@ -1,7 +1,8 @@
 // Code your JavaScript / jQuery solution here
-//
-// let turn ?? can't define turn or player() won't pass
-// turn = 0
+
+
+// Note: "let turn" would not work.  The player() tests won't pass unless
+// I use "var turn"
 
 var turn = 0
 
@@ -9,8 +10,19 @@ var turn = 0
 // Xs or Os to win the game
 const winCombinations = [[0,4,8], [6,4,2], [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8]]
 
+function getBoardArray() {
+  let boardArray
+  boardArray = []
+
+  // Grab all the squares and create the board array with Xs, Os, or ""
+  $("td").each( function() {
+    boardArray.push(this.innerText)
+    })
+
+  return boardArray
+}
+
 function player() {
-  // debugger
   if (isNaN(turn) || turn % 2 === 0) {
     return "X"
   }
@@ -20,7 +32,6 @@ function player() {
 }
 
 function updateState(element) {
-  // debugger
   let token
   token = player()
   $(element).append(token)
@@ -28,19 +39,18 @@ function updateState(element) {
 
 function setMessage(string) {
   $("#message").text(string)
-  // debugger
 }
 
 function checkWinner() {
   // board will be an array of the Xs and Os on the board
   let board
-  board = []
+  board = getBoardArray()
 
   // Grab all the squares and create the board array with Xs, Os, or ""
-  $("td").each( function() {
-    board.push(this.innerText)
-    })
-
+  // $("td").each( function() {
+  //   board.push(this.innerText)
+  //   })
+  debugger
   // This is the callback other functions use to check or identify whether
   // one of the winningCombinations is on the board.
   // "Subarray" means one of the nested arrays within winCombinations.
@@ -77,9 +87,33 @@ function checkWinner() {
   // })
 // }
 
-function doTurn() {
+function doTurn(square) {
   turn += 1
-  if (checkWinner) {
-    console.log("winner checked!")
+  updateState(square)
+  debugger
+  if (checkWinner()) {
+    checkWinner()
   }
+  else {}
+
 }
+
+
+function attachListeners() {
+  $("td").on("click", function() {
+    doTurn(this)
+    // updateState(this)
+    // debugger
+    // console.log("you clicked it")
+  })
+}
+
+// $( "p" ).on( "click", function() {
+//   alert( $( this ).text() );
+// });
+
+$(document).ready(
+    attachListeners()
+
+
+)
