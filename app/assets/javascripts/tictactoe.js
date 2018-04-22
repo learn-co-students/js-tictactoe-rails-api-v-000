@@ -1,6 +1,24 @@
 // Code your JavaScript / jQuery solution here
+
 var turn = 0
-// var squares = document.querySelectorAll('td');
+
+function attachListeners() {
+  // $('td').on('click', function(){
+  //   doTurn(this);
+  // });
+  
+  var squares = document.querySelectorAll('td')
+  
+  for(var i = 0; i < squares.length; i++) {
+    squares[i].addEventListener('click', function(event) {
+      doTurn(this);
+    })
+  }
+}
+
+$(document).ready(() => {
+  attachListeners()
+})
 
 function player() {
   if(turn%2 === 0){
@@ -13,29 +31,25 @@ function player() {
 function updateState(square) {
   var current_player = player()
   square.innerHTML = current_player
+  turn++
 }
 
-function setMessage(string) {
-  document.getElementById("message").append(string);
+function fullBoard() {
+  var squares_ndx = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+  return squares_ndx.every(squareTaken)
 }
 
-function cellValue(index) {
-  var squares = document.querySelectorAll('td');
-  return squares[index].innerHTML
-}
-
-function squareTaken(square) {
-  if(cellValue(square).indexOf("X") > -1 || cellValue(square).indexOf("O") > -1) {
+function squareTaken(index) {
+  if(cellValue(index).indexOf("X") > -1 || cellValue(index).indexOf("O") > -1) {
     return true
   } else {
     return false
   }
 }
 
-// TODO: Display Tie game when board full and game has not been won.
-function fullBoard() {
-  var squares = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-  return squares.every(squareTaken)
+function cellValue(index) {
+  var squares = document.querySelectorAll('td');
+  return squares[index].innerHTML
 }
 
 function checkWinner() {
@@ -63,36 +77,32 @@ function checkWinner() {
 }
 
 function doTurn(square) {
-  updateState(square);
-  var gameWon = checkWinner();
+  var gameWon = checkWinner()
+   
+  if(square.innerHTML === "" && !gameWon) {
+    updateState(square)
+    
+    var gameTie = fullBoard() && !gameWon
   
-  if(fullBoard() && !gameWon) {
-    setMessage('Tie game.');
-  } 
-  
-  turn++;
-  
-  if (gameWon) {
-    turn = 0
-    var squares = document.querySelectorAll('td');
-    for(var i = 0; i < squares.length; i++) {
-      squares[i].innerHTML = '';
-    }
+    if (gameWon || gameTie) {
+      if(gameTie) {
+        setMessage('Tie game.')  
+      }
+      debugger;
+      // reset turn counter
+      turn = 0
+      
+      // reset squares to blank state
+      $('td').empty()
+      // reset message to blank state
+      setMessage('')
+     }
   }
 }
 
-function attachListeners() {
-  // var squares = $('td')
-  $('td').on('click', function(){
-    // debugger;
-    doTurn(this);});
-  // var squares = document.querySelectorAll('td');
-  // for(var i = 0; i < squares.length; i++) {
-  //   squares[i].addEventListener("click", function(event){
-  //     event.stopPropagation();
-  //     doTurn(this)
-  //   });
-  // }
+function setMessage(string) {
+  document.getElementById("message").append(string);
 }
+
 
 
