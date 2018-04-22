@@ -36,13 +36,23 @@ function checkWinner() {
     board.push(this.innerText)
     })
 
-  return winCombinations.some(function (subArray) {
+  function winningCondition(subArray) {
+    debugger
     return (board[subArray[0]] !== "") &&
-      (board[subArray[0]] === board[subArray[1]]) &&
-      (board[subArray[0]] === board[subArray[2]])
-  /// change this to an "each" iterator and add if statements
-  })
+    (board[subArray[0]] === board[subArray[1]]) &&
+    (board[subArray[0]] === board[subArray[2]])
+  }
+
+  return winCombinations.some(winningCondition)
 }
+
+  // return winCombinations.some(function (subArray) {
+  //   return (board[subArray[0]] !== "") &&
+  //     (board[subArray[0]] === board[subArray[1]]) &&
+  //     (board[subArray[0]] === board[subArray[2]])
+  // /// change this to an "each" iterator and add if statements
+  // })
+// }
 
 function doTurn() {
 
