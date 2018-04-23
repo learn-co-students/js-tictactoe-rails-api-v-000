@@ -22,7 +22,9 @@ function getBoard() {
 }
 
 function resetBoard() {
-  
+  $("td").each(function() {
+    this.innerText = ""
+    })
 }
 
 // winCombinations are the spots on the board that all must be filled with
