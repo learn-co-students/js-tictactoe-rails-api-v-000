@@ -43,14 +43,13 @@ function setMessage(string) {
 
 function checkWinner() {
   // board will be an array of the Xs and Os on the board
-  let board
-  board = getBoardArray()
+  let board = getBoardArray()
 
   // Grab all the squares and create the board array with Xs, Os, or ""
   // $("td").each( function() {
   //   board.push(this.innerText)
   //   })
-  debugger
+  // debugger
   // This is the callback other functions use to check or identify whether
   // one of the winningCombinations is on the board.
   // "Subarray" means one of the nested arrays within winCombinations.
@@ -90,11 +89,16 @@ function checkWinner() {
 function doTurn(square) {
   turn += 1
   updateState(square)
-  debugger
   if (checkWinner()) {
+    // do I need to add return -- how do I end the execution of the rest of the code?
     checkWinner()
   }
-  else {}
+  else {
+    let board = getBoardArray()
+    if (!(board.includes(""))) {
+      console.log("tie!")
+    }
+  }
 
 }
 
