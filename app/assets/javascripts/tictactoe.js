@@ -72,12 +72,6 @@ function checkWinner() {
 
     // call setMessage() per tests
     setMessage(`Player ${winningToken} Won!`)
-  } else {
-    // debugger
-    if (!board.includes("")) {
-      console.log("Tie!")
-      setMessage(`Tie game.`)
-    }
   }
   // return true or false whether there is a winner, per test
   return winCombinations.some(winningCondition)
@@ -94,6 +88,19 @@ function checkWinner() {
 function doTurn(square) {
   turn += 1
   updateState(square)
+  if (!checkWinner()) {
+    // debugger
+    if (!board.includes("")) {
+      console.log("Tie!")
+      setMessage(`Tie game.`)
+    }
+  }
+  else {
+    checkWinner()
+    turn = 0
+
+
+  }
   // if (checkWinner()) {
   //   // do I need to add return -- how do I end the execution of the rest of the code?
   //   checkWinner()
