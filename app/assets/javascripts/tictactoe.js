@@ -3,17 +3,26 @@
 var turn = 0
 
 function attachListeners() {
-  // $('td').on('click', function(){
-  //   doTurn(this);
-  // });
-  
   var squares = document.querySelectorAll('td')
   
   for(var i = 0; i < squares.length; i++) {
     squares[i].addEventListener('click', function(event) {
+      if (!$.text(this) && !checkWinner()) {
       doTurn(this);
+      }
     })
   }
+  
+  $('button#previous').on('click', function(e) {
+    $.ajax({
+      method: "GET",
+      url: '/games'
+    }).success(function(response) {
+      console.log(response)
+    })
+    
+    e.preventDefault()
+  })
 }
 
 $(document).ready(() => {
@@ -31,7 +40,6 @@ function player() {
 function updateState(square) {
   var current_player = player()
   square.innerHTML = current_player
-  turn++
 }
 
 function fullBoard() {
@@ -77,24 +85,19 @@ function checkWinner() {
 }
 
 function doTurn(square) {
-  var gameWon = checkWinner()
-   
   if(square.innerHTML === "" && !gameWon) {
     updateState(square)
-    
+    turn++
+    var gameWon = checkWinner()
     var gameTie = fullBoard() && !gameWon
   
     if (gameWon || gameTie) {
-      if(gameTie) {
+      if (gameTie) {
         setMessage('Tie game.')  
       }
-      debugger;
-      // reset turn counter
       turn = 0
       
-      // reset squares to blank state
       $('td').empty()
-      // reset message to blank state
       setMessage('')
      }
   }
@@ -103,6 +106,13 @@ function doTurn(square) {
 function setMessage(string) {
   document.getElementById("message").append(string);
 }
+
+// function previous() {
+//   console.log("previous method")
+  
+// }
+
+
 
 
 
