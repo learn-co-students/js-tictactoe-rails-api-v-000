@@ -6,11 +6,10 @@
 
 var turn = 0
 
-// winCombinations are the spots on the board that all must be filled with
-// Xs or Os to win the game
-const winCombinations = [[0,4,8], [6,4,2], [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8]]
+//var board = []
+// debugger
 
-function getBoardArray() {
+function getBoard() {
   let boardArray
   boardArray = []
 
@@ -21,6 +20,26 @@ function getBoardArray() {
 
   return boardArray
 }
+
+function resetBoard() {
+  
+}
+
+// winCombinations are the spots on the board that all must be filled with
+// Xs or Os to win the game
+const winCombinations = [[0,4,8], [6,4,2], [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8]]
+
+// function getBoardArray() {
+//   let boardArray
+//   boardArray = []
+//
+//   // Grab all the squares and create the board array with Xs, Os, or ""
+//   $("td").each( function() {
+//     boardArray.push(this.innerText)
+//     })
+//
+//   return boardArray
+// }
 
 function player() {
   if (isNaN(turn) || turn % 2 === 0) {
@@ -35,6 +54,7 @@ function updateState(element) {
   let token
   token = player()
   $(element).append(token)
+  turn += 1
 }
 
 function setMessage(string) {
@@ -42,8 +62,11 @@ function setMessage(string) {
 }
 
 function checkWinner() {
+  var board = getBoard()
+
+  // debugger
   // board will be an array of the Xs and Os on the board
-  let board = getBoardArray()
+  // let board = getBoardArray()
 
   // Grab all the squares and create the board array with Xs, Os, or ""
   // $("td").each( function() {
@@ -72,6 +95,8 @@ function checkWinner() {
 
     // call setMessage() per tests
     setMessage(`Player ${winningToken} Won!`)
+    turn = 0
+    resetBoard()
   }
   // return true or false whether there is a winner, per test
   return winCombinations.some(winningCondition)
@@ -86,8 +111,9 @@ function checkWinner() {
 // }
 
 function doTurn(square) {
-  turn += 1
+  var board = getBoard()
   updateState(square)
+  // debugger
   if (!checkWinner()) {
     // debugger
     if (!board.includes("")) {
@@ -101,6 +127,7 @@ function doTurn(square) {
 
 
   }
+
   // if (checkWinner()) {
   //   // do I need to add return -- how do I end the execution of the rest of the code?
   //   checkWinner()
@@ -129,5 +156,5 @@ function attachListeners() {
 // });
 
 $(document).ready(
-    attachListeners()
+  attachListeners()
 )
