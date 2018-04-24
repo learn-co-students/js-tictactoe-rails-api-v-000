@@ -108,7 +108,11 @@ function doTurn(square) {
     updateState(square)
       // If the game is not won after the turn...
   }
-  checkWinner()
+  var isThereAWinner = checkWinner()
+  if (isThereAWinner === true) {
+    resetBoard()
+    turn = 0
+  }
 }
 //
 //   var isThereAWinner = checkWinner()
