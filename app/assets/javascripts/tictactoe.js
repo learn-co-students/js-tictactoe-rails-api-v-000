@@ -87,6 +87,9 @@ function checkWinner() {
 
     // Then set the token in a message saying it's the winner.
     setMessage(`Player ${winningToken} Won!`)
+    saveGame()
+
+    // *** Maybe here is where I put the resetGame() ***
 
     // won = true
 
@@ -98,6 +101,7 @@ function checkWinner() {
   }
   else if (!board.includes("")) {
     setMessage(`Tie game.`)
+    saveGame()
     // tied = true
   }
   // return true or false whether there is a winner, per test
