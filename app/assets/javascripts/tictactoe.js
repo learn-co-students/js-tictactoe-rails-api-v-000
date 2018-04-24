@@ -1,6 +1,7 @@
 // Code your JavaScript / jQuery solution here
 
 var turn = 0
+var currentGameId = 0
 
 function attachListeners() {
   var squares = document.querySelectorAll('td')
@@ -13,16 +14,9 @@ function attachListeners() {
     })
   }
   
-  $('button#previous').on('click', function(e) {
-    $.ajax({
-      method: "GET",
-      url: '/games'
-    }).success(function(response) {
-      console.log(response)
-    })
-    
-    e.preventDefault()
-  })
+  $('button#previous').on('click', showPreviousGames)
+  $('button#save').on('click', saveGame)
+  $('button#clear').on('click', clearBoard)
 }
 
 $(document).ready(() => {
@@ -95,10 +89,8 @@ function doTurn(square) {
       if (gameTie) {
         setMessage('Tie game.')  
       }
-      turn = 0
-      
-      $('td').empty()
-      setMessage('')
+      saveGame()
+      clearBoard()
      }
   }
 }
@@ -107,12 +99,72 @@ function setMessage(string) {
   document.getElementById("message").append(string);
 }
 
-// function previous() {
-//   console.log("previous method")
+function showPreviousGames() {
+  $('#games').empty();
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(buttonizePreviousGame);
+    }
+  });
+}
+
+function buttonizePreviousGame(game) {
+  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+}
+
+function compileGame() {
+  var state = []
+  for(var i = 0; i < 9; i++){
+    state.push($('td')[i].innerHTML)
+  }
+  return state
+}
+
+function saveGame(){
+  var data = {state: compileGame()}
   
-// }
+  if(currentGameId === 0) {
+    $.post('/games', data, function(game) {
+      currentGameId = parseInt(game["data"]["id"])
+    });
+  } else {
+    $.ajax({
+      method: "PATCH",
+      url: `/games/${currentGameId}`,
+      data: data
+    }).done(function(game) {
+      setMessage('Saved');
+    })
+  }
+}
 
+function clearBoard() {
+  if(currentGameId === 0) {
+    turn = 0
+    $('td').empty()
+    setMessage('')
+  } else {
+    currentGameId = 0
+    turn = 0
+    $('td').empty()
+    setMessage('')
+  }
+}
 
+function reloadGame(gameId) {
+  $.get(`/games/${gameId}`, (game) => {
+    // debugger;
+    board = game["data"].attributes.state
+    for(var i = 0; i < 9; i++) {
+      $('td')[i].innerHTML = board[i]
+      if (squareTaken(i)) {
+        turn++
+      }
+    }
+    currentGameId = parseInt(game["data"].id)
+  });
+}
 
 
 
