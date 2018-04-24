@@ -4,7 +4,7 @@
 var turn = 0
 var won
 var tied
-var id = 1
+var id
 
   // winCombinations are the spots on the board that all must be filled with
   // Xs or Os to win the game
@@ -135,6 +135,24 @@ function doTurn(square) {
   }
 }
 
+function saveGame(){
+  var board = getBoard()
+  var boardString = JSON.stringify(board)
+  if (!id) {
+    var posting = $.post("/games", boardString)
+    posting.done(function(data) {
+      id = data["data"]["id"]
+      debugger
+    })
+  } else {
+    var posting = $.patch("/games/" + id, boardString)
+
+  }
+  // if there is no id, create a new game.
+  // if there is an id, use it to update the game
+  // may need to use the data pass through to save the game
+}
+
 //
 // function removeListenters() {
 //   $("td").off()
@@ -152,11 +170,17 @@ function attachListeners() {
   })
 
   $("#save").on("click", function() {
-    $.post("/games"), function(data) {
-      
+    saveGame()
     }
     // alert("you clicked save")
-  })
+  )
+
+  $("#clear").on("click", function() {
+    $.get("/games"), function(data) {
+      console.log(data)
+    }
+  }
+  )
 
 }
 
