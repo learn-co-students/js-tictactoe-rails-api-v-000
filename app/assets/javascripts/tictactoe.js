@@ -178,10 +178,29 @@ function attachListeners() {
     // alert("you clicked save")
   )
 
+
+  function restartGame() {
+    resetBoard()
+    id = undefined
+    turn = 0
+    won = undefined
+    tied = undefined
+  }
+
   $("#clear").on("click", function() {
-    alert("clicked clear")
+      // I can clean this up
+    // if (!id) {
+    //   resetBoard()
+    // } else {
+    //   resetBoard()
+    //   id = undefined
+    // }
+
+    // alert("clicked clear")
     // $.get("/games"), function(data) {
     //   console.log(data)
+
+    restartGame ()
     }
   )
 
