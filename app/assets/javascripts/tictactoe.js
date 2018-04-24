@@ -165,31 +165,62 @@ function saveGame(){
 //   $("td").off()
 // }
 
+function restartGame() {
+  resetBoard()
+  id = undefined
+  turn = 0
+  won = undefined
+  tied = undefined
+}
+
+function loadGame() {
+  console.log("You loaded the game, yo!")
+}
+
 function attachListeners() {
   $("td").on("click", function() {
     doTurn(this)
   })
 
   $("#previous").on("click", function() {
-    $.get("/games"), function(data) {
+      // To clear any previous buttons to make sure prior buttons are not re-loaded per test:
+    $("#games").empty()
+
+    $.ajax({
+      url: "/games",
+      method: "GET"
+    }).done(function(data) {
+      // debugger
       console.log(data)
-    }
+      data["data"].forEach( function (hash) {
+        debugger
+        $("#games").append("<button onclick='loadGame()'>Game" + hash["id"] + "</button>")
+          // "<strong>This is in bold for each array!</strong>")})
+        debugger
+        })
+    })
   })
+    // This Works:
+    // $("#games").empty()
+    // This works:
+    // $("#games").append("<strong> Sup! </strong>")
+
+    // This works:
+    // data["data"].forEach( function (arr) {
+    //   $("#games").append("<strong>This is in bold for each array!</strong>")})
+
+    // alert("you clicked previous")
+
+    // parenthesis after games" might be misplaced
+    // $.get("/games"), function(data) {
+    //   debugger
+
 
   $("#save").on("click", function() {
     saveGame()
     }
     // alert("you clicked save")
   )
-
-
-  function restartGame() {
-    resetBoard()
-    id = undefined
-    turn = 0
-    won = undefined
-    tied = undefined
-  }
 
   $("#clear").on("click", function() {
       // I can clean this up
