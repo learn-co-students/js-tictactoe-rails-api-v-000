@@ -2,6 +2,9 @@
 
 
 var turn = 0
+var won
+var tied
+var id = 1
 
   // winCombinations are the spots on the board that all must be filled with
   // Xs or Os to win the game
@@ -30,7 +33,7 @@ function gameOver() {
 }
 
 function tieGame() {
-  if (getBoard().includes("")) {
+  if (!getBoard().includes("")) {
     return true
   } else {
     return false
@@ -85,6 +88,8 @@ function checkWinner() {
     // Then set the token in a message saying it's the winner.
     setMessage(`Player ${winningToken} Won!`)
 
+    // won = true
+
     //CAN'T HAVE THESE HERE OR GAMEPLAY TEST WON'T PASS
     // turn = 0
     // resetBoard()
@@ -93,6 +98,7 @@ function checkWinner() {
   }
   else if (!board.includes("")) {
     setMessage(`Tie game.`)
+    // tied = true
   }
   // return true or false whether there is a winner, per test
   return winCombinations.some(winningCondition)
@@ -101,49 +107,57 @@ function checkWinner() {
 function doTurn(square) {
 
   var board = getBoard()
-      // ...and if the square is empty...
-  if (square.innerText === "") {
 
-      // ...insert the token.
-    updateState(square)
-      // If the game is not won after the turn...
-  }
-  var isThereAWinner = checkWinner()
-  if (isThereAWinner === true) {
-    resetBoard()
-    turn = 0
+      // ...and if the square is empty...
+
+  if ((won !== true) || (tied !== true) ) {
+    if (square.innerText === "") {
+
+        // ...insert the token.
+      updateState(square)
+        // If the game is not won after the turn...
+    }
+
+
+  // var isThereAWinner = checkWinner()
+  // if ((isThereAWinner === true) || (tieGame() === true)) {
+  //   resetBoard()
+  //   turn = 0
+  //   // removeListenters()
+  // }
+
+    var isThereAWinner = checkWinner()
+    if (isThereAWinner === true) {
+      resetBoard()
+      turn = 0
+    // removeListenters()
+    }
   }
 }
-//
-//   var isThereAWinner = checkWinner()
-//
-//   if (isThereAWinner == false && !isThereAWinner) {
-//       // ..and all the squares are filled, then it is a tie game.
-//         if (!board.includes("")) {
-//           setMessage(`Tie game.`)
-//         }
-//       // Else, if the game is won, then run checkWinner(), causing
-//       // victory messages to appear.
-//     } else if (checkWinner()) {
-//         checkWinner()
-//         resetBoard()
-//         token = 0
-//       }
-//     }
-//       // If the game is not over but square is not empty, then player must
-//       // select another square.
-//       else {
-//         // debugger
-//         setMessage("Please select another square.")
-//       }
-//   }
-// }
 
+//
+// function removeListenters() {
+//   $("td").off()
+// }
 
 function attachListeners() {
   $("td").on("click", function() {
     doTurn(this)
   })
+
+  $("#previous").on("click", function() {
+    $.get("/games"), function(data) {
+      console.log(data)
+    }
+  })
+
+  $("#save").on("click", function() {
+    $.post("/games"), function(data) {
+      
+    }
+    // alert("you clicked save")
+  })
+
 }
 
 
