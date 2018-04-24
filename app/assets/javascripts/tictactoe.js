@@ -142,10 +142,13 @@ function saveGame(){
     var posting = $.post("/games", boardString)
     posting.done(function(data) {
       id = data["data"]["id"]
-      debugger
     })
   } else {
-    var posting = $.patch("/games/" + id, boardString)
+    $.ajax({
+      url: "/games/" + id,
+      method: "PATCH",
+      data: boardString
+    })
 
   }
   // if there is no id, create a new game.
@@ -176,10 +179,10 @@ function attachListeners() {
   )
 
   $("#clear").on("click", function() {
-    $.get("/games"), function(data) {
-      console.log(data)
+    alert("clicked clear")
+    // $.get("/games"), function(data) {
+    //   console.log(data)
     }
-  }
   )
 
 }
