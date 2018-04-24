@@ -91,49 +91,54 @@ function checkWinner() {
 
 
   }
-  else if (!board.includes("")) {
-    setMessage(`Tie game.`)
-  }
   // return true or false whether there is a winner, per test
   return winCombinations.some(winningCondition)
 }
 
 function doTurn(square) {
+  var isThereAWinner = checkWinner()
 
-  var board = getBoard()
+
+  // under the tests, checkWinner can only be called once. Cannot even put it
+  // in conditional statement
+  // I'll just have to put checkwinner() in a variable then and use that
+  // checkWinner()
+  // if (!checkWinner()) {
+  //   console.log("Game still going.")
+  // }
+  //
+    // If the game is not over...
+  if (isThereAWinner === false && tieGame === false) {
+    // ...remove any prior message, like to select another square
+    setMessage("")
+    var board = getBoard()
       // ...and if the square is empty...
-  if (square.innerText === "") {
+    if (square.innerText === "") {
 
       // ...insert the token.
-    updateState(square)
+      updateState(square)
       // If the game is not won after the turn...
+      if (!isThereAWinner) {
+      // ..and all the squares are filled, then it is a tie game.
+        if (!board.includes("")) {
+          setMessage(`Tie game.`)
+        }
+      // Else, if the game is won, then run checkWinner(), causing
+      // victory messages to appear.
+    } else if (checkWinner()) {
+        checkWinner()
+        resetBoard()
+        token = 0
+      }
+    }
+      // If the game is not over but square is not empty, then player must
+      // select another square.
+      else {
+        // debugger
+        setMessage("Please select another square.")
+      }
   }
-  checkWinner()
 }
-//
-//   var isThereAWinner = checkWinner()
-//
-//   if (isThereAWinner == false && !isThereAWinner) {
-//       // ..and all the squares are filled, then it is a tie game.
-//         if (!board.includes("")) {
-//           setMessage(`Tie game.`)
-//         }
-//       // Else, if the game is won, then run checkWinner(), causing
-//       // victory messages to appear.
-//     } else if (checkWinner()) {
-//         checkWinner()
-//         resetBoard()
-//         token = 0
-//       }
-//     }
-//       // If the game is not over but square is not empty, then player must
-//       // select another square.
-//       else {
-//         // debugger
-//         setMessage("Please select another square.")
-//       }
-//   }
-// }
 
 
 function attachListeners() {
