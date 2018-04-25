@@ -5,6 +5,7 @@ var turn = 0
 var won
 var tied
 var id
+var gameOver
 
   // winCombinations are the spots on the board that all must be filled with
   // Xs or Os to win the game
@@ -88,6 +89,7 @@ function checkWinner() {
     // Then set the token in a message saying it's the winner.
     setMessage(`Player ${winningToken} Won!`)
     saveGame()
+    gameOver = true
 
     // *** Maybe here is where I put the resetGame() ***
 
@@ -102,6 +104,7 @@ function checkWinner() {
   else if (!board.includes("")) {
     setMessage(`Tie game.`)
     saveGame()
+    gameOver = true
     // tied = true
   }
   // return true or false whether there is a winner, per test
@@ -171,6 +174,7 @@ function restartGame() {
   turn = 0
   won = undefined
   tied = undefined
+  gameOver = false
 }
 
 function countTurns(array) {
@@ -182,8 +186,6 @@ function countTurns(array) {
   }
   return count
 }
-
-
 
 function loadGame(gameToLoad) {
   $.ajax({
@@ -201,6 +203,7 @@ function loadGame(gameToLoad) {
 
     currentBoard = getBoard()
     turn = countTurns(currentBoard)
+    gameOver = false
 
   })
 }
