@@ -1,137 +1,225 @@
 // Code your JavaScript / jQuery solution here
 
-const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
-                        [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
-var turn = 0;
-var currentGame = 0;
 
-$(document).ready(function() {
-  attachListeners();
-});
+var turn = 0
+var won
+var tied
+var id
+var gameOver
 
-var player = () => turn % 2 ? 'O' : 'X';
+  // winCombinations are the spots on the board that all must be filled with
+  // Xs or Os to win the game
+const winCombinations = [[0,4,8], [6,4,2], [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8]]
 
-function doTurn(square) {
-  updateState(square);
-  turn++;
-  if (checkWinner()) {
-    saveGame();
-    resetBoard();
-  } else if (turn === 9) {
-    setMessage("Tie game.");
-    saveGame();
-    resetBoard();
-  }
+function getBoard() {
+  let boardArray
+  boardArray = []
+
+  // Grab all the squares and create the board array with Xs, Os, or ""
+  $("td").each( function() {
+    boardArray.push(this.innerText)
+    })
+
+  return boardArray
 }
 
 function resetBoard() {
-  $('td').empty();
-  turn = 0;
-  currentGame = 0;
+  $("td").each(function() {
+    this.innerText = ""
+    })
 }
 
-function attachListeners() {
-  $('td').on('click', function() {
-    if (!$.text(this) && !checkWinner()) {
-      doTurn(this);
-    }
-  });
-
-  $('#save').on('click', () => saveGame());
-  $('#previous').on('click', () => showPreviousGames());
-  $('#clear').on('click', () => resetBoard());
+function gameOver() {
+  return (checkWinner() === true || !getBoard().includes(""))
 }
 
-function checkWinner() {
-  var board = {};
-  var winner = false;
-
-  $('td').text((index, square) => board[index] = square);
-
-  WINNING_COMBOS.some(function(combo) {
-    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
-      setMessage(`Player ${board[combo[0]]} Won!`);
-      return winner = true;
-    }
-  });
-
-  return winner;
-}
-
-function updateState(square) {
-  var token = player();
-  $(square).text(token);
-}
-
-function setMessage(string) {
-  $('#message').text(string);
-}
-
-function saveGame() {
-  var state = [];
-  var gameData;
-
-  $('td').text((index, square) => {
-    state.push(square);
-  });
-
-  gameData = { state: state };
-
-  if (currentGame) {
-    $.ajax({
-      type: 'PATCH',
-      url: `/games/${currentGame}`,
-      data: gameData
-    });
+function tieGame() {
+  if (!getBoard().includes("")) {
+    return true
   } else {
-    $.post('/games', gameData, function(game) {
-      currentGame = game.data.id;
-      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
-      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
-    });
+    return false
   }
 }
 
-function showPreviousGames() {
-  $('#games').empty();
-  $.get('/games', (savedGames) => {
-    if (savedGames.data.length) {
-      savedGames.data.forEach(buttonizePreviousGame);
-    }
-  });
+function player() {
+  if (isNaN(turn) || turn % 2 === 0) {
+    return "X"
+  }
+  else {
+    return "O"
+  }
 }
 
-function buttonizePreviousGame(game) {
-  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
-  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+function updateState(element) {
+  let token
+  token = player()
+  $(element).append(token)
+  turn += 1
 }
 
-function reloadGame(gameID) {
-  document.getElementById('message').innerHTML = '';
+function setMessage(string) {
+  $("#message").text(string)
+}
 
-  const xhr = new XMLHttpRequest;
-  xhr.overrideMimeType('application/json');
-  xhr.open('GET', `/games/${gameID}`, true);
-  xhr.onload = () => {
-    const data = JSON.parse(xhr.responseText).data;
-    const id = data.id;
-    const state = data.attributes.state;
+function checkWinner() {
+  var board = getBoard()
 
-    let index = 0;
-    for (let y = 0; y < 3; y++) {
-      for (let x = 0; x < 3; x++) {
-        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
-        index++;
+  // This is the callback other functions use to check or identify whether
+  // one of the winningCombinations is on the board.
+  // "Subarray" means one of the nested arrays within winCombinations.
+  function winningCondition(subArray) {
+    return (board[subArray[0]] !== "") &&
+    (board[subArray[0]] === board[subArray[1]]) &&
+    (board[subArray[0]] === board[subArray[2]])
+  }
+
+  // If one of the winning combinations has been achieved by the Xs
+  // and Os on the board...
+  if (winCombinations.some(winningCondition)) {
+    let winningCombination
+    let winningToken
+
+    // ...then find the subarray in winCombinations that is the current winner...
+    winningCombination = winCombinations.find(winningCondition)
+
+    // ...to identify the token that has won.
+    winningToken = board[winningCombination[0]]
+    // debugger
+
+    // Then set the token in a message saying it's the winner.
+    setMessage(`Player ${winningToken} Won!`)
+    saveGame()
+    gameOver = true
+
+    //CAN'T HAVE THESE HERE OR GAMEPLAY TEST WON'T PASS
+    // turn = 0
+    // resetBoard()
+
+
+  }
+  else if (!board.includes("")) {
+    setMessage(`Tie game.`)
+    saveGame()
+    gameOver = true
+    // tied = true
+  }
+  // return true or false whether there is a winner, per test
+  return winCombinations.some(winningCondition)
+}
+
+function doTurn(square) {
+
+  // if (gameOver !== true) {
+    var board = getBoard()
+
+    // if ((won !== true) || (tied !== true) ) {
+      if (square.innerText === "") {
+        updateState(square)
       }
-    }
 
-    turn = state.join('').length;
-    currentGame = id;
-
-    if (!checkWinner() && turn === 9) {
-      setMessage('Tie game.');
-    }
-  };
-
-  xhr.send(null);
+      var isThereAWinner = checkWinner()
+      if (isThereAWinner === true) {
+        resetBoard()
+        turn = 0
+      }
+    // }
+  // }
 }
+
+function saveGame(){
+  var board = getBoard()
+  var boardString = JSON.stringify(board)
+  if (!id) {
+    var posting = $.post("/games", boardString)
+    posting.done(function(data) {
+      id = data["data"]["id"]
+    })
+  } else {
+    $.ajax({
+      url: "/games/" + id,
+      method: "PATCH",
+      data: boardString
+    })
+  }
+}
+
+//
+// function removeListenters() {
+//   $("td").off()
+// }
+
+function restartGame() {
+  resetBoard()
+  setMessage("")
+  id = undefined
+  turn = 0
+  won = undefined
+  tied = undefined
+  gameOver = false
+}
+
+function countTurns(array) {
+  var count = 0
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] === "X" || array[i] === "O") {
+      count++
+    }
+  }
+  return count
+}
+
+function loadGame(gameToLoad) {
+  $.ajax({
+    url: "/games/" + gameToLoad.dataset.id,
+    method: "GET"
+  }).done(function(data) {
+    var boardToInsert = data["data"]["attributes"]["state"]
+    var boardToFill = $("td")
+    id = data["data"]["id"]
+    for (let i=0; i<9; i++) {
+      boardToFill[i].innerText = boardToInsert[i]
+    }
+
+    currentBoard = getBoard()
+    turn = countTurns(currentBoard)
+    gameOver = false
+
+  })
+}
+
+function attachListeners() {
+  $("td").on("click", function() {
+    doTurn(this)
+  })
+
+  $("#previous").on("click", function() {
+      // To clear any previous buttons to make sure prior buttons are not re-loaded per test:
+    $("#games").empty()
+
+    $.ajax({
+      url: "/games",
+      method: "GET"
+    }).done(function(data) {
+      data["data"].forEach( function (hash) {
+        $("#games").append("<button id='game-" + hash["id"] + "' onclick='loadGame(this)' data-id='" + hash["id"] + "'>Game" + hash["id"] + "</button>")
+        })
+    })
+  })
+
+
+  $("#save").on("click", function() {
+    saveGame()
+    }
+  )
+
+  $("#clear").on("click", function() {
+    restartGame()
+    }
+  )
+
+}
+
+
+$(document).ready(
+  attachListeners()
+)
