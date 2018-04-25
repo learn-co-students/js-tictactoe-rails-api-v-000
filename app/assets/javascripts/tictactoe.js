@@ -173,8 +173,36 @@ function restartGame() {
   tied = undefined
 }
 
-function loadGame() {
-  console.log("You loaded the game, yo!")
+function countTurns(array) {
+  var count = 0
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] === "X" || array[i] === "O") {
+      count++
+    }
+  }
+  return count
+}
+
+
+
+function loadGame(gameToLoad) {
+  $.ajax({
+    url: "/games/" + gameToLoad.dataset.id,
+    method: "GET"
+  }).done(function(data) {
+    var boardToInsert = data["data"]["attributes"]["state"]
+    // document.getElementsByTagName("td")
+    // var boardToFill = getBoard()
+    var boardToFill = $("td")
+    id = data["data"]["id"]
+    for (let i=0; i<9; i++) {
+      boardToFill[i].innerText = boardToInsert[i]
+    }
+
+    currentBoard = getBoard()
+    turn = countTurns(currentBoard)
+
+  })
 }
 
 function attachListeners() {
@@ -191,12 +219,10 @@ function attachListeners() {
       method: "GET"
     }).done(function(data) {
       // debugger
-      console.log(data)
+    //  console.log(data)
       data["data"].forEach( function (hash) {
-        debugger
-        $("#games").append("<button onclick='loadGame()'>Game" + hash["id"] + "</button>")
+        $("#games").append("<button id='game-" + hash["id"] + "' onclick='loadGame(this)' data-id='" + hash["id"] + "'>Game" + hash["id"] + "</button>")
           // "<strong>This is in bold for each array!</strong>")})
-        debugger
         })
     })
   })
