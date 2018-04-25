@@ -112,33 +112,23 @@ function checkWinner() {
 }
 
 function doTurn(square) {
+  debugger
 
-  var board = getBoard()
+  if (gameOver !== true) {
+    var board = getBoard()
 
-      // ...and if the square is empty...
+    // if ((won !== true) || (tied !== true) ) {
+      if (square.innerText === "") {
+        updateState(square)
+      }
 
-  if ((won !== true) || (tied !== true) ) {
-    if (square.innerText === "") {
+      var isThereAWinner = checkWinner()
+      if (isThereAWinner === true) {
+        resetBoard()
+        turn = 0
 
-        // ...insert the token.
-      updateState(square)
-        // If the game is not won after the turn...
-    }
-
-
-  // var isThereAWinner = checkWinner()
-  // if ((isThereAWinner === true) || (tieGame() === true)) {
-  //   resetBoard()
-  //   turn = 0
-  //   // removeListenters()
-  // }
-
-    var isThereAWinner = checkWinner()
-    if (isThereAWinner === true) {
-      resetBoard()
-      turn = 0
-    // removeListenters()
-    }
+      }
+    // }
   }
 }
 
