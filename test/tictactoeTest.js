@@ -119,7 +119,7 @@ describe('tictactoe.js', () => {
       //    |   |   
       // -----------
       //  O | O |   
-
+      
       expect(window.checkWinner()).to.be.true;
     });
 
@@ -154,7 +154,7 @@ describe('tictactoe.js', () => {
       //  X | O | X 
       // -----------
       //  O | X | O 
-
+      
       expect(window.checkWinner()).to.equal(false);
     });
 
@@ -253,7 +253,7 @@ describe('tictactoe.js', () => {
 
       window.turn = 8;
       window.doTurn(squares[6]);
-
+      
       const board = Array.from(squares).map(s => s.innerHTML);
 
       expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);
@@ -500,12 +500,12 @@ describe('AJAX interactions with the Rails API', () => {
           { 'Content-Type': 'application/json' },
           jsonifyGame(['', '', '', '', '', '', '', '', ''])
         );
-
+        
         saveButton.click();
 
         expect(requests[0].method).to.equal('POST');
         expect(requests[0].url).to.equal('/games');
-
+        
         expect(requests[1].method).to.equal('PATCH');
         expect(requests[1].url).to.equal('/games/1');
       });
