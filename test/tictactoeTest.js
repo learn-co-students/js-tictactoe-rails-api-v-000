@@ -51,7 +51,7 @@ describe('tictactoe.js', () => {
 
     it('returns "O" when the turn count is odd', () => {
       window.turn = 3;
-
+      
       expect(window.player()).to.equal('O');
     });
   });
