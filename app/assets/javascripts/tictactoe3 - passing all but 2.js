@@ -123,9 +123,8 @@ function doTurn(square) {
 
       var isThereAWinner = checkWinner()
       if (isThereAWinner === true) {
-        restartGame()
-        // resetBoard()
-        // turn = 0
+        resetBoard()
+        turn = 0
       }
     // }
   // }
@@ -145,7 +144,11 @@ function saveGame(){
       method: "PATCH",
       data: boardString
     })
+
   }
+  // if there is no id, create a new game.
+  // if there is an id, use it to update the game
+  // may need to use the data pass through to save the game
 }
 
 //
@@ -178,6 +181,8 @@ function loadGame(gameToLoad) {
     method: "GET"
   }).done(function(data) {
     var boardToInsert = data["data"]["attributes"]["state"]
+    // document.getElementsByTagName("td")
+    // var boardToFill = getBoard()
     var boardToFill = $("td")
     id = data["data"]["id"]
     for (let i=0; i<9; i++) {
@@ -191,21 +196,10 @@ function loadGame(gameToLoad) {
   })
 }
 
-  // Had to look at solution to figure out that this is where
-  // you can checkWinner() to pass the second test under gameplay.
-  // Unfortunatly, the tests only allow you to call checkWinner()
-  // once under doTurn()
-  // Theme here if I look back in the future: I had to do a lot, that
-  // I might otherwise not do, to accomodate the tests.
 function attachListeners() {
-  $('td').on('click', function() {
-    if (!$.text(this) && !checkWinner()) {
-      doTurn(this);
-    }
+  $("td").on("click", function() {
+    doTurn(this)
   })
-  // $("td").on("click", function() {
-  //   doTurn(this)
-  // })
 
   $("#previous").on("click", function() {
       // To clear any previous buttons to make sure prior buttons are not re-loaded per test:
@@ -215,19 +209,49 @@ function attachListeners() {
       url: "/games",
       method: "GET"
     }).done(function(data) {
+      // debugger
+    //  console.log(data)
       data["data"].forEach( function (hash) {
         $("#games").append("<button id='game-" + hash["id"] + "' onclick='loadGame(this)' data-id='" + hash["id"] + "'>Game" + hash["id"] + "</button>")
+          // "<strong>This is in bold for each array!</strong>")})
         })
     })
   })
+    // This Works:
+    // $("#games").empty()
+    // This works:
+    // $("#games").append("<strong> Sup! </strong>")
+
+    // This works:
+    // data["data"].forEach( function (arr) {
+    //   $("#games").append("<strong>This is in bold for each array!</strong>")})
+
+    // alert("you clicked previous")
+
+    // parenthesis after games" might be misplaced
+    // $.get("/games"), function(data) {
+    //   debugger
 
 
   $("#save").on("click", function() {
     saveGame()
     }
+    // alert("you clicked save")
   )
 
   $("#clear").on("click", function() {
+      // I can clean this up
+    // if (!id) {
+    //   resetBoard()
+    // } else {
+    //   resetBoard()
+    //   id = undefined
+    // }
+
+    // alert("clicked clear")
+    // $.get("/games"), function(data) {
+    //   console.log(data)
+
     restartGame ()
     }
   )
