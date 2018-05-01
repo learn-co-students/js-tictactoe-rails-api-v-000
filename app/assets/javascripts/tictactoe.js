@@ -1,5 +1,5 @@
 // Code your JavaScript / jQuery solution here
-const WINNING_COMBOS = [
+var WINNING_COMBOS = [
   [0, 1, 2],
   [3, 4, 5],
   [6, 7, 8],
@@ -30,5 +30,41 @@ function setMessage(message) {
 }
 
 function checkWinner() {
+  var winner = false;
+  var board = {};
 
+  $('td').text((index, square) => board[index] = square);
+
+  WINNING_COMBOS.forEach(function(combo) {
+    if (
+      board[combo[0]] === board[combo[1]] 
+      && board[combo[1]] === board[combo[2]] 
+      && board[combo[0]] !== "") {
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      return winner = true;
+    }
+  });
+
+  return winner;
+}
+
+function doTurn(square) {
+  updateState(square);
+  turn++;
+  if (checkWinner()) {
+    $('td').empty();
+    turn = 0;
+  } else if (turn === 9) {
+    setMessage("Tie game.")
+  }
+}
+
+$(document).ready(function() {
+  attachListeners();
+})
+
+function attachListeners() {
+  $('td').on('click', function() {
+    doTurn(this)
+  })
 }
