@@ -41,6 +41,7 @@ function doTurn(tile){
   turn++;
   updateState(tile);
   if (checkWinner()){
+    clearBoard();
     setMessage(player());
   }
 }
@@ -51,6 +52,12 @@ function saveGame(){
 
 function previousGame(){
   
+}
+
+function clearBoard(){
+  $("td").each(function (){
+    this.innerHTML = ""
+  })
 }
 
 function attachListeners(){
@@ -66,8 +73,8 @@ function attachListeners(){
       e.preventDefault();
   });
   $("button#clear").click(function(e){
+      clearBoard();
       e.preventDefault();
-      location.reload();
   });
 }
 
