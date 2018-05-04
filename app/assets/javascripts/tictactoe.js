@@ -11,6 +11,23 @@ var WINNING_COMBOS = [
 ];
 
 var turn = 0;
+var currentGame =0;
+
+$(document).ready(function () {
+  attachListeners();
+})
+
+function attachListeners() {
+  $('td').on('click', function () {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  });
+
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => showPreviousGames());
+  $('#clear').on('click', () => resetBoard());
+}
 
 function player() {
   if (turn % 2 === 0) {
@@ -52,19 +69,24 @@ function doTurn(square) {
   updateState(square);
   turn++;
   if (checkWinner()) {
+    saveGame();
+    resetBoard();
     $('td').empty();
     turn = 0;
   } else if (turn === 9) {
-    setMessage("Tie game.")
+    setMessage("Tie game.");
+    saveGame();
+    resetBoard();
   }
 }
 
-$(document).ready(function() {
-  attachListeners();
-})
-
-function attachListeners() {
-  $('td').on('click', function() {
-    doTurn(this)
-  })
+function resetBoard() {
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
 }
+
+function saveGame() {
+  
+}
+
