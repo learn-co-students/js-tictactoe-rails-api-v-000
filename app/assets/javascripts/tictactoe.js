@@ -13,7 +13,7 @@ const WIN_COMBINATIONS = [
 let turn = 0;
 
 function player(){
-  return turn % 2 ? "X" : "O";
+  return turn % 2 ? "O" : "X";
 }
 
 function updateState(tile){
@@ -38,12 +38,12 @@ function checkWinner(){
 }
 
 function doTurn(tile){
-  turn++;
   updateState(tile);
   if (checkWinner()){
-    clearBoard();
     setMessage(player());
+    clearBoard();
   }
+  turn++;
 }
 
 function saveGame(){
@@ -58,6 +58,7 @@ function clearBoard(){
   $("td").each(function (){
     this.innerHTML = ""
   })
+  turn = 0;
 }
 
 function attachListeners(){
