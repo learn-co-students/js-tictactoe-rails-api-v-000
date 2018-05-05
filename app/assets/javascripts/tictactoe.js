@@ -49,8 +49,8 @@ function doTurn(tile){
     saveGame();
     clearBoard();
   }else if (!currentState.includes('')){
-    saveGame();
     setMessage("Tie game.");
+    saveGame();
     clearBoard();
   }else{
     turn++;
@@ -87,8 +87,10 @@ function loadGame(){
     let index = 0;
     $("td").each(function (){
       this.innerHTML = json.data.attributes["state"][index];
+      currentState[index] = [index];
       index++;
     })
+    turn = json.data.attributes["state"].join('').length;
   });
 }
 
@@ -102,9 +104,9 @@ function clearBoard(){
 }
 
 function attachListeners(){
-  $("#board").click(function (e) {
-    if(e.target.innerHTML === ""){
-      doTurn(e.target);
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
     }
   });
   $("button#save").click(function(e){
