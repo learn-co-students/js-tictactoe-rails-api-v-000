@@ -10,75 +10,91 @@ const WIN_COMBINATIONS = [
   [6,4,2]
 ]
 
-let turn = 0;
+let currentState = ['','','','','','','','',''];;
+let turn = 1;
 
 function player(){
-  return turn % 2 ? "O" : "X";
+  return turn % 2 ? "X" : "O";
 }
 
 function updateState(tile){
   tile.append(player())
 }
 
-function setMessage(token){
-  $("#message").append(`Player ${token} Won!`)
+function setMessage(message){
+  $("#message").empty();
+  $("#message").append(message);
 }
 
 function checkWinner(){
-  currentState = []
-  
   $( "td" ).each(function( index ) {
     currentState[index] = $( this ).text();
   });
-  return !!WIN_COMBINATIONS.find(function(combo){
-    return currentState[combo[0]] === currentState[combo[1]] &&
-            currentState[combo[1]] === currentState[combo[2]] &&
-            currentState[combo[0]+1] !== ""  
-  });
+
+  let find_winner = !!WIN_COMBINATIONS.find(function(combo){
+                      return currentState[combo[0]] === currentState[combo[1]] &&
+                             currentState[combo[1]] === currentState[combo[2]] &&
+                             currentState[combo[0]] !== ""});
+
+  if (find_winner){
+    setMessage(`Player ${player()} Won!`);
+    return true;
+  }else{
+    return false;
+  }
 }
 
 function doTurn(tile){
   updateState(tile);
   if (checkWinner()){
-    setMessage(player());
+    saveGame();
     clearBoard();
+  }else if (!currentState.includes('')){
+    saveGame();
+    setMessage("Tie game.");
+    clearBoard();
+  }else{
+    turn++;
   }
-  turn++;
 }
 
 function saveGame(){
-  
+  debugger;
 }
 
 function previousGame(){
-  
+
 }
 
 function clearBoard(){
   $("td").each(function (){
     this.innerHTML = ""
   })
-  turn = 0;
+  turn = 1;
+  currentState = ['','','','','','','','',''];
 }
 
 function attachListeners(){
   $("#board").click(function (e) {
-    doTurn(e.target);
+    if(e.target.innerHTML === ""){
+      doTurn(e.target);
+    }
   });
   $("button#save").click(function(e){
-      saveGame();
-      e.preventDefault();
+    saveGame();
+    e.preventDefault();
   });
   $("button#previous").click(function(e){
-      previousGame();
-      e.preventDefault();
+    previousGame();
+    e.preventDefault();
   });
   $("button#clear").click(function(e){
-      clearBoard();
-      e.preventDefault();
+    clearBoard();
+    $("#message").empty();
+    e.preventDefault();
   });
 }
 
 $(function() {
   attachListeners();
-}); 
+});
