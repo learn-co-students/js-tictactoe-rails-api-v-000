@@ -1,21 +1,41 @@
-const WIN_COMBINATIONS = [
-  [0,1,2],
-  [3,4,5],
-  [6,7,8],
-  [0,3,6],
-  [1,4,7],
-  [2,5,8],
-  [0,4,8],
-  [6,4,2]
-]
+const WIN_COMBINATIONS = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8],
+                            [0,4,8], [6,4,2]]
 
-let currentGame = 0;
-let currentState = ['','','','','','','','',''];
-let turn = 0;
+var currentGame = 0;
+var currentState = ['','','','','','','','',''];
+var turn = 0;
 
-function player(){
-  return turn % 2 ? "O" : "X";
+$(function() {
+  attachListeners();
+});
+
+function attachListeners(){
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  });
+  $("button#save").click(function(e){
+    saveGame();
+    e.preventDefault();
+  });
+  $("button#previous").click(function(e){
+    previousGames();
+    e.preventDefault();
+  });
+  $("button#clear").click(function(e){
+    clearBoard();
+    $("#message").empty();
+    e.preventDefault();
+  });
+  $("div#games").click(function(e){
+    currentGame = e.target.innerHTML
+    loadGame();
+    e.preventDefault();
+  });
 }
+
+var player = () => turn % 2 ? "O" : "X";
 
 function updateState(tile){
   tile.append(player())
@@ -26,17 +46,18 @@ function setMessage(message){
 }
 
 function checkWinner(){
+  let winner = false;
   $( "td" ).each(function( index ) {
     currentState[index] = $( this ).text();
   });
 
-  let find_winner = !!WIN_COMBINATIONS.find(function(combo){
-                      return currentState[combo[0]] === currentState[combo[1]] &&
-                             currentState[combo[1]] === currentState[combo[2]] &&
-                             currentState[combo[0]] !== ""});
+  winner = WIN_COMBINATIONS.find(function(combo){
+                  return currentState[combo[0]] === currentState[combo[1]] &&
+                        currentState[combo[1]] === currentState[combo[2]] &&
+                        currentState[combo[0]] !== ""});
 
-  if (find_winner){
-    setMessage(`Player ${player()} Won!`);
+  if (winner){
+    setMessage(`Player ${currentState[winner[0]]} Won!`);
     return true;
   }else{
     return false;
@@ -102,33 +123,3 @@ function clearBoard(){
   currentState = ['','','','','','','','',''];
   currentGame = 0;
 }
-
-function attachListeners(){
-  $('td').on('click', function() {
-    if (!$.text(this) && !checkWinner()) {
-      doTurn(this);
-    }
-  });
-  $("button#save").click(function(e){
-    saveGame();
-    e.preventDefault();
-  });
-  $("button#previous").click(function(e){
-    previousGames();
-    e.preventDefault();
-  });
-  $("button#clear").click(function(e){
-    clearBoard();
-    $("#message").empty();
-    e.preventDefault();
-  });
-  $("div#games").click(function(e){
-    currentGame = e.target.innerHTML
-    loadGame();
-    e.preventDefault();
-  });
-}
-
-$(function() {
-  attachListeners();
-});
