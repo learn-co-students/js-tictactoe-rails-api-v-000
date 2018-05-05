@@ -1,4 +1,3 @@
-// Code your JavaScript / jQuery solution here
 const WIN_COMBINATIONS = [
   [0,1,2],
   [3,4,5],
@@ -10,6 +9,7 @@ const WIN_COMBINATIONS = [
   [6,4,2]
 ]
 
+let currentGame = 0;
 let currentState = ['','','','','','','','',''];
 let turn = 0;
 
@@ -22,8 +22,7 @@ function updateState(tile){
 }
 
 function setMessage(message){
-  $("#message").empty();
-  $("#message").append(message);
+  $("#message").text(message);
 }
 
 function checkWinner(){
@@ -59,7 +58,18 @@ function doTurn(tile){
 }
 
 function saveGame(){
-  $.post( "/games", { 'state[]': currentState } );
+  if (currentGame === 0){
+    $.post( "/games", { 'state[]': currentState }, function(json){
+      currentGame = parseInt(json.data["id"]);
+    });
+  }else{
+    $.ajax({
+      type: "PATCH",
+      url: `/games/${currentGame}`,
+      data: { _method:'PUT', 'state[]': currentState },
+      dataType: 'json'
+    });
+  }
 }
 
 function previousGames(){
@@ -88,6 +98,7 @@ function clearBoard(){
   })
   turn = 0;
   currentState = ['','','','','','','','',''];
+  currentGame = 0;
 }
 
 function attachListeners(){
