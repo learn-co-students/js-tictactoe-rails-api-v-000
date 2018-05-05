@@ -77,13 +77,13 @@ function previousGames(){
     let $games = $("div#games")
     $games.html("");
     json.data.forEach(function(game){
-      $games.append(`<li>${game.id}</li>`)
+      $games.append(`<button id="gameid-${game.id}">${game.id}</button><br>`)
     });
   });
 }
 
-function loadGame(gameId){
-  $.get( `/games/${gameId}`, function( json ) {
+function loadGame(){
+  $.get( `/games/${currentGame}`, function( json ) {
     let index = 0;
     $("td").each(function (){
       this.innerHTML = json.data.attributes["state"][index];
@@ -121,7 +121,8 @@ function attachListeners(){
     e.preventDefault();
   });
   $("div#games").click(function(e){
-    loadGame(parseInt(e.target.innerHTML));
+    currentGame = e.target.innerHTML
+    loadGame();
     e.preventDefault();
   });
 }
