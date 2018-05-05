@@ -10,11 +10,11 @@ const WIN_COMBINATIONS = [
   [6,4,2]
 ]
 
-let currentState = ['','','','','','','','',''];;
-let turn = 1;
+let currentState = ['','','','','','','','',''];
+let turn = 0;
 
 function player(){
-  return turn % 2 ? "X" : "O";
+  return turn % 2 ? "O" : "X";
 }
 
 function updateState(tile){
@@ -59,18 +59,34 @@ function doTurn(tile){
 }
 
 function saveGame(){
-  debugger;
+  $.post( "/games", { 'state[]': currentState } );
 }
 
-function previousGame(){
+function previousGames(){
+  $.get( "/games", function( json ) {
+    let $games = $("div#games")
+    $games.html("");
+    json.data.forEach(function(game){
+      $games.append(`<li>${game.id}</li>`)
+    });
+  });
+}
 
+function loadGame(gameId){
+  $.get( `/games/${gameId}`, function( json ) {
+    let index = 0;
+    $("td").each(function (){
+      this.innerHTML = json.data.attributes["state"][index];
+      index++;
+    })
+  });
 }
 
 function clearBoard(){
   $("td").each(function (){
     this.innerHTML = ""
   })
-  turn = 1;
+  turn = 0;
   currentState = ['','','','','','','','',''];
 }
 
@@ -85,12 +101,16 @@ function attachListeners(){
     e.preventDefault();
   });
   $("button#previous").click(function(e){
-    previousGame();
+    previousGames();
     e.preventDefault();
   });
   $("button#clear").click(function(e){
     clearBoard();
     $("#message").empty();
+    e.preventDefault();
+  });
+  $("div#games").click(function(e){
+    loadGame(parseInt(e.target.innerHTML));
     e.preventDefault();
   });
 }
