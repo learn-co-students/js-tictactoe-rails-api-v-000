@@ -2,6 +2,7 @@
 var turn = 0;
 var currentGameState = new Array(9).fill("")
 var currentGameId
+var numberToXYConcordances = [[0,0], [1,0], [2,0], [0,1], [1,1], [2, 1], [0,2], [1,2],[2,2]];
 
 $(function(){
   attachListeners();
@@ -113,40 +114,48 @@ function getPreviousGames(){
 
   $.get('/games', function(games){
 
-      games["data"].forEach(function(game){
+      var existingGameIDs = []
 
-        //game["attributes"]["state"]
-        var button = document.createElement("button")
-        var text = document.createTextNode(game["id"])
-        button.appendChild(text);
-        button.setAttribute("id", "game-"+game["id"]+"btn")
-        $("#games").append(button);
-
-        $("#game-"+game["id"]+"btn").click(function(){
-          $.get("/games/"+ game["id"], function(data){
-
-            var stateArr = data["data"]["attributes"]["state"]
-            fillInTable(stateArr);
-            currentGameState = stateArr;
-            turn = stateArr.reduce(function(acc, currentVal){
-              
-              if (currentVal != ""){
-                acc++
-              }
-              return acc
-            }, 0)
-            currentGameId = data["data"]["id"]
-            debugger;
-          })
-        })
-
+      $("button[id^='game-btn']").each(function(index, button){
+        existingGameIDs.push(button.textContent)
       });
 
+      // get all existing buttons
+      // if the button with game-id-btn isnt included in existingGameIDs
+      //execute the following code
+
+      games["data"].forEach(function(game){
+
+        if (!existingGameIDs.includes(game["id"].toString())){
+          var button = document.createElement("button")
+          var text = document.createTextNode(game["id"])
+          button.appendChild(text);
+          button.setAttribute("id", "game-btn-"+ game["id"])
+          $("#games").append(button);
+
+          $("#game-btn-"+game["id"]).click(function(){
+            $.get("/games/"+ game["id"], function(data){
+
+              var stateArr = data["data"]["attributes"]["state"]
+              fillInTable(stateArr);
+              currentGameState = stateArr;
+              turn = stateArr.reduce(function(acc, currentVal){
+
+                if (currentVal != ""){
+                  acc++
+                }
+                return acc
+              }, 0)
+              currentGameId = data["data"]["id"]
+
+            })
+          })
+
+        }
+      });
   });
 }
 
-
-var numberToXYConcordances = [[0,0], [1,0], [2,0], [0,1], [1,1], [2, 1], [0,2], [1,2],[2,2]];
 
 function fillInTable(stateArr){
   //I: ["X", "O", "", "X", "O", "", "", "", "X"]
