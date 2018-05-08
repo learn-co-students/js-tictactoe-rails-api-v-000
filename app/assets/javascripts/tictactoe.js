@@ -141,35 +141,41 @@ function fillInTable(stateArr){
       $(`td[data-x='${XYCords[0]}'][data-y='${XYCords[1]}']`).text(token);
     });
 }
-function checkWinner(){
-  var positions = getTakenPositions();
 
-  var hasWinner = false;
-  var winner
+function checkWinnerByToken(token){
   const WINNING_COMBOS = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+  var positions = getTakenPositions();
+  var hasWinner = false;
+  var result = []
 
   WINNING_COMBOS.forEach(function(combo){
     var isWinningCombo = combo.every(function(element){
-      return positions["O"].indexOf(element) >= 0;
+      return positions[token].indexOf(element) >= 0;
     });
     if (isWinningCombo){
       hasWinner = true;
-      winner = "O"
     }
   });
 
-  WINNING_COMBOS.forEach(function(combo){
-    var isWinningCombo = combo.every(function(element){
-      return positions["X"].indexOf(element) >= 0;
-    });
-    if (isWinningCombo){
-      hasWinner = true;
-      winner = "X"
-    }
-  });
+  result.push(hasWinner);
+  result.push(token)
 
-  if (hasWinner){
-    setMessage(`Player ${winner} Won!`);
+  return result
+
+}
+function checkWinner(){
+
+  var XIsWinner = checkWinnerByToken("X")[0]
+  var OIsWinner = checkWinnerByToken("O")[0]
+
+  var hasWinner = false
+
+  if (XIsWinner){
+    setMessage(`Player X Won!`);
+    hasWinner = true;
+  } else if (OIsWinner){
+    setMessage(`Player O Won!`);
+    hasWinner = true;
   }
   return hasWinner;
 }
