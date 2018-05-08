@@ -9,22 +9,22 @@ $(function(){
 });
 
 function saveGame(){
-    gameData = {state: currentGameState}
+  gameData = {state: currentGameState}
 
-    if (currentGameId){
-      $.ajax({
-        method: "PATCH",
-        url: "/games/" + currentGameId,
-        data: gameData
-      });
-    } else {
-      $.post('/games', gameData, function(data){
-        currentGameId = data["data"]["id"]
-      })
-    }
+  if (currentGameId){
+    $.ajax({
+      method: "PATCH",
+      url: "/games/" + currentGameId,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(data){
+      currentGameId = data["data"]["id"]
+    });
+  }
 }
 
-function player(){ 
+function player(){
   var token
     if (turn % 2 == 0){
       token = "X"
@@ -39,11 +39,9 @@ function doTurn(clickedElement){
       updateState(clickedElement);
       turn++;
   }
-
   if (checkWinner()){ //won
     saveGame();
     clearGame();
-
   } else if (turn === 9){ //tied
     setMessage("Tie game.");
     saveGame();
@@ -51,116 +49,85 @@ function doTurn(clickedElement){
   }
 }
 
-// function doTurn(clickedElement){
-// if ($(clickedElement).text() == ""){
-//   if (checkWinner()){ //won
-//     saveGame();
-//     clearGame();
-//
-//   } else if (turn >= 8){ //tied
-//     saveGame();
-//     setMessage("Tie game.");
-//     clearGame();
-//   } else {
-//     updateState($(clickedElement));
-//     turn += 1;
-//   }
-// } else {
-//   setMessage("Can't select a taken field")
-// }
-//
-// }
-
 function updateState(clickedElement){
-  var token = player(); // right now player() returns the player that JUST PLAYED
-  $(clickedElement).text(token)
+  var token = player();
+  $(clickedElement).text(token);
   squareIndex = getTableIndex(clickedElement);
   currentGameState[squareIndex] = token;
-
 }
 
-function getTableIndex(clickedElement){
-  var x = $(clickedElement).data("x")
-  var y = $(clickedElement).data("y")
 
-  var correspondance = [[0,1,2], [3,4,5],[6,7,8]]
-  var tableIndex = correspondance[y][x];
-  return tableIndex;
-}
 
 function setMessage(message){
   $("#message").text(message);
 }
 
+
+function getTableIndex(clickedElement){
+  var x = $(clickedElement).data("x")
+  var y = $(clickedElement).data("y")
+  var correspondance = [[0,1,2], [3,4,5],[6,7,8]]
+  var tableIndex = correspondance[y][x];
+  return tableIndex;
+}
+
 function getTakenPositions(){
-
-  var XPositionIndices = [];
-  var OPositionIndices = [];
-
-  var XPositions = $("td").filter(function(td){
-    return this.innerHTML == "X";
-  });
-  $(XPositions).each(function(){
-    var tableIndex = getTableIndex(this)
-    XPositionIndices.push(tableIndex)
-  });
-
-  var OPositionIndices = [];
-  var OPositions = $("td").filter(function(td){
-    return this.innerHTML == "O";
-  });
-  $(OPositions).each(function(){
-    var tableIndex = getTableIndex(this)
-    OPositionIndices.push(tableIndex)
-  });
+  var XPositionIndices = getTakenPositionsByToken("X");
+  var OPositionIndices = getTakenPositionsByToken("O");
 
   return {"X": XPositionIndices, "O": OPositionIndices};
+}
 
+
+function getTakenPositionsByToken(token){
+  var positionIndices = [];
+  var positions = $("td").filter(function(td){
+    return this.innerHTML == token;
+  });
+  $(positions).each(function(){
+    var tableIndex = getTableIndex(this)
+    positionIndices.push(tableIndex)
+  });
+  return positionIndices
 }
 
 function getPreviousGames(){
-
   $.get('/games', function(games){
+    var existingGameIDs = []
 
-      var existingGameIDs = []
+    $("button[id^='game-btn']").each(function(index, button){
+      existingGameIDs.push(button.textContent)
+    });
 
-      $("button[id^='game-btn']").each(function(index, button){
-        existingGameIDs.push(button.textContent)
-      });
+    // get all existing buttons
+    // if the button with game-id-btn isnt included in existingGameIDs
+    //execute the following code
 
-      // get all existing buttons
-      // if the button with game-id-btn isnt included in existingGameIDs
-      //execute the following code
+    games["data"].forEach(function(game){
+      if (!existingGameIDs.includes(game["id"].toString())){
+        var button = document.createElement("button")
+        var text = document.createTextNode(game["id"])
+        button.appendChild(text);
+        button.setAttribute("id", "game-btn-"+ game["id"])
+        $("#games").append(button);
+        $("#game-btn-"+game["id"]).click(function(){
+          $.get("/games/"+ game["id"], function(data){
 
-      games["data"].forEach(function(game){
+            var stateArr = data["data"]["attributes"]["state"]
+            fillInTable(stateArr);
+            currentGameState = stateArr;
+            turn = stateArr.reduce(function(acc, currentVal){
 
-        if (!existingGameIDs.includes(game["id"].toString())){
-          var button = document.createElement("button")
-          var text = document.createTextNode(game["id"])
-          button.appendChild(text);
-          button.setAttribute("id", "game-btn-"+ game["id"])
-          $("#games").append(button);
-
-          $("#game-btn-"+game["id"]).click(function(){
-            $.get("/games/"+ game["id"], function(data){
-
-              var stateArr = data["data"]["attributes"]["state"]
-              fillInTable(stateArr);
-              currentGameState = stateArr;
-              turn = stateArr.reduce(function(acc, currentVal){
-
-                if (currentVal != ""){
-                  acc++
-                }
-                return acc
-              }, 0)
-              currentGameId = data["data"]["id"]
-
-            })
+              if (currentVal != ""){
+                acc++
+              }
+              return acc
+            }, 0)
+            currentGameId = data["data"]["id"]
           })
-
-        }
-      });
+        });
+      }
+    });
   });
 }
 
