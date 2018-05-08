@@ -1,7 +1,7 @@
 //const WINNING_COMBOS = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 var turn = 0;
 var currentGameState = new Array(9).fill("")
-var currentGameId
+var currentGameId = 0
 var numberToXYConcordances = [[0,0], [1,0], [2,0], [0,1], [1,1], [2, 1], [0,2], [1,2],[2,2]];
 
 $(function(){
@@ -9,31 +9,22 @@ $(function(){
 });
 
 function saveGame(){
-      gameData = {state: currentGameState}
+    gameData = {state: currentGameState}
 
-      if (currentGameId){
-        alert("saving existing game")
-        $.ajax({
-          method: "PATCH",
-          url: "/games/" + currentGameId,
-          data: gameData
-        }).done(function(){
-          alert("SUCCESS")
-        }).fail(function(){
-          alert("FAIL")
-        })
-      } else {
-        $.post('/games', gameData, function(data){
-
-          currentGameId = data["data"]["id"]
-        }).fail(function(){
-          alert("ERROR")
-          debugger;
-        });
-      }
+    if (currentGameId){
+      $.ajax({
+        method: "PATCH",
+        url: "/games/" + currentGameId,
+        data: gameData
+      });
+    } else {
+      $.post('/games', gameData, function(data){
+        currentGameId = data["data"]["id"]
+      })
+    }
 }
 
-function player(){ // return the token for the NEXT player (i.e. the one about to play)
+function player(){ 
   var token
     if (turn % 2 == 0){
       token = "X"
@@ -44,24 +35,41 @@ function player(){ // return the token for the NEXT player (i.e. the one about t
 }
 
 function doTurn(clickedElement){
-if ($(clickedElement).text() == ""){
+  if ($(clickedElement).text()==""){
+      updateState(clickedElement);
+      turn++;
+  }
+
   if (checkWinner()){ //won
     saveGame();
     clearGame();
 
-  } else if (turn >= 8){ //tied
-    saveGame();
+  } else if (turn === 9){ //tied
     setMessage("Tie game.");
+    saveGame();
     clearGame();
-  } else {
-    updateState($(clickedElement));
-    turn += 1;
   }
-} else {
-  setMessage("Can't select a taken field")
 }
 
-}
+// function doTurn(clickedElement){
+// if ($(clickedElement).text() == ""){
+//   if (checkWinner()){ //won
+//     saveGame();
+//     clearGame();
+//
+//   } else if (turn >= 8){ //tied
+//     saveGame();
+//     setMessage("Tie game.");
+//     clearGame();
+//   } else {
+//     updateState($(clickedElement));
+//     turn += 1;
+//   }
+// } else {
+//   setMessage("Can't select a taken field")
+// }
+//
+// }
 
 function updateState(clickedElement){
   var token = player(); // right now player() returns the player that JUST PLAYED
@@ -202,6 +210,7 @@ function checkWinner(){
 function clearGame(){
   $('td').empty();
   turn = 0;
+  currentGameId = 0;
 }
 
 
@@ -210,17 +219,14 @@ function attachListeners(){
     doTurn(this);
   });
 
-  $("#save").click(function(e){
-    e.preventDefault();
+  $("#save").click(function(){
     saveGame();
   });
-  $("#clear").click(function(e){
-    e.preventDefault();
+  $("#clear").click(function(){
     clearGame();
   });
 
-  $("#previous").click(function(e){
-    e.preventDefault();
+  $("#previous").click(function(){
     getPreviousGames();
   })
 
