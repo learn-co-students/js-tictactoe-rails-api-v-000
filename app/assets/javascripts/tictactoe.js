@@ -7,11 +7,11 @@ $(function(){
   attachListeners();
 });
 
+
+
+
 function saveGame(){
 
-
-    $("#save").click(function(e){
-      e.preventDefault();
       gameData = {state: currentGameState}
 
       if (currentGameId){
@@ -35,17 +35,9 @@ function saveGame(){
         });
       }
 
-    });
-
-
 }
 
-function clearGame(){
-  $("#clear").click(function(e){
-    e.preventDefault();
-    resetBoard();
-  })
-}
+
 
 
 function player(){ // return the token for the NEXT player (i.e. the one about to play)
@@ -64,21 +56,19 @@ if ($(clickedElement).text() == ""){
 
   turn += 1;
   if (checkWinner()){
-    resetBoard();
+    saveGame();
+    clearGame();
+
   } else if (turn >= 8){
+    saveGame();
     setMessage("Tie game.");
-    resetBoard();
+    clearGame();
 
   }
 } else {
   setMessage("Can't select a taken field")
 }
 
-}
-
-function resetBoard() {
-  $('td').empty();
-  turn = 0;
 }
 
 function updateState(clickedElement){
@@ -162,11 +152,29 @@ function checkWinner(){
   return hasWinner;
 }
 
+
+
+
+
+function clearGame(){
+  $('td').empty();
+  turn = 0;
+}
+
+
+
 function attachListeners(){
   $("td").on('click', function(){
     doTurn(this);
   });
 
-  saveGame();
-  clearGame();
+  $("#save").click(function(e){
+    e.preventDefault();
+    saveGame();
+  });
+  $("#clear").click(function(e){
+    e.preventDefault();
+    clearGame();
+  });
+
 }
