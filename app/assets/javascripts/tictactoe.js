@@ -2,7 +2,7 @@
 var turn = 0;
 var currentGameState = new Array(9).fill("")
 var currentGameId = 0
-var numberToXYConcordances = [[0,0], [1,0], [2,0], [0,1], [1,1], [2, 1], [0,2], [1,2],[2,2]];
+
 
 $(function(){
   attachListeners();
@@ -36,8 +36,8 @@ function player(){
 
 function doTurn(clickedElement){
   if ($(clickedElement).text()==""){
-      updateState(clickedElement);
-      turn++;
+    updateState(clickedElement);
+    turn++;
   }
   if (checkWinner()){ //won
     saveGame();
@@ -56,12 +56,9 @@ function updateState(clickedElement){
   currentGameState[squareIndex] = token;
 }
 
-
-
 function setMessage(message){
   $("#message").text(message);
 }
-
 
 function getTableIndex(clickedElement){
   var x = $(clickedElement).data("x")
@@ -99,10 +96,6 @@ function getPreviousGames(){
       existingGameIDs.push(button.textContent)
     });
 
-    // get all existing buttons
-    // if the button with game-id-btn isnt included in existingGameIDs
-    //execute the following code
-
     games["data"].forEach(function(game){
       if (!existingGameIDs.includes(game["id"].toString())){
         var button = document.createElement("button")
@@ -133,6 +126,7 @@ function getPreviousGames(){
 
 
 function fillInTable(stateArr){
+  var numberToXYConcordances = [[0,0], [1,0], [2,0], [0,1], [1,1], [2, 1], [0,2], [1,2],[2,2]];
   //I: ["X", "O", "", "X", "O", "", "", "", "X"]
   // Desired behaviour: update the table with the correct token for each square
     stateArr.forEach(function(token, index){
@@ -142,42 +136,31 @@ function fillInTable(stateArr){
     });
 }
 
+function checkWinner(){
+  var hasWinner = false
+  if (checkWinnerByToken("X")){
+    setMessage(`Player X Won!`);
+    hasWinner = true;
+  } else if (checkWinnerByToken("O")){
+    setMessage(`Player O Won!`);
+    hasWinner = true;
+  }
+  return hasWinner;
+}
+
 function checkWinnerByToken(token){
   const WINNING_COMBOS = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
   var positions = getTakenPositions();
-  var hasWinner = false;
-  var result = []
-
+  var isWinner = false;
   WINNING_COMBOS.forEach(function(combo){
     var isWinningCombo = combo.every(function(element){
       return positions[token].indexOf(element) >= 0;
     });
     if (isWinningCombo){
-      hasWinner = true;
+      isWinner = true;
     }
   });
-
-  result.push(hasWinner);
-  result.push(token)
-
-  return result
-
-}
-function checkWinner(){
-
-  var XIsWinner = checkWinnerByToken("X")[0]
-  var OIsWinner = checkWinnerByToken("O")[0]
-
-  var hasWinner = false
-
-  if (XIsWinner){
-    setMessage(`Player X Won!`);
-    hasWinner = true;
-  } else if (OIsWinner){
-    setMessage(`Player O Won!`);
-    hasWinner = true;
-  }
-  return hasWinner;
+  return isWinner
 }
 
 function clearGame(){
@@ -189,7 +172,10 @@ function clearGame(){
 
 function attachListeners(){
   $("td").on('click', function(){
-    doTurn(this);
+    if (!checkWinner()){
+      doTurn(this);
+    }
+
   });
 
   $("#save").click(function(){
