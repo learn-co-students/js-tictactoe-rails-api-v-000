@@ -7,11 +7,7 @@ $(function(){
   attachListeners();
 });
 
-
-
-
 function saveGame(){
-
       gameData = {state: currentGameState}
 
       if (currentGameId){
@@ -34,11 +30,7 @@ function saveGame(){
           debugger;
         });
       }
-
 }
-
-
-
 
 function player(){ // return the token for the NEXT player (i.e. the one about to play)
   var token
@@ -52,18 +44,17 @@ function player(){ // return the token for the NEXT player (i.e. the one about t
 
 function doTurn(clickedElement){
 if ($(clickedElement).text() == ""){
-  updateState($(clickedElement));
-
-  turn += 1;
-  if (checkWinner()){
+  if (checkWinner()){ //won
     saveGame();
     clearGame();
 
-  } else if (turn >= 8){
+  } else if (turn >= 8){ //tied
     saveGame();
     setMessage("Tie game.");
     clearGame();
-
+  } else {
+    updateState($(clickedElement));
+    turn += 1;
   }
 } else {
   setMessage("Can't select a taken field")
@@ -76,7 +67,6 @@ function updateState(clickedElement){
   $(clickedElement).text(token)
   squareIndex = getTableIndex(clickedElement);
   currentGameState[squareIndex] = token;
-
 
 }
 
@@ -119,6 +109,54 @@ function getTakenPositions(){
 
 }
 
+function getPreviousGames(){
+
+  $.get('/games', function(games){
+
+      games["data"].forEach(function(game){
+
+        //game["attributes"]["state"]
+        var button = document.createElement("button")
+        var text = document.createTextNode(game["id"])
+        button.appendChild(text);
+        button.setAttribute("id", "game-"+game["id"]+"btn")
+        $("#games").append(button);
+
+        $("#game-"+game["id"]+"btn").click(function(){
+          $.get("/games/"+ game["id"], function(data){
+
+            var stateArr = data["data"]["attributes"]["state"]
+            fillInTable(stateArr);
+            currentGameState = stateArr;
+            turn = stateArr.reduce(function(acc, currentVal){
+              
+              if (currentVal != ""){
+                acc++
+              }
+              return acc
+            }, 0)
+            currentGameId = data["data"]["id"]
+            debugger;
+          })
+        })
+
+      });
+
+  });
+}
+
+
+var numberToXYConcordances = [[0,0], [1,0], [2,0], [0,1], [1,1], [2, 1], [0,2], [1,2],[2,2]];
+
+function fillInTable(stateArr){
+  //I: ["X", "O", "", "X", "O", "", "", "", "X"]
+  // Desired behaviour: update the table with the correct token for each square
+    stateArr.forEach(function(token, index){
+      var XYCords = numberToXYConcordances[index];
+      // grab the x y cordinates, grab the corresponding square:
+      $(`td[data-x='${XYCords[0]}'][data-y='${XYCords[1]}']`).text(token);
+    });
+}
 function checkWinner(){
   var positions = getTakenPositions();
 
@@ -152,15 +190,10 @@ function checkWinner(){
   return hasWinner;
 }
 
-
-
-
-
 function clearGame(){
   $('td').empty();
   turn = 0;
 }
-
 
 
 function attachListeners(){
@@ -176,5 +209,10 @@ function attachListeners(){
     e.preventDefault();
     clearGame();
   });
+
+  $("#previous").click(function(e){
+    e.preventDefault();
+    getPreviousGames();
+  })
 
 }
