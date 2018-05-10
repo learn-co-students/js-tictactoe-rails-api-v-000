@@ -14,6 +14,7 @@ function attachListeners() {
   ///////////// SHOW PREVIOUS GAMES ////////////////
   $("#previous").click(function(e) {
     e.preventDefault();
+    $("#games").html('')
     previousGames()
   });
   ////////////// CLEAR CURRENT GAME ////////////////
@@ -22,22 +23,21 @@ function attachListeners() {
     clearGame()
   });
   $("td").click(function() {
-    doTurn(this)
+    if (!gameOver()){
+      doTurn(this)
+    }
   });
-  // $(".savedGame").click(function(e){
-  //   e.preventDefault();
-  //   console.log('hi')
-  // })
+
 }
 
 function saveGame() {
-  console.log(getBoard());
+  // console.log(getBoard());
   if (currentGame === null) {
     $.post('/games', {
       state: getBoard()
     })
       .done(function(resp){
-        console.log(resp);
+        // console.log(resp);
         currentGame = resp['data']['id']
       })
   } else {
@@ -46,14 +46,15 @@ function saveGame() {
       method: 'PATCH',
       data: {state: getBoard()},
     }).done(function(resp){
-      console.log(resp)
+      // console.log(resp)
     })
   }
 }
 
 function previousGames() {
   $.get('/games').done(function(resp){
-    console.log(resp);
+    // console.log(resp);
+
     resp.data.forEach(function(game){
       $("#games").append("<button onclick='loadGame(" + game['id'] + ")' data-id='" + game['id'] + "' class='savedGame'>Game #" + game['id'] + "</button>")
     })
@@ -62,7 +63,7 @@ function previousGames() {
 
 function loadGame(gameId){
   $.get('/games/' + gameId).done(function(resp){
-    console.log(resp.data['attributes']['state']);
+    // console.log(resp.data['attributes']['state']);
     var state = resp.data['attributes']['state'];
     $('td[data-x=0][data-y=0]').html(state[0]);
     $('td[data-x=1][data-y=0]').html(state[1]);
