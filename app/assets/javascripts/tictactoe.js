@@ -22,8 +22,8 @@ function setMessage(string){
 }
 
 function currentBoard(){
-  var squares = $('td');
-  var board = []
+  var squares = $("td");
+  var board = [];
   for(var s of squares){
     board.push(s.innerHTML);
   }
@@ -79,12 +79,9 @@ function gameOver(){
 }
 
 function resetGame(){
-  var squares = $("td");
+  $("td").empty();
   turn = 0;
   gameId = 0;
-  for(var s of squares){
-    $(s).empty();
-  }
 }
 
 function checkWinner(){
@@ -133,14 +130,14 @@ function saveGame(){
 function retrieveGame(id){
   $.get(`/games/${id}`).done(function(game){
     var state = game.data.attributes.state
-    turn = state.filter((s) => s !== "").length
-    gameId = game.data.id
-    setBoard(state)
+    turn = state.filter((s) => s !== "").length;
+    gameId = game.data.id;
+    setBoard(state);
   });
 }
 
 function setBoard(state){
-  var spaces = $('td')
+  var spaces = $("td");
   for(var i in state){
     $(spaces[i]).html(state[i]);
   };

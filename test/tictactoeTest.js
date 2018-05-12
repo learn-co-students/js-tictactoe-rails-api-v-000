@@ -322,7 +322,8 @@ describe('Gameplay', () => {
     squares[4].click();
 
     expect(squares[4].innerHTML).to.equal('');
-    expect(window.turn).to.equal(5);
+    //requested functionality indicates that board should be reset after a tie or winning game, thus expected window.turn should be 0. If previously won game is loaded, window.turn = 5
+    expect(window.turn).to.equal(0);
   });
 
   it('Users can play multiple games', () => {
