@@ -1,4 +1,10 @@
-// turn and squares are set in tests but not real world application?
+// let turn = 0
+var gameId = 0
+
+$(function() {
+  attachListeners()
+});
+
 function player() {
   if (isNaN(turn) || turn % 2 === 0) {
     return "X"
@@ -27,7 +33,7 @@ function checkWinner() {
     [2, 4, 6]
   ]
 
-  const allTds = Array.from(squares)
+  const allTds = Array.from($('td'))
   const allTdValues = allTds.map(element => element.innerHTML)
 
   var boolean = winCombinations.some(function(winCombination) {
@@ -49,6 +55,99 @@ function checkWinner() {
         return false
       }
     })
-    
+
   return boolean
+}
+
+function doTurn(square) {
+  const preUpdateWinner = checkWinner()
+
+  if (!preUpdateWinner) {
+    updateState(square)
+
+    turn += 1
+    const aWinner = checkWinner()
+
+    if(aWinner) {
+      saveGame()
+      clearGame()
+    } else if (turn === 9) {
+      saveGame()
+      setMessage("Tie game.")
+      clearGame()
+    }
+  }
+}
+
+function attachListeners() {
+  const tds = $('td')
+
+  for (var i = 0; i < tds.length; i++) {
+    tds[i].addEventListener("click", function(e) {
+      if (!e.currentTarget.innerText) {
+        doTurn(e.currentTarget)
+      }
+    });
+  }
+
+  $('#save').on("click", function() {
+    saveGame()
+  })
+
+  $('#previous').on("click", function() {
+    previousGames()
+  })
+
+  $('#clear').on("click", function() {
+    clearGame()
+  })
+
+}
+
+function previousGames() {
+  $.get('/games', function(games){
+      const gameIds = games.data.map(game => `<button data-id=${game.id} onclick="getGame(${game.id})">Game ${game.id}</button><br>`)
+      $('#games').html(gameIds)
+    })
+}
+
+function getGame(id) {
+  $.get(`/games/${id}`, function(game){
+    const state = game.data.attributes.state
+    const tds = Array.from($('td'))
+
+    for(let i = 0; i < state.length; i++) {
+    	tds[i].innerHTML = state[i]
+    }
+
+    turn = state.filter(element => element !== "").length
+    gameId = id
+  })
+}
+
+
+
+function saveGame() {
+  const state = Array.from($('td')).map(s => s.innerHTML)
+
+  if(gameId) {
+    $.ajax({
+      url: `/games/${gameId}`,
+      type: 'patch',
+      data: {state: state}
+    })
+  } else {
+    $.post('/games', { state: state }, function(game) {
+      gameId = game.data.id
+    })
+  }
+
+}
+
+function clearGame() {
+  document.querySelectorAll('td').forEach(element => {
+    element.innerHTML = ''
+  })
+  gameId = 0
+  turn = 0
 }
