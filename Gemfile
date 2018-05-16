@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'active_model_serializers', '0.10.6'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.5.1'
+gem 'rails', '~> 4.2.5'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use SCSS for stylesheets
@@ -35,12 +35,12 @@ gem 'turbolinks'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
+  # gem 'byebug'
   gem 'rspec-rails', '~> 3.0'
   gem 'pry'
 
   # Adds step-by-step debugging and stack navigation capabilities to pry using byebug. To use, invoke pry normally.
-  gem 'pry-byebug'
+  # gem 'pry-byebug'
 end
 
 group :development do
