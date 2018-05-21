@@ -1,35 +1,11 @@
 //Code your JavaScript / jQuery solution here
   
 $(document).ready(function(){
-  attachListeners()
-  // $("#save").on("click", function(event) {
-  //   event.preventDefault();
-  //   alert("clicked")
-  // });
-  
-})
-
-$(document).ready(function(){
-
-  $("#previous").on("click", function(event) {
-    event.preventDefault();
-  
-    $.ajax({
-      
-      mathod: "GET",
-      
-      url: '/games'
-    }).done(function(json){
-      console.log(json)
-      
-    });
-  
-  });
-  
+  attachListeners() 
 })
 
 var turn = 0;
-
+var currentGameId = 0;
 var board = ["", "", "", "", "", "", "", "", "" ]
 
 function player () {
@@ -80,7 +56,7 @@ function checkWinner() {
       var winningTocken = board[winCombinations[i][0]]
       setMessage(`Player ${winningTocken} Won!`)
       result = true
-    
+      saveGame()
     } 
 }
   return result 
@@ -91,16 +67,13 @@ function doTurn (element) {
   updateState(element)
   if(full(getBoard())) {
     setMessage("Tie game.")
+    saveGame()
   }
   if (checkWinner() || full(getBoard())) {
-  
     turn = 0
-  
     return [].slice.call($('td')).map(x => x.innerHTML = "");
-    
   }
    turn += 1
-
 }
 
 function attachListeners() {
@@ -120,22 +93,99 @@ function attachListeners() {
       })//onClick
     }//forloop
 
-    $("#previous").on("click", function(event) {
+    $("#previous").on("click", (event) => {
       //event.preventDefault();
       const gameDiv = $("#games")
       gameDiv.empty()
       
-      $.get( "/games", function( games ) {
-        
+      $.get( "/games", ( games ) => {
         if(games.data.length) {
-          
-          games.data.forEach(element => {
-            
-            gameDiv.append(`<button>${element.id}</button>`)
-            
+            games.data.forEach(game => {
+            gameDiv.append(`<button id="gameid-${game.id}">${game.id}</button>`)
+            $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
           });
         }
       });
     })
+
+    $('#clear').on('click', () => resetBoard());
+
+    $('#save').on('click', (event) => saveGame());
 }
+
+function reloadGame(gameID) {
+  document.getElementById('message').innerHTML = '';
+
+  const xhr = new XMLHttpRequest;
+  xhr.overrideMimeType('application/json');
+  xhr.open('GET', `/games/${gameID}`, true);
+  xhr.onload = () => {
+    const gameData = JSON.parse(xhr.responseText).data;
+    const gameId = gameData.id;
+    const state = gameData.attributes.state;
+
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+
+    turn = state.join('').length;
+    currentGameId = gameId;
+
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
+    }
+  };
+
+  xhr.send(null);
+}
+
+function resetBoard() {
+  $('td').empty();
+  turn = 0;
+  currentGameId = 0;
+}
+
+function saveGame() {
+  jQuery.ajax({
+    type: 'PUT',
+    url: '/games/',
+    data: data,
+    success: function addCell() {
+
+    }
+});
+}
+
+function saveGame() {
+  var state = []
+
+  var squares = $('td')
+  squares.text(function(index, square) {
+    state.push(square);
+  });
+
+  // Create game object to send back to rails api
+  var gameData = { state: state }
+
+  if (currentGameId) {
+    $.ajax({
+      type: 'PATCH',
+      url: '/games/' + currentGameId,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game){
+      currentGameId = game.data.id
+      $("#games").append(`<button id="gameid-${currentGameId}">${currentGameId}</button><br/>`);
+      $("#gameid-" + currentGameId).on('click', function(){
+        reloadGame(currentGameId);
+      });
+    });
+  }
+}
+
 
