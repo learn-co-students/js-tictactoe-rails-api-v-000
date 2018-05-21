@@ -1,12 +1,11 @@
 //Code your JavaScript / jQuery solution here
-
   
 $(document).ready(function(){
   attachListeners()
-  $("#save").on("click", function(event) {
-    event.preventDefault();
-    alert("clicked")
-  });
+  // $("#save").on("click", function(event) {
+  //   event.preventDefault();
+  //   alert("clicked")
+  // });
   
 })
 
@@ -22,7 +21,7 @@ $(document).ready(function(){
       url: '/games'
     }).done(function(json){
       console.log(json)
-      debugger
+      
     });
   
   });
@@ -38,9 +37,8 @@ function player () {
 }
   
 function updateState(element) {
-
-  var currentPlayerTocken = player()
-  element.innerHTML = currentPlayerTocken;
+  var currentPlayerToken = player()
+  element.innerHTML = currentPlayerToken;
 } 
 
 function setMessage(string) {
@@ -99,40 +97,45 @@ function doTurn (element) {
     turn = 0
   
     return [].slice.call($('td')).map(x => x.innerHTML = "");
-      debugger
+    
   }
    turn += 1
 
 }
 
 function attachListeners() {
-  $( document ).ready(function() {
+  
    squares = $("td")
     
     for (var i = 0; i < squares.length; i++) {
       
       $(squares[i]).on("click", function(event) {
-        console.log(getBoard())
-        console.log(turn)
+        
         event.preventDefault();
         
-        if ( !checkWinner() && !full(getBoard()) && this.innerHTML === "") {
-          var index = 0
-          
-          if(this.dataset["y"] === "1") {
-            index = parseInt(this.dataset["x"]) + 3
-          } else if(this.dataset["y"] === "2") {
-            index = parseInt(this.dataset["x"]) + 6
-          } else {
-            index = parseInt(this.dataset["x"])
-          }
-    
+        if (this.innerHTML === "" && !checkWinner()) {
           doTurn(this)  
-
         }
         
       })//onClick
     }//forloop
-  });
+
+    $("#previous").on("click", function(event) {
+      //event.preventDefault();
+      const gameDiv = $("#games")
+      gameDiv.empty()
+      
+      $.get( "/games", function( games ) {
+        
+        if(games.data.length) {
+          
+          games.data.forEach(element => {
+            
+            gameDiv.append(`<button>${element.id}</button>`)
+            
+          });
+        }
+      });
+    })
 }
 
