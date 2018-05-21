@@ -5,3 +5,12 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+gameStates = [["X", "O", "X", "", "O", "O", "X", "", "X"], 
+["X", "O", "", "", "O", "O", "X", "", "X"],
+["", "O", "X", "", "X", "O", "", "", "X"]]
+
+gameStates.each do |gs|
+  Game.create(state: gs)
+end
+
