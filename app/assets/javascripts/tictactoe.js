@@ -53,6 +53,8 @@ function doTurn(square){
     $('td').empty();
     turn = 0;
   } else if (turn === 9){
+    $('td').empty();
+    turn = 0;
     setMessage("Tie game.")
   }
 }
@@ -60,7 +62,7 @@ function doTurn(square){
 function attachListeners(){
   //debugger
   $("td").click(function(){
-    if (!$.text(this)){
+    if (!$.text(this)&& !checkWinner()){
     doTurn(this)}
   });
 }
@@ -77,7 +79,15 @@ $(document).ready(function(){
   });
 
   $("#previous").click(function(){
-    $.get(“/games”).done
+    $("#games").html("")
+    $.get("/games", function(savedGames){
+      console.log(savedGames)
+      if (savedGames.data.length > 0){
+        savedGames.data.forEach(function(game){
+          $("#games").append(`<button>${game.id}</button>`)
+        })
+      }
+    })
   });
 
   $("#clear").click(function(){
