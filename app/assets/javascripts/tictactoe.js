@@ -11,7 +11,10 @@ const WIN_COMBINATIONS = [
   [2, 4, 6],
   ];
 
-// var player = () => turn % 2 === 0 ? 'X' : 'O'
+$(document).ready(function() {
+  attachListeners();
+});
+
 function player() {
   if (turn % 2 === 0) {
     return 'X'
@@ -43,6 +46,58 @@ function checkWinner () {
 
   return winner;
 };
+
+function resetBoard() {
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
+};
+
+function doTurn(square) {
+  updateState(square);
+  turn++;
+  if (checkWinner()) {
+    resetBoard();
+  }
+    else if (turn === 9) {
+      setMessage("Tie game.");
+      resetBoard();
+    } 
+};
+
+function attachListeners() {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  })
+
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => PreviousGames());
+  $('#clear').on('click', () => resetBoard());
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
