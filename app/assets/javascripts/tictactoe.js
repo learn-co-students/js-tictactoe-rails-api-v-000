@@ -1,5 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
+var currentGame= 0
 
 // Add event listeners when (document).ready
 $(document).ready(function() {
@@ -42,4 +43,47 @@ function checkWinner() {
     };
   };
   return false;
+}
+
+function doTurn(square){
+//  turn ++
+  updateState(square) //pass in element that was clicked
+  if (checkWinner()){
+    saveGame();
+    $('td').empty();
+   turn = 0;
+ currentGame = 0;
+} else if (turn === 9) {
+  setMessage("Tie game.");
+  saveGame();
+  $('td').empty();
+ turn = 0;
+currentGame = 0;
+}
+
+}
+
+function saveGame() {
+  var state = [];
+  var gameData;
+
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+
+  gameData = { state: state };
+
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
+  }
 }
