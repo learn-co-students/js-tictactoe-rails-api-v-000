@@ -1,6 +1,6 @@
 var turn = 0;
 var currentGame = 0;
-const winCombinations = [
+const WIN_COMBINATIONS = [
   [0, 1, 2],
   [3, 4, 5],
   [6, 7, 8],
@@ -23,3 +23,26 @@ function player() {
 function updateState(td) {
   $(td).append(player())
 };
+
+function setMessage(string) {
+  $('#message').text(string)
+};
+
+function checkWinner () {
+  var board = {};
+  var winner = false;
+
+  $('td').text((index, square) => board[index] = square);
+
+  WIN_COMBINATIONS.some(function (combo) {
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      return winner = true;
+    }
+  });
+
+  return winner;
+};
+
+
+
