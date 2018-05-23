@@ -19,3 +19,7 @@ function player() {
     return 'O'
   }
 };
+
+function updateState(td) {
+  $(td).append(player())
+};
