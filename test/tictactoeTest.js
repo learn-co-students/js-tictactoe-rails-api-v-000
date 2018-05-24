@@ -46,6 +46,8 @@ describe('tictactoe.js', () => {
     });
 
     it('returns "X" when the turn count is even', () => {
+
+
       expect(window.player()).to.equal('X');
     });
 

@@ -8,11 +8,21 @@ $(document).ready(function() {
 });
 
 function attachListeners() {
-  $('table').on("click", function() {
-    alert("CLICKED")
-  })
-  $('td').on("click", function() {
-    updateState(td);
+  $("td").on("click", function() {
+    if (!checkWinner() && this.innerHTML === "") {
+      doTurn(this);
+    } 
+  });
+  $("#previous").on("click", function() {
+    $.get("/games", function(game_array) {
+      if (game_array["data"].length > 0) {
+        game_array["data"].forEach(function(game) {
+          if ($(`button[id*="gameid-${game.id}"]`).length === 0) {
+            $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+          }
+        });
+      }
+    });
   });
 }
 
@@ -24,7 +34,6 @@ function player() {
 // Add token to passed in td element
 function updateState(td) {
     $(td).text(player());
-    turn ++
 }
 
 function setMessage(string) {
@@ -46,21 +55,21 @@ function checkWinner() {
 }
 
 function doTurn(square){
-//  turn ++
-  updateState(square) //pass in element that was clicked
-  if (checkWinner()){
-    saveGame();
-    $('td').empty();
-   turn = 0;
- currentGame = 0;
-} else if (turn === 9) {
-  setMessage("Tie game.");
-  saveGame();
-  $('td').empty();
- turn = 0;
-currentGame = 0;
+  updateState(square); //pass in element that was clicked
+  turn++;
+  if (checkWinner()) {
+    resetGame();
+  } else if (turn === 9) {
+    setMessage('Tie game.')
+    resetGame();
+  }
 }
 
+function resetGame() {
+  saveGame();
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
 }
 
 function saveGame() {
