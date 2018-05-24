@@ -51,7 +51,7 @@ describe('tictactoe.js', () => {
 
     it('returns "O" when the turn count is odd', () => {
       window.turn = 3;
-      
+
       expect(window.player()).to.equal('O');
     });
   });
@@ -650,7 +650,7 @@ describe('AJAX interactions with the Rails API', () => {
       );
 
       const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
+      
       gameButtons[0].click();
 
       requests[1].respond(

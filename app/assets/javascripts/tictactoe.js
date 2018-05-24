@@ -1,4 +1,3 @@
-// tests don't pass with let and const, not optimized for ES6
 var turn = 0;
 var currentGame = 0;
 var winCombinations = [
@@ -102,7 +101,9 @@ function saveGame() {
   } else {
     $.post('/games', {'state': board}, function(game) {
       currentGame = game.data.id;
-    })
+      $('#games').append(`<button id="gameid-${currentGame}">${currentGame}</button><br>`);
+      $(`#gameid-${currentGame}`).on('click', () => loadGame(currentGame));
+    });
   }
 }
 
@@ -119,15 +120,14 @@ function previousGames() {
 function loadGame(gameId) {
   $.get('/games/' + gameId, function(data) {
     // console.log(data.data.attributes.state);
-    const id = data.data.id;
+    currentGame = data.data.id;
     const state = data.data.attributes.state;
-
+    turn = state.join("").length;
     let index = 0;
     let td = $("td");
     $.each(td, function(key, value) {
       value.innerHTML = state[index];
       index++;
     });
-
   });
 }
