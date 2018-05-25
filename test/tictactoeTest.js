@@ -116,33 +116,33 @@ describe('tictactoe.js', () => {
 
     it('returns true when a player wins horizontally', () => {
       populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
-      //  X | X | X 
+      //  X | X | X
       // -----------
-      //    |   |   
+      //    |   |
       // -----------
-      //  O | O |   
+      //  O | O |
 
       expect(window.checkWinner()).to.be.true;
     });
 
     it('returns true when a player wins diagonally', () => {
       populateBoard(['X', 'X', 'O', '', 'O', '', 'O', 'X', '']);
-      //  X | X | O 
+      //  X | X | O
       // -----------
-      //    | O |   
+      //    | O |
       // -----------
-      //  O | X |   
+      //  O | X |
 
       expect(window.checkWinner()).to.be.true;
     });
 
     it('returns true when a player wins vertically', () => {
       populateBoard(['O', '', 'X', '', 'O', 'X', 'O', '', 'X']);
-      //  O |   | X 
+      //  O |   | X
       // -----------
-      //    | O | X 
+      //    | O | X
       // -----------
-      //  O |   | X 
+      //  O |   | X
 
       expect(window.checkWinner()).to.be.true;
     });
@@ -151,11 +151,11 @@ describe('tictactoe.js', () => {
       expect(window.checkWinner()).to.equal(false);
 
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', 'X', 'O']);
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  O | X | O 
+      //  O | X | O
 
       expect(window.checkWinner()).to.equal(false);
     });
@@ -164,11 +164,11 @@ describe('tictactoe.js', () => {
       const spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['', '', '', 'X', 'X', 'X', 'O', 'O', '']);
-      //    |   |   
+      //    |   |
       // -----------
-      //  X | X | X 
+      //  X | X | X
       // -----------
-      //  O | O |   
+      //  O | O |
 
       window.checkWinner();
 
@@ -179,11 +179,11 @@ describe('tictactoe.js', () => {
       const spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['O', '', '', 'X', 'O', 'X', 'X', '', 'O']);
-      //  O |   |   
+      //  O |   |
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X |   | O 
+      //  X |   | O
 
       window.checkWinner();
 
@@ -231,11 +231,11 @@ describe('tictactoe.js', () => {
       const spy = sandbox.spy(window, 'setMessage');
 
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  O |   | O 
+      //  O |   | O
 
       window.turn = 8;
       window.doTurn(squares[7]);
@@ -247,11 +247,11 @@ describe('tictactoe.js', () => {
       sinon.useFakeXMLHttpRequest();
 
       populateBoard(['X', 'X', 'O', 'X', 'O', 'X', '', 'O', 'O']);
-      //  X | X | O 
+      //  X | X | O
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //    | O | O 
+      //    | O | O
 
       window.turn = 8;
       window.doTurn(squares[6]);
@@ -315,11 +315,11 @@ describe('Gameplay', () => {
   it('Users cannot play any turns once a game is won or tied', () => {
     populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
     window.turn = 5;
-    //  X | X | X 
+    //  X | X | X
     // -----------
-    //    |   |   
+    //    |   |
     // -----------
-    //  O | O |   
+    //  O | O |
 
     squares[4].click();
 
@@ -331,11 +331,11 @@ describe('Gameplay', () => {
     sinon.useFakeXMLHttpRequest();
 
     populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-    //  X | O | X 
+    //  X | O | X
     // -----------
-    //  X | O | X 
+    //  X | O | X
     // -----------
-    //  O |   | O 
+    //  O |   | O
 
     window.turn = 8;
     window.doTurn(squares[7]);
@@ -580,11 +580,11 @@ describe('AJAX interactions with the Rails API', () => {
 
     it('auto-saves tie games', () => {
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  O |   | O 
+      //  O |   | O
 
       window.turn = 8;
       window.doTurn(squares[7]);
@@ -596,11 +596,11 @@ describe('AJAX interactions with the Rails API', () => {
     it('auto-saves won games', () => {
       populateBoard(['X', 'X', '', '', '', '', 'O', 'O', '']);
       window.turn = 4;
-      //  X | X |   
+      //  X | X |
       // -----------
-      //    |   |   
+      //    |   |
       // -----------
-      //  O | O |   
+      //  O | O |
 
       squares[2].click();
 

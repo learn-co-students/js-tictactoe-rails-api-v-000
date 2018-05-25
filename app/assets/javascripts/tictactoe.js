@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
-var currentGame= 0
+var currentGame = 0
 
 // Add event listeners when (document).ready
 $(document).ready(function() {
@@ -11,7 +11,7 @@ function attachListeners() {
   $("td").on("click", function() {
     if (!checkWinner() && this.innerHTML === "") {
       doTurn(this);
-    } 
+    }
   });
   $("#previous").on("click", function() {
     $.get("/games", function(game_array) {
@@ -19,10 +19,17 @@ function attachListeners() {
         game_array["data"].forEach(function(game) {
           if ($(`button[id*="gameid-${game.id}"]`).length === 0) {
             $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+              $("#gameid-" + game.id).on('click', () => reloadGame(game.id));
           }
         });
       }
     });
+  });
+  $("#save").on("click", function() {
+    saveGame()
+  });
+  $("#clear").on("click", function() {
+    clearGame();
   });
 }
 
@@ -72,6 +79,12 @@ function resetGame() {
   currentGame = 0;
 }
 
+function clearGame() {
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
+}
+
 function saveGame() {
   var state = [];
   var gameData;
@@ -95,4 +108,17 @@ function saveGame() {
       $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
     });
   }
+}
+
+function reloadGame(gameId) {
+  $.getJSON(`/games/${gameId}`, function(game) {
+    const state = game.data.attributes.state
+    // Populate board with saved state
+    $.map($('td'), function(square, i) {
+      square.innerHTML = state[i];
+    });
+    // Set currentGame and turn
+    currentGame = gameId
+    turn = state.filter((s) => s !== "").length
+  });
 }
