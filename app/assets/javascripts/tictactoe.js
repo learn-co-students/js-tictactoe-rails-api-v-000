@@ -14,19 +14,10 @@ function attachListeners() {
     }
   });
   $("#previous").on("click", function() {
-    $.get("/games", function(game_array) {
-      if (game_array["data"].length > 0) {
-        game_array["data"].forEach(function(game) {
-          if ($(`button[id*="gameid-${game.id}"]`).length === 0) {
-            $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
-              $("#gameid-" + game.id).on('click', () => reloadGame(game.id));
-          }
-        });
-      }
-    });
+    loadGames();
   });
   $("#save").on("click", function() {
-    saveGame()
+    saveGame();
   });
   $("#clear").on("click", function() {
     clearGame();
@@ -64,19 +55,13 @@ function checkWinner() {
 function doTurn(square){
   updateState(square); //pass in element that was clicked
   turn++;
-  if (checkWinner()) {
-    resetGame();
-  } else if (turn === 9) {
-    setMessage('Tie game.')
-    resetGame();
+  if (checkWinner() || turn === 9) {
+    if (turn === 9) {
+      setMessage('Tie game.')
+    }
+    saveGame();
+    clearGame();
   }
-}
-
-function resetGame() {
-  saveGame();
-  $('td').empty();
-  turn = 0;
-  currentGame = 0;
 }
 
 function clearGame() {
@@ -104,10 +89,21 @@ function saveGame() {
   } else {
     $.post('/games', gameData, function(game) {
       currentGame = game.data.id;
-      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
-      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
     });
   }
+}
+
+function loadGames() {
+  $.get("/games", function(game_array) {
+    if (game_array["data"].length > 0) {
+      game_array["data"].forEach(function(game) {
+        if ($(`button[id*="gameid-${game.id}"]`).length === 0) {
+          $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+          $("#gameid-" + game.id).on('click', () => reloadGame(game.id));
+        }
+      });
+    }
+  });
 }
 
 function reloadGame(gameId) {
