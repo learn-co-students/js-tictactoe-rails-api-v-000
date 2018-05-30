@@ -1,8 +1,8 @@
 // Code your JavaScript / jQuery solution here
-const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
+var WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 var turn = 0
-let gameID = 0
+var gameID = 0
 let apiUrl = "http://localhost:3000"
   $( document ).ready(function() {
       console.log("Js and doc is ready")
@@ -54,6 +54,7 @@ let apiUrl = "http://localhost:3000"
     })
 
     $('#previous').on('click', function(){
+
         listGames()
       })
 
@@ -87,9 +88,12 @@ let apiUrl = "http://localhost:3000"
   }
 
   function listGames(){
+    debugger
     $('#games').empty();
-    $.get("/games", function(games,status) {
-      console.log(status)
+    $.get('/games', function(games) {
+      // NOT HITTING HERE
+      debugger
+
       if(games.data.length > 0 ) {
         games.data.forEach(function(game){
           // DO not duplicat when pressed 2 times
@@ -101,23 +105,24 @@ let apiUrl = "http://localhost:3000"
 
   function saveGame(){
 
-      gameID = parseInt($('tbody').attr("gameID"))
-      if (gameID > 0){
-        $.ajax({
-          method: "PATCH",
-          url: `${apiUrl}/games/${gameID}`,
-          data: {
-              'state': boardArray()
-          }
-      })
-      }else{
-        $.post(`${apiUrl}/games`,{state: boardArray()}).then(newGame=>{
 
-          $('tbody').attr("gameID",newGame.data.id)
+    if (gameID == 0){
+      $.post(`/games`,{"state": boardArray()})
+      .then(newGame=>{
+        gameID = newGame.data.id
+        // $('tbody').attr("gameID",newGame.data.id)
+        })
+    }else{
+      // gameID = parseInt($('tbody').attr("gameID"))
+      $.ajax({
+        type: "PATCH",
+        url: `/games/${gameID}`,
+        data: {
+            'state': boardArray()
+        }
       })
-
-      }
   }
+}
 
   function showSavedBoard(){
 
@@ -126,7 +131,7 @@ let apiUrl = "http://localhost:3000"
       gameID = parseInt(e.target.innerHTML)
         $('tbody').attr("gameID",`${gameID}`)
 
-      $.get(`${apiUrl}/games/${gameID}`, function(game, status){
+      $.get(`/games/${gameID}`, function(game, status){
         let board = Array.from(game.data.attributes.state)
         board.forEach(function(play,index){
           if (play != ""){
