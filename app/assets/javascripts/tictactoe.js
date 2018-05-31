@@ -23,7 +23,7 @@ let apiUrl = "http://localhost:3000"
    if(checkWinner()){
      saveGame()
      clearBoard()
-   }else if(turn === 9 && !checkWinner()){
+   }else if(turn === 9 ){
      setMessage("Tie game.")
      saveGame()
      clearBoard()
@@ -72,7 +72,6 @@ let apiUrl = "http://localhost:3000"
   function checkWinner(){
     var winner = false;
 
-
     WINNING_COMBOS.forEach(function(el){
         if(boardArray()[el[0]] == boardArray()[el[1]] && boardArray()[el[1]] == boardArray()[el[2]] && boardArray()[el[0]] !== ""){
           setMessage(`Player ${boardArray()[el[0]]} Won!`)
@@ -88,31 +87,30 @@ let apiUrl = "http://localhost:3000"
 
   function listGames(){
     $('#games').empty();
-    debugger
-  
     $.get('/games', function(games) {
-      // NOT HITTING HERE
-      if(games.data.length > 0 ) {
+      // if(games.data.length > 0 ) {
         games.data.forEach(function(game){
-          // DO not duplicat when pressed 2 times
           $(`#games`).append(`<button id="gameid-${game.id}">${game.id}</button><br>`)
         })
-      }
+      // }
     })
   }
 
   function saveGame(){
+
     if (gameID == 0){
-      $.post(`/games`,{"state": boardArray()})
-      .then(newGame=>{
+      $.post(`/games`,{"state": boardArray()}).then(
+        function(newGame) {
+
         gameID = newGame.data.id
-        // $('tbody').attr("gameID",newGame.data.id)
+         $('tbody').attr("gameID",newGame.data.id)
         })
-    }else{
+    } else {
       // gameID = parseInt($('tbody').attr("gameID"))
       $.ajax({
         type: "PATCH",
         url: `/games/${gameID}`,
+
         data: {
             'state': boardArray()
         }
