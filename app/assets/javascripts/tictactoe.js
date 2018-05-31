@@ -19,7 +19,18 @@ function oddOrEven(num){
     return "O";
 }
 
-function updateState(gameBoard) {
+function updateState(square) {
     let p = player()
-
+    $(square).text(p)
 }
+
+function setMessage(winner) {
+    $('#message').text("Player" + winner + "Won!")
+}
+
+function checkWinner() {
+    
+}
+
+
+
