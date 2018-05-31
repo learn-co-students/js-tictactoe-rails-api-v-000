@@ -3,7 +3,7 @@ var turn = 0;
 var currentGame = 0;
 
 $(document).ready(function(){
-    // attachListeners();
+    attachListeners();
 })
 
 function player() {
@@ -57,6 +57,36 @@ function resetBoard() {
 }
 
 function attachListeners() {
-    
+    $('td').on('click', function(){
+        if (!$.text(this) && !checkWinner()) {
+            doTurn(this);
+        }
+    });
+    $('#save').on('click', function(){
+        saveGame();
+    });
+    $('#previous').on('click', function(){
+        showPreviousGames();
+    });
+    $('#clear').on('click', function() {
+        resetBoard();
+    })
 }
-  
+
+function saveGame() {
+
+}
+
+function showPreviousGames() {
+    $.get("/games", function(data){
+        var games = data;
+        if (games) {
+            
+            games.forEach(function(game){
+                // orderList += '<li class="js-order" data-id="' + order["id"] + '">' + order["id"] + ' - ' + order["created_at"] + '</li>';
+                $('#games').append(game.id)
+
+            });
+        }; 
+    });
+}
