@@ -27,7 +27,7 @@ function setMessage(winner) {
 }
 
 function checkWinner() {
-    let board = {}
+    let board = {};
     let winner = false;
     $('td').text((index, square) => board[index] = square);
 
@@ -40,6 +40,3 @@ function checkWinner() {
       });
     return winner;
 }
-
-
-
