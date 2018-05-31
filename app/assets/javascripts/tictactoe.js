@@ -79,11 +79,24 @@ function attachListeners() {
 };
 
 function saveGame() {
+  var state = []
+
+  var data = $('td')
+  console.log(data);
+
+  // $.post('/games', )
+
 
 };
 
 function previousGames() {
-  
+  $.get("/games", savedGames => {
+    if (savedGames.data.length !== 0) {
+      savedGames.data.map(game => {
+        $('#games').append(`<button></button>`)
+      })
+    }
+  })
 };
 
 
