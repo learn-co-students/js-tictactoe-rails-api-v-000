@@ -7,6 +7,7 @@ $(document).ready(function() {
   attachListeners();
 });
 
+// Attach listeners
 function attachListeners() {
   $("td").on("click", function() {
     if (!checkWinner() && this.innerHTML === "") {
@@ -29,7 +30,7 @@ function player() {
   return (turn % 2 === 0) ? "X" : "O"
 }
 
-// Add token to passed in td element
+// Add token to clicked td element
 function updateState(td) {
     $(td).text(player());
 }
@@ -55,13 +56,19 @@ function checkWinner() {
 function doTurn(square){
   updateState(square); //pass in element that was clicked
   turn++;
-  if (checkWinner() || turn === 9) {
-    if (turn === 9) {
-      setMessage('Tie game.')
-    }
+  if (checkWinner() || checkTiedGame()) {
     saveGame();
     clearGame();
-  }
+  };
+}
+
+function checkTiedGame() {
+  if (turn === 9) {
+    setMessage('Tie game.');
+    return true;
+  } else {
+    return false;
+  };
 }
 
 function clearGame() {
@@ -71,14 +78,13 @@ function clearGame() {
 }
 
 function saveGame() {
-  var state = [];
-  var gameData;
+  const state = [];
 
-  $('td').text((index, square) => {
-    state.push(square);
+  $('td').text((i, token) => {
+    state.push(token);
   });
 
-  gameData = { state: state };
+  const gameData = { state: state };
 
   if (currentGame) {
     $.ajax({
@@ -90,19 +96,19 @@ function saveGame() {
     $.post('/games', gameData, function(game) {
       currentGame = game.data.id;
     });
-  }
+  };
 }
 
 function loadGames() {
   $.get("/games", function(game_array) {
     if (game_array["data"].length > 0) {
       game_array["data"].forEach(function(game) {
-        if ($(`button[id*="gameid-${game.id}"]`).length === 0) {
+        if ($(`button[id="gameid-${game.id}"]`).length === 0) {
           $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
           $("#gameid-" + game.id).on('click', () => reloadGame(game.id));
-        }
+        };
       });
-    }
+    };
   });
 }
 
