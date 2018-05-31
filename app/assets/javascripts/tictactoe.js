@@ -40,8 +40,8 @@ function checkWinner() {
 }
 
 function doTurn(square) {
-    turn++;
     updateState(square);
+    turn++;
     if (checkWinner()) {
         resetBoard();
     } else if (turn === 9) {
@@ -54,4 +54,9 @@ function resetBoard() {
     $('td').empty();
     turn = 0;
     currentGame = 0;
-  }
+}
+
+function attachListeners() {
+    
+}
+  
