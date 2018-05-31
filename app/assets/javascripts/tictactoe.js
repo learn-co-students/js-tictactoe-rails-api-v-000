@@ -33,10 +33,13 @@ function checkWinner() {
 
     WINNERS.some(function(combo) {
         if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
-            setMessage(board[combo[0]]);
-            return winner = true; {
+        
+          setMessage(board[combo[0]]);
+          return winner = true;
         }
-    });
+      });
     return winner;
-    }
+}
+
+
 
