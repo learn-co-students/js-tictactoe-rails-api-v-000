@@ -42,6 +42,14 @@ function checkWinner() {
 function doTurn(square) {
     turn++;
     updateState(square);
-    checkWinner();
+    if (checkWinner()) {
+        
+    }
     
 }
+
+function resetBoard() {
+    $('td').empty();
+    turn = 0;
+    currentGame = 0;
+  }
