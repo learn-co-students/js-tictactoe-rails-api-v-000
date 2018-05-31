@@ -44,9 +44,11 @@ function doTurn(square) {
     updateState(square);
     turn++;
     if (checkWinner()) {
+        saveGame();
         resetBoard();
     } else if (turn === 9) {
         setMessage("Tie game.")
+        saveGame();
         resetBoard();
     }
 }
@@ -76,15 +78,36 @@ function attachListeners() {
 
 function saveGame() {
     var state = [];
-    var data;
+    var currentData;
 
     //get board info and put into state array
     $('td').text(function(index, square) {
         state.push(square);
-    })
+    });
     //put the entire state array into the data object
-    data = {state: state }
+    currentData = {state: state };
+    // if this is the first game, currentGame will be zero, and do a post.  If currentGame has value (not first game), do a patch
+    if (currentGame) {
+    // see this for patch info https://stackoverflow.com/questions/11461414/ajax-json-doesnt-get-sent-in-patch-only/13439828
+        $.ajax({
+            url: `/games/${currentGame}`,
+            data: currentData,
+            type: 'PATCH',
+            contentType : 'application/json'
+        });
+    } else {
+        // do an ajax post
+        $.post('/games', currentData, function(game) {
+            currentGame = game.data.id;
+            $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+            $("gameid-" + game.data.id).on('click', function () {
+                // reloadGame(game.data.id) TODO
+            })
+        });
+    };
 }
+
+
 
 
 
