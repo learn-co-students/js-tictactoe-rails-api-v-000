@@ -74,7 +74,11 @@ function attachListeners() {
 }
 
 function saveGame() {
-
+    var values = $(this).serialize();
+    var posting = $.post('/games', values);
+    posting.done(function(data){
+        
+    })
 }
 
 function showPreviousGames() {
@@ -82,11 +86,16 @@ function showPreviousGames() {
     $.get("/games", function(games){
         if (games.data.length) {
             games.data.forEach(function(game){
-                var gameHTML = '<li class="js-order">' + game.id + '</li>';
+                var gameHTML = `<button id="gameId-${game.id}">${game.id}</button><br>`
                 $('#games').append(gameHTML)
+                $(`#gameId-${game.id}`).on('click', function(){
+                    // reloadGame(game.id) TODO
+                });
             });
         }; 
     });
 }
+
+
 
 
