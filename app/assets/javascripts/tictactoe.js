@@ -23,7 +23,7 @@ let apiUrl = "http://localhost:3000"
    if(checkWinner()){
      saveGame()
      clearBoard()
-   }else if(turn === 9){
+   }else if(turn === 9 && !checkWinner()){
      setMessage("Tie game.")
      saveGame()
      clearBoard()
@@ -54,7 +54,6 @@ let apiUrl = "http://localhost:3000"
     })
 
     $('#previous').on('click', function(){
-
         listGames()
       })
 
@@ -88,24 +87,24 @@ let apiUrl = "http://localhost:3000"
   }
 
   function listGames(){
-    debugger
     $('#games').empty();
-    $.get('/games', function(games) {
-      // NOT HITTING HERE
-      debugger
-
-      if(games.data.length > 0 ) {
-        games.data.forEach(function(game){
-          // DO not duplicat when pressed 2 times
-          $(`#games`).append(`<button id="gameid-${game.id}">${game.id}</button><br>`)
-        })
-      }
-    })
+    debugger
+    $.get( "/games", function( data ) {
+  console.log( data );
+  alert( "Load was performed." );
+});
+    // $.get('/games', function(games) {
+    //   // NOT HITTING HERE
+    //   if(games.data.length > 0 ) {
+    //     games.data.forEach(function(game){
+    //       // DO not duplicat when pressed 2 times
+    //       $(`#games`).append(`<button id="gameid-${game.id}">${game.id}</button><br>`)
+    //     })
+    //   }
+    // })
   }
 
   function saveGame(){
-
-
     if (gameID == 0){
       $.post(`/games`,{"state": boardArray()})
       .then(newGame=>{
@@ -121,8 +120,8 @@ let apiUrl = "http://localhost:3000"
             'state': boardArray()
         }
       })
+    }
   }
-}
 
   function showSavedBoard(){
 
@@ -132,7 +131,10 @@ let apiUrl = "http://localhost:3000"
         $('tbody').attr("gameID",`${gameID}`)
 
       $.get(`/games/${gameID}`, function(game, status){
+
         let board = Array.from(game.data.attributes.state)
+
+        turn =  board.join('').split('').length
         board.forEach(function(play,index){
           if (play != ""){
           $(`td:eq(${index})`).html(play)
