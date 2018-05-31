@@ -75,12 +75,19 @@ function attachListeners() {
 }
 
 function saveGame() {
-    var values = $(this).serialize();
-    var posting = $.post('/games', values);
-    posting.done(function(data){
-        
+    var state = [];
+    var data;
+
+    //get board info and put into state array
+    $('td').text(function(index, square) {
+        state.push(square);
     })
+    //put the entire state array into the data object
+    data = {state: state }
 }
+
+
+
 
 function showPreviousGames() {
     $('#games').empty();
