@@ -77,8 +77,8 @@ function attachListeners() {
 }
 
 function saveGame() {
-    var state = [];
-    var currentData;
+    let state = [];
+    let currentData;
 
     //get board info and put into state array
     $('td').text(function(index, square) {
@@ -107,14 +107,31 @@ function saveGame() {
     };
 }
 
-function loadGame(id) {
+function loadGame(theId) {
+    //empty message div
+    $('#message').empty();
+    $.get(`/games/${theId}`, function(data) {
+        var currentId = data.data.id;
+        var currentState = data.data.attributes.state;
+   
+        let i = 0;
+        for (let y = 0; y < 3; y++) {
+            for (let x = 0; x < 3; x++) {
+                $(`[data-x="${x}"][data-y="${y}"]`).html(currentState[i])
+                i++;
+            }
+        }
 
+        // get the turn count by adding up the number of filled in boxes in the array
+        turn = currentState.join('').length;
+        //get the current id from the ajax request, and change the global variable
+        currentGame = currentId;
+
+        if (!checkWinner() && turn === 9) {
+            setMessage("Tie game.")
+        }
+    });
 }
-
-
-
-
-
 
 function showPreviousGames() {
     $('#games').empty();
