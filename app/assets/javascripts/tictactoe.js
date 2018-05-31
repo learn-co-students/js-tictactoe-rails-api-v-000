@@ -1,4 +1,4 @@
-const WINNERS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+var WINNERS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 var turn = 0;
 var currentGame = 0;
 
@@ -23,20 +23,25 @@ function updateState(square) {
 }
 
 function setMessage(winner) {
-    $('#message').text("Player" + winner + "Won!")
+    $('#message').text(winner)
 }
 
 function checkWinner() {
     let board = {};
     let winner = false;
     $('td').text((index, square) => board[index] = square);
-
     WINNERS.some(function(combo) {
         if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
-        
-          setMessage(board[combo[0]]);
+          setMessage(`Player ${board[combo[0]]} Won!`);
           return winner = true;
         }
       });
     return winner;
+}
+
+function doTurn(square) {
+    turn++;
+    updateState(square);
+    checkWinner();
+    
 }
