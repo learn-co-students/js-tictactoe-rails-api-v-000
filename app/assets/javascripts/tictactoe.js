@@ -88,7 +88,7 @@ function saveGame() {
     currentData = {state: state };
     // if this is the first game, currentGame will be zero, and do a post.  If currentGame has value (not first game), do a patch
     if (currentGame) {
-    // see this for patch info https://stackoverflow.com/questions/11461414/ajax-json-doesnt-get-sent-in-patch-only/13439828
+    // see this for patch info syntax https://stackoverflow.com/questions/11461414/ajax-json-doesnt-get-sent-in-patch-only/13439828
         $.ajax({
             url: `/games/${currentGame}`,
             data: currentData,
@@ -101,10 +101,14 @@ function saveGame() {
             currentGame = game.data.id;
             $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
             $("gameid-" + game.data.id).on('click', function () {
-                // reloadGame(game.data.id) TODO
+                loadGame(game.data.id)
             })
         });
     };
+}
+
+function loadGame(id) {
+
 }
 
 
@@ -120,7 +124,7 @@ function showPreviousGames() {
                 var gameHTML = `<button id="gameId-${game.id}">${game.id}</button><br>`
                 $('#games').append(gameHTML)
                 $(`#gameId-${game.id}`).on('click', function(){
-                    // reloadGame(game.id) TODO
+                    loadGame(game.id)
                 });
             });
         }; 
