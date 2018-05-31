@@ -78,15 +78,15 @@ function saveGame() {
 }
 
 function showPreviousGames() {
-    $.get("/games", function(data){
-        var games = data;
-        if (games) {
-            
-            games.forEach(function(game){
-                // orderList += '<li class="js-order" data-id="' + order["id"] + '">' + order["id"] + ' - ' + order["created_at"] + '</li>';
-                $('#games').append(game.id)
-
+    $('#games').empty();
+    $.get("/games", function(games){
+        if (games.data.length) {
+            games.data.forEach(function(game){
+                var gameHTML = '<li class="js-order">' + game.id + '</li>';
+                $('#games').append(gameHTML)
             });
         }; 
     });
 }
+
+
