@@ -89,19 +89,16 @@ let apiUrl = "http://localhost:3000"
   function listGames(){
     $('#games').empty();
     debugger
-    $.get( "/games", function( data ) {
-  console.log( data );
-  alert( "Load was performed." );
-});
-    // $.get('/games', function(games) {
-    //   // NOT HITTING HERE
-    //   if(games.data.length > 0 ) {
-    //     games.data.forEach(function(game){
-    //       // DO not duplicat when pressed 2 times
-    //       $(`#games`).append(`<button id="gameid-${game.id}">${game.id}</button><br>`)
-    //     })
-    //   }
-    // })
+  
+    $.get('/games', function(games) {
+      // NOT HITTING HERE
+      if(games.data.length > 0 ) {
+        games.data.forEach(function(game){
+          // DO not duplicat when pressed 2 times
+          $(`#games`).append(`<button id="gameid-${game.id}">${game.id}</button><br>`)
+        })
+      }
+    })
   }
 
   function saveGame(){
