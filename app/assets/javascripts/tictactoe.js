@@ -43,9 +43,11 @@ function doTurn(square) {
     turn++;
     updateState(square);
     if (checkWinner()) {
-        
+        resetBoard();
+    } else if (turn === 9) {
+        setMessage("Tie game.")
+        resetBoard();
     }
-    
 }
 
 function resetBoard() {
