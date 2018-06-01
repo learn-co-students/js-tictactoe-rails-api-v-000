@@ -101,17 +101,13 @@ $(document).ready(function() {
   })
 
   $("#previous").click(function() {
-    var clicked = 0
-    clicked++
     $("#games").html("")
     $.get("/games", function(savedGames) {
       console.log(savedGames)
       if (savedGames.data.length > 0) {
         savedGames.data.forEach(function(game) {
-          if (clicked === 1){
           $("#games").append(`<button data-state="${game.attributes.state}" data-id=${game.id}>${game.id}</button>`)
             $.get(`/games/${game.id}`)
-        }
           currentGame = game.id
         })
       }
