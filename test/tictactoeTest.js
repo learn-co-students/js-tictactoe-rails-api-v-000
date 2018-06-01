@@ -130,7 +130,7 @@ describe('tictactoe.js', () => {
       //    | O |   
       // -----------
       //  O | X |   
-
+      
       expect(window.checkWinner()).to.be.true;
     });
 
@@ -182,7 +182,7 @@ describe('tictactoe.js', () => {
       //  X | O | X 
       // -----------
       //  X |   | O 
-
+      
       window.checkWinner();
 
       expect(spy.firstCall.args[0]).to.equal('Player O Won!');
@@ -337,7 +337,7 @@ describe('Gameplay', () => {
 
     window.turn = 8;
     window.doTurn(squares[7]);
-
+    
     window.doTurn(squares[4]);
 
     const board = Array.from(squares).map(s => s.innerHTML);
@@ -631,7 +631,7 @@ describe('AJAX interactions with the Rails API', () => {
       );
 
       const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
+      
       gameButtons[0].click();
 
       expect(requests[1].method).to.equal('GET');
