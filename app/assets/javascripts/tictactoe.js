@@ -58,10 +58,12 @@ function doTurn(square) {
   turn++;
   if (checkWinner()) {
     resetBoard();
+    saveGame();
   }
     else if (turn === 9) {
       setMessage("Tie game.");
       resetBoard();
+      saveGame();
     } 
 };
 
@@ -78,47 +80,61 @@ function attachListeners() {
 
 };
 
-function saveGame() {
-  var state = []
-
-  var data = $('td')
-  console.log(data);
-
-  // $.post('/games', )
-
-
-};
-
 function previousGames() {
-  $.get("/games", savedGames => {
-    if (savedGames.data.length !== 0) {
-      savedGames.data.map(game => {
-        $('#games').append(`<button></button>`)
-      })
+  $('#games').empty();
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(buttonizePreviousGame);
+    }
+  });
+}
+
+function buttonizePreviousGame(game) {
+  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+}
+
+function reloadGame(gameID) {
+  document.getElementById('message').innerHTML = '';
+
+  $.getJSON(`/games/${gameID}`, (response) => {
+    const data = response.data;
+    const id = data.id;
+    const state = data.attributes.state;
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+    turn = state.join('').length;
+    currentGame = id;
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
     }
   })
-};
+}
 
+function saveGame() {
+  var state = [];
+  var gameData = {state: state};
 
+  $('td').text((index, square) => {
+    state.push(square);
+  });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
+  }
+}
