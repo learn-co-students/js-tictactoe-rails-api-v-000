@@ -3,6 +3,50 @@ const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0
 
 var turn = 0;
 
+$(document).ready(function() {
+  attachListeners()
+})
+
+function attachListeners() {
+  $('td').on("click", function(){
+    if (this.innerHTML === "" && !checkWinner()){
+      doTurn(this)
+    }
+  })
+
+  $("#clear").on("click", function(){
+    clearBoard();
+  })
+
+  $("#previous").on("click", function(){
+    previousGames();
+  })
+
+  $("#save").on("click", function(){
+    saveGame();
+  })
+
+}
+
+function previousGames() {
+  $.get( "/games", function(resp) {
+    var games = resp["data"]
+    games.forEach( function(game) {
+      $( "div#games" ).append(`<button id="gameid-${game.id}">${game.id}</button>`);
+    })
+
+  });
+}
+
+function saveGame() {
+
+}
+
+function clearBoard() {
+  $('td').empty();
+  turn = 0;
+}
+
 function player() {
   if (turn % 2 === 0) {
     return 'X';
@@ -35,12 +79,12 @@ function checkWinner() {
   return winner;
 }
 
-function doTurn(square) {
+function doTurn(square) {//{$('td').empty();
+    //turn = 0;
   updateState(square);
   turn++;
   if (checkWinner()) {
-    $('td').empty();
-    turn = 0;
+    clearBoard();
   } else if (turn === 9) {
     setMessage("Tie game.");
   }
