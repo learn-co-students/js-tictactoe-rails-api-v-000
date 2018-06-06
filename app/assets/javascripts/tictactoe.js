@@ -31,6 +31,7 @@ function attachListeners() {
 function previousGames() {
   $.get( "/games", function(resp) {
     var games = resp["data"]
+    $('#games').empty()
     games.forEach( function(game) {
       $( "div#games" ).append(`<button id="gameid-${game.id}">${game.id}</button>`);
     })
