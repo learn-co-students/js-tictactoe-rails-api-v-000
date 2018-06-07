@@ -1,12 +1,8 @@
-// Code your JavaScript / jQuery solution here
 const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
-var current_game = 0
+var currentGame = 0,
+    turn = 0;
 
-var turn = 0;
-
-$(document).ready(function() {
-  attachListeners()
-})
+$(document).ready(() => attachListeners())
 
 function attachListeners() {
   $('td').on("click", function(){
@@ -15,57 +11,47 @@ function attachListeners() {
     }
   })
 
-  $("#clear").on("click", function(){
-    clearBoard();
-  })
-
-  $("#previous").on("click", function(){
-    previousGames();
-  })
-
-  $("#save").on("click", function(){
-    saveGame();
-  })
-
+  $("#clear").on("click", () => clearBoard());
+  $("#previous").on("click", () => previousGames());
+  $("#save").on("click", () => saveGame());
 }
 
 function previousGames() {
-  $.get( "/games", function(resp) {
+  $.get( "/games", resp => {
     var games = resp["data"]
     $('#games').empty()
-    games.forEach( function(game) {
+
+    games.forEach(game => {
       $( "div#games" ).append(`<button id="gameid-${game.id}">${game.id}</button>`);
-      $(`#gameid-${game.id}`).on('click', function(){
-        loadGame(game);
-      })
+      $(`#gameid-${game.id}`).on('click', () => loadGame(game));
     })
   });
 }
 
 function saveGame() {
   var state = [];
+
   $('td').text((index, square) => {
     state.push(square);
   });
-  console.log(current_game);
-  if (current_game === 0){
-    $.post("/games", {state: state}, function(game) {
-      current_game = game.data.id
-    })
+
+  if (currentGame === 0){
+    $.post("/games", {state: state}, game => currentGame = game.data.id)
   } else {
     $.ajax({
       method: "PATCH",
-      url: `/games/${current_game}`,
+      url: `/games/${currentGame}`,
       data: {state: state}
     })
   }
 }
 
 function loadGame(game) {
-  $.get(`/games/${game.id}`, function(resp) {
+  $.get(`/games/${game.id}`, resp => {
     let state = resp.data.attributes.state;
     turn = state.filter(position => position !== "").length
-    current_game = resp.data.id
+    currentGame = resp.data.id
+
     for(let i = 0; i < 9; i++){
       $('td')[i].innerHTML = state[i]
     }
@@ -75,15 +61,11 @@ function loadGame(game) {
 function clearBoard() {
   $('td').empty();
   turn = 0;
-  current_game = 0; //change current_game to currentGame
+  currentGame = 0;
 }
 
 function player() {
-  if (turn % 2 === 0) {
-    return 'X';
-} else {
-    return 'O';
-  }
+  return (turn % 2 === 0) ? "X" : "O"
 }
 
 function updateState(square) {
@@ -95,23 +77,21 @@ function setMessage(message) {
 }
 
 function checkWinner() {
-  var winner = false;
-  var board = {};
+  var winner = false,
+      board = {};
 
   $('td').text((index, square) => board[index] = square);
 
-  WINNING_COMBOS.forEach(function(position) {
-    if (board[position[0]] === board[position[1]] && board[position[1]] ===
-      board[position[2]] && board[position[0]] !== "") {
+  WINNING_COMBOS.forEach(position => {
+    if (board[position[0]] === board[position[1]] && board[position[1]] === board[position[2]] && board[position[0]] !== "") {
       setMessage(`Player ${board[position[0]]} Won!`);
-      return winner = true;
+      winner = true;
     }
   })
   return winner;
 }
 
-function doTurn(square) {//{$('td').empty();
-    //turn = 0;
+function doTurn(square) {
   updateState(square);
   turn++;
   if (checkWinner()) {
