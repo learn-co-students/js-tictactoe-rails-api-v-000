@@ -15,7 +15,7 @@ const WIN_COMBINATIONS =
       ]
 
 function player() {
-
+	// Returns 'X' when the turn variable is even and 'O' when it is odd
 	if (turn % 2 == 0) {
 		return "X"
 	} else {
