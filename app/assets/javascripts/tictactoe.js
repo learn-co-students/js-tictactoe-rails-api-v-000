@@ -17,10 +17,8 @@ const WIN_COMBINATIONS =
 function player() {
 
 	if (turn % 2 == 0) {
-		// turnCount += 1
 		return "X"
 	} else {
-		// turnCount += 1
 		return "O"
 	}
   
