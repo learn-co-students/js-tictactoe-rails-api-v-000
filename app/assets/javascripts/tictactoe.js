@@ -63,30 +63,32 @@ function attachListeners() {
 	document.querySelectorAll('#ttt_table td')
 	.forEach(e => e.addEventListener("click", clickHandler));
 
-	document.getElementById(save).addEventListener("click", function(){
+	document.getElementById(save).addEventListener("click", saveGame)
 
-		alert("save clicked!")
-    
-	});
 
-	document.getElementById(previous).addEventListener("click", function(){
+	document.getElementById(previous).addEventListener("click", previousGame)
 
-		alert("previous clicked!")
-    
-	});
 
-	document.getElementById(clear).addEventListener("click", function(){
-
-		alert("clear clicked!")
-    
-	});
+	document.getElementById(clear).addEventListener("click", clearBoard)
   
 }
 
 function saveGame() {
+
+	alert("save clicked!")
   
 }
 
 function previousGame() {
+
+	alert("previous clicked!")
+	  
+}
+
+function clearBoard() {
+
+	alert("clear clicked!")
   
 }
+
+
