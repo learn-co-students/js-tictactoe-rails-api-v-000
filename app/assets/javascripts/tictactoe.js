@@ -2,6 +2,8 @@
 
 var turn = 0
 var currentPlayer = ""
+var winner = ""
+var msg = ""
 const WIN_COMBINATIONS =
       [
         [0,1,2], // top row
@@ -30,19 +32,54 @@ function updateState() {
   	
 }
 
-function setMessage() {
+function setMessage(msg) {
+
+	
   
 }
 
 function checkWinner() {
+
+	msg = `Player ${winner} Won!`
+	setMessage(msg)	
   
 }
 
 function doTurn() {
+
+	turn += 1
+	updateState()
+	checkWinner()
   
 }
 
+function clickHandler() {
+    // Here, `this` refers to the element the event was hooked on
+    alert(this.id + "clicked")
+}
+
 function attachListeners() {
+
+	document.querySelectorAll('#ttt_table td')
+	.forEach(e => e.addEventListener("click", clickHandler));
+
+	document.getElementById(save).addEventListener("click", function(){
+
+		alert("save clicked!")
+    
+	});
+
+	document.getElementById(previous).addEventListener("click", function(){
+
+		alert("previous clicked!")
+    
+	});
+
+	document.getElementById(clear).addEventListener("click", function(){
+
+		alert("clear clicked!")
+    
+	});
   
 }
 
