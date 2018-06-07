@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 
-var turnCount = 0
+var turn = 0
 var currentPlayer = ""
 const WIN_COMBINATIONS =
       [
@@ -16,11 +16,11 @@ const WIN_COMBINATIONS =
 
 function player() {
 
-	if (turnCount % 2 == 0) {
-		turnCount += 1
+	if (turn % 2 == 0) {
+		// turnCount += 1
 		return "X"
 	} else {
-		turnCount += 1
+		// turnCount += 1
 		return "O"
 	}
   
