@@ -54,7 +54,7 @@ function doTurn() {
 
 function clickHandler() {
     // Here, `this` refers to the element the event was hooked on
-    alert(this + "clicked")
+    alert(this + " clicked")
 }
 
 
@@ -72,7 +72,7 @@ function attachListeners() {
 		document.getElementById('clear').addEventListener("click", clearBoard)
 	  
 	}
-window.onload =	attachListeners	
+window.onload =	attachListeners
 
 function saveGame() {
 
