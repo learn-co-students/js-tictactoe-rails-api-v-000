@@ -29,13 +29,12 @@ function player() {
 function updateState() {
 
 	currentPlayer = player()
-  	
+  	alert("updateState: currentPlayer")
 }
 
 function setMessage(msg) {
 
-	
-  
+	  
 }
 
 function checkWinner() {
@@ -55,23 +54,25 @@ function doTurn() {
 
 function clickHandler() {
     // Here, `this` refers to the element the event was hooked on
-    alert(this.id + "clicked")
+    alert(this + "clicked")
 }
+
 
 function attachListeners() {
 
-	document.querySelectorAll('#ttt_table td')
-	.forEach(e => e.addEventListener("click", clickHandler));
+		document.querySelectorAll('td')
+		.forEach(e => e.addEventListener("click", clickHandler));
 
-	document.getElementById(save).addEventListener("click", saveGame)
-
-
-	document.getElementById(previous).addEventListener("click", previousGame)
+		document.getElementById('save').addEventListener("click", saveGame)
 
 
-	document.getElementById(clear).addEventListener("click", clearBoard)
-  
-}
+		document.getElementById('previous').addEventListener("click", previousGame)
+
+
+		document.getElementById('clear').addEventListener("click", clearBoard)
+	  
+	}
+window.onload =	attachListeners	
 
 function saveGame() {
 
