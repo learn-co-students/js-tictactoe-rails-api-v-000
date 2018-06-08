@@ -16,7 +16,7 @@ const WIN_COMBINATIONS =
         [2,4,6]  // right diagonal
       ]
 
-function player(col, row) {
+function player() {
 	// Returns 'X' when the turn variable is even and 'O' when it is odd
 	// alert ("player: " + col + " " + row)
 	if (turn % 2 == 0) {
@@ -27,10 +27,13 @@ function player(col, row) {
   
 }
 
-function updateState(col, row) {
-	// alert ("updateState: " + col + " " + row)
-	currentPlayer = player(col, row)
-  	alert("updateState: " + turn + " " + currentPlayer)
+function updateState(row, col) {
+	// alert ("updateState: " + row + " " + col)
+	currentPlayer = player()
+	// alert("currentPlayer: " + currentPlayer)
+	// $('tr:eq(`${row}`) td:eq(`${col}`)').text(`${currentPlayer}`);
+	// table.cell({ row: row, column: col }).data(`${currentPlayer}`).draw()
+  	// alert("updateState: " + turn + " " + currentPlayer)
 }
 
 function setMessage(msg) {
@@ -48,21 +51,22 @@ function checkWinner() {
   
 }
 
-function doTurn(col, row) {
+function doTurn(row, col) {
 
-	// alert ("doTurn: " + col + " " + row)
+	// alert ("doTurn: " + row + " " + col)
 	turn += 1
-	updateState(col, row)
+	updateState(row, col)
 	checkWinner()
   
 }
 
 function clickHandler() {
     // Here, `this` refers to the element the event was hooked on
-    // alert(col + " " + row + " clicked")
-    var col = this.cellIndex;
+    // alert(row + " " + col + " clicked")
     var row = this.parentNode.rowIndex;
-    doTurn(col, row) 
+    var col = this.cellIndex;
+    
+    doTurn(row, col) 
     
 }
 
