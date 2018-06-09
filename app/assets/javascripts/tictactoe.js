@@ -4,6 +4,7 @@ var turn = 0
 var currentPlayer = ""
 var square
 var msg = ""
+var winner = ""
 var winCombos =
       [
         [0,1,2], // top row
@@ -41,19 +42,41 @@ function setMessage(msg) {
 function checkWinner() {
 	
 	board = document.querySelectorAll('td')
+	winner = "none"
+	// $.each(winCombos, function( index , value) {
+		
+	// 	if (board[value[0]].innerText == "X" && 
+	// 		board[value[1]].innerText == "X" && 
+	// 		board[value[2]].innerText == "X"){
+	// 	  winner = "X"  
+	// 	} else if (board[value[0]].innerText == "O" && 
+	// 		 	   board[value[1]].innerText == "O" && 
+	// 		 	   board[value[2]].innerText == "O") {
+	// 			winner = "O"
+	// 	}
+		
+	// });
+	winCombos.forEach(function(combo) {
 
-	$.each(winCombos, function( index , value) {
-		if (board[value[0]].innerText == currentPlayer && 
-			board[value[1]].innerText == currentPlayer && 
-			board[value[2]].innerText == currentPlayer) {
-
-		  msg = `Player ${currentPlayer} Won!`
-		  setMessage(msg)
-		  return true
-		}   
+	  	if (board[combo[0]].innerText == "X" && 
+			board[combo[1]].innerText == "X" && 
+			board[combo[2]].innerText == "X"){
+		  winner = "X"  
+		} else if (board[combo[0]].innerText == "O" && 
+			 	   board[combo[1]].innerText == "O" && 
+			 	   board[combo[2]].innerText == "O") {
+				winner = "O"
+		}
 	});
 
-	return false
+	if (winner == "none") {
+		return false
+	} else {
+		msg = `Player ${winner} Won!`
+		setMessage(msg)
+		return true
+	}
+	
 }
 
 function doTurn(square) {

@@ -115,6 +115,7 @@ describe('tictactoe.js', () => {
     });
 
     it('returns true when a player wins horizontally', () => {
+      
       populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
       //  X | X | X 
       // -----------
