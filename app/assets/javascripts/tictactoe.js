@@ -2,7 +2,6 @@
 
 var turn = 0
 var currentPlayer = ""
-var winner = ""
 var msg = ""
 const WIN_COMBINATIONS =
       [
@@ -30,23 +29,20 @@ function updateState(square) {
 
 	currentPlayer = player()
 	
-	$(square).text(`${currentPlayer}`.toString())
-	
+	$(square).text(`${currentPlayer}`.toString())	
 }
 
 function setMessage(msg) {
 
-	alert ("setMessage")
-	  
+	$('#message').text(msg)	  
 }
 
 function checkWinner() {
 
 	// alert ("checkWinner")
 
-	// msg = `Player ${winner} Won!`
-	// setMessage(msg)	
-  
+	msg = `Player ${currentPlayer} Won!`
+	setMessage(msg)  
 }
 
 function doTurn(square) {
@@ -55,8 +51,7 @@ function doTurn(square) {
 
 	checkWinner()
 
-	turn += 1
-  
+	turn += 1  
 }
 
 function clickHandler() {
@@ -64,8 +59,7 @@ function clickHandler() {
     // var row = this.parentNode.rowIndex;
     // var col = this.cellIndex;  
     square = this
-    doTurn(square) 
-    
+    doTurn(square)    
 }
 
 function attachListeners() {
@@ -80,26 +74,22 @@ function attachListeners() {
 
 
 		document.getElementById('clear').addEventListener("click", clearBoard)
-	  
-	}
+}
 
 window.onload =	attachListeners
 
 function saveGame() {
 
-	alert("save clicked!")
-  
+	alert("save clicked!") 
 }
 
 function previousGame() {
 
-	alert("previous clicked!")
-	  
+	alert("previous clicked!")	  
 }
 
 function clearBoard() {
 
-	alert("clear clicked!")
-  
+	alert("clear clicked!") 
 }
 
