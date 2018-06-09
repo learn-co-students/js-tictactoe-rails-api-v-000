@@ -4,7 +4,7 @@ var turn = 0
 var currentPlayer = ""
 var square
 var msg = ""
-const WIN_COMBINATIONS =
+var winCombos =
       [
         [0,1,2], // top row
         [3,4,5], // middle row
@@ -39,11 +39,21 @@ function setMessage(msg) {
 }
 
 function checkWinner() {
-	// board[0].innerText
+	
 	board = document.querySelectorAll('td')
 
-	msg = `Player ${currentPlayer} Won!`
-	setMessage(msg)  
+	$.each(winCombos, function( index , value) {
+		if (board[value[0]].innerText == currentPlayer && 
+			board[value[1]].innerText == currentPlayer && 
+			board[value[2]].innerText == currentPlayer) {
+
+		  msg = `Player ${currentPlayer} Won!`
+		  setMessage(msg)
+		  return true
+		}   
+	});
+
+	return false
 }
 
 function doTurn(square) {
