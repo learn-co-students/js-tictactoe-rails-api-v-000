@@ -39,7 +39,8 @@ function setMessage(msg) {
 }
 
 function checkWinner() {
-	// alert ("checkWinner")
+	// board[0].innerText
+	board = document.querySelectorAll('td')
 
 	msg = `Player ${currentPlayer} Won!`
 	setMessage(msg)  
@@ -58,6 +59,7 @@ function clickHandler() {
     // `this` refers to the element the event was hooked on 
     // var row = this.parentNode.rowIndex;
     // var col = this.cellIndex;  
+    
     square = this
     doTurn(square)    
 }
