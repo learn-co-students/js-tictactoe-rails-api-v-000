@@ -70,11 +70,11 @@ function checkWinner() {
 	});
 
 	if (winner == "none") {
-		return false
+		false
 	} else {
 		msg = `Player ${winner} Won!`
 		setMessage(msg)
-		return true
+		true
 	}
 	
 }
