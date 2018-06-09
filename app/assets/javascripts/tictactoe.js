@@ -30,7 +30,7 @@ function updateState(row, col) {
 	
 	currentPlayer = player()
 	
-	$(`tr:eq(${row}) td:eq(${col})`).text(`${currentPlayer}`.toString())
+	$(`tr:eq(${row}) td:eq(${col})`).html(`${currentPlayer}`.toString())
 	
 }
 
@@ -60,15 +60,14 @@ function doTurn(row, col) {
 }
 
 function clickHandler() {
-    // Here, `this` refers to the element the event was hooked on
-    // alert(row + " " + col + " clicked")
+    // `this` refers to the element the event was hooked on
+    
     var row = this.parentNode.rowIndex;
     var col = this.cellIndex;
     
     doTurn(row, col) 
     
 }
-
 
 function attachListeners() {
 
@@ -84,6 +83,7 @@ function attachListeners() {
 		document.getElementById('clear').addEventListener("click", clearBoard)
 	  
 	}
+
 window.onload =	attachListeners
 
 function saveGame() {
@@ -103,5 +103,4 @@ function clearBoard() {
 	alert("clear clicked!")
   
 }
-
 
