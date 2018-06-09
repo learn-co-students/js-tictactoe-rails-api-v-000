@@ -2,6 +2,7 @@
 
 var turn = 0
 var currentPlayer = ""
+var square
 var msg = ""
 const WIN_COMBINATIONS =
       [
@@ -29,7 +30,7 @@ function updateState(square) {
 
 	currentPlayer = player()
 	
-	$(square).text(`${currentPlayer}`.toString())	
+	$(square).text(currentPlayer)	
 }
 
 function setMessage(msg) {
@@ -38,7 +39,6 @@ function setMessage(msg) {
 }
 
 function checkWinner() {
-
 	// alert ("checkWinner")
 
 	msg = `Player ${currentPlayer} Won!`
