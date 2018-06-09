@@ -12,7 +12,6 @@ try {
 
 const sandbox = sinon.sandbox.create();
 const expect = chai.expect;
-
 const squares = window.document.querySelectorAll('td');
 const messageDiv = window.document.getElementById('message');
 const gamesDiv = window.document.getElementById('games');

@@ -26,11 +26,11 @@ function player() {
   
 }
 
-function updateState(row, col) {
-	
+function updateState(square) {
+
 	currentPlayer = player()
 	
-	$(`tr:eq(${row}) td:eq(${col})`).html(`${currentPlayer}`.toString())
+	$(square).text(`${currentPlayer}`.toString())
 	
 }
 
@@ -49,9 +49,9 @@ function checkWinner() {
   
 }
 
-function doTurn(row, col) {
+function doTurn(square) {
 	
-	updateState(row, col)
+	updateState(square)
 
 	checkWinner()
 
@@ -60,12 +60,11 @@ function doTurn(row, col) {
 }
 
 function clickHandler() {
-    // `this` refers to the element the event was hooked on
-    
-    var row = this.parentNode.rowIndex;
-    var col = this.cellIndex;
-    
-    doTurn(row, col) 
+    // `this` refers to the element the event was hooked on 
+    // var row = this.parentNode.rowIndex;
+    // var col = this.cellIndex;  
+    square = this
+    doTurn(square) 
     
 }
 
