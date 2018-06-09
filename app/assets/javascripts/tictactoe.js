@@ -18,7 +18,6 @@ const WIN_COMBINATIONS =
 
 function player() {
 	// Returns 'X' when the turn variable is even and 'O' when it is odd
-	// alert ("player: " + col + " " + row)
 	if (turn % 2 == 0) {
 		return "X"
 	} else {
@@ -28,12 +27,11 @@ function player() {
 }
 
 function updateState(row, col) {
-	// alert ("updateState: " + row + " " + col)
+	
 	currentPlayer = player()
-	// alert("currentPlayer: " + currentPlayer)
-	// $('tr:eq(`${row}`) td:eq(`${col}`)').text(`${currentPlayer}`);
-	// table.cell({ row: row, column: col }).data(`${currentPlayer}`).draw()
-  	// alert("updateState: " + turn + " " + currentPlayer)
+	
+	$(`tr:eq(${row}) td:eq(${col})`).text(`${currentPlayer}`.toString())
+	
 }
 
 function setMessage(msg) {
@@ -44,7 +42,7 @@ function setMessage(msg) {
 
 function checkWinner() {
 
-	alert ("checkWinner")
+	// alert ("checkWinner")
 
 	// msg = `Player ${winner} Won!`
 	// setMessage(msg)	
@@ -52,11 +50,12 @@ function checkWinner() {
 }
 
 function doTurn(row, col) {
-
-	// alert ("doTurn: " + row + " " + col)
-	turn += 1
+	
 	updateState(row, col)
+
 	checkWinner()
+
+	turn += 1
   
 }
 
