@@ -1,4 +1,3 @@
-// Code your JavaScript / jQuery solution here
 
 var turn = 0
 var currentPlayer = ""
@@ -43,40 +42,27 @@ function checkWinner() {
 	
 	board = document.querySelectorAll('td')
 	winner = "none"
-	// $.each(winCombos, function( index , value) {
+	$.each(winCombos, function( index , value) {
 		
-	// 	if (board[value[0]].innerText == "X" && 
-	// 		board[value[1]].innerText == "X" && 
-	// 		board[value[2]].innerText == "X"){
-	// 	  winner = "X"  
-	// 	} else if (board[value[0]].innerText == "O" && 
-	// 		 	   board[value[1]].innerText == "O" && 
-	// 		 	   board[value[2]].innerText == "O") {
-	// 			winner = "O"
-	// 	}
-		
-	// });
-	winCombos.forEach(function(combo) {
-
-	  	if (board[combo[0]].innerText == "X" && 
-			board[combo[1]].innerText == "X" && 
-			board[combo[2]].innerText == "X"){
+		if (board[value[0]].textContent == "X" && 
+			board[value[1]].textContent == "X" && 
+			board[value[2]].textContent == "X"){
 		  winner = "X"  
-		} else if (board[combo[0]].innerText == "O" && 
-			 	   board[combo[1]].innerText == "O" && 
-			 	   board[combo[2]].innerText == "O") {
+		} else if (board[value[0]].textContent == "O" && 
+			 	   board[value[1]].textContent == "O" && 
+			 	   board[value[2]].textContent == "O") {
 				winner = "O"
 		}
+		
 	});
 
 	if (winner == "none") {
-		false
+		return false		
 	} else {
 		msg = `Player ${winner} Won!`
 		setMessage(msg)
-		true
+		return true
 	}
-	
 }
 
 function doTurn(square) {
