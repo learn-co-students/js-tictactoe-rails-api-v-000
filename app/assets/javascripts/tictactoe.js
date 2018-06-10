@@ -1,9 +1,12 @@
 
 var turn = 0
-var currentPlayer = ""
+var currentPlayer
+var board
+var boardArray
+var boardFull
 var square
-var msg = ""
-var winner = ""
+var msg
+var result
 var winCombos =
       [
         [0,1,2], // top row
@@ -41,25 +44,25 @@ function setMessage(msg) {
 function checkWinner() {
 	
 	board = document.querySelectorAll('td')
-	winner = "none"
+	result = "none"
 	$.each(winCombos, function( index , value) {
 		
 		if (board[value[0]].textContent == "X" && 
 			board[value[1]].textContent == "X" && 
 			board[value[2]].textContent == "X"){
-		  winner = "X"  
+		  result = "X"  
 		} else if (board[value[0]].textContent == "O" && 
 			 	   board[value[1]].textContent == "O" && 
 			 	   board[value[2]].textContent == "O") {
-				winner = "O"
+				result = "O"
 		}
 		
 	});
 
-	if (winner == "none") {
+	if (result == "none") {
 		return false		
 	} else {
-		msg = `Player ${winner} Won!`
+		msg = `Player ${result} Won!`
 		setMessage(msg)
 		return true
 	}
@@ -70,6 +73,16 @@ function doTurn(square) {
 	updateState(square)
 
 	checkWinner()
+	
+	boardArray = Array.from(board)
+	boardFull = boardArray.filter(elem => elem.textContent == "")
+
+	if (boardFull.length == 0) {
+		msg = "Tie game."
+		setMessage(msg)
+		turn = 0
+		return
+	}
 
 	turn += 1  
 }
