@@ -8,6 +8,7 @@ function attachListeners() {
   $("#clear").click(() => resetBoard());
 
   $('td').click(function() {
+    debugger;
     if (!$(this).text() && !checkWinner()) {
       doTurn(this);
     }
@@ -105,14 +106,16 @@ function setMessage(string) {
 
 function checkWinner() {
   let winner = false;
+  const t = tokens;
 
   winCombos.forEach(function(c) {
     if (
-      tokens(c[0]) !== "" &&
-      tokens(c[0]) === tokens(c[1]) &&         tokens(c[1]) === tokens(c[2])
+      t(c[0]) !== "" &&
+      t(c[0]) === t(c[1]) &&
+      t(c[1]) === t(c[2])
     ) {
       winner = true;
-      setMessage("Player "+tokens(c[0])+" Won!");
+      setMessage("Player "+t(c[0])+" Won!");
     }
   });
   return winner;
