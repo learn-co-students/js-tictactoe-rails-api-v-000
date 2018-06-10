@@ -22,9 +22,9 @@ var winCombos =
 function player() {
 	// Returns 'X' when the turn variable is even and 'O' when it is odd
 	if (turn % 2 == 0) {
-		return "X"
+		return 'X'
 	} else {
-		return "O"
+		return 'O'
 	}
   
 }
@@ -44,22 +44,22 @@ function setMessage(msg) {
 function checkWinner() {
 	
 	board = document.querySelectorAll('td')
-	result = "none"
+	result = 'none'
 	$.each(winCombos, function( index , value) {
 		
-		if (board[value[0]].textContent == "X" && 
-			board[value[1]].textContent == "X" && 
-			board[value[2]].textContent == "X"){
-		  result = "X"  
-		} else if (board[value[0]].textContent == "O" && 
-			 	   board[value[1]].textContent == "O" && 
-			 	   board[value[2]].textContent == "O") {
-				result = "O"
+		if (board[value[0]].textContent == 'X' && 
+			board[value[1]].textContent == 'X' && 
+			board[value[2]].textContent == 'X'){
+		  result = 'X'  
+		} else if (board[value[0]].textContent == 'O' && 
+			 	   board[value[1]].textContent == 'O' && 
+			 	   board[value[2]].textContent == 'O') {
+				result = 'O'
 		}
 		
 	});
 
-	if (result == "none") {
+	if (result == 'none') {
 		return false		
 	} else {
 		msg = `Player ${result} Won!`
@@ -75,7 +75,7 @@ function doTurn(square) {
 
 	checkWinner()
 
-	if (result == "none") {
+	if (result == 'none') {
 		
 	} else {
 		turn = 0
@@ -85,10 +85,10 @@ function doTurn(square) {
 		}
 	
 	boardArray = Array.from(board)
-	boardFull = boardArray.filter(elem => elem.textContent == "")
+	boardFull = boardArray.filter(elem => elem.textContent == '')
 
 	if (boardFull.length == 0) {
-		msg = "Tie game."
+		msg = 'Tie game.'
 		setMessage(msg)
 		turn = 0
 		return
@@ -109,31 +109,31 @@ function clickHandler() {
 function attachListeners() {
 
 		document.querySelectorAll('td')
-		.forEach(e => e.addEventListener("click", clickHandler));
+		.forEach(e => e.addEventListener('click', clickHandler));
 
-		document.getElementById('save').addEventListener("click", saveGame)
-
-
-		document.getElementById('previous').addEventListener("click", previousGame)
+		document.getElementById('save').addEventListener('click', saveGame)
 
 
-		document.getElementById('clear').addEventListener("click", clearBoard)
+		document.getElementById('previous').addEventListener('click', previousGame)
+
+
+		document.getElementById('clear').addEventListener('click', clearBoard)
 }
 
 window.onload =	attachListeners
 
 function saveGame() {
 
-	alert("save clicked!") 
+	alert('save clicked!') 
 }
 
 function previousGame() {
 
-	alert("previous clicked!")	  
+	alert('previous clicked!')
 }
 
 function clearBoard() {
 
-	alert("clear clicked!") 
+	alert('clear clicked!') 
 }
 
