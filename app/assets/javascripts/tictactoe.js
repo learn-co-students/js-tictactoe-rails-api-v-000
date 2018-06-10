@@ -64,6 +64,7 @@ function checkWinner() {
 	} else {
 		msg = `Player ${result} Won!`
 		setMessage(msg)
+
 		return true
 	}
 }
@@ -73,6 +74,15 @@ function doTurn(square) {
 	updateState(square)
 
 	checkWinner()
+
+	if (result == "none") {
+		
+	} else {
+		turn = 0
+		for (let i = 0; i < 9; i++) 
+		    board[i].innerHTML = ''
+		    return
+		}
 	
 	boardArray = Array.from(board)
 	boardFull = boardArray.filter(elem => elem.textContent == "")
