@@ -5,6 +5,7 @@ function element(id) {
   return document.getElementById(id);
 }
 let game;
+let gamesObj;
 window.onload = function() {
   game = new Game;
   game.attachListeners();
@@ -33,6 +34,7 @@ function createGame() {
         game.setTurn();
         return game;
       } else {
+        game.board.reset();
         game = new Game;
         return game;
       }
@@ -59,16 +61,20 @@ function createGame() {
     }
 
     saveGame() {
-      debugger;
       const gameObj = game;
       if (!!gameObj.id) {
         $.ajax({
           type: 'patch',
           url:"/games/"+gameObj.id,
           data:{state:gameObj.board.tokens()}
+        }).done((gameData) => {
+          const el = element(`loadGame-${gameData.data.id}`);
+          debugger;
+          el.removeEventListener("click", game.loadGame(gameData.data));
+          el.addEventListener("click", game.loadGame(gameData.data));
         });
       } else {
-        $.post("/games", {state:gameObj.board.state}, function(g) {
+        $.post("/games", {state:gameObj.board.tokens()}, function(g) {
           gameObj.id = g.data.id;
           gameObj.loadGameBtn(g.data)
         });
@@ -124,11 +130,11 @@ function createGame() {
       const g = this
       element("save").addEventListener("click", () => g.saveGame());
       element("previous").addEventListener("click", g.previousGames());
-      element("clear").addEventListener("click", g.constructor.new);
+      element("clear").addEventListener("click", () => g.constructor.new());
 
       [...(this.board.squares())].forEach(square => square.addEventListener("click", () => {
         if (!this.checkWinner(this) && !square.innerText){
-          this.doTurn(square);
+          game.doTurn(square);
         }
       } ));
     }
@@ -160,6 +166,11 @@ class Board {
       td.innerText = this.state[i]
     })
   }
+
+  reset() {
+    this.squares().forEach(td => td.innerText = "")
+  }
+
 
   squares() {
     return [...document.getElementsByTagName("td")];
