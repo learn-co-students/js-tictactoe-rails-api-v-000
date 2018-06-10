@@ -3,7 +3,6 @@ global.sinon = require('sinon');
 
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
-const innerText = require('innerText');
 
 const fs = require('fs');
 const html = fs.readFileSync(__dirname + '/fixtures/index-test.html', 'utf-8');
