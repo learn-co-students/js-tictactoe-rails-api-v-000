@@ -90,7 +90,8 @@ function doTurn(square) {
 	if (boardFull.length == 0) {
 		msg = 'Tie game.'
 		setMessage(msg)
-		turn = 0
+		for (let i = 0; i < 9; i++) 
+		    board[i].innerHTML = ''
 		return
 	}
 
