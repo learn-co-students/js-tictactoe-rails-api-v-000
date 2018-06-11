@@ -136,7 +136,7 @@ function saveGame() {
 function previousGame() {
 
 	$.get("/games", function(data) {
-		
+		gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON')
 		prevGamesArr = data['data']
 
 		if (prevGamesArr.length > 0) {
