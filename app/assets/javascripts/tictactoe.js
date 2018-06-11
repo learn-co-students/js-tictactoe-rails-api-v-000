@@ -1,13 +1,7 @@
 
-var board
-var boardArray
-var boardFull
-var currentPlayer
-var msg
 var prevGamesArr
-var prevId
+var prevSaved = 0
 var result
-var square
 var turn = 0
 var winCombos =
       [
@@ -136,16 +130,29 @@ function saveGame() {
 function previousGame() {
 
 	$.get("/games", function(data) {
-		gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON')
+		
 		prevGamesArr = data['data']
-
-		if (prevGamesArr.length > 0) {
-			for (let i = 0; i < prevGamesArr.length; i++) {
-				  prevId = prevGamesArr[i].id
+		
+		if (prevGamesArr.length > 0 && prevGamesArr.length > prevSaved) {
+			
+			console.log("prevGamesArr.length: " + prevGamesArr.length)
+			console.log("prevSaved 1: " + prevSaved)
+			newSaved = (prevGamesArr.length - prevSaved)
+			console.log("newSaved: " + newSaved)
+			for (let i = 1; i <= newSaved; i++) {
+				  // console.log("prevGamesArr.length / i: " + prevGamesArr.length + " " + i)
+				  debugger
+				  idx = (prevGamesArr.length - i)
+				  console.log("idx: " + idx)
+				  prevId = prevGamesArr[idx].id
+				  console.log("prevId: " + prevId)
 		    	  $('#games').append(`<BUTTON> <li><a href='/games/${prevId}'>${prevId}</a></li></BUTTON>`)
 		    	}
-		}
 
+		    prevSaved += newSaved
+		    console.log("prevSaved 2: " + prevSaved)
+		}
+		
     })
 }
 
