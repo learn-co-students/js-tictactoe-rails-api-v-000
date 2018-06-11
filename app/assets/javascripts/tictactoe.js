@@ -141,9 +141,8 @@ function previousGame() {
 
 		if (prevGamesArr.length > 0) {
 			for (let i = 0; i < prevGamesArr.length; i++) {
-					prevId = prevGamesArr[i].id
-					// debugger
-		    		$('#games').append(`<li><a href='/games/${prevId}'>${prevId}</a></li>`)
+				  prevId = prevGamesArr[i].id
+		    	  $('#games').append(`<BUTTON> <li><a href='/games/${prevId}'>${prevId}</a></li></BUTTON>`)
 		    	}
 		}
 
@@ -152,6 +151,6 @@ function previousGame() {
 
 function clearBoard() {
 
-	alert('clear clicked!') 
+	alert('clear clicked!')
 }
 
