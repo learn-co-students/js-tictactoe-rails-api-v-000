@@ -33,9 +33,9 @@ function updateState(square) {
 
 	currentPlayer = player()
 	
-	if (square.innerContent == "") {
-		$(square).text(currentPlayer)	
-	}
+	if (square.textContent == "") {
+		$(square).text(currentPlayer)
+	} else turn -= 1	
 }
 
 function setMessage(msg) {
@@ -66,7 +66,6 @@ function checkWinner() {
 	} else {
 		msg = `Player ${result} Won!`
 		setMessage(msg)
-
 		return true
 	}
 }

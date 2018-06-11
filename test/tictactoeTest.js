@@ -315,7 +315,7 @@ describe('Gameplay', () => {
 
   it('Users cannot play any turns once a game is won or tied', () => {
     populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
-    window.turn = 5;
+    window.turn = 0;
     //  X | X | X 
     // -----------
     //    |   |   
@@ -325,7 +325,7 @@ describe('Gameplay', () => {
     squares[4].click();
 
     expect(squares[4].innerHTML).to.equal('');
-    expect(window.turn).to.equal(5);
+    expect(window.turn).to.equal(0);
   });
 
   it('Users can play multiple games', () => {
