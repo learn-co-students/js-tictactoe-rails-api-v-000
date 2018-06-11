@@ -87,16 +87,16 @@ function doTurn(square) {
 		    board[i].innerHTML = ''
 		    return
 		}
-	
+	// converts 'board' object to an array and checks for a tied game
 	boardArray = Array.from(board)
 	boardFull = boardArray.filter(elem => elem.textContent == '')
 
 	if (boardFull.length == 0) {
-		// // resets the board and the "turn" counter when a game is tied
+		// resets the board and the "turn" counter when a game is tied
 		msg = 'Tie game.'
 		setMessage(msg)
 		turn = 0
-		for (let i = 0; i < 9; i++) 
+		for (let i = 0; i < 9; i++)
 		    board[i].innerHTML = ''
 		return
 	}
@@ -105,10 +105,7 @@ function doTurn(square) {
 }
 
 function clickHandler() {
-    // `this` refers to the element the event was hooked on 
-    // var row = this.parentNode.rowIndex;
-    // var col = this.cellIndex;  
-    
+    // 'this' refers to the element the event was hooked on  
     square = this
     doTurn(square)    
 }
