@@ -1,12 +1,13 @@
 
-var turn = 0
-var currentPlayer
 var board
 var boardArray
 var boardFull
-var square
+var currentPlayer
 var msg
+var prevGamesArr
 var result
+var square
+var turn = 0
 var winCombos =
       [
         [0,1,2], // top row
@@ -117,9 +118,7 @@ function attachListeners() {
 
 		document.getElementById('save').addEventListener('click', saveGame)
 
-
 		document.getElementById('previous').addEventListener('click', previousGame)
-
 
 		document.getElementById('clear').addEventListener('click', clearBoard)
 }
@@ -133,7 +132,17 @@ function saveGame() {
 
 function previousGame() {
 
-	alert('previous clicked!')
+	$.get("/games", function(data) {
+		// debugger
+		prevGamesArr = data["data"]
+		if (prevGamesArr.length > 0) {
+			debugger
+			// console.log("prevGamesArr: " + prevGamesArr)
+			for (let i = 0; i < prevGamesArr.length; i++) 
+		    	$("#games").append("<li>" + prevGamesArr[i].id + "</li>")
+		}
+
+    })
 }
 
 function clearBoard() {
