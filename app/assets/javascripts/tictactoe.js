@@ -30,21 +30,23 @@ function player() {
 }
 
 function updateState(square) {
-
+	// adds the current player's token to the passed-in <td> element
 	currentPlayer = player()
 	
 	if (square.textContent == "") {
+		// Users can only place a token in a square that is not already taken
 		$(square).text(currentPlayer)
 	} else turn -= 1	
 }
 
 function setMessage(msg) {
-
+	// sets a provided string as the innerHTML of the div#message element
 	$('#message').text(msg)	  
 }
 
 function checkWinner() {
-	
+	// checks if current player has won (horizontally, vertically, or diagonally)
+	// invokes the setMessage() function with the argument 'Player X Won!' or 'Player O Won!'
 	board = document.querySelectorAll('td')
 	result = 'none'
 	$.each(winCombos, function( index , value) {
@@ -71,14 +73,15 @@ function checkWinner() {
 }
 
 function doTurn(square) {
-	
+	// updates the play state, checks for a winner, and sends a 'Tied Game.' message for a tied game
 	updateState(square)
 
 	checkWinner()
 
 	if (result == 'none') {
-		
+	  // game not won or tied
 	} else {
+		// resets the board and the "turn" counter when a game is won
 		turn = 0
 		for (let i = 0; i < 9; i++) 
 		    board[i].innerHTML = ''
@@ -89,8 +92,10 @@ function doTurn(square) {
 	boardFull = boardArray.filter(elem => elem.textContent == '')
 
 	if (boardFull.length == 0) {
+		// // resets the board and the "turn" counter when a game is tied
 		msg = 'Tie game.'
 		setMessage(msg)
+		turn = 0
 		for (let i = 0; i < 9; i++) 
 		    board[i].innerHTML = ''
 		return
