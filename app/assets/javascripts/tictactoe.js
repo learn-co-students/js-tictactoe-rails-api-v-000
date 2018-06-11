@@ -33,7 +33,9 @@ function updateState(square) {
 
 	currentPlayer = player()
 	
-	$(square).text(currentPlayer)	
+	if (square.innerContent == "") {
+		$(square).text(currentPlayer)	
+	}
 }
 
 function setMessage(msg) {
