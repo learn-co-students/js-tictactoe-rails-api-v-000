@@ -5,6 +5,7 @@ var boardFull
 var currentPlayer
 var msg
 var prevGamesArr
+var prevId
 var result
 var square
 var turn = 0
@@ -82,11 +83,12 @@ function doTurn(square) {
 	if (result == 'none') {
 	  // game not won or tied
 	} else {
-		// resets the board and the "turn" counter when a game is won
-		turn = 0
-		for (let i = 0; i < 9; i++) 
-		    board[i].innerHTML = ''
-		    return
+			// resets the board and the "turn" counter when a game is won
+			turn = 0
+			for (let i = 0; i < 9; i++) {
+			    board[i].innerHTML = ''
+			}
+			return
 		}
 	// converts 'board' object to an array and checks for a tied game
 	boardArray = Array.from(board)
@@ -97,8 +99,9 @@ function doTurn(square) {
 		msg = 'Tie game.'
 		setMessage(msg)
 		turn = 0
-		for (let i = 0; i < 9; i++)
+		for (let i = 0; i < 9; i++) {
 		    board[i].innerHTML = ''
+		}
 		return
 	}
 
@@ -133,13 +136,15 @@ function saveGame() {
 function previousGame() {
 
 	$.get("/games", function(data) {
-		// debugger
-		prevGamesArr = data["data"]
+		
+		prevGamesArr = data['data']
+
 		if (prevGamesArr.length > 0) {
-			debugger
-			// console.log("prevGamesArr: " + prevGamesArr)
-			for (let i = 0; i < prevGamesArr.length; i++) 
-		    	$("#games").append("<li>" + prevGamesArr[i].id + "</li>")
+			for (let i = 0; i < prevGamesArr.length; i++) {
+					prevId = prevGamesArr[i].id
+					// debugger
+		    		$('#games').append(`<li><a href='/games/${prevId}'>${prevId}</a></li>`)
+		    	}
 		}
 
     })
