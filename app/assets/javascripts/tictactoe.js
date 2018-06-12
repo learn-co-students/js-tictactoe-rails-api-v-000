@@ -78,11 +78,7 @@ function doTurn(square) {
 	  // game not won or tied
 	} else {
 			// resets the board and the "turn" counter when a game is won
-			turn = 0
-			prevSaved = 0
-			for (let i = 0; i < 9; i++) {
-			    board[i].innerHTML = ''
-			}
+			clearBoard()
 			return
 		}
 	// converts 'board' object to an array and checks for a tied game
@@ -93,11 +89,6 @@ function doTurn(square) {
 		// resets the board and the "turn" counter when a game is tied
 		msg = 'Tie game.'
 		setMessage(msg)
-		// turn = 0
-		// prevSaved = 0
-		// for (let i = 0; i < 9; i++) {
-		//     board[i].innerHTML = ''
-		// }
 		clearBoard()
 		return
 	}
