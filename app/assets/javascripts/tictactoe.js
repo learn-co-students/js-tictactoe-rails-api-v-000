@@ -93,11 +93,12 @@ function doTurn(square) {
 		// resets the board and the "turn" counter when a game is tied
 		msg = 'Tie game.'
 		setMessage(msg)
-		turn = 0
-		prevSaved = 0
-		for (let i = 0; i < 9; i++) {
-		    board[i].innerHTML = ''
-		}
+		// turn = 0
+		// prevSaved = 0
+		// for (let i = 0; i < 9; i++) {
+		//     board[i].innerHTML = ''
+		// }
+		clearBoard()
 		return
 	}
 
@@ -145,7 +146,7 @@ function previousGame() {
 				  prevId = prevGamesArr[prevGamesArr.length-1].id
 		    	  $('#games').append(`<BUTTON> <li><a href='/games/${prevId}'>${prevId}</a></li></BUTTON>`)
 		    	}
-		    	
+
 		    prevSaved += newSaved
 		}
 		
@@ -154,6 +155,10 @@ function previousGame() {
 
 function clearBoard() {
 
-	alert('clear clicked!')
+	turn = 0
+	prevSaved = 0
+	for (let i = 0; i < 9; i++) {
+	    board[i].innerHTML = ''
+	}
 }
 
