@@ -144,7 +144,7 @@ function previousGame() {
 				  debugger
 				  idx = (prevGamesArr.length - i)
 				  console.log("idx: " + idx)
-				  prevId = prevGamesArr[idx].id
+				  prevId = prevGamesArr[3].id
 				  console.log("prevId: " + prevId)
 		    	  $('#games').append(`<BUTTON> <li><a href='/games/${prevId}'>${prevId}</a></li></BUTTON>`)
 		    	}
