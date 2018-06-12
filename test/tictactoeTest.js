@@ -24,6 +24,7 @@ function resetFixtures() {
   for (let i = 0; i < 9; i++) {
     squares[i].innerHTML = '';
   }
+  window.prevSaved *= 0;
   window.turn *= 0;
   messageDiv.innerHTML = '';
   gamesDiv.innerHTML = '';

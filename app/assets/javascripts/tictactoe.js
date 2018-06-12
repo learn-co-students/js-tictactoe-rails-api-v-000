@@ -1,7 +1,7 @@
 
+var currentPlayer
 var prevGamesArr
 var prevSaved = 0
-var result
 var turn = 0
 var winCombos =
       [
@@ -79,6 +79,7 @@ function doTurn(square) {
 	} else {
 			// resets the board and the "turn" counter when a game is won
 			turn = 0
+			prevSaved = 0
 			for (let i = 0; i < 9; i++) {
 			    board[i].innerHTML = ''
 			}
@@ -93,6 +94,7 @@ function doTurn(square) {
 		msg = 'Tie game.'
 		setMessage(msg)
 		turn = 0
+		prevSaved = 0
 		for (let i = 0; i < 9; i++) {
 		    board[i].innerHTML = ''
 		}
@@ -124,7 +126,9 @@ window.onload =	attachListeners
 
 function saveGame() {
 
-	alert('save clicked!') 
+	$.post('/games') 
+
+	// $.patch('/games/:id')
 }
 
 function previousGame() {
@@ -135,22 +139,14 @@ function previousGame() {
 		
 		if (prevGamesArr.length > 0 && prevGamesArr.length > prevSaved) {
 			
-			console.log("prevGamesArr.length: " + prevGamesArr.length)
-			console.log("prevSaved 1: " + prevSaved)
 			newSaved = (prevGamesArr.length - prevSaved)
-			console.log("newSaved: " + newSaved)
+			
 			for (let i = 1; i <= newSaved; i++) {
-				  // console.log("prevGamesArr.length / i: " + prevGamesArr.length + " " + i)
-				  debugger
-				  idx = (prevGamesArr.length - i)
-				  console.log("idx: " + idx)
-				  prevId = prevGamesArr[3].id
-				  console.log("prevId: " + prevId)
+				  prevId = prevGamesArr[prevGamesArr.length-1].id
 		    	  $('#games').append(`<BUTTON> <li><a href='/games/${prevId}'>${prevId}</a></li></BUTTON>`)
 		    	}
-
+		    	
 		    prevSaved += newSaved
-		    console.log("prevSaved 2: " + prevSaved)
 		}
 		
     })
