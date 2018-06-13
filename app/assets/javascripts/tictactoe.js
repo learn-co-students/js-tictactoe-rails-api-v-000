@@ -154,7 +154,6 @@ function loadGame(id) {
 }
 
 $(function() {
-  //newGame();
   saved = false;
   attachListeners();
 })
