@@ -106,6 +106,7 @@ function doTurn(square) {
 	  // game not won or tied
 	} else {
 			// resets the board and the "turn" counter when a game is won
+			saveGame()
 			clearBoard()
 			return
 		}
@@ -117,6 +118,7 @@ function doTurn(square) {
 		// displays a 'Tie game.' message and resets the board and the "turn" counter when a game is tied
 		msg = 'Tie game.'
 		setMessage(msg)
+		saveGame()
 		clearBoard()
 		return
 	}
@@ -139,24 +141,38 @@ function saveGame() {
 	boardArr = Array.from(document.querySelectorAll('td'))
 	// collect the board data to create or update a game in the database
 	if (currentId >= 0) {
-		dbArr = []
+		dbGameArr = []
 		for (let i = 0; i < 9; i++) {
-	    	dbArr.push(boardArr[i].textContent)
+	    	dbGameArr.push(boardArr[i].textContent)
 	  	}
 	  	dbObj = {}
-		dbObj['state'] = dbArr
+		dbObj['state'] = dbGameArr
+		patchArr = []
+		patchArr.push(dbGameArr)
 	}
 	
 	if (currentId == 0) {
-		alert('create current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
-		// create a new game		 	
+		// alert('create current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
+		// create a new game
+		debugger	 	
 		$.post('/games', dbObj)
 
 	} else if(currentId > 0) {
 		// update an existing game
-		alert('Update current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
+		// alert('Update current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
 		debugger
-		$.patch('/games/' + currentId, dbObj.to_json)
+		url = '/games/'+ currentId;
+        jsonString = JSON.stringify(dbObj)
+        // alert('jsonString: ' + jsonString)
+        $.ajax({
+            type : 'PATCH',
+            url : url,
+            contentType: 'application/json',
+            data : jsonString,
+            error: function(xhr, status, error){
+              alert(error)
+            }
+        })
 
 	} else alert('** error ** Please try again! - Current ID: ' + currentId)
 }
