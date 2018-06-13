@@ -105,19 +105,26 @@ function tdClickHandler() {
     doTurn(square)    
 }
 
-function liClickHandler() {
-    // 'this' refers to the element the event was hooked on  
-    selectedGame = this
-    getGame(selectedGame)    
+function liClickHandler(gameID) {
+    // 'this' refers to the element the event was hooked on
+    alert('liClickHandler game: ' + gameId)
+    getGame(gameId)    
 }
 
 function attachListeners() {
 
 		document.querySelectorAll('td')
-		.forEach(e => e.addEventListener('click', tdClickHandler));
+		.forEach(e => e.addEventListener('click', tdClickHandler))
 
-		document.querySelectorAll('li')
-		.forEach(e => e.addEventListener('click', liClickHandler));
+		document.querySelector('#games').addEventListener('click', function(e) {
+			// e.target is the clicked element!		
+			if(e.target && e.target.nodeName.toLowerCase() == 'li') {
+				// List item found
+				alert(e.target.textContent)
+
+				liClickHandler(e.target.textContent)
+				}
+		});
 
 		document.getElementById('save').addEventListener('click', saveGame)
 
@@ -128,9 +135,9 @@ function attachListeners() {
 
 window.onload =	attachListeners
 
-function getGame (selectedGame) {
+function getGame (gameId) {
 
-	alert("*** getGame")
+	alert('*** getGame: ' + gameId)
 
 }
 
@@ -143,7 +150,7 @@ function saveGame() {
 
 function previousGame() {
 
-	$.get("/games", function(data) {
+	$.get('/games', function(data) {
 		
 		prevGamesArr = data['data']
 		
@@ -153,7 +160,9 @@ function previousGame() {
 			
 			for (let i = newSaved; i <= newSaved && i >= 1; i--) {
 				  prevId = prevGamesArr[prevGamesArr.length-i].id
-		    	  $('#games').append(`<BUTTON><li><a href='/games/${prevId}'>${prevId}</a></li></BUTTON><br>`)
+		    	  // $('#games').append(`<BUTTON><li><a href='/games/${prevId}'>${prevId}</a></li></BUTTON><br>`)
+		    	  // $('#games').append('<li>' + `<BUTTON>${prevId}</BUTTON>` + '</li>')
+		    	  $('#games').append(`<button><li>${prevId}</li></button><br>`)
 		    	}
 
 		    prevSaved += newSaved
