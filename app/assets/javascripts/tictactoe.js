@@ -137,7 +137,7 @@ function getGame (gameId) {
 function saveGame() {
 	
 	boardArr = Array.from(document.querySelectorAll('td'))
-
+	// collect the board data to create or update a game in the database
 	if (currentId >= 0) {
 		dbArr = []
 		for (let i = 0; i < 9; i++) {
@@ -148,11 +148,11 @@ function saveGame() {
 	}
 	
 	if (currentId == 0) {
-		// save a new game		 	
+		// create a new game		 	
 		$.post('/games', dbObj)
 
 	} else if(currentId > 0) {
-		// update a game
+		// update an existing game
 		alert('current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
 		debugger
 		$.patch('/games/' + currentId, dbObj.to_json)
