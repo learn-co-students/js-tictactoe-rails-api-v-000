@@ -29,7 +29,20 @@ function attachListeners() {
 		document.getElementById('clear').addEventListener('click', clearBoard)
 }
 
-window.onload =	attachListeners      
+window.onload =	attachListeners
+
+function tdClickHandler() {
+    // 'this' refers to the element the event was hooked on  
+    square = this
+    doTurn(square)    
+}
+
+function liClickHandler(e) {
+    // 'e' refers to the element the event was hooked on and converted to a number
+    gameId = parseInt(e.target.textContent, 10)
+    // get the game whose button has been clicked
+    getGame(gameId)    
+}
 
 function player() {
 	// Returns 'X' when the turn variable is even and 'O' when it is odd
@@ -44,7 +57,7 @@ function updateState(square) {
 	// adds the current player's token to the passed-in <td> element
 	currentPlayer = player()
 	
-	if (square.textContent == "") {
+	if (square.textContent == '') {
 		// Users can only place a token in a square that is not already taken
 		$(square).text(currentPlayer)
 	} else turn -= 1	
@@ -111,19 +124,6 @@ function doTurn(square) {
 	turn += 1  
 }
 
-function tdClickHandler() {
-    // 'this' refers to the element the event was hooked on  
-    square = this
-    doTurn(square)    
-}
-
-function liClickHandler(e) {
-    // 'e' refers to the element the event was hooked on and converted to a number
-    gameId = parseInt(e.target.textContent, 10)
-    // get the game whose button has been clicked
-    getGame(gameId)    
-}
-
 function getGame (gameId) {
 	$.get('/games/' + gameId, function(data) {
 		currentId = data['data'].id
@@ -140,24 +140,24 @@ function saveGame() {
 
 	if (currentId >= 0) {
 		dbArr = []
-		dbObj = {}
-	}
-	
-	
-	if (currentId == 0) {
-		// save a new game
 		for (let i = 0; i < 9; i++) {
 	    	dbArr.push(boardArr[i].textContent)
-	  	}	
-	  	dbObj['state'] = dbArr
+	  	}
+	  	dbObj = {}
+		dbObj['state'] = dbArr
+	}
+	
+	if (currentId == 0) {
+		// save a new game		 	
 		$.post('/games', dbObj)
 
 	} else if(currentId > 0) {
-		alert('saveGame Id patch: ' + currentId)
 		// update a game
-		$.patch('/games/' + currentId)
+		alert('current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
+		debugger
+		$.patch('/games/' + currentId, dbObj.to_json)
 
-	} else alert(currentId + '  ** An error has occurred. Please try again! **')
+	} else alert('** error ** Please try again! - Current ID: ' + currentId)
 }
 
 function previousGame() {
@@ -182,12 +182,18 @@ function previousGame() {
 }
 
 function populateBoard(gameArr) {
-
+	// popullate the board and update 'turn' count for the next player's go
 	board = document.querySelectorAll('td')
+	gameTurns = 0
 
   	for (let i = 0; i < 9; i++) {
-    	board[i].innerHTML = gameArr[i];
+    	board[i].innerHTML = gameArr[i]
+    	if (gameArr[i] != '') {
+    		gameTurns += 1
+    	}
   	}
+
+  	turn = gameTurns
 }
 
 function clearBoard() {
