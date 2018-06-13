@@ -1,5 +1,8 @@
 
+var currentId
 var currentPlayer
+var msg
+var newSaved = 0
 var prevGamesArr
 var prevSaved = 0
 var turn = 0
@@ -44,25 +47,25 @@ function checkWinner() {
 	// checks if current player has won (horizontally, vertically, or diagonally)
 	// invokes the setMessage() function with the argument 'Player X Won!' or 'Player O Won!'
 	board = document.querySelectorAll('td')
-	result = 'none'
+	winner = 'none'
 	$.each(winCombos, function( index , value) {
 		
 		if (board[value[0]].textContent == 'X' && 
 			board[value[1]].textContent == 'X' && 
 			board[value[2]].textContent == 'X'){
-		  result = 'X'  
+		  winner = 'X'  
 		} else if (board[value[0]].textContent == 'O' && 
 			 	   board[value[1]].textContent == 'O' && 
 			 	   board[value[2]].textContent == 'O') {
-				result = 'O'
+				winner = 'O'
 		}
 		
 	});
 
-	if (result == 'none') {
+	if (winner == 'none') {
 		return false		
 	} else {
-		msg = `Player ${result} Won!`
+		msg = `Player ${winner} Won!`
 		setMessage(msg)
 		return true
 	}
@@ -74,7 +77,7 @@ function doTurn(square) {
 
 	checkWinner()
 
-	if (result == 'none') {
+	if (winner == 'none') {
 	  // game not won or tied
 	} else {
 			// resets the board and the "turn" counter when a game is won
@@ -86,7 +89,7 @@ function doTurn(square) {
 	boardFull = boardArray.filter(elem => elem.textContent == '')
 
 	if (boardFull.length == 0) {
-		// resets the board and the "turn" counter when a game is tied
+		// displays a 'Tie game.' message and resets the board and the "turn" counter when a game is tied
 		msg = 'Tie game.'
 		setMessage(msg)
 		clearBoard()
@@ -96,16 +99,25 @@ function doTurn(square) {
 	turn += 1  
 }
 
-function clickHandler() {
+function tdClickHandler() {
     // 'this' refers to the element the event was hooked on  
     square = this
     doTurn(square)    
 }
 
+function liClickHandler() {
+    // 'this' refers to the element the event was hooked on  
+    selectedGame = this
+    getGame(selectedGame)    
+}
+
 function attachListeners() {
 
 		document.querySelectorAll('td')
-		.forEach(e => e.addEventListener('click', clickHandler));
+		.forEach(e => e.addEventListener('click', tdClickHandler));
+
+		document.querySelectorAll('li')
+		.forEach(e => e.addEventListener('click', liClickHandler));
 
 		document.getElementById('save').addEventListener('click', saveGame)
 
@@ -116,9 +128,15 @@ function attachListeners() {
 
 window.onload =	attachListeners
 
+function getGame (selectedGame) {
+
+	alert("*** getGame")
+
+}
+
 function saveGame() {
 
-	$.post('/games') 
+	$.post('/games')
 
 	// $.patch('/games/:id')
 }
@@ -133,9 +151,9 @@ function previousGame() {
 			
 			newSaved = (prevGamesArr.length - prevSaved)
 			
-			for (let i = 1; i <= newSaved; i++) {
-				  prevId = prevGamesArr[prevGamesArr.length-1].id
-		    	  $('#games').append(`<BUTTON> <li><a href='/games/${prevId}'>${prevId}</a></li></BUTTON>`)
+			for (let i = newSaved; i <= newSaved && i >= 1; i--) {
+				  prevId = prevGamesArr[prevGamesArr.length-i].id
+		    	  $('#games').append(`<BUTTON><li><a href='/games/${prevId}'>${prevId}</a></li></BUTTON><br>`)
 		    	}
 
 		    prevSaved += newSaved
@@ -147,7 +165,17 @@ function previousGame() {
 function clearBoard() {
 
 	turn = 0
+	for (let i = 0; i < 9; i++) {
+	    board[i].innerHTML = ''
+	}
+}
+
+function clearGame() {
+
+	turn = 0
 	prevSaved = 0
+	msg = ''
+	setMessage(msg)
 	for (let i = 0; i < 9; i++) {
 	    board[i].innerHTML = ''
 	}
