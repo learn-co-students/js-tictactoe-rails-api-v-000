@@ -3,7 +3,8 @@ var currentId
 var currentPlayer
 var msg
 var newSaved = 0
-var prevGamesArr
+var savedGamesArr
+var gameArr
 var prevSaved = 0
 var turn = 0
 var winCombos =
@@ -24,8 +25,7 @@ function player() {
 		return 'X'
 	} else {
 		return 'O'
-	}
-  
+	}  
 }
 
 function updateState(square) {
@@ -105,9 +105,10 @@ function tdClickHandler() {
     doTurn(square)    
 }
 
-function liClickHandler(gameID) {
-    // 'this' refers to the element the event was hooked on
-    alert('liClickHandler game: ' + gameId)
+function liClickHandler(e) {
+    // 'e' refers to the element the event was hooked on and converted to a number
+    gameId = parseInt(e.target.textContent, 10)
+    // get the game whose button has been clicked
     getGame(gameId)    
 }
 
@@ -116,15 +117,7 @@ function attachListeners() {
 		document.querySelectorAll('td')
 		.forEach(e => e.addEventListener('click', tdClickHandler))
 
-		document.querySelector('#games').addEventListener('click', function(e) {
-			// e.target is the clicked element!		
-			if(e.target && e.target.nodeName.toLowerCase() == 'li') {
-				// List item found
-				alert(e.target.textContent)
-
-				liClickHandler(e.target.textContent)
-				}
-		});
+		document.querySelector('#games').addEventListener('click', liClickHandler)
 
 		document.getElementById('save').addEventListener('click', saveGame)
 
@@ -136,12 +129,17 @@ function attachListeners() {
 window.onload =	attachListeners
 
 function getGame (gameId) {
-
-	alert('*** getGame: ' + gameId)
-
+	$.get('/games/' + gameId, function(data) {
+		gameArr = data['data'].attributes.state
+		// populate the board with the game just retrieved
+		populateBoard(gameArr)
+	})
+	
 }
 
 function saveGame() {
+	// save the current game state
+	alert('saveGame')
 
 	$.post('/games')
 
@@ -149,19 +147,16 @@ function saveGame() {
 }
 
 function previousGame() {
-
+	// get games stored in the database
 	$.get('/games', function(data) {
+		savedGamesArr = data['data']
 		
-		prevGamesArr = data['data']
-		
-		if (prevGamesArr.length > 0 && prevGamesArr.length > prevSaved) {
-			
-			newSaved = (prevGamesArr.length - prevSaved)
+		if (savedGamesArr.length > 0 && savedGamesArr.length > prevSaved) {
+			// game/s not already there to be added to the displayed list
+			newSaved = (savedGamesArr.length - prevSaved)
 			
 			for (let i = newSaved; i <= newSaved && i >= 1; i--) {
-				  prevId = prevGamesArr[prevGamesArr.length-i].id
-		    	  // $('#games').append(`<BUTTON><li><a href='/games/${prevId}'>${prevId}</a></li></BUTTON><br>`)
-		    	  // $('#games').append('<li>' + `<BUTTON>${prevId}</BUTTON>` + '</li>')
+				  prevId = savedGamesArr[savedGamesArr.length-i].id
 		    	  $('#games').append(`<button><li>${prevId}</li></button><br>`)
 		    	}
 
@@ -169,6 +164,15 @@ function previousGame() {
 		}
 		
     })
+}
+
+function populateBoard(gameArr) {
+
+	board = document.querySelectorAll('td')
+
+  	for (let i = 0; i < 9; i++) {
+    	board[i].innerHTML = gameArr[i];
+  	}
 }
 
 function clearBoard() {
