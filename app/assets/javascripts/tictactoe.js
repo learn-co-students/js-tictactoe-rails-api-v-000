@@ -1,10 +1,6 @@
 
-var currentId
-var currentPlayer
-var msg
-var newSaved = 0
-var savedGamesArr
-var gameArr
+var currentId = 0
+var msg = ''
 var prevSaved = 0
 var turn = 0
 var winCombos =
@@ -18,6 +14,22 @@ var winCombos =
         [0,4,8], // left diagonal
         [2,4,6]  // right diagonal
       ]
+
+function attachListeners() {
+
+		document.querySelectorAll('td')
+		.forEach(e => e.addEventListener('click', tdClickHandler))
+
+		document.querySelector('#games').addEventListener('click', liClickHandler)
+
+		document.getElementById('save').addEventListener('click', saveGame)
+
+		document.getElementById('previous').addEventListener('click', previousGame)
+
+		document.getElementById('clear').addEventListener('click', clearBoard)
+}
+
+window.onload =	attachListeners      
 
 function player() {
 	// Returns 'X' when the turn variable is even and 'O' when it is odd
@@ -112,24 +124,9 @@ function liClickHandler(e) {
     getGame(gameId)    
 }
 
-function attachListeners() {
-
-		document.querySelectorAll('td')
-		.forEach(e => e.addEventListener('click', tdClickHandler))
-
-		document.querySelector('#games').addEventListener('click', liClickHandler)
-
-		document.getElementById('save').addEventListener('click', saveGame)
-
-		document.getElementById('previous').addEventListener('click', previousGame)
-
-		document.getElementById('clear').addEventListener('click', clearBoard)
-}
-
-window.onload =	attachListeners
-
 function getGame (gameId) {
 	$.get('/games/' + gameId, function(data) {
+		currentId = data['data'].id
 		gameArr = data['data'].attributes.state
 		// populate the board with the game just retrieved
 		populateBoard(gameArr)
@@ -138,25 +135,34 @@ function getGame (gameId) {
 }
 
 function saveGame() {
-
-	boardArr = Array.from(document.querySelectorAll('td'))
 	
-	// save a new game
-	dbArr = []
-	for (let i = 0; i < 9; i++) {
-    	dbArr.push(boardArr[i].textContent)
-  	}
+	boardArr = Array.from(document.querySelectorAll('td'))
 
-  	dbObj = {}
-  	dbObj['state'] = dbArr
-	$.post('/games', dbObj)
+	if (currentId >= 0) {
+		dbArr = []
+		dbObj = {}
+	}
+	
+	
+	if (currentId == 0) {
+		// save a new game
+		for (let i = 0; i < 9; i++) {
+	    	dbArr.push(boardArr[i].textContent)
+	  	}	
+	  	dbObj['state'] = dbArr
+		$.post('/games', dbObj)
 
-	// update a game
-	// $.patch('/games/:id')
+	} else if(currentId > 0) {
+		alert('saveGame Id patch: ' + currentId)
+		// update a game
+		$.patch('/games/' + currentId)
+
+	} else alert(currentId + '  ** An error has occurred. Please try again! **')
 }
 
 function previousGame() {
 	// get games stored in the database
+	newSaved = 0
 	$.get('/games', function(data) {
 		savedGamesArr = data['data']
 		
@@ -187,6 +193,7 @@ function populateBoard(gameArr) {
 function clearBoard() {
 
 	turn = 0
+
 	for (let i = 0; i < 9; i++) {
 	    board[i].innerHTML = ''
 	}
@@ -194,9 +201,11 @@ function clearBoard() {
 
 function clearGame() {
 
-	turn = 0
-	prevSaved = 0
+	currentId = 0
 	msg = ''
+	prevSaved = 0
+	turn = 0
+	
 	setMessage(msg)
 	for (let i = 0; i < 9; i++) {
 	    board[i].innerHTML = ''
