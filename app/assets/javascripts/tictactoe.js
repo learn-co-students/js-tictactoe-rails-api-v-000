@@ -8,7 +8,8 @@ this.winningCombinations = [[0,1,2],
                             [2,4,6]];
 
 this.turn = 0;
-let currentGame; 
+var currentGame;
+var saved;
 
 function player() {
   return turn % 2 === 0 ? "X" : "O";
@@ -41,8 +42,10 @@ function doTurn(square) {
     if (full()) {
       setMessage("Tie game.");
       this.turn = 0;
+      saveGame();
       resetBoard();
     } else if (checkWinner()) {
+      saveGame();
       resetBoard();
     } else {
       this.turn++;
@@ -68,25 +71,39 @@ function resetBoard() {
 }
 
 function attachListeners() {
+
   for(element of $("td")) {
     element.addEventListener("click", function() {
       doTurn(this);
-    })
+    });
   }
 
   $("#previous").on("click", function() {
     $.get('/games', function(data) {
       let games = data.data;
       if (games.length > 0) {
-        //for(game of games) {
-          //$("#games").append(`<button data-id=${game.id}>${game.id}</button>`);
-        //}
         for(let i = $("#games").children().last().data("id") || 0; i < games.length; i++) {
-          $("#games").append(`<button data-id=${i + 1}>${i + 1}</button>`);
+          $("#games").append(`<button class="js-previousGame" data-id=${i + 1}>${i + 1}</button>`);
         }
       }
+      $(".js-previousGame").on("click", function() {
+        loadGame($(this).data("id"));
+      })
     })
+  });
+  
+  $("#save").on("click", function() {
+    saveGame();
   })
+
+
+  $("#clear").on("click", function() {
+    resetBoard();
+    window.turn = 0;
+    saved = false;
+  })
+
+
 }
 
 function newGame() {
@@ -98,7 +115,46 @@ function newGame() {
   })
 }
 
+function saveGame() {
+  let board = new Array;
+  let resp;
+  
+  for(square of $("td")) {
+    board.push(square.textContent);
+  }
+  if(saved){
+    resp = $.ajax({
+      type: "PATCH",
+      url: `/games/${currentGame}`,
+      data: {'state': board},
+    });
+  } else {
+    resp = $.post('/games', {
+      state: board
+    })
+  }
+
+  resp.done(function(data){
+    alert(`Game #${data.data.id} has been saved.`);
+    currentGame = data.data.id;
+    saved = true;
+  })
+}
+
+function loadGame(id) {
+  $.get(`/games/${id}`, function(data) {
+    currentGame = data.data.id;
+    board = data.data.attributes.state;
+    turn = board.filter(element => element !== "").length;
+    saved = true;
+    for(square of $("td")){
+      square.textContent = board.shift();
+    }
+  })
+}
+
 $(function() {
-  newGame();
+  //newGame();
+  saved = false;
   attachListeners();
 })
