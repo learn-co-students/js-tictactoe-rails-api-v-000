@@ -138,11 +138,20 @@ function getGame (gameId) {
 }
 
 function saveGame() {
-	// save the current game state
-	alert('saveGame')
 
-	$.post('/games')
+	boardArr = Array.from(document.querySelectorAll('td'))
+	
+	// save a new game
+	dbArr = []
+	for (let i = 0; i < 9; i++) {
+    	dbArr.push(boardArr[i].textContent)
+  	}
 
+  	dbObj = {}
+  	dbObj['state'] = dbArr
+	$.post('/games', dbObj)
+
+	// update a game
 	// $.patch('/games/:id')
 }
 
