@@ -148,12 +148,13 @@ function saveGame() {
 	}
 	
 	if (currentId == 0) {
+		alert('create current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
 		// create a new game		 	
 		$.post('/games', dbObj)
 
 	} else if(currentId > 0) {
 		// update an existing game
-		alert('current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
+		alert('Update current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
 		debugger
 		$.patch('/games/' + currentId, dbObj.to_json)
 
@@ -198,6 +199,7 @@ function populateBoard(gameArr) {
 
 function clearBoard() {
 
+	currentId = 0
 	turn = 0
 
 	for (let i = 0; i < 9; i++) {
