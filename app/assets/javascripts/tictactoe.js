@@ -38,10 +38,10 @@ function tdClickHandler() {
 }
 
 function liClickHandler(e) {
-    // 'e' refers to the element the event was hooked on (converted to a number)
-    gameId = parseInt(e.target.textContent, 10)
+    // 'e' refers to the element the event was hooked on
+    gameId = e.target.textContent
     // get the game whose button has been clicked
-    getGame(gameId)    
+    getGame(gameId)
 }
 
 function player() {
