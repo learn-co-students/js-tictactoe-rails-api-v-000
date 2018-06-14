@@ -154,7 +154,6 @@ function saveGame() {
 	
 	if (currentId == 0) {
 		// create a new game if not already created
-		debugger
 		posting = $.post('/games', newGame)
 		posting.done(function(data) {
 			currentId = data['data'].id
@@ -162,7 +161,6 @@ function saveGame() {
 
 	} else if(currentId > 0) {
 		// update an existing game
-		debugger
         $.ajax({
             type : 'PATCH',
             url : url,
@@ -182,13 +180,15 @@ function previousGame() {
 	$.get('/games', function(data) {
 		savedGamesArr = data['data']
 		if (savedGamesArr.length > 0 && savedGamesArr.length > prevSaved) {
-			// game/s not already there to be added to the displayed list
+			// game/s not already there to be added to the displayed list with last-updated time
 			newSaved = (savedGamesArr.length - prevSaved)
 			
 			for (let i = newSaved; i <= newSaved && i >= 1; i--) {
 				  prevId = savedGamesArr[savedGamesArr.length-i].id
 				  updatedAt = data['data'][savedGamesArr.length-i].attributes['updated-at']
-		    	  $('#games').append(`<button><li>${prevId}</li></button> ${updatedAt}<br>`)
+				  date = new Date(updatedAt)
+				  time = date.getUTCHours() + ':' + date.getUTCMinutes() + ':' + date.getUTCSeconds()
+		    	  $('#games').append(`<button><li>${prevId}</li></button> ${time}<br>`)
 		    	}
 
 		    prevSaved += newSaved
