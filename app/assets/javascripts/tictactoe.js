@@ -1,8 +1,6 @@
 
-var board = ['','','','','','','','','']
 var currentId = 0
 var msg = ''
-var newGameSaved = []
 var prevSaved = 0
 var turn = 0
 var winCombos =
@@ -183,14 +181,14 @@ function previousGame() {
 	newSaved = 0
 	$.get('/games', function(data) {
 		savedGamesArr = data['data']
-		
 		if (savedGamesArr.length > 0 && savedGamesArr.length > prevSaved) {
 			// game/s not already there to be added to the displayed list
 			newSaved = (savedGamesArr.length - prevSaved)
 			
 			for (let i = newSaved; i <= newSaved && i >= 1; i--) {
 				  prevId = savedGamesArr[savedGamesArr.length-i].id
-		    	  $('#games').append(`<button><li>${prevId}</li></button><br>`)
+				  updatedAt = data['data'][savedGamesArr.length-i].attributes['updated-at']
+		    	  $('#games').append(`<button><li>${prevId}</li></button> ${updatedAt}<br>`)
 		    	}
 
 		    prevSaved += newSaved
