@@ -73,8 +73,17 @@ function checkWinner() {
 	// invokes the setMessage() function with the argument 'Player X Won!' or 'Player O Won!'
 	board = document.querySelectorAll('td')
 	winner = 'none'
+	
 	$.each(winCombos, function( index , value) {
 		
+		// *** below is my preferred version but the test fails with it!!!!! ***
+		// if (board[value[0]].textContent == currentPlayer && 
+		// 	board[value[1]].textContent == currentPlayer && 
+		// 	board[value[2]].textContent == currentPlayer){
+		 		
+		//  	 	winner = currentPlayer 
+		// }
+
 		if (board[value[0]].textContent == 'X' && 
 			board[value[1]].textContent == 'X' && 
 			board[value[2]].textContent == 'X'){
@@ -86,7 +95,7 @@ function checkWinner() {
 		}
 		
 	});
-
+	
 	if (winner == 'none') {
 		return false		
 	} else {
@@ -228,9 +237,11 @@ function clearGame() {
 	msg = ''
 	turn = 0
 	setMessage(msg)
-
-	for (let i = 0; i < 9; i++) {
-	    board[i].innerHTML = ''
+	
+	if (typeof board !== 'undefined') {
+		for (let i = 0; i < 9; i++) {
+		    board[i].innerHTML = ''
+		}
 	}
 }
 

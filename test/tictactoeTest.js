@@ -123,8 +123,9 @@ describe('tictactoe.js', () => {
       //    |   |   
       // -----------
       //  O | O |   
-
+      
       expect(window.checkWinner()).to.be.true;
+
     });
 
     it('returns true when a player wins diagonally', () => {
@@ -134,7 +135,7 @@ describe('tictactoe.js', () => {
       //    | O |   
       // -----------
       //  O | X |   
-
+      
       expect(window.checkWinner()).to.be.true;
     });
 
