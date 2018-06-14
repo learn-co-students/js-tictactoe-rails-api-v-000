@@ -502,16 +502,16 @@ describe('AJAX interactions with the Rails API', () => {
         requests[0].respond(
           201,
           { 'Content-Type': 'application/json' },
-          jsonifyGame(['', '', '', '', '', '', '', '', ''])
+          jsonifyGame(['X', '', '', '', '', '', '', '', ''])
         );
-
+       
         saveButton.click();
-
+        
         expect(requests[0].method).to.equal('POST');
         expect(requests[0].url).to.equal('/games');
-
-        // expect(requests[1].method).to.equal('PATCH');
-        // expect(requests[1].url).to.equal('/games/1');
+        
+        expect(requests[1].method).to.equal('PATCH');
+        expect(requests[1].url).to.equal('/games/1');
       });
     });
   });

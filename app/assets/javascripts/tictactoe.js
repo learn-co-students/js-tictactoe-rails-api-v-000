@@ -1,6 +1,8 @@
 
+var board = ['','','','','','','','','']
 var currentId = 0
 var msg = ''
+var newGameSaved = []
 var prevSaved = 0
 var turn = 0
 var winCombos =
@@ -26,7 +28,7 @@ function attachListeners() {
 
 		document.getElementById('previous').addEventListener('click', previousGame)
 
-		document.getElementById('clear').addEventListener('click', clearBoard)
+		document.getElementById('clear').addEventListener('click', clearGame)
 }
 
 window.onload =	attachListeners
@@ -38,7 +40,7 @@ function tdClickHandler() {
 }
 
 function liClickHandler(e) {
-    // 'e' refers to the element the event was hooked on and converted to a number
+    // 'e' refers to the element the event was hooked on (converted to a number)
     gameId = parseInt(e.target.textContent, 10)
     // get the game whose button has been clicked
     getGame(gameId)    
@@ -145,25 +147,24 @@ function saveGame() {
 		for (let i = 0; i < 9; i++) {
 	    	dbGameArr.push(boardArr[i].textContent)
 	  	}
-	  	dbObj = {}
-		dbObj['state'] = dbGameArr
-		patchArr = []
-		patchArr.push(dbGameArr)
+	  	newGame = {}
+		newGame['state'] = dbGameArr
+		// for patch
+		url = '/games/'+ currentId;
+        jsonString = JSON.stringify(newGame)
 	}
 	
 	if (currentId == 0) {
-		// alert('create current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
-		// create a new game
-		debugger	 	
-		$.post('/games', dbObj)
+		// create a new game if not already created
+		debugger
+		posting = $.post('/games', newGame)
+		posting.done(function(data) {
+			currentId = data['data'].id
+		})		 			
 
 	} else if(currentId > 0) {
 		// update an existing game
-		// alert('Update current Id: ' + currentId + ' dbObj: ' + dbObj['state'])
 		debugger
-		url = '/games/'+ currentId;
-        jsonString = JSON.stringify(dbObj)
-        // alert('jsonString: ' + jsonString)
         $.ajax({
             type : 'PATCH',
             url : url,
@@ -227,10 +228,9 @@ function clearGame() {
 
 	currentId = 0
 	msg = ''
-	prevSaved = 0
 	turn = 0
-	
 	setMessage(msg)
+
 	for (let i = 0; i < 9; i++) {
 	    board[i].innerHTML = ''
 	}
