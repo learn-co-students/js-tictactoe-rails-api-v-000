@@ -10,6 +10,7 @@ var currentGameId = 0
 
 $(document).ready(function(){
     attachListeners()
+    findSquare()
 });
 
 function saveGame(){
@@ -110,38 +111,18 @@ function doTurn(token) {
     };
 };
 
-// function attachListeners() {
-//     $("td").on("click", function() {
-//       if (!checkWinner() && this.innerText === "") {
-//         doTurn(this);
-//       };
-//     });
-  
-//     $("#clear").on("click", resetBoard);
-//     $("#previous").on("click", previousGames);
-//     $("#save").on("click", saveGame);
-// };
-
 function attachListeners() {
-	$('td').click(function(e){
-		doTurn(e);
-	})
+    $("td").on("click", function() {
+      if (!checkWinner() && this.innerText === "") {
+        doTurn(this);
+      };
+    });
+  
+    $("#clear").on("click", resetBoard);
+    $("#previous").on("click", previousGames);
+    $("#save").on("click", saveGame);
+};
 
-	$('#save').click(function(e){
-		superSave();
-	})
-
-	$('#previous').click(function(e){
-		$.get('/games', function(response){
-			$('#games').html("")
-			$.each(response["games"], function(index, value) {
-				//CODE TO ACTUALLY GIVE YOU GOOD LINKS   HERE
-				$('#games').append("<a href='#' class='link' data-id=" + value["id"] +">Game " + value["id"] + "</p>")
-			})
-			addLinkHandlers();
-		})
-	})
-}
 
 function resetBoard() {
     turn = 0
@@ -153,3 +134,13 @@ function resetBoard() {
         console.log(element.innerHTML);
     });
 };
+
+function findSquare(){
+    let counter = 0
+    $("[data-x]").map(function() {
+      counter += 1
+      $(this).attr({
+        position: `${counter}`
+      })
+    })
+  }
