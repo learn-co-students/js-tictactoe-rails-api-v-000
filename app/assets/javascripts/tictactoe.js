@@ -189,14 +189,14 @@ function previousGame() {
 	$.get('/games', function(data) {
 		savedGamesArr = data['data']
 		if (savedGamesArr.length > 0 && savedGamesArr.length > prevSaved) {
-			// game/s not already there to be added to the displayed list with last-updated time
+			// add game/s not already displayed to the displayed list with last-updated local time
 			newSaved = (savedGamesArr.length - prevSaved)
 			
 			for (let i = newSaved; i <= newSaved && i >= 1; i--) {
 				  prevId = savedGamesArr[savedGamesArr.length-i].id
 				  updatedAt = data['data'][savedGamesArr.length-i].attributes['updated-at']
 				  date = new Date(updatedAt)
-				  time = date.getUTCHours() + ':' + date.getUTCMinutes() + ':' + date.getUTCSeconds()
+				  time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
 		    	  $('#games').append(`<button><li>${prevId}</li></button> ${time}<br>`)
 		    	}
 
