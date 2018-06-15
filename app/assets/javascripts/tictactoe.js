@@ -110,17 +110,38 @@ function doTurn(token) {
     };
 };
 
-function attachListeners() {
-    $("td").on("click", function() {
-      if (!checkWinner() && this.innerText === "") {
-        doTurn(this);
-      };
-    });
+// function attachListeners() {
+//     $("td").on("click", function() {
+//       if (!checkWinner() && this.innerText === "") {
+//         doTurn(this);
+//       };
+//     });
   
-    $("#clear").on("click", resetBoard);
-    $("#previous").on("click", previousGames);
-    $("#save").on("click", saveGame);
-};
+//     $("#clear").on("click", resetBoard);
+//     $("#previous").on("click", previousGames);
+//     $("#save").on("click", saveGame);
+// };
+
+function attachListeners() {
+	$('td').click(function(e){
+		doTurn(e);
+	})
+
+	$('#save').click(function(e){
+		superSave();
+	})
+
+	$('#previous').click(function(e){
+		$.get('/games', function(response){
+			$('#games').html("")
+			$.each(response["games"], function(index, value) {
+				//CODE TO ACTUALLY GIVE YOU GOOD LINKS   HERE
+				$('#games').append("<a href='#' class='link' data-id=" + value["id"] +">Game " + value["id"] + "</p>")
+			})
+			addLinkHandlers();
+		})
+	})
+}
 
 function resetBoard() {
     turn = 0
