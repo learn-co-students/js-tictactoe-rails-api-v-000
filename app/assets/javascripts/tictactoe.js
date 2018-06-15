@@ -45,7 +45,7 @@ function liClickHandler(e) {
 }
 
 function player() {
-	// Returns 'X' when the turn variable is even and 'O' when it is odd
+	// Return 'X' when the turn variable is even and 'O' when it is odd
 	if (turn % 2 == 0) {
 		return 'X'
 	} else {
@@ -54,7 +54,7 @@ function player() {
 }
 
 function updateState(square) {
-	// adds the current player's token to the passed-in <td> element
+	// add the current player's token to the passed-in <td> element
 	currentPlayer = player()
 	
 	if (square.textContent == '') {
@@ -64,13 +64,13 @@ function updateState(square) {
 }
 
 function setMessage(msg) {
-	// sets a provided string as the innerHTML of the div#message element
+	// set a provided string as the innerHTML of the div#message element
 	$('#message').text(msg)	  
 }
 
 function checkWinner() {
-	// checks if current player has won (horizontally, vertically, or diagonally)
-	// invokes the setMessage() function with the argument 'Player X Won!' or 'Player O Won!'
+	// check if current player has won (horizontally, vertically, or diagonally)
+	// invoke the setMessage() function with the argument 'Player X Won!' or 'Player O Won!'
 	board = document.querySelectorAll('td')
 	winner = 'none'
 	
@@ -79,8 +79,7 @@ function checkWinner() {
 		// *** below is my preferred version but the test fails with it!!!!! ***
 		// if (board[value[0]].textContent == currentPlayer && 
 		// 	board[value[1]].textContent == currentPlayer && 
-		// 	board[value[2]].textContent == currentPlayer){
-		 		
+		// 	board[value[2]].textContent == currentPlayer){ 		
 		//  	 	winner = currentPlayer 
 		// }
 
@@ -106,7 +105,7 @@ function checkWinner() {
 }
 
 function doTurn(square) {
-	// updates the play state, checks for a winner, and sends a 'Tied Game.' message for a tied game
+	// update the play state, check for a winner, and send a 'Tied Game.' message for a tied game
 	updateState(square)
 
 	checkWinner()
@@ -114,17 +113,17 @@ function doTurn(square) {
 	if (winner == 'none') {
 	  // game not won or tied
 	} else {
-			// resets the board and the "turn" counter when a game is won
+			// reset the board and the "turn" counter when a game is won
 			saveGame()
 			clearBoard()
 			return
 		}
-	// converts 'board' object to an array and checks for a tied game
+	// convert 'board' object to an array and check for a tied game
 	boardArray = Array.from(board)
 	boardFull = boardArray.filter(elem => elem.textContent == '')
 
 	if (boardFull.length == 0) {
-		// displays a 'Tie game.' message and resets the board and the "turn" counter when a game is tied
+		// display a 'Tie game.' message and reset the board and the "turn" counter when a game is tied
 		msg = 'Tie game.'
 		setMessage(msg)
 		saveGame()
@@ -207,7 +206,7 @@ function previousGame() {
 }
 
 function populateBoard(gameArr) {
-	// popullate the board and update 'turn' count for the next player's go
+	// populate the board and update 'turn' count for the next player's go
 	board = document.querySelectorAll('td')
 	gameTurns = 0
 
