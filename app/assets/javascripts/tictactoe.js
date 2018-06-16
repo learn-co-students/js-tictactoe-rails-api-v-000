@@ -1,9 +1,8 @@
 
-var currentId = 0
-var msg = ''
+var currentGame = 0
 var prevSaved = 0
 var turn = 0
-var winCombos =
+var WINNING_COMBOS =
       [
         [0,1,2], // top row
         [3,4,5], // middle row
@@ -72,71 +71,41 @@ function checkWinner() {
 	// check if current player has won (horizontally, vertically, or diagonally)
 	// invoke the setMessage() function with the argument 'Player X Won!' or 'Player O Won!'
 	board = document.querySelectorAll('td')
-	winner = 'none'
-	
-	$.each(winCombos, function( index , value) {
-		
-		// *** below is my preferred version but the test fails with it!!!!! ***
-		// if (board[value[0]].textContent == currentPlayer && 
-		// 	board[value[1]].textContent == currentPlayer && 
-		// 	board[value[2]].textContent == currentPlayer){ 		
-		//  	 	winner = currentPlayer 
-		// }
+	winner = false
 
-		if (board[value[0]].textContent == 'X' && 
-			board[value[1]].textContent == 'X' && 
-			board[value[2]].textContent == 'X'){
-		  winner = 'X'  
-		} else if (board[value[0]].textContent == 'O' && 
-			 	   board[value[1]].textContent == 'O' && 
-			 	   board[value[2]].textContent == 'O') {
-				winner = 'O'
-		}
-		
+	WINNING_COMBOS.some(function(combo) {
+	    if (board[combo[0]].textContent !== "" && 
+	    	board[combo[0]].textContent === board[combo[1]].textContent && 
+	    	board[combo[1]].textContent === board[combo[2]].textContent) {
+	      setMessage(`Player ${board[combo[0]].textContent} Won!`);
+	      return winner = true;
+	    }
 	});
+
+	return winner			
 	
-	if (winner == 'none') {
-		return false		
-	} else {
-		msg = `Player ${winner} Won!`
-		setMessage(msg)
-		return true
-	}
 }
 
 function doTurn(square) {
 	// update the play state, check for a winner, and send a 'Tied Game.' message for a tied game
 	updateState(square)
+	turn += 1
 
-	checkWinner()
-
-	if (winner == 'none') {
-	  // game not won or tied
-	} else {
-			// reset the board and the "turn" counter when a game is won
-			saveGame()
-			clearBoard()
-			return
-		}
-	// convert 'board' object to an array and check for a tied game
-	boardArray = Array.from(board)
-	boardFull = boardArray.filter(elem => elem.textContent == '')
-
-	if (boardFull.length == 0) {
-		// display a 'Tie game.' message and reset the board and the "turn" counter when a game is tied
-		msg = 'Tie game.'
-		setMessage(msg)
+	if (checkWinner()) {
+		// reset the board and the "turn" counter when a game is won
 		saveGame()
 		clearBoard()
-		return
-	}
-
-	turn += 1  
+	} else if (turn === 9) {
+		// tied game
+			setMessage('Tie game.')
+			saveGame()
+			clearBoard()
+		} 
 }
 
 function getGame (gameId) {
 	$.get('/games/' + gameId, function(data) {
-		currentId = data['data'].id
+		currentGame = data['data'].id
 		gameArr = data['data'].attributes.state
 		// populate the board with the game just retrieved
 		populateBoard(gameArr)
@@ -148,7 +117,7 @@ function saveGame() {
 	
 	boardArr = Array.from(document.querySelectorAll('td'))
 	// collect the board data to create or update a game in the database
-	if (currentId >= 0) {
+	if (currentGame >= 0) {
 		dbGameArr = []
 		for (let i = 0; i < 9; i++) {
 	    	dbGameArr.push(boardArr[i].textContent)
@@ -156,18 +125,18 @@ function saveGame() {
 	  	newGame = {}
 		newGame['state'] = dbGameArr
 		// for patch
-		url = '/games/'+ currentId;
+		url = '/games/'+ currentGame;
         jsonString = JSON.stringify(newGame)
 	}
 	
-	if (currentId == 0) {
+	if (currentGame == 0) {
 		// create a new game if not already created
 		posting = $.post('/games', newGame)
 		posting.done(function(data) {
-			currentId = data['data'].id
+			currentGame = data['data'].id
 		})		 			
 
-	} else if(currentId > 0) {
+	} else if(currentGame > 0) {
 		// update an existing game
         $.ajax({
             type : 'PATCH',
@@ -179,7 +148,7 @@ function saveGame() {
             }
         })
 
-	} else alert('** error ** Please try again! - Current ID: ' + currentId)
+	} else alert('** error ** Please try again! - Current ID: ' + currentGame)
 }
 
 function previousGame() {
@@ -222,25 +191,15 @@ function populateBoard(gameArr) {
 
 function clearBoard() {
 
-	currentId = 0
+	$('td').empty()
+	currentGame = 0
 	turn = 0
-
-	for (let i = 0; i < 9; i++) {
-	    board[i].innerHTML = ''
-	}
 }
 
 function clearGame() {
 
-	currentId = 0
-	msg = ''
+	$('td').empty()
+	currentGame = 0
 	turn = 0
-	setMessage(msg)
-	
-	if (typeof board !== 'undefined') {
-		for (let i = 0; i < 9; i++) {
-		    board[i].innerHTML = ''
-		}
-	}
+	setMessage('')
 }
-
