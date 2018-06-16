@@ -115,29 +115,19 @@ function getGame (gameId) {
 }
 
 function saveGame() {
-	
-	boardArr = Array.from(document.querySelectorAll('td'))
-	// collect the board data to create or update a game in the database
-	if (currentGame >= 0) {
-		dbGameArr = []
-		for (let i = 0; i < 9; i++) {
-	    	dbGameArr.push(boardArr[i].textContent)
-	  	}
-	  	newGame = {}
-		newGame['state'] = dbGameArr
-		// for patch
-		url = '/games/'+ currentGame;
-        jsonString = JSON.stringify(newGame)
-	}
-	
-	if (currentGame == 0) {
-		// create a new game if not already created
-		posting = $.post('/games', newGame)
-		posting.done(function(data) {
-			currentGame = data['data'].id
-		})		 			
 
-	} else if(currentGame > 0) {
+	// collect the board data to create or update a game in the database
+	gameState = []
+	newGame = {}
+	url = '/games/'+ currentGame;
+	boardState = Array.from(document.querySelectorAll('td'))
+	for (let i = 0; i < 9; i++) {
+	    	gameState.push(boardState[i].textContent)
+	  	}
+	newGame['state'] = gameState
+	jsonString = JSON.stringify(newGame)
+
+	if (currentGame) {
 		// update an existing game
         $.ajax({
             type : 'PATCH',
@@ -148,8 +138,13 @@ function saveGame() {
               alert(error)
             }
         })
-
-	} else alert('** error ** Please try again! - Current ID: ' + currentGame)
+	} else {
+		// create a new game
+		posting = $.post('/games', newGame)
+		posting.done(function(data) {
+			currentGame = data['data'].id
+		})
+	}
 }
 
 function previousGame() {
