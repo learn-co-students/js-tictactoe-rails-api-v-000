@@ -69,7 +69,7 @@ function setMessage(msg) {
 
 function checkWinner() {
 	// check if current player has won (horizontally, vertically, or diagonally)
-	// invoke the setMessage() function with the argument 'Player X Won!' or 'Player O Won!'
+	// if won, invoke the setMessage() function with the argument 'Player X Won!' or 'Player O Won!'
 	board = document.querySelectorAll('td')
 	winner = false
 
@@ -87,7 +87,7 @@ function checkWinner() {
 }
 
 function doTurn(square) {
-	// update the play state, check for a winner, and send a 'Tied Game.' message for a tied game
+	// update the play state, check for a winner or a tied game
 	updateState(square)
 	turn += 1
 
@@ -104,11 +104,12 @@ function doTurn(square) {
 }
 
 function getGame (gameId) {
+	// get a saved game's state
 	$.get('/games/' + gameId, function(data) {
 		currentGame = data['data'].id
-		gameArr = data['data'].attributes.state
+		retrievedGame = data['data'].attributes.state
 		// populate the board with the game just retrieved
-		populateBoard(gameArr)
+		populateBoard(retrievedGame)
 	})
 	
 }
@@ -174,14 +175,14 @@ function previousGame() {
     })
 }
 
-function populateBoard(gameArr) {
-	// populate the board and update 'turn' count for the next player's go
+function populateBoard(retrievedGame) {
+	// populate the board wth the retrieved game and update 'turn' count for the next player's go
 	board = document.querySelectorAll('td')
 	gameTurns = 0
 
   	for (let i = 0; i < 9; i++) {
-    	board[i].innerHTML = gameArr[i]
-    	if (gameArr[i] != '') {
+    	board[i].innerHTML = retrievedGame[i]
+    	if (retrievedGame[i] != '') {
     		gameTurns += 1
     	}
   	}
