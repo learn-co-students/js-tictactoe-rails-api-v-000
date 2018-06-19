@@ -1,5 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
+var currentGame = 0
 function isEven(n) {
    return n % 2 == 0;
 }
@@ -73,6 +74,7 @@ function doTurn(position) {
   turn += 1
   if (checkWinner()) {
     turn = 0
+    currentGame = 0
     //var nodes = document.querySelectorAll('td')
     $("td").empty()
     //nodes.forEach(function(node) {
@@ -80,6 +82,7 @@ function doTurn(position) {
     //})
   } else if (tieGame() === true) {
     turn = 0
+    currentGame = 0
     var nodes = document.querySelectorAll('td')
     nodes.forEach(function(node) {
         node.innerHTML = ""
@@ -95,9 +98,23 @@ var previous = function() {
       gameList = document.querySelector("#games")
       gameButton = ""
       games["data"].forEach(function(game){
-        gameButton += '<button>' + game + '</button>'
+        gameButton += '<button id=' + game["id"] + ' onclick="getGame(' + game["id"] + ')">' + game + '</button>'
         $("#games").html(gameButton)
       })
+    })
+  })
+}
+
+function getGame(id){
+  $.get(`/games/${id}`, function(data){
+    currentGame = id
+    var newBoard = data["data"]["attributes"]["state"]
+    var board = $("td")
+    $("td").each(function(index, square){
+      square.innerHTML = newBoard[index]
+      if (newBoard[index] !== ""){
+        turn += 1
+      }
     })
   })
 }
@@ -110,19 +127,36 @@ function attachListeners(){
     }
   })
   previous()
-  save()
+  $("#save").on("click", function(){save()})
   clear()
 }
 
 var save = function(){
-  $("#save").on("click", function(){
-    $.post("/games")
+  var state = [];
+  var gameData;
+  $("td").each(function(index, square){
+    state.push(square.innerHTML)
   })
-}
+  gameData = {state: state}
+
+    if (currentGame === 0) {
+      $.post("/games",gameData, function(data){
+        currentGame = data["data"]["id"]
+      })
+    } else {
+      $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+    }
+  }
+
 
 var clear = function(){
   $("#clear").on("click", function(){
     turn = 0
+    currentGame = 0
     var nodes = document.querySelectorAll('td')
     nodes.forEach(function(node) {
         node.innerHTML = ""
