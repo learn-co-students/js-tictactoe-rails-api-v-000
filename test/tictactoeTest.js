@@ -1,15 +1,17 @@
 try {
-  // If window is defined, it means we're running the tests in the browser, so we should use Mocha's BDD interface.
+  // If window is defined, it means we're running the tests in the browser,
+  // so we should use Mocha's BDD interface.
   window.document;
   mocha.setup('bdd');
 } catch (e) {
-  // If window is not defined, window.document will result in an error, taking us to the catch block and assigning the JSDom virtual DOM's window object to the 'window' variable.
+  // If window is not defined, window.document will result in an error,
+  // taking us to the catch block and assigning the JSDom virtual DOM's
+  // window object to the 'window' variable.
   var window = dom.window;
 }
 
 const sandbox = sinon.sandbox.create();
 const expect = chai.expect;
-
 const squares = window.document.querySelectorAll('td');
 const messageDiv = window.document.getElementById('message');
 const gamesDiv = window.document.getElementById('games');
@@ -22,6 +24,7 @@ function resetFixtures() {
   for (let i = 0; i < 9; i++) {
     squares[i].innerHTML = '';
   }
+  window.prevSaved *= 0;
   window.turn *= 0;
   messageDiv.innerHTML = '';
   gamesDiv.innerHTML = '';
@@ -113,14 +116,16 @@ describe('tictactoe.js', () => {
     });
 
     it('returns true when a player wins horizontally', () => {
+      
       populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
       //  X | X | X 
       // -----------
       //    |   |   
       // -----------
       //  O | O |   
-
+      
       expect(window.checkWinner()).to.be.true;
+
     });
 
     it('returns true when a player wins diagonally', () => {
@@ -130,7 +135,7 @@ describe('tictactoe.js', () => {
       //    | O |   
       // -----------
       //  O | X |   
-
+      
       expect(window.checkWinner()).to.be.true;
     });
 
@@ -312,7 +317,7 @@ describe('Gameplay', () => {
 
   it('Users cannot play any turns once a game is won or tied', () => {
     populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
-    window.turn = 5;
+    window.turn = 0;
     //  X | X | X 
     // -----------
     //    |   |   
@@ -322,7 +327,7 @@ describe('Gameplay', () => {
     squares[4].click();
 
     expect(squares[4].innerHTML).to.equal('');
-    expect(window.turn).to.equal(5);
+    expect(window.turn).to.equal(0);
   });
 
   it('Users can play multiple games', () => {
@@ -433,7 +438,7 @@ describe('AJAX interactions with the Rails API', () => {
         );
 
         const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
+    
         expect(gameButtons.length).to.equal(2);
       });
 
@@ -498,14 +503,14 @@ describe('AJAX interactions with the Rails API', () => {
         requests[0].respond(
           201,
           { 'Content-Type': 'application/json' },
-          jsonifyGame(['', '', '', '', '', '', '', '', ''])
+          jsonifyGame(['X', '', '', '', '', '', '', '', ''])
         );
-
+       
         saveButton.click();
-
+        
         expect(requests[0].method).to.equal('POST');
         expect(requests[0].url).to.equal('/games');
-
+        
         expect(requests[1].method).to.equal('PATCH');
         expect(requests[1].url).to.equal('/games/1');
       });

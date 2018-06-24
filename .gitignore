@@ -17,4 +17,4 @@
 /tmp
 .byebug_history
 .results.json
-node_modules/
+# node_modules/
