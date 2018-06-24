@@ -1,25 +1,31 @@
-<table border="1" cellpadding="40">
-	<tr>
-		<td data-x="0" data-y="0"></td>
-		<td data-x="1" data-y="0"></td>
-		<td data-x="2" data-y="0"></td>
-	</tr>
-	<tr>
-		<td data-x="0" data-y="1"></td>
-		<td data-x="1" data-y="1"></td>
-		<td data-x="2" data-y="1"></td>
-	</tr>
-	<tr>
-		<td data-x="0" data-y="2"></td>
-		<td data-x="1" data-y="2"></td>
-		<td data-x="2" data-y="2"></td>
-	</tr>
-</table>
+<div id="tictactoe">
+	<button id="save">Save Game</button>
+	<button id="previous">Show Previous Games</button>
+	<button id="clear">Clear Current Game</button>
+	<br>
+	<table cellpadding="40">
+		<tr>
+			<td id="zero" class="top left" data-x="0" data-y="0"></td>
+			<td id="one" class="top" data-x="1" data-y="0"></td>
+			<td id="two" class="top right" data-x="2" data-y="0"></td>
+		</tr>
+		<tr>
+			<td id="three" class="left" data-x="0" data-y="1"></td>
+			<td id="four" class="" data-x="1" data-y="1"></td>
+			<td id="five" class="right" data-x="2" data-y="1"></td>
+		</tr>
+		<tr>
+			<td id="six" class="bottom left" data-x="0" data-y="2"></td>
+			<td id="seven"class="bottom" data-x="1" data-y="2"></td>
+			<td id="eight" class="bottom right" data-x="2" data-y="2"></td>
+		</tr>
+	</table>
+	<br>
+	<div id="currentGame">
 
-<div id="games"></div>
+	</div>
+	<br>
+	<div id="message"></div>
 
-<div id="message"></div>
-
-<button id="save">Save Game</button>
-<button id="previous">Show Previous Games</button>
-<button id="clear">Clear Current Game</button>
+	<div id="games"></div>
+</div>
