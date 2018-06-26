@@ -21,8 +21,8 @@ function setMessage(string) {
 }
 
 function checkWinner() {
-  let winner = false
-  let board = {}
+  var winner = false
+  var board = {}
 
   $('td').text((index, square) => {
     board[index] = square
@@ -45,7 +45,6 @@ function full() {
 function clearBoard() {
   $('td').empty()
   turn = 0
-
 }
 
 function positionTaken(clickedPostition) {
@@ -57,36 +56,90 @@ function validMove(square) {
 }
 
 function doTurn(square) {
-  if (validMove(square) && !checkWinner()) {
-    updateState(square)
-    turn++
-    if (checkWinner()) {
-      clearBoard()
-    } else if (full()) {
-      setMessage('Tie game.')
-      clearBoard()
-    }
+  updateState(square);
+  turn++;
+  if (checkWinner()) {
+    saveGame();
+    clearBoard();
+  } else if (full()) {
+    setMessage('Tie game.');
+    saveGame();
+    clearBoard();
   }
 }
 
 function saveGame() {
-  let state = []
-  let gameData = {}
-  let url = '/games'
+  var state = []
+  var gameData = {}
+  var url = '/games'
 
   $('td').text((index, square) => {
     state.push(square)
   })
-  gameData = { 'state': state }
 
-  $.post(url, gameData, () => {
-    debugger
+  if (currentGame) {
+    gameData = { 'game': {'state': state, 'id': currentGame} }
+    $.ajax({
+      url: `${url}/${gameData.game.id}`,
+      data: gameData,
+      type: 'PATCH',
+    })
+  } else {
+    gameData = { 'game': {'state': state} }
+    $.post(url, gameData, function (game) {
+      currentGame = parseInt(game.data.id)
+    })
+  }
+}
+
+function clearGame() {
+ if (currentGame) {
+   clearBoard()
+   currentGame = 0
+ } else {
+   clearBoard()
+ }
+}
+
+function previousGames() {
+  var url = '/games'
+  var gamesButtons = $('#games button')
+
+  $.get(url, function (games) {
+    $('#games').empty()
+    games.data.forEach(function(game){
+      $('#games').append(`<button data-id='${game.id}'>${game.id}</button>`)
+    })
+  })
+}
+
+function getGame() {
+  var id  = event.path[0].dataset.id
+  var url = `/games/${id}`
+
+  $.get(url, function (game) {
+    currentGame = parseInt(game.data.id)
+    var gameState = game.data.attributes.state
+    var counter = 0
+
+    gameState.forEach(function(token, index) {
+      if (token === 'X' || token === 'O') {
+        counter++
+      }
+      $('td')[index].innerHTML = token
+    })
+    turn = counter
   })
 }
 
 function attachListeners() {
-  $('td').on('click', () => {
-    doTurn(this)
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+     doTurn(this);
+   }
   })
   $('#save').on('click', () => saveGame())
+  $('#clear').on('click', () => clearGame())
+  $('#previous').on('click', () => previousGames())
+  $('#games').on('click', 'button', () => getGame())
 }
