@@ -4,7 +4,7 @@
   "description": "Second half of the final lab in Learn.co's Rails and JavaScript topic.",
   "main": "app/assets/javascripts/tictactoe.js",
   "scripts": {
-    "test": "mocha -R mocha-multi --reporter-options nyan=-,json=.results.json"
+    "test": "mocha --timeout 100000 -R mocha-multi --reporter-options nyan=-,json=.results.json"
   },
   "repository": {
     "type": "git",
