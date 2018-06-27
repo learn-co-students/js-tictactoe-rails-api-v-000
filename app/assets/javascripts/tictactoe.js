@@ -1,8 +1,6 @@
 //  Code your JavaScript / jQuery solution here
-$(document).ready(function(){
-  attachListeners();
-});
 
+// DEFINING VARIABLES
 const WINNING_COMBOS = [
   [0,1,2],
   [3,4,5],
@@ -16,33 +14,29 @@ const WINNING_COMBOS = [
 
 var turn = 0;
 var currentGame = 0;
-var url = '/games'
 
+// When document ready, call function attach Listeners for click functionality //
+$(document).ready(function(){
+  attachListeners();
+});
 
-function attachListeners(){
-  $('td').on('click', function(){
-    if (!$.text(this) && !checkWinner()){
-      doTurn(this);
-    }
-  });
-  $('#save').on('click', () => saveGame());
-  $('#previus').on('click', () => previousGame());
-  $('#clear').on('click', () => clearGame());
-}
-
+// RETURN CORRECT PLAYER - If turn EVEN return X, otherwise O //
 function player() {
   return turn % 2 === 0 ? "X" : "O"
 }
 
+// Update the state of the game //
 function updateState(square) {
   var currentPlayer = player();
   $(square).text(currentPlayer);
 }
 
+// Set message for game ending scenario //
 function setMessage(message){
   $('#message').text(message);
 }
 
+// Check board to see if there are any winning combos and return winner //
 function checkWinner(){
   var board = {};
   var winner = false;
@@ -59,6 +53,39 @@ function checkWinner(){
   return winner;
 }
 
+// Check if position is taken //
+function positionTaken(position){
+  return position.innerText != ""
+}
+
+// Check if the move is valid //
+function validMove(square){
+  return !positionTaken(square)
+}
+
+// Verify if board is full //
+function full() {
+  return $.makeArray($("td")).every(function(cell){
+    return !(cell.innerHTML === "")
+  })
+}
+
+// Clear game board //
+function clearBoard(){
+  $('td').empty();
+  turn = 0;
+}
+
+// Clear Game situational //
+function clearGame(){
+  if (currentGame){
+    clearBoard();
+    currentGame = 0;
+  } else {
+    clearBoard();
+  }
+}
+
 function doTurn(square){
   updateState(square);
   turn++;
@@ -73,54 +100,73 @@ function doTurn(square){
 }
 
 function saveGame(){
-  let state = [];
-  let gameData = {};
-  let url = '/games';
+  var state = [];
+  var gameData = {};
+  var url = '/games'
 
   //get board and put into an Array
   $('td').text(function(index, square) {
     state.push(square);
   });
-
-  //put array into our gameData object
-  gameData = {state: state};
-
-  //save current state of game
-  //save data and send in ajax request
-  if (currentGame === 0){
-    $.post(url, gameData, function(game){
-      currentGame = game.data.id;
-      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
-      $("#gameid-" + game.data.id).on('click', function(){
-        loadGame(game.data.id)
-      });
-    });
-    //if game is already saved in DB
-  } else {
+  if (currentGame) {
+    gameData = { 'game': {'state': state, 'id': currentGame} }
     $.ajax({
+      url: `${url}/${gameData.game.id}`,
+      data: gameData,
       type: 'PATCH',
-      url: `${url}/${currentGame}`,
-      data: gameData
+    })
+  } else {
+    gameData = { 'game': {'state': state} }
+    $.post(url, gameData, function(game) {
+      currentGame = parseInt(game.data.id)
+      $('#games').append(`<button-id="gameid-${currentGame}">You successfully saved Game #${currentGame}</button><br>`);
+      $(`#gameid-${currentGame}`).on('click', ()=> loadGame(currentGame));
     });
   }
 }
 
-
 function previousGames(){
   // need the button to send GET request to the /games route
-$('#games').empty();
-$.get(url, {}, function(games){
+  var url = '/games'
+  $.get(url, function(games) {
+  $('#games').empty();
 
-})
+    games.data.forEach(function(game){
+      $('#games').append(`<button id="gameid-${game.id}">${game.id}</button>`);
+      $(`#gameid-${game.id}`).on('click', () => loadGame(game.id));
+    });
+  });
 }
 
+// load previous game to view that have been saved in dB //
+function loadGame(game){
+  var id  = event.path[0].innerText
+  var url = `/games/${id}`
 
-function loadGame(){
+  $.get(url, function(game) {
 
+    currentGame = game.data.id;
+    var gameState = game.data.attributes.state;
+    turn = gameState.join("").length;
+
+    var counter = 0;
+    var td = $("td");
+    $.each(td, function(key,value){
+      value.innerHTML = gameState[counter];
+      counter++
+    });
+  });
 }
 
-function clearGame(){
-  $('td').empty();
-  turn = 0;
-  currentGame = 0;
+// Attach listeners for buttons on click and call functions //
+function attachListeners(){
+  $('td').on('click', function(){
+    if (!$.text(this) && !checkWinner()){
+      doTurn(this);
+    }
+  });
+  $('#save').on('click', () => saveGame());
+  $('#games').on('click', () => loadGame());
+  $('#previous').on('click', () => previousGames());
+  $('#clear').on('click', () => clearGame());
 }
