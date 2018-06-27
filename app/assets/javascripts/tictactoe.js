@@ -1,4 +1,8 @@
 //  Code your JavaScript / jQuery solution here
+$(document).ready(function(){
+  attachListeners();
+});
+
 const WINNING_COMBOS = [
   [0,1,2],
   [3,4,5],
@@ -11,13 +15,23 @@ const WINNING_COMBOS = [
 ];
 
 var turn = 0;
+var currentGame = 0;
+var url = '/games'
+
+
+function attachListeners(){
+  $('td').on('click', function(){
+    if (!$.text(this) && !checkWinner()){
+      doTurn(this);
+    }
+  });
+  $('#save').on('click', () => saveGame());
+  $('#previus').on('click', () => previousGame());
+  $('#clear').on('click', () => clearGame());
+}
 
 function player() {
-  if (turn % 2 === 0){
-    return 'X';
-  } else{
-    return 'O';
-  }
+  return turn % 2 === 0 ? "X" : "O"
 }
 
 function updateState(square) {
@@ -49,9 +63,64 @@ function doTurn(square){
   updateState(square);
   turn++;
   if (checkWinner()){
-    $('td').empty();
-    turn = 0;
+    saveGame();
+    clearGame();
   }else if(turn === 9){
-    setMessage("Tie game.")
+    setMessage("Tie game.");
+    saveGame();
+    clearGame();
   }
+}
+
+function saveGame(){
+  let state = [];
+  let gameData = {};
+  let url = '/games';
+
+  //get board and put into an Array
+  $('td').text(function(index, square) {
+    state.push(square);
+  });
+
+  //put array into our gameData object
+  gameData = {state: state};
+
+  //save current state of game
+  //save data and send in ajax request
+  if (currentGame === 0){
+    $.post(url, gameData, function(game){
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', function(){
+        loadGame(game.data.id)
+      });
+    });
+    //if game is already saved in DB
+  } else {
+    $.ajax({
+      type: 'PATCH',
+      url: `${url}/${currentGame}`,
+      data: gameData
+    });
+  }
+}
+
+
+function previousGames(){
+  // need the button to send GET request to the /games route
+$('#games').empty();
+$.get(url, {}, function(games){
+
+})
+}
+
+
+function loadGame(){
+
+}
+
+function clearGame(){
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
 }
