@@ -119,7 +119,7 @@ function saveGame(){
     gameData = { 'game': {'state': state} }
     $.post(url, gameData, function(game) {
       currentGame = parseInt(game.data.id)
-      $('#games').append(`<button-id="gameid-${currentGame}">You successfully saved Game #${currentGame}</button><br>`);
+      $('#games').append(`<button-id="gameid-${currentGame}">You successfully saved Game ${currentGame}</button><br>`);
       $(`#gameid-${currentGame}`).on('click', ()=> loadGame(currentGame));
     });
   }
@@ -144,7 +144,6 @@ function loadGame(game){
   var url = `/games/${id}`
 
   $.get(url, function(game) {
-
     currentGame = game.data.id;
     var gameState = game.data.attributes.state;
     turn = gameState.join("").length;
@@ -166,7 +165,6 @@ function attachListeners(){
     }
   });
   $('#save').on('click', () => saveGame());
-  $('#games').on('click', () => loadGame());
   $('#previous').on('click', () => previousGames());
   $('#clear').on('click', () => clearGame());
 }
