@@ -37,7 +37,7 @@ function checkWinner() {
      return currentBoard[combo[0]] === currentBoard[combo[1]] &&
             currentBoard[combo[1]] === currentBoard[combo[2]] &&
             currentBoard[combo[0]] !== ''});
-  if (winner) {
+  if (gameWon) {
     setMessage(`Player ${currentBoard[gameWon[0]]} Won!`);
     return true;
   } else {
