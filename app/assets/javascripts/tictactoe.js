@@ -18,9 +18,9 @@ function player() {
   return turn % 2 ? 'O' : 'X';
 }
 
-function updateState(cell) {
+function updateState(square) {
   const token = player();
-  $(cell).text(token);
+  $(square).text(token);
 }
 
 
@@ -49,9 +49,6 @@ function resetBoard() {
   turn = 0;
   gameId = 0;
   $('td').empty();
-  // for (let cell of $cells) {
-  //   $(cell).text("");
-  // };
 }
 
 function doTurn(square) {
