@@ -58,16 +58,16 @@ function doTurn(square) {
   updateState(square);
   turn++;
   if (checkWinner()) {
-    save();
+    saveGame();
     resetBoard();
   } else if (!currentBoard.includes('')) {
     setMessage('Tie game.');
-    save();
+    saveGame();
     resetBoard();
   }
 }
 
-function save() {
+function saveGame() {
 if (gameId) {
     $.ajax({
       method: 'patch',
@@ -91,7 +91,7 @@ if (gameId) {
   }
 }
 
-function getPreviousGames() {
+function previousGames() {
   $('#games').empty();
   $.get('/games', (res) => {
     const games = res.data;
@@ -112,11 +112,11 @@ function attachListeners() {
   });
 
   $('#save').click(function(){
-    save();
+    saveGame();
   })
 
   $('#previous').click(function(){
-    getPreviousGames();
+    previousGames();
   })
 
   $('#clear').click(function(){
@@ -125,12 +125,12 @@ function attachListeners() {
 
 }
 
-function reloadGame(gameID) {
+function reloadGame(gameCount) {
   document.getElementById('message').innerHTML = '';
 
   const xhr = new XMLHttpRequest;
   xhr.overrideMimeType('application/json');
-  xhr.open('GET', `/games/${gameID}`, true);
+  xhr.open('GET', `/games/${gameCount}`, true);
   xhr.onload = () => {
     const data = JSON.parse(xhr.responseText).data;
     const id = data.id;
@@ -155,23 +155,3 @@ function reloadGame(gameID) {
   xhr.send(null);
 }
 
-function attachListeners() {
-  $('td').click(function(){
-    if (!$.text(this) && !checkWinner()) {
-      doTurn(this);
-    }
-  });
-
-  $('#save').click(function(){
-    save();
-  })
-
-  $('#previous').click(function(){
-    getPreviousGames();
-  })
-
-  $('#clear').click(function(){
-    resetBoard();
-  })
-
-}
