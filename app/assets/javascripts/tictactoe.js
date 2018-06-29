@@ -33,12 +33,12 @@ function checkWinner() {
   $('td').each(function(index) {
     currentBoard[index] = $(this).text();
   });
-  winner = WIN_COMBINATIONS.find(function(combo){
+  gameWon = WIN_COMBINATIONS.find(function(combo){
      return currentBoard[combo[0]] === currentBoard[combo[1]] &&
             currentBoard[combo[1]] === currentBoard[combo[2]] &&
             currentBoard[combo[0]] !== ''});
   if (winner) {
-    setMessage(`Player ${currentBoard[winner[0]]} Won!`);
+    setMessage(`Player ${currentBoard[gameWon[0]]} Won!`);
     return true;
   } else {
     return false;
