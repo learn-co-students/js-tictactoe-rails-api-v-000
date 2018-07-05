@@ -22,7 +22,7 @@ function attachListeners() {
   $('button#clear').on('click', clearGame);
   $('button#save').on('click', saveGame);
   $('button#previous').on('click', prevGame);
-  $('td').on('click', doTurn);
+  $('td').on('click', doTurn(e.target));
 }
 
 // GAME PLAY
@@ -51,21 +51,22 @@ function checkWinner() {
 
   winCombos.forEach(position => {
     if (board[position[0]] === board[position[1]] && board[position[1]] === board[position[2]] && board[position[0]] != "") {
-      setMessage(`Player ${board[position[0]]} Won!`)
-      return winner = true;
+      setMessage(`Player ${board[position[0]]} Won!`);
+      winner = true;
+      return winner;
     }
   });
-  if (turn >= 8) {
+  if (turn >= 8 && winner === false) {
     setMessage('Tie game.')
   }
   return winner;
 }
 
-function doTurn(event) {
-  updateState(event.target);
+function doTurn(el) {
+  updateState(el);
   var winner = checkWinner();
   turn++;
-  if (winner === true) {
+  if (winner) {
     clearGame();
   }
 }
@@ -73,7 +74,7 @@ function doTurn(event) {
 // BUTTONS
 
 function clearGame() {
-  $('td').text("");
+  $('td').text('');
   gameId = null;
   turn = 0;
 }

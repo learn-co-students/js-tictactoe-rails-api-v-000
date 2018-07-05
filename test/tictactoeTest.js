@@ -254,6 +254,7 @@ describe('tictactoe.js', () => {
       window.turn = 8;
       window.doTurn(squares[6]);
 
+
       const board = Array.from(squares).map(s => s.innerHTML);
 
       expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);
