@@ -61,25 +61,29 @@ function checkWinner() {
       return winner;
     }
   });
-  if (turn >= 8 && winner === false) {
-    setMessage('Tie game.')
-    saveGame();
-    clearGame();
-  }
   return winner;
 }
 
-function doTurn(square) {
-  if (square.innerHTML != "") {
-    setMessage('That space is taken. Try again.')
-  } else {
-    updateState(square);
-    turn++;
-    if (checkWinner()) {
-      saveGame();
-      clearGame();
-    }
+function checkTie() {
+  if (turn > 8 && checkWinner() === false) {
+    setMessage('Tie game.')
+    return true;
   }
+}
+
+function doTurn(square) {
+  // if (checkWinner() === false) {
+    if (square.innerHTML != "") {
+      setMessage('That space is taken. Try again.')
+    } else {
+      updateState(square);
+      turn++;
+      if (checkWinner() || checkTie()) {
+        saveGame();
+        clearGame();
+      }
+    }
+  // }
 }
 
 // BUTTONS
@@ -145,7 +149,8 @@ function loadGame(button) {
     }
     gameId = id;
     var board = getCurrentBoard();
-    turn = board.filter(space => space).length;
+    turn = gameState.join('').length
+    //turn = board.filter(space => space).length;
   })
 }
 
