@@ -22,7 +22,12 @@ function attachListeners() {
   $('button#clear').on('click', clearGame);
   $('button#save').on('click', saveGame);
   $('button#previous').on('click', prevGame);
-  $('td').on('click', doTurn(e.target));
+  $('div#games').on('click', function(event) {
+    loadGame(event.target);
+  });
+  $('td').on('click', function(event) {
+    doTurn(event.target);
+  });
 }
 
 // GAME PLAY
@@ -58,16 +63,22 @@ function checkWinner() {
   });
   if (turn >= 8 && winner === false) {
     setMessage('Tie game.')
+    saveGame();
+    clearGame();
   }
   return winner;
 }
 
-function doTurn(el) {
-  updateState(el);
-  var winner = checkWinner();
-  turn++;
-  if (winner) {
-    clearGame();
+function doTurn(square) {
+  if (square.innerHTML != "") {
+    setMessage('That space is taken. Try again.')
+  } else {
+    updateState(square);
+    turn++;
+    if (checkWinner()) {
+      saveGame();
+      clearGame();
+    }
   }
 }
 
@@ -85,21 +96,52 @@ function saveGame() {
     }
 
   if (!!gameId) {
-    $.ajax('/games/'+ gameId, {
-      type: "PATCH",
+    $.ajax({
+      method: "PATCH",
+      url: `/games/${gameId}`,
       data: JSON.stringify(gameState),
       contentType: 'application/json',
     })
-    } else {
-      $.post('/games', gameState).done(function(response) {
-        gameId = response.data.id;
-        console.log('game ' + gameId + ' saved')
-      })
-    }
+  } else {
+    $.ajax({
+      method: 'POST',
+      url: '/games',
+      data: gameState,
+      contentType: 'application/json'
+    }).done(function(response) {
+      gameId = response.data.id;
+      console.log('game ' + gameId + ' saved')
+    })
+  }
 }
 
 function prevGame() {
-  // build this out
+  $.ajax({
+    method: 'GET',
+    url: '/games',
+    contentType: 'application/json'
+  }).done(function(response) {
+    var prevGames = response.data;
+    prevGames.forEach(game => {
+      var buttonHTML = `<button class="loadGame" data-id="${game.id}">Load Game ${game.id}</button><br />`;
+      $('#games').append(buttonHTML);
+    })
+  })
+}
+
+function loadGame(button) {
+  var id = button.dataset.id;
+  $.ajax({
+    method: 'GET',
+    url: `/games/${id}`,
+    contentType: 'application/json'
+  }).done(function(response) {
+    var gameState = response.data.attributes.state;
+    var squares = $('td')
+    for (var i = 0; i < 9; i++) {
+      $(squares[i]).text(gameState[i]);
+    }
+  })
 }
 
 function getCurrentBoard() {
