@@ -102,10 +102,11 @@ function saveGame() {
       contentType: 'application/json',
     })
   } else {
+    console.log('no gameId')
     $.ajax({
       method: 'POST',
       url: '/games',
-      data: gameState,
+      data: JSON.stringify(gameState),
       contentType: 'application/json'
     }).done(function(response) {
       gameId = response.data.id;
@@ -126,6 +127,8 @@ function prevGame() {
       buttonHTML += `<button class="loadGame" data-id="${game.id}">Load Game ${game.id}</button><br />`;
     })
     $('#games').html(buttonHTML);
+  }).fail(function() {
+    console.log("error")
   })
 }
 
