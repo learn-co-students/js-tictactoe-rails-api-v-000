@@ -122,14 +122,16 @@ function prevGame() {
     contentType: 'application/json'
   }).done(function(response) {
     var prevGames = response.data;
+    var buttonHTML = '';
     prevGames.forEach(game => {
-      var buttonHTML = `<button class="loadGame" data-id="${game.id}">Load Game ${game.id}</button><br />`;
-      $('#games').append(buttonHTML);
+      buttonHTML += `<button class="loadGame" data-id="${game.id}">Load Game ${game.id}</button><br />`;
     })
+    $('#games').html(buttonHTML);
   })
 }
 
 function loadGame(button) {
+  clearGame();
   var id = button.dataset.id;
   $.ajax({
     method: 'GET',
@@ -141,6 +143,9 @@ function loadGame(button) {
     for (var i = 0; i < 9; i++) {
       $(squares[i]).text(gameState[i]);
     }
+    gameId = id;
+    var board = getCurrentBoard();
+    turn = board.filter(space => space).length;
   })
 }
 

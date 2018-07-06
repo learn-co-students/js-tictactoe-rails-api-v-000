@@ -651,7 +651,6 @@ describe('AJAX interactions with the Rails API', () => {
       );
 
       const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
       gameButtons[0].click();
 
       requests[1].respond(
@@ -663,6 +662,7 @@ describe('AJAX interactions with the Rails API', () => {
       const board = Array.from(squares).map(s => s.innerHTML);
 
       expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', 'O', '']);
+
       expect(window.turn).to.equal(2);
     });
 
