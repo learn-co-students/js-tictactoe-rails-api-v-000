@@ -26,7 +26,9 @@ function attachListeners() {
     loadGame(event.target);
   });
   $('td').on('click', function(event) {
-    doTurn(event.target);
+    if (!event.target.innerHTML && !checkWinner()) {
+      doTurn(event.target);
+    }
   });
 }
 
@@ -72,24 +74,22 @@ function checkTie() {
 }
 
 function doTurn(square) {
-  // if (checkWinner() === false) {
-    if (square.innerHTML != "") {
-      setMessage('That space is taken. Try again.')
-    } else {
-      updateState(square);
-      turn++;
-      if (checkWinner() || checkTie()) {
-        saveGame();
-        clearGame();
-      }
-    }
-  // }
+  updateState(square);
+  turn++;
+  if (checkWinner()) {
+    saveGame();
+    clearGame();
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+    saveGame();
+    clearGame();
+  }
 }
 
 // BUTTONS
 
 function clearGame() {
-  $('td').text('');
+  $('td').empty();
   gameId = null;
   turn = 0;
 }
