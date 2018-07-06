@@ -43,8 +43,7 @@ function player() {
 }
 
 function updateState(square) {
-  var currentPlayer = player();
-  $(square).text(currentPlayer);
+  $(square).text(player());
 }
 
 function setMessage(str) {
@@ -67,7 +66,7 @@ function checkWinner() {
 }
 
 function checkTie() {
-  if (turn > 8 && checkWinner() === false) {
+  if (turn > 8 && !checkWinner()) {
     setMessage('Tie game.')
     return true;
   }
@@ -76,11 +75,7 @@ function checkTie() {
 function doTurn(square) {
   updateState(square);
   turn++;
-  if (checkWinner()) {
-    saveGame();
-    clearGame();
-  } else if (turn === 9) {
-    setMessage("Tie game.");
+  if (checkWinner() || checkTie()) {
     saveGame();
     clearGame();
   }
@@ -150,7 +145,6 @@ function loadGame(button) {
     gameId = id;
     var board = getCurrentBoard();
     turn = gameState.join('').length
-    //turn = board.filter(space => space).length;
   })
 }
 
