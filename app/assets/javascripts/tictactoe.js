@@ -41,10 +41,18 @@ function checkWinner(){
   }else {
     return false
   }
-
 }
 function doTurn(){
-
+  turn++
+  updateState()
+  if(turn === 9){
+    $("td").empty()
+    setMessage("Tie game.")
+    turn = 0
+  }else if(checkWinner()){
+    $("td").empty()
+    turn = 0
+  }
 }
 function attachListeners(){
 
