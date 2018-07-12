@@ -54,6 +54,11 @@ function doTurn(){
     turn = 0
   }
 }
-function attachListeners(){
 
+function attachListeners(){
+  $("td").click(function(){
+    console.log($(this))
+  })
 }
+
+$(document).ready(attachListeners)
