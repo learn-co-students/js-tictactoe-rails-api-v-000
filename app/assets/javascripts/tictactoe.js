@@ -11,19 +11,28 @@ function setMessage(string){
 }
 function checkWinner(){
 
-  $("td").each(function(){
-    console.log($(this).html())
-  });
+  if($("td:eq(0)").html() === $("td:eq(1)").html() && $("td:eq(1)").html() === $("td:eq(2)").html()){
+    return true
+  }else if ($("td:eq(3)").html() === $("td:eq(4)").html() && $("td:eq(4)").html() === $("td:eq(5)").html()) {
+    return true
+  }else if ($("td:eq(6)").html() === $("td:eq(7)").html() && $("td:eq(7)").html() === $("td:eq(8)").html()) {
+    return true
+    // Diagonal Next
+  }else if ($("td:eq(0)").html() === $("td:eq(4)").html() && $("td:eq(4)").html() === $("td:eq(8)").html()) {
+    return true
+  }else if ($("td:eq(2)").html() === $("td:eq(4)").html() && $("td:eq(4)").html() === $("td:eq(6)").html()) {
+    return true
+    // Vertical Next
+  }else if ($("td:eq(0)").html() === $("td:eq(3)").html() && $("td:eq(3)").html() === $("td:eq(6)").html()) {
+    return true
+  }else if ($("td:eq(1)").html() === $("td:eq(4)").html() && $("td:eq(4)").html() === $("td:eq(7)").html()) {
+    return true
+  }else if ($("td:eq(2)").html() === $("td:eq(5)").html() && $("td:eq(5)").html() === $("td:eq(8)").html()) {
+    return true
+  }else {
+    return false
+  }
 
-  // if (top-horizontal && middle-horizontal && bottom-horizontal){
-  //   return true
-  // }else {
-  //   return false
-  // }
-  // $("td:eq(4)").html()
-  // $("table tr td").eq(0).html()
-  // $("table tr td").eq(1).html()
-  // $("table tr td").eq(2).html()
 }
 function doTurn(){
 
