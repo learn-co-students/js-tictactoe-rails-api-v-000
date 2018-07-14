@@ -3,8 +3,10 @@ var turn = 0;
 function player(){
   return turn % 2 === 0 ? "X" : "O"
 }
-function updateState(element){
-  $(element).text(player())
+function updateState(ele){
+  if ($(ele).text() === ""){
+    $(ele).text(player())
+  }
 }
 function setMessage(string){
   $("div#message").html(string)
@@ -43,7 +45,7 @@ function checkWinner(){
 }
 function doTurn(ele){
   turn++
-  updateState()
+  updateState(ele)
   if(turn === 9){
     $("td").empty()
     setMessage("Tie game.")
