@@ -5,6 +5,7 @@ function player(){
 }
 function updateState(ele){
   if ($(ele).text() === ""){
+    turn++
     $(ele).text(player())
   }
 }
@@ -44,7 +45,6 @@ function checkWinner(){
   }
 }
 function doTurn(ele){
-  turn++
   updateState(ele)
   if(turn === 9){
     $("td").empty()
