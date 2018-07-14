@@ -10,7 +10,6 @@ function setMessage(string){
   $("div#message").html(string)
 }
 function checkWinner(){
-
     // Horizontal Next
   if($("td:eq(0)").html() === $("td:eq(1)").html() && $("td:eq(1)").html() === $("td:eq(2)").html() && $("td:eq(2)").html() != ""){
     setMessage("Player " + $("td:eq(0)").html() + " Won!")
@@ -42,7 +41,7 @@ function checkWinner(){
     return false
   }
 }
-function doTurn(){
+function doTurn(ele){
   turn++
   updateState()
   if(turn === 9){
@@ -57,7 +56,7 @@ function doTurn(){
 
 function attachListeners(){
   $("td").click(function(){
-    console.log($(this))
+    doTurn(this)
   })
 }
 
