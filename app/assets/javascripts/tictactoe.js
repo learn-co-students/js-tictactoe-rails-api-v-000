@@ -77,7 +77,7 @@ function attachListeners(){
 }
 function previousGames(){
   $.get("/games").done(function(response){
-    var currentGameIds = []
+    let currentGameIds = []
     $("#games button").each(function(i,obj){
        currentGameIds += obj["innerHTML"]
     })
@@ -90,6 +90,7 @@ function previousGames(){
     // e.preventDefault();
   })
 }
+
 function saveGame(){
   $.post("/games").done(function(response){
     debugger
