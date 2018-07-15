@@ -62,3 +62,12 @@ function attachListeners(){
   })
 }
 $(document).ready(attachListeners)
+
+$(function(){
+  $("#previous").on("click",function(e){
+    $.get("/games").success(function(json){
+
+      e.preventDefault();
+    })
+  })
+})
