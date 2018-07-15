@@ -72,6 +72,7 @@ function attachListeners(){
   })
   $("#clear").on("click",function(e){
     $("td").empty()
+    turn = 0
   })
 
 }
@@ -92,6 +93,7 @@ function previousGames(){
 }
 
 function saveGame(){
+  debugger
   $.post("/games").done(function(response){
     debugger
   })
