@@ -77,9 +77,13 @@ function attachListeners(){
 }
 function previousGames(){
   $.get("/games").done(function(response){
+    var currentGameIds = []
+    $("#games button").each(function(i,obj){
+       currentGameIds += obj["innerHTML"]
+    })
+
     response.data.forEach(function(i){
-      // debugger
-      if($("#games button").html() != i.id){
+      if (!currentGameIds.includes(i.id)){
         $("#games").append('<button>' + i.id + '</button>')
       }
     })
