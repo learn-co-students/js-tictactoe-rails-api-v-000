@@ -48,10 +48,12 @@ function checkWinner(){
 function doTurn(ele){
   updateState(ele)
   if(turn === 9){
+    saveGame()
     $("td").empty()
     setMessage("Tie game.")
     turn = 0
   }else if(checkWinner()){
+    saveGame()
     $("td").empty()
     turn = turn -1
   }
@@ -90,24 +92,15 @@ function previousGames(){
         $("#games").append('<button>' + i.id + '</button>')
       }
     })
-    // e.preventDefault();
   })
 }
 
 function saveGame(){
-
-    // compare games in the database to current game being played
-    // if no game exists in db yet, then add it to db
-    // else update the game in db with the one being played
-
   if(currentGame === 0){
     $.post("/games").done(function(response){
       currentGame = response.data.id
     })
   }else{
-    // $.patch(`/games/1`).done(function(response){
-    //
-    // })
     $.ajax({
       url: '/games/' + currentGame,
       method: "PATCH"
