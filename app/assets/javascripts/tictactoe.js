@@ -74,6 +74,7 @@ function attachListeners(){
   $("#clear").on("click",function(e){
     $("td").empty()
     turn = 0
+    currentGame = 0
   })
 
 }
@@ -104,7 +105,13 @@ function saveGame(){
       currentGame = response.data.id
     })
   }else{
-    $.patch(`/games/1`).done(function(response){
+    // $.patch(`/games/1`).done(function(response){
+    //
+    // })
+    $.ajax({
+      url: '/games/' + currentGame,
+      method: "PATCH"
+    }).done(function(data){
 
     })
   }
