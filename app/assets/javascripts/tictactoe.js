@@ -56,6 +56,9 @@ function doTurn(ele){
   }
 }
 
+$(document).ready(function() {
+  attachListeners();
+})
 
 function attachListeners(){
   $("td").click(function(){
@@ -67,24 +70,22 @@ function attachListeners(){
   $("#save").on("click",function(e){
     saveGame()
   })
+  $("#clear").on("click",function(e){
+    $("td").empty()
+  })
 
 }
-// $(document).ready(attachListeners)
-$(document).ready(function() {
-  attachListeners();
-});
-
 function previousGames(){
-  $.get("/games").success(function(response){
+  $.get("/games").done(function(response){
     response.data.forEach(function(i){
-      $("#games").append('<button>' + i + '</button>')
+
+      $("#games").append('<button>' + i.id + '</button>')
     })
-    e.preventDefault();
+    // e.preventDefault();
   })
 }
 function saveGame(){
-  $.PATCH("/games/")
-  $.post("/games").success(function(response){
+  $.post("/games").done(function(response){
     debugger
   })
 }
