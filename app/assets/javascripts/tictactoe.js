@@ -5,8 +5,8 @@ function player(){
 }
 function updateState(ele){
   if ($(ele).text() === ""){
-    turn++
     $(ele).text(player())
+    turn++
   }
 }
 function setMessage(string){
@@ -52,7 +52,7 @@ function doTurn(ele){
     turn = 0
   }else if(checkWinner()){
     $("td").empty()
-    turn = 0
+    turn = turn -1
   }
 }
 
@@ -61,5 +61,4 @@ function attachListeners(){
     doTurn(this)
   })
 }
-
 $(document).ready(attachListeners)
