@@ -78,8 +78,10 @@ function attachListeners(){
 function previousGames(){
   $.get("/games").done(function(response){
     response.data.forEach(function(i){
-
-      $("#games").append('<button>' + i.id + '</button>')
+      // debugger
+      if($("#games button").html() != i.id){
+        $("#games").append('<button>' + i.id + '</button>')
+      }
     })
     // e.preventDefault();
   })
