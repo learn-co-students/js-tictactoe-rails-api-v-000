@@ -84,13 +84,16 @@ function attachListeners(){
       url: '/games/' + e.target.id,
       method: "GET"
     }).done(function(response){
-      debugger
-      $("td").append(response.data.attributes.state)
-        response
+      response.data.attributes.state.forEach(function(val,i){
+        $(`td:eq(${i})`).html(val)
+      })
+      currentGame = e.target.id
+      turn = response.data.attributes.state.filter(String).length
     })
   })
 
 }
+
 function previousGames(){
 
   $.get("/games").done(function(response){
@@ -110,7 +113,11 @@ function previousGames(){
 
 function saveGame(){
   if(currentGame === 0){
-    $.post("/games").done(function(response){
+    let currentState = []
+    $("td").each(function(){
+      currentState.push($(this).text())
+    })
+    $.post("/games",{"state": currentState}).done(function(response){
       currentGame = response.data.id
     })
   }else{
