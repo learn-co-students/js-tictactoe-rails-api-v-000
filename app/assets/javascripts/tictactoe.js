@@ -79,8 +79,20 @@ function attachListeners(){
     currentGame = 0
   })
 
+  $("#games").on("click",function(e){
+    $.ajax({
+      url: '/games/' + e.target.id,
+      method: "GET"
+    }).done(function(response){
+      debugger
+      $("td").append(response.data.attributes.state)
+        response
+    })
+  })
+
 }
 function previousGames(){
+
   $.get("/games").done(function(response){
     let currentGameIds = []
     $("#games button").each(function(i,obj){
@@ -89,10 +101,11 @@ function previousGames(){
 
     response.data.forEach(function(i){
       if (!currentGameIds.includes(i.id)){
-        $("#games").append('<button>' + i.id + '</button>')
+        $("#games").append(`<button id="${i.id}">` + i.id + '</button>')
       }
     })
   })
+  $(this).data('clicked', true);
 }
 
 function saveGame(){
