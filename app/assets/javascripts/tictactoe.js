@@ -1,9 +1,11 @@
+
+
 // Code your JavaScript / jQuery solution here
 var turn = 0;
 var current = 0;
 
 $(document).ready(function(){
-  attachListeners(); 
+  attachListeners();
 });
 
 function attachListeners(){
@@ -17,10 +19,10 @@ function attachListeners(){
   });
   $('#previous').on('click', function(){
     showPreviousGames()
-  }); 
+  });
   $('#clear').on('click', function(){
-    resetBoard() 
-  }); 
+    resetBoard()
+  });
 }
 
 function player(){
@@ -44,9 +46,18 @@ function currentBoard(){
   var squares = $("td")
   var board = []
   for(var i of squares){
-    board.push(i.innerHTML)
+    board.push(i.text)
   }
   return board
+}
+
+
+function validMove(square){
+  if(square.innerHTML === ''){
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function doTurn(square){
@@ -57,61 +68,44 @@ function doTurn(square){
   gameOver();
 }
 
-function validMove(square){
-  if(square.innerHTML === ''){
-    return true;
-  } else {
-    return false;
-  }
-}
-
 function checkWinner(){
   var winner = false;
-  var board = {}; 
+  var board = {};
   const win = [
-    [0,1,2], [0,3,6], [0,4,8], [6,4,2], [2,5,8], [6,7,8], [3,4,5], [1,4,7] 
-  ]; 
-  $('td').text((index, square) => board[index] = square); 
+    [0,1,2], [0,3,6], [0,4,8], [6,4,2], [2,5,8], [6,7,8], [3,4,5], [1,4,7]
+  ];
+  $('td').text((index, square) => board[index] = square);
 
   win.find(function(combo) {
     if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
-      setMessage(`Player ${board[combo[0]]} Won!`); 
-      return winner = true; 
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      return winner = true;
     }
   });
   return winner;
 }
 
 
-function allGames(){
-  $.get("/games").done(function(resp){
-    var games = resp.data;
-    for(var game of games){
-      gameButtons(game)
-    }
-  })
-}
-
 function saveGame(){
  var state=[];
   $('td').text((index, square) => {
-    state.push(square) 
-  }); 
+    state.push(square)
+  });
     var gameData = { state: state }
   if (current === 0){
     $.post('/games', {state: state}, function(response) {
-      current = response.data.id; 
-      $('#games').append(`<button id="gameid-${response.data.id}">${response.data.id}</button><br>`) 
+      current = response.data.id;
+      $('#games').append(`<button id="gameid-${response.data.id}">${response.data.id}</button><br>`)
       $("#gameid-" + response.data.id).on('click', function(){
         reloadGame(response.data.id)
       });
-    }); 
+    });
   } else {
     $.ajax({
-      type: 'PATCH', 
-      url: `/games/${currentGame}`, 
+      type: 'PATCH',
+      url: `/games/${current}`,
       data: {state: state}
-    }); 
+    });
   }
 }
 
@@ -126,7 +120,7 @@ function isTie(){
 function resetBoard(){
   $('td').empty()
   turn = 0
-  current = 0
+
 }
 
 function showPreviousGames () {
