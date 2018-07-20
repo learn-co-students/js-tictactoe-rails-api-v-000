@@ -32,7 +32,8 @@ function checkWinner () {
 
         if ((spot1 === "X" && spot2 === "X" && spot3 === "X") || (spot1 === "O" && spot2 === "O" && spot3 === "O")) {
             var message = `Player ${spot1} Won!`;
-            return setMessage(message);
+            setMessage(message);
+            return true;
         }; 
     });
 };
