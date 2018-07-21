@@ -88,6 +88,7 @@ function loadGame (gameid) {
 };
 
 function previousGames () {
+    $('div#games').empty();
     $.get('/games', function (games) {
         if (games.data.length) {    
             games.data.map(function(game) {
@@ -106,6 +107,10 @@ function attachListeners () {
     });
     $("#save").on('click', () => saveGame());
     $("#previous").on('click', () => previousGames());
+    $("#clear").on('click', () => {
+        resetBoard();
+        setMessage("");
+    });
 };
 
 $(document).ready(() => {
