@@ -77,10 +77,24 @@ function saveGame () {
     };
 };
 
+function loadGame (gameid) {
+    $.get(`/games/${gameid}`, function (game) {
+        let state = game.data.attributes.state;
+        $('td').text((index, token) => state[index]);
+        gameId = gameid;
+        turn = state.join('').length;
+        checkWinner();
+    });
+};
+
 function previousGames () {
     $.get('/games', function (games) {
-        // grab all the games from the db, and make a button for each that, when clicked, returns the saved game's state to the board.
-        // the buttons should be added to the `div#games` element in the DOM
+        if (games.data.length) {    
+            games.data.map(function(game) {
+                $('div#games').append(`<button id="gameid-${game.id}">Retrieve Game: #${game.id}</button><br>`);
+                $("#gameid-"+game.id).on('click', () => loadGame(game.id));
+            });
+        }
     });
 };
 
