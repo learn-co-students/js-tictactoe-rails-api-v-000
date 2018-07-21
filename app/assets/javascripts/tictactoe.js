@@ -1,14 +1,15 @@
 // Code your JavaScript / jQuery solution here
 
 var turn = 0;
-var board = [];
 
 function player () {
     return ((turn%2 === 0) ? 'X' : 'O');
 };
 
 function updateState (square) {
-    return $(square).text(player());
+    if ($(square).text() === "" ) {
+        return $(square).text(player());
+    }
 };
 
 function setMessage (something) {
@@ -27,7 +28,8 @@ function resetBoard () {
 };
 
 function checkWinner () {
-    var winner = false;
+    let winner = false;
+    let board = [];
     
     $("td").text((index, square) => board[index] = square) 
     // populating an imaginary board by index (see http://api.jquery.com/text/#text2)
@@ -42,24 +44,33 @@ function checkWinner () {
             setMessage(message);
             resetBoard();
             return winner = true;
-        } 
+        } else if (turn === 9) {
+            setMessage("Tie game.");
+            resetBoard();
+        }
     });
     return winner;
 };
 
 function doTurn (square) {
-    updateState(square);
-    turn++;
-    if (!checkWinner() && turn === 9) {
-        setMessage("Tie game.");
-        resetBoard();
+    if (turn < 9) {
+        updateState(square);
+        turn++;
+        checkWinner();
     }
 };
 
-function attachListeners (square) {
-
+function attachListeners () {
+    $("td").on('click', function () {
+        if (!checkWinner() && !$.text(this)) {
+            doTurn(this);
+        }
+    });
+    $("#save").on('click', () => {
+        
+    });
 };
 
 $(document).ready(() => {
-// needs to invoke attachListeners()
+    attachListeners();
 });
