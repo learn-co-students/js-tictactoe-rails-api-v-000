@@ -77,6 +77,13 @@ function saveGame () {
     };
 };
 
+function previousGames () {
+    $.get('/games', function (games) {
+        // grab all the games from the db, and make a button for each that, when clicked, returns the saved game's state to the board.
+        // the buttons should be added to the `div#games` element in the DOM
+    });
+};
+
 function attachListeners () {
     $("td").on('click', function () {
         if (!checkWinner() && !$.text(this)) {
@@ -84,6 +91,7 @@ function attachListeners () {
         }
     });
     $("#save").on('click', () => saveGame());
+    $("#previous").on('click', () => previousGames());
 };
 
 $(document).ready(() => {
