@@ -19,7 +19,7 @@ function updateState (square) {
 };
 
 function setMessage (something) {
-    return $('div#message').append(something);
+    return $('div#message').append(something +"<br>");
 };
 
 function resetBoard () {
