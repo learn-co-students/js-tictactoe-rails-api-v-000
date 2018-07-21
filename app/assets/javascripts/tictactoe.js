@@ -42,22 +42,43 @@ function checkWinner () {
         if ((board[spot0] === "X" && board[spot1] === "X" && board[spot2] === "X") || (board[spot0] === "O" && board[spot1] === "O" && board[spot2] === "O")) {
             var message = `Player ${board[spot0]} Won!`;
             setMessage(message);
-            resetBoard();
             return winner = true;
-        } else if (turn === 9) {
-            setMessage("Tie game.");
-            resetBoard();
         }
     });
     return winner;
 };
 
 function doTurn (square) {
-    if (turn < 9) {
-        updateState(square);
-        turn++;
-        checkWinner();
+    updateState(square);
+    turn++;
+    if (checkWinner()) {
+        saveGame();
+        resetBoard();
+    } else if (turn === 9) {
+        setMessage("Tie game.");
+        saveGame();
+        resetBoard();
     }
+};
+
+function saveGame () {
+    let state = Array.from($('td'), e => e.innerText);
+    // fetch("/games", {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-type': 'application/json'
+    //     },
+    //     body: data
+    // }).then(response => {
+    //     if (response.ok) {
+    //         return response.json();
+    //     }
+    //     throw new Error('Request failed');
+    // }, networkError => {
+    //     console.log(networkError.message);
+    // }).then(jsonResponse => {
+
+    // });
 };
 
 function attachListeners () {
@@ -66,9 +87,7 @@ function attachListeners () {
             doTurn(this);
         }
     });
-    $("#save").on('click', () => {
-        
-    });
+    $("#save").on('click', () => saveGame());
 };
 
 $(document).ready(() => {
