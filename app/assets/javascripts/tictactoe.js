@@ -109,6 +109,7 @@ function attachListeners () {
     $("#previous").on('click', () => previousGames());
     $("#clear").on('click', () => {
         resetBoard();
+        gameId = 0;
         setMessage("");
     });
 };
