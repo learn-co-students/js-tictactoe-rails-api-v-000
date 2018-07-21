@@ -1,6 +1,7 @@
 // Code your JavaScript / jQuery solution here
 
 var turn = 0;
+let gameId = 0;
 const winCombinations= [
     [0,1,2], /*top row*/ [3,4,5], /* middle row*/ [6,7,8], /*bottom row*/
     [0,3,6], /*1st col*/ [1,4,7], /*2nd col*/ [2,5,8], /*3rd col*/
@@ -62,22 +63,18 @@ function doTurn (square) {
 
 function saveGame () {
     let state = Array.from($('td'), e => e.innerText);
-    // fetch("/games", {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-type': 'application/json'
-    //     },
-    //     body: data
-    // }).then(response => {
-    //     if (response.ok) {
-    //         return response.json();
-    //     }
-    //     throw new Error('Request failed');
-    // }, networkError => {
-    //     console.log(networkError.message);
-    // }).then(jsonResponse => {
-
-    // });
+    if (gameId) {
+        $.ajax({
+            type: 'PATCH',
+            url: `/games/${gameId}`,
+            dataType: 'json',
+            data: {state: state}
+        });
+    } else {
+        $.post(`/games`, {state: state}, function(game) {
+            gameId = parseInt(game.data.id);
+        });
+    };
 };
 
 function attachListeners () {
