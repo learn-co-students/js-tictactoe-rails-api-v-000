@@ -1,5 +1,5 @@
-const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
-                        [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+
 var turn = 0;
 var currentGame = 0;
 
@@ -104,32 +104,37 @@ function buttonizePreviousGame(game) {
   $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
 }
 
-// function reloadGame(gameID) {
-//   document.getElementById('message').innerHTML = '';
+function reloadGame(gameID) {
+  document.getElementById('message').innerHTML = '';
 
-//   const xhr = new XMLHttpRequest;
-//   xhr.overrideMimeType('application/json');
-//   xhr.open('GET', `/games/${gameID}`, true);
-//   xhr.onload = () => {
-//     const data = JSON.parse(xhr.responseText).data;
-//     const id = data.id;
-//     const state = data.attributes.state;
+  $.get(`/games/${gameID}`, function (data) {
+    debugger;
+  })
 
-//     let index = 0;
-//     for (let y = 0; y < 3; y++) {
-//       for (let x = 0; x < 3; x++) {
-//         document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
-//         index++;
-//       }
-//     }
+  // const xhr = new XMLHttpRequest;
+  // xhr.overrideMimeType('application/json');
+  // xhr.open('GET', `/games/${gameID}`, true);
+  // xhr.onload = () => {
+  //   debugger;
+  //   const data = JSON.parse(xhr.responseText).data;
+  //   const id = data.id;
+  //   const state = data.attributes.state;
 
-//     turn = state.join('').length;
-//     currentGame = id;
+  //   let index = 0;
+  //   for (let y = 0; y < 3; y++) {
+  //     for (let x = 0; x < 3; x++) {
+  //       document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+  //       index++;
+  //     }
+  //   }
 
-//     if (!checkWinner() && turn === 9) {
-//       setMessage('Tie game.');
-//     }
-//   };
+  //   turn = state.join('').length;
+  //   currentGame = id;
 
-//   xhr.send(null);
-// }
+  //   if (!checkWinner() && turn === 9) {
+  //     setMessage('Tie game.');
+  //   }
+  // };
+
+  // xhr.send(null);
+}
