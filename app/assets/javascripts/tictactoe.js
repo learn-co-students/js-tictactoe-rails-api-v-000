@@ -101,7 +101,8 @@ function showPreviousGames() {
 
 function buttonizePreviousGame(game) {
   $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
-  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+  debugger
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id)).after(` - ${new Date(game.attributes['updated-at'])}`);
 }
 
 function reloadGame(gameID) {
@@ -114,13 +115,11 @@ function reloadGame(gameID) {
       let index = 0;
       for (let y = 0; y < 3; y++) {
         for (let x = 0; x < 3; x++) {
-          debugger;
           $(`[data-x="${x}"][data-y="${y}"]`).html(state[index])
           index++;
         }
       }
-  
-      turn = state.join('').length;
+            turn = state.join('').length;
       currentGame = id;
   
       if (!checkWinner() && turn === 9) {
