@@ -1,6 +1,3 @@
-
-
-// Code your JavaScript / jQuery solution here
 var turn = 0;
 var current = 0;
 
@@ -120,7 +117,7 @@ function isTie(){
 function resetBoard(){
   $('td').empty()
   turn = 0
-
+  current = 0
 }
 
 function showPreviousGames () {
