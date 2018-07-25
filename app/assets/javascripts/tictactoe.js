@@ -15,16 +15,16 @@ var player = function() {
 	}
 }
 
-function updateState() {
-	// player();
-	
-	changeContent(player())
-	
+function updateState(event) {
+	var td = event.target
+	// debugger;
+	// changeContent(player())
+	$(td).text(player())
 }
 
-function doTurn() {
+function doTurn(event) {
 	
-	updateState();
+	updateState(event);
 	turn++;
 	checkWinner();
 }
@@ -32,10 +32,10 @@ function doTurn() {
 function attachListeners() {
 	$("td").on("click", function(event) {	
 		// token = player();
-		rowIndex = event.target.parentElement.rowIndex;
-    	cellIndex = event.target.cellIndex;
+		// rowIndex = event.target.parentElement.rowIndex;
+  //   	cellIndex = event.target.cellIndex;
     	// updateState();
-    	doTurn();
+    	doTurn(event);
 		
 	})
 	$("#clear").on("click", function() {
