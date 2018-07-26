@@ -46,6 +46,7 @@ function attachListeners() {
 		// rowIndex = event.target.parentElement.rowIndex;
   //   	cellIndex = event.target.cellIndex;
     	// updateState();
+    	let event = event.target
     	doTurn(event);
 		
 	})
@@ -111,4 +112,5 @@ function clearBoard() {
 		$(this).html("");
 	})
 }
+
 
