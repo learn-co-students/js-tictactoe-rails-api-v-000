@@ -17,7 +17,7 @@ var player = function() {
 
 function updateState(event) {
 	var td = event.target
-	
+
 	// changeContent(player())
 	
 	$(td).text(player())
@@ -28,7 +28,7 @@ function doTurn(event) {
 	var td = event.target;
 
 	if($(td).text() === "") {
-		
+			
 		updateState(event);
 	} else {
 		return;
