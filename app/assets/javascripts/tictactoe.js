@@ -16,18 +16,18 @@ var player = function() {
 }
 
 function updateState(event) {
-	var td = event.target
+	// var td = event.target
 
 	// changeContent(player())
 	
-	$(td).text(player())
+	$(event).text(player())
 	
 }
 
 function doTurn(event) {
-	var td = event.target;
+	
 
-	if($(td).text() === "") {
+	if($(event).text() === "") {
 			
 		updateState(event);
 	} else {
@@ -46,8 +46,8 @@ function attachListeners() {
 		// rowIndex = event.target.parentElement.rowIndex;
   //   	cellIndex = event.target.cellIndex;
     	// updateState();
-    	let event = event.target
-    	doTurn(event);
+
+    	doTurn(event.target);
 		
 	})
 	$("#clear").on("click", function() {
