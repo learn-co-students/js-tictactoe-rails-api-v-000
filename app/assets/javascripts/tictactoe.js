@@ -17,16 +17,27 @@ var player = function() {
 
 function updateState(event) {
 	var td = event.target
-	// debugger;
+	
 	// changeContent(player())
+	
 	$(td).text(player())
+	
 }
 
 function doTurn(event) {
-	
-	updateState(event);
+	var td = event.target;
+
+	if($(td).text() === "") {
+		
+		updateState(event);
+	} else {
+		return;
+	}
 	turn++;
-	checkWinner();
+	if(checkWinner() === true) {
+		clearBoard();
+	}
+
 }
 
 function attachListeners() {
@@ -83,8 +94,9 @@ function checkWinner() {
 	} else if(arr[2] != "" && arr[2] === arr[5] && arr[5] === arr[8]) {
 		setMessage(`Player ${arr[2]} Won!`)
 		return true;
-	} else if(turn === 8) {
-
+	} else if(turn === 9) {
+		setMessage("Tie game.")
+		return true;
 	} else {
 		return false;
 	}
