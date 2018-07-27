@@ -29,28 +29,9 @@ function updateState(event) {
 			if(event[i] !== undefined) {
 				document.querySelectorAll("td")[i].innerHTML = event[i];
 			}
-			// for(var j = 0; j < 9; j++) {
-			// 	debugger;
-			// 	document.querySelectorAll("td")[i].innerHTML = event[j]
-			// }
 		}
 		gameHold = currentGame;
 		currentGame = undefined;
-		// checkWinner();
-		// document.querySelectorAll("td").for(var i = 0; i < 9; i++) {
-
-		// 	// event.for(var j = 0; j < 9; j++) {
-		// 	// 	i.innerHTML = event[j];
-		// 	// }
-		// }
-		
-		
-		// event.forEach(function(item){
-		// 	document.querySelectorAll("td").forEach(function(e) {
-		// 		e.innerHTML = item;
-		// 	})
-		// })
-			
 	}
 	
 }
@@ -58,26 +39,15 @@ function updateState(event) {
 function doTurn(event) {
 	
 	updateState(event)
-	// if($(event).text() === "") {
-			
-	// 	updateState(event);
-	// } else {
-	// 	return;
-	// }
 	turn++;
 	if(checkWinner() === true) {
 		saveGame();
 		clearBoard();
 	}
-
 }
 
 function attachListeners() {
 	$("td").on("click", function(event) {	
-		// token = player();
-		// rowIndex = event.target.parentElement.rowIndex;
-  //   	cellIndex = event.target.cellIndex;
-    	// updateState();
 
     	if(event.target.innerHTML === "" && !checkWinner()) {
     		doTurn(event.target);
@@ -93,16 +63,9 @@ function attachListeners() {
 	$("#previous").on("click", function() {
 		previousGames();
 	})
-	// $(".previous").on("click", function() {
-	// 	getGame();
-	// })
+
 }
 
-// function changeContent(state){
-//     var x=document.getElementById('myTable').rows
-//     var y=x[rowIndex].cells
-//     y[cellIndex].innerHTML=state
-// }
 
 function setMessage(str) {
 
@@ -188,9 +151,7 @@ function previousGames() {
 	    if (games.length > 0){
 	      games.forEach(function(game){
 	       $("#games").append(`<button id="gameId-${game.id}" onclick="getGame(${game.id})">${game.id}</button><br>`);
-	       // $("gameId-" + game.id).on("click", function() {
-	       // 		debugger;
-	       // })
+
 	      });
 	     
 	    }
@@ -203,13 +164,7 @@ function getGame(event) {
 	$.get(`/games/${event}`, function(data) {
 		turn = data.data.attributes.state.join("").length;
 		updateState(data.data.attributes.state);
-		// debugger;
-		// data.data.attributes.state.forEach(function(element) {
-		// 	// debugger;
-		// })
-		// debugger;
-	})
-	
+	})	
 }
 
 
