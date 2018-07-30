@@ -23,3 +23,8 @@ Resources
 
 - Check if current game id exists
    https://api.jquery.com/jQuery.inArray/
+
+- Callback / async issues
+    https://stackoverflow.com/questions/5000415/call-a-function-after-previous-function-is-complete
+    https://medium.freecodecamp.org/javascript-from-callbacks-to-async-await-1cc090ddad99
+    https://stackoverflow.com/questions/36356580/how-to-wait-for-task-to-finish-before-moving-on-to-next-part-of-the-code

@@ -5,7 +5,7 @@
 // Variables
 let turn;
 let token;
-let game_num = 0;
+let game_num;
 // const WIN_COMBINATIONS = [
 //     [0,1,2],  // Top row
 //     [3,4,5],  // Middle row
@@ -23,6 +23,7 @@ $(document).ready(function(){
     // Set default variables on page load
     turn = 0;
     token = "X";
+    game_num = 0;
     
     // Attach listeners to buttons and board
     attachListeners();
@@ -166,55 +167,21 @@ function saveButtonClick(){
     const gameData = { state: board };
 
     // Check if current game exists or needs updating
-    const gameExists = getPlayedGames('id', game_num);
-    console.log('Game Number = ', game_num);
-    console.log('Game exists? = ', gameExists);
-    
     // Save or update
     if (game_num > 0) {
         console.log('Update Existing Game');
-        // $.ajax({
-        //   type: 'PATCH',
-        //   url: `/games/${game_num}`,
-        //   data: gameData
-        // });
+        $.ajax({
+          type: 'PATCH',
+          url: `/games/${game_num}`,
+          data: gameData
+        });
     } else { 
         console.log('Create New Game');
-        // $.post('/games', gameData, function(game) {
-        //   game_num = game.data.id;
-        //   console.log('new game id = ', game_num);
-        // });
+        $.post('/games', gameData, function(game) {
+          game_num = game.data.id;
+          console.log('New game num = ', game_num);
+        });
     };
-};
-
-// Callback function for update based on 
-function saveOrUpdate() {
-    
-};
-
-// Function to retrieve existing game ids and states
-function getPlayedGames(returnCase, checkNum) {
-    console.log('Get played games');
-    $.get( "/games", function( games ) {
-        // console.log("Existing Game Data = ", games);
-        let previousGames = [];
-        switch ( returnCase ) {
-          case 'id' :
-            games.data.forEach(function(game) {
-              if (parseInt(game.id) === checkNum) {
-                previousGames = true;  
-              } else {
-                previousGames = false;
-              };
-            });
-          break;
-          default :
-            previousGames = games.data;
-            break;
-        }
-        console.log('Previous Games = ', previousGames);
-        return previousGames;
-    });
 };
 
 // Previous button function --  Return list of previously played games as buttons to display state
@@ -224,10 +191,10 @@ function previousButtonClick(){
     $('#games').empty();
     // Retrieve previously played games
         // Display previously played games as buttons in div "#games"
-    $.get( "/games", function( data ) {
-        console.log("Games Data Length = ", data.data.length);
-        console.log("Games Data = ", data);
-        const previousGames = data.data;
+    $.get( "/games", function( games ) {
+        console.log("Games Data Length = ", games.data.length);
+        console.log("Games Data = ", games);
+        const previousGames = games.data;
         console.log('Previous Games = ', previousGames);
         // Only display previous games if they exist
         if (previousGames.length > 0) {
