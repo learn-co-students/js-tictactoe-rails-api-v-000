@@ -1,21 +1,26 @@
 // Code your JavaScript / jQuery solution here
-let turn1=0
+var turn=0
 
-function turn(){
-  return turn1
-}
+
 
 function player(){
-  if (turn1%2==0) { return 'X'} else {return 'O'}
+  if (turn%2==0) { return 'X'} else {return 'O'}
 }
 
 function updateState(){
- return player()
+  let x=1
+ if state[x]=="" {
+   state[x]=player()
+   return true
+ }
+ else {
+ return false
+ }
 }
 
 function doTurn(){
   checkWinner()
-  return turn1++
+  return turn++
 }
 
 function checkWinner(){
