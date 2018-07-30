@@ -18,6 +18,7 @@ let game_num = 0;
 //   ];
 
 $(document).ready(function(){
+    console.log("Initialize Document");
 
     // Set default variables on page load
     turn = 0;
@@ -30,7 +31,7 @@ $(document).ready(function(){
 
 // Return "current player" token based on turn counter
 function player() {
-    console.log('Player function');
+    // console.log('Player function');
     if (turn % 2 === 0) {
         token = "X";
     } else {
@@ -42,7 +43,7 @@ function player() {
 
 // Update game state based on passed in "td" square element
 function updateState(square) {
-    console.log('Update state function');
+    // console.log('Update state function');
     const player_token = player();
     const square_data_x = parseInt(square.getAttribute("data-x"));
     const square_data_y = parseInt(square.getAttribute("data-y"));
@@ -55,13 +56,13 @@ function updateState(square) {
 // Update "message" div with given message
 function setMessage(message) {
     // console.log('Set Message Function');
-    console.log('Message = ', message);
+    // console.log('Message = ', message);
     $("#message").text(message);
 };
 
 // Checks for winner and displays winner message if applicable
 function checkWinner() {
-    console.log('Check Winner');
+    // console.log('Check Winner');
 
     // NOTE : TEMP PUTTING THIS HERE -- because tests say that it isn't defined and this is the only place it really comes up I think...
     const WIN_COMBINATIONS = [
@@ -119,9 +120,9 @@ function getCurrentGameState() {
 
 // Performs a singular turn if possible
 function doTurn(element) {
-    console.log('Do turn : ', turn);
+    // console.log('Do turn : ', turn);
     // console.log('Turn element = ', element);
-        const board = getCurrentGameState();
+    const board = getCurrentGameState();
   
     // Call updateState
     updateState(element);
@@ -130,16 +131,19 @@ function doTurn(element) {
     
     // Check if turn is possible (should not be able to modify a winning game board)?
     if (checkWinner()) {
+        saveButtonClick();
         clearButtonClick();
     } else if (turn > 8) {
         setMessage("Tie game.");
+        saveButtonClick();
+        clearButtonClick();
     };
 
 };
 
 // Attach listeners to buttons
 function attachListeners() {
-    console.log('Attach event listeners');
+    // console.log('Attach event listeners');
     
     // Add button event listeners
     $("#save").click(saveButtonClick);
@@ -147,30 +151,18 @@ function attachListeners() {
     $("#clear").click(clearButtonClick);
     
     // Add event listeners to game board cells
-    // https://stackoverflow.com/questions/46341171/how-to-addeventlistener-to-table-cells
-    // https://stackoverflow.com/questions/3740650/adding-addeventlistener-to-a-clicked-table-cell-to-change-the-color
-    $("td").click(doTurn);
-    // document.querySelectorAll('td').forEach(e => e.click(doTurn));
+    $('td').on('click', function() {
+        if (!$.text(this) && !checkWinner()) {
+          doTurn(this);
+        }
+      });
 };
 
 // Save button function -- Save or Update Game "Current" State (if not completed)
 function saveButtonClick(){
     console.log('Clicked save button');
-    const game = document.getElementsByTagName("table")[0];
-
-    // let current_state_list = document.querySelectorAll('td');
-    // const current_state = [];
-    // current_state_list.forEach(function(item){
-    //     let json = JSON.stringify({
-    //         x: parseInt(item.getAttribute("data-x")),
-    //         y: parseInt(item.getAttribute("data-x")),
-    //         token: item.innerHTML
-    //     });
-    //     current_state.push(json);
-    // });
-    // console.log('Current game state is : ', current_state);
-
     // Get current game state
+    
     // Check if current game exists or needs updating
     // Save or update
 };
@@ -178,8 +170,21 @@ function saveButtonClick(){
 // Previous button function --  Return list of previously played games as buttons to display state
 function previousButtonClick(){
     console.log('Clicked previous button');
+    // Empty div for get response
+    $('#games').empty();
     // Retrieve previously played games
-    // Display previously played games as buttons in div "#games"
+        // Display previously played games as buttons in div "#games"
+    $.get( "/games", function( data ) {
+        console.log("Games Data Length = ", data.data.length);
+        console.log("Games Data = ", data);
+        
+        // Only display previous games if they exist
+        if (data.data.length > 0) {
+            let gameData = `<button id="game-${data.data.id}">${data.data.id}</button><br>`;
+            $("#games").append( gameData );
+            $(`#game-${data.data.id}`).click(showGame(this));
+        };
+    });
 };
 
 // Clear button function --  Clear current game state
@@ -192,3 +197,7 @@ function clearButtonClick(){
 };
 
 // const squares = document.querySelectorAll('td');
+
+function showGame(gameId) {
+    
+};
