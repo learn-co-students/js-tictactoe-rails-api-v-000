@@ -1,4 +1,3 @@
- /* global $ jQuery */
 
 // Code your JavaScript / jQuery solution here
 
