@@ -1,21 +1,16 @@
 // Code your JavaScript / jQuery solution here
+const WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
+                        [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+
 var turn=0
-
-
 
 function player(){
   if (turn%2==0) { return 'X'} else {return 'O'}
 }
 
-function updateState(){
-  let x=1
- if state[x]=="" {
-   state[x]=player()
-   return true
- }
- else {
- return false
- }
+function updateState(position){
+  //var token = player();
+  $(position).text(player());
 }
 
 function doTurn(){
@@ -23,12 +18,12 @@ function doTurn(){
   return turn++
 }
 
-function checkWinner(){
-
+function setMessage(message){
+  $('#message').text(message);
 }
 
-function updateState(){
-
+function checkWinner(){
+  setMessage('Player X Won!')
 }
 
 function attachListeners(){
