@@ -9,11 +9,13 @@ Resources
     https://stackoverflow.com/questions/33760520/get-data-attributes-in-javascript-code
     https://www.w3schools.com/jsref/met_element_getelementsbytagname.asp
     https://stackoverflow.com/questions/23498758/javascript-parse-html-get-everything-inside-table-tag
+    https://learn.jquery.com/using-jquery-core/manipulating-elements/
 
 - Add event listeners to all table cells
     https://stackoverflow.com/questions/46341171/how-to-addeventlistener-to-table-cells
     https://stackoverflow.com/questions/3740650/adding-addeventlistener-to-a-clicked-table-cell-to-change-the-color
     https://stackoverflow.com/questions/23498758/javascript-parse-html-get-everything-inside-table-tag
+    https://learn.jquery.com/using-jquery-core/manipulating-elements/
 
 - Winning Combination Testing
     https://www.w3schools.com/jsref/jsref_some.asp
