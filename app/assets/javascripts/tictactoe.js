@@ -20,7 +20,7 @@ let game_num;
 $(document).ready(function(){
     console.log("Initialize Document");
 
-    // Set default variables on page load
+    // NOTE : Set default variables on page load -- need to do this for globals for test suite to be able to access them
     turn = 0;
     token = "X";
     game_num = 0;
@@ -218,11 +218,43 @@ function clearButtonClick(){
     $("td").text('');
 };
 
-// const squares = document.querySelectorAll('td');
-
+// Show State of a Saved Game
 function showGame(gameId) {
     console.log('Show Game : ', gameId);
     game_num = gameId;
-    // get json from show route
-    // game_num as gameId
+    
+    // Get game data from show route
+    $.get( `/games/${gameId}`, function( data ) {
+        console.log('Show Data : ', data);
+        const stateArray = data.data.attributes["state"];
+        console.log('State Array : ', stateArray);
+        
+        // Load the game state into the view
+        pushCurrentGameState(stateArray);
+    });
+};
+
+// Sibling function to set game state values rather than get them
+function pushCurrentGameState(array) {
+    console.log("Modify current game state");
+
+    const game = document.getElementsByTagName("table")[0];
+    let arrayIterator = 0;
+    turn = 0;
+
+    // Iterate through game cells and set values
+    for (let x = 0; x < game.rows.length; x++) {
+        for (let y = 0; y < game.rows[x].cells.length; y++) {
+            let cell = game.rows[x].cells[y];
+            
+            // Update turn variable
+            if (array[arrayIterator] != "") {
+                turn++;
+            };
+            
+            // Update Board
+            cell.innerHTML = array[arrayIterator];
+            arrayIterator++;
+        }
+    };
 };

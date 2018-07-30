@@ -17,9 +17,10 @@ Resources
     https://stackoverflow.com/questions/23498758/javascript-parse-html-get-everything-inside-table-tag
     https://learn.jquery.com/using-jquery-core/manipulating-elements/
 
-- Winning Combination Testing
+- Winning Combination Testing + Game Num (last one identified solution -> load variable defaults on document.ready)
     https://www.w3schools.com/jsref/jsref_some.asp
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+    https://stackoverflow.com/questions/31909117/why-are-my-global-variables-not-working
 
 - Check if current game id exists
    https://api.jquery.com/jQuery.inArray/
