@@ -1,4 +1,4 @@
- /* global $ */
+ /* global $ jQuery */
 
 // Code your JavaScript / jQuery solution here
 
@@ -162,11 +162,61 @@ function attachListeners() {
 function saveButtonClick(){
     console.log('Clicked save button');
     // Get current game state
-    
+    const board = getCurrentGameState();
+    const gameData = { state: board };
+
     // Check if current game exists or needs updating
+    const gameExists = getPlayedGames('id', game_num);
+    console.log('Game Number = ', game_num);
+    console.log('Game exists? = ', gameExists);
+    
     // Save or update
+    if (game_num > 0) {
+        console.log('Update Existing Game');
+        // $.ajax({
+        //   type: 'PATCH',
+        //   url: `/games/${game_num}`,
+        //   data: gameData
+        // });
+    } else { 
+        console.log('Create New Game');
+        // $.post('/games', gameData, function(game) {
+        //   game_num = game.data.id;
+        //   console.log('new game id = ', game_num);
+        // });
+    };
 };
-   
+
+// Callback function for update based on 
+function saveOrUpdate() {
+    
+};
+
+// Function to retrieve existing game ids and states
+function getPlayedGames(returnCase, checkNum) {
+    console.log('Get played games');
+    $.get( "/games", function( games ) {
+        // console.log("Existing Game Data = ", games);
+        let previousGames = [];
+        switch ( returnCase ) {
+          case 'id' :
+            games.data.forEach(function(game) {
+              if (parseInt(game.id) === checkNum) {
+                previousGames = true;  
+              } else {
+                previousGames = false;
+              };
+            });
+          break;
+          default :
+            previousGames = games.data;
+            break;
+        }
+        console.log('Previous Games = ', previousGames);
+        return previousGames;
+    });
+};
+
 // Previous button function --  Return list of previously played games as buttons to display state
 function previousButtonClick(){
     console.log('Clicked previous button');
@@ -177,12 +227,17 @@ function previousButtonClick(){
     $.get( "/games", function( data ) {
         console.log("Games Data Length = ", data.data.length);
         console.log("Games Data = ", data);
-        
+        const previousGames = data.data;
+        console.log('Previous Games = ', previousGames);
         // Only display previous games if they exist
-        if (data.data.length > 0) {
-            let gameData = `<button id="game-${data.data.id}">${data.data.id}</button><br>`;
-            $("#games").append( gameData );
-            $(`#game-${data.data.id}`).click(showGame(this));
+        if (previousGames.length > 0) {
+            // Add Button + click function for each previous game
+            previousGames.forEach(function(game) {
+                let gameData = `<button id="game-${game.id}">${game.id}</button><br>`;
+                $("#games").append( gameData );
+                // NOTE : Needs to be a callback for "game.id" to work properly without a "bind(this)" that needs to then be further dealt with in the showGame function
+                $(`#game-${game.id}`).click(() => showGame(game.id));
+            });
         };
     });
 };
@@ -199,5 +254,8 @@ function clearButtonClick(){
 // const squares = document.querySelectorAll('td');
 
 function showGame(gameId) {
-    
+    console.log('Show Game : ', gameId);
+    game_num = gameId;
+    // get json from show route
+    // game_num as gameId
 };

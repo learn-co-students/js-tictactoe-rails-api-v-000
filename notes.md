@@ -21,4 +21,5 @@ Resources
     https://www.w3schools.com/jsref/jsref_some.asp
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
 
-
+- Check if current game id exists
+   https://api.jquery.com/jQuery.inArray/
