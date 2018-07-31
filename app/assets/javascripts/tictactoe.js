@@ -16,10 +16,32 @@ function updateState(position){
 
 }
 
-function doTurn(){
-  checkWinner()
-  return turn++
 
+function doTurn(position){
+
+ updateState(position);
+ turn++;
+ 
+ if (checkWinner()){
+   saveGame();
+   resetBoard();
+ } else if (turn===9){
+   setMessage('Tie game.')
+   saveGame();
+   resetBoard();   
+ }
+ 
+}
+
+
+function saveGame(){
+  
+}
+
+function resetBoard(){
+  $('td').empty();
+  turn=0;
+  
 }
 
 function setMessage(message){
@@ -33,7 +55,7 @@ function checkWinner(){
   WINNING_COMBINATIONS.some(function(combination){
     if(board[combination[1]]===board[combination[2]]  && board[combination[1]]===board[combination[0]] && board[combination[0]]!==""){
       setMessage(`Player ${board[combination[0]]} Won!`)
-      return winner=true;
+      return winner= true;
     }
   });
   return winner;
@@ -43,4 +65,3 @@ function checkWinner(){
 function attachListeners(){
 
 }
-
