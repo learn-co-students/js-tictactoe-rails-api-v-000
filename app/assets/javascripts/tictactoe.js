@@ -4,6 +4,10 @@ const WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
 
 var turn=0
 
+$(document).ready(function() {
+  attachListeners();
+});
+
 function player(){
   if (turn%2==0) { return 'X'} else {return 'O'}
 }
@@ -63,5 +67,10 @@ function checkWinner(){
 
 
 function attachListeners(){
-
+ $('td').on('click', function(){
+   if(!$.text(this)){ doTurn(this);}
+ })
+ $('#save').on('click', ()=>saveGame());
+ $('#previous').on('click', ()=> showPreviousGame());
+ $('#clear').on('click', ()=>resetBoard());
 }
