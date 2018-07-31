@@ -9,13 +9,17 @@ function player(){
 }
 
 function updateState(position){
+
   //var token = player();
   $(position).text(player());
+
+
 }
 
 function doTurn(){
   checkWinner()
   return turn++
+
 }
 
 function setMessage(message){
@@ -23,9 +27,20 @@ function setMessage(message){
 }
 
 function checkWinner(){
-  setMessage('Player X Won!')
+  var board={};
+  var winner=false;
+  $('td').text((i,value) => board[i]=value);
+  WINNING_COMBINATIONS.some(function(combination){
+    if(board[combination[1]]===board[combination[2]]  && board[combination[1]]===board[combination[0]] && board[combination[0]]!==""){
+      setMessage(`Player ${board[combination[0]]} Won!`)
+      return winner=true;
+    }
+  });
+  return winner;
 }
+
 
 function attachListeners(){
 
 }
+
