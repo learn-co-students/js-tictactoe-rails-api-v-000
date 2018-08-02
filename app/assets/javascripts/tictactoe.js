@@ -17,7 +17,6 @@ var player = () => (turn % 2 ? "O" : "X");
 function attachListeners() {
   $("td").on("click", function() {
     if (!$.text(this) && !checkWinner()) {
-      // console.log(this)
       doTurn(this);
     }
   });
@@ -65,11 +64,10 @@ function checkWinner() {
   var board = [];
   var winner = false;
 
-  //This will push current cell values into board
   $("td").each(function() {
     board.push(this.textContent);
   });
-  // This will check if board matches WINNING_COMBOS
+
   WINNING_COMBOS.some(function(combo) {
     if (
       board[combo[0]] !== "" &&
@@ -100,7 +98,6 @@ function saveGame() {
     var posting = $.post("/games", { state: state });
     posting.done(function(response) {
       gameId = response.data.id;
-      // console.log(gameId)
     });
   }
 }
