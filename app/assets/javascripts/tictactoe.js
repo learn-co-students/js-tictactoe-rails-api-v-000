@@ -44,27 +44,43 @@ function checkWinner() {
   }
   if (board[0] !== "" && board[0] === board[1] && board[1] === board[2]) {
     setMessage("Player " + board[0] + " Won!");
+    turn = 0;
+    resetSquares();
     return true;
   } else if (board[3] !== "" && board[3] === board[4] && board[4] === board[5]) {
     setMessage("Player " + board[3] + " Won!");
+    turn = 0;
+    resetSquares();
     return true;
   } else if (board[6] !== "" && board[6] === board[7] && board[7] === board[8]) {
     setMessage("Player " + board[6] + " Won!");
+    turn = 0;
+    resetSquares();
     return true;
   } else if (board[0] !== "" && board[0] === board[3] && board[3] === board[6]) {
     setMessage("Player " + board[0] + " Won!");
+    turn = 0;
+    resetSquares();
     return true;
   } else if (board[1] !== "" && board[1] === board[4] && board[4] === board[7]) {
     setMessage("Player " + board[1] + " Won!");
+    turn = 0;
+    resetSquares();
     return true;
   } else if (board[2] !== "" && board[2] === board[5] && board[5] === board[8]) {
     setMessage("Player " + board[2] + " Won!");
+    turn = 0;
+    resetSquares();
     return true;
   } else if (board[0] !== "" && board[0] === board[4] && board[4] === board[8]) {
     setMessage("Player " + board[0] + " Won!");
+    turn = 0;
+    resetSquares();
     return true;
   } else if (board[6] !== "" && board[6] === board[4] && board[4] === board[2]) {
     setMessage("Player " + board[6] + " Won!");
+    turn = 0;
+    resetSquares();
     return true;
   } else {
     return false;
@@ -76,7 +92,7 @@ function updateState(square) {
 }
 
 function player() {
-  if (turn % 2 == 0) {
+  if (turn % 2 === 0) {
     return "X"
   } else {
     return "O"
@@ -85,9 +101,17 @@ function player() {
 
 function doTurn(square) {
   turn = turn + 1;
+  //console.log(turn);
+  //console.log(player());
   updateState(square);
   checkWinner();
 
+}
+
+function resetSquares() {
+  for (i=0; i< 9; i++) {
+    squares[i].innerHTML = "";
+  }
 }
 
 function saveGame() {
