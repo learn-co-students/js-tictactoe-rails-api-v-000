@@ -1,26 +1,45 @@
 $(document).ready(attachListeners);
 
 const squares = document.getElementsByTagName('td');
+//let state = Array.prototype.slice.call(squares);
 let turn = 0;
 
 function attachListeners() {
   document.getElementById("save").addEventListener('click', saveGame);
   document.getElementById("previous").addEventListener('click', previousGame);
   document.getElementById("clear").addEventListener('click', clearGame);
-  squares[0].addEventListener('click', doTurn);
-  squares[1].addEventListener('click', doTurn);
-  squares[2].addEventListener('click', doTurn);
-  squares[3].addEventListener('click', doTurn);
-  squares[4].addEventListener('click', doTurn);
-  squares[5].addEventListener('click', doTurn);
-  squares[6].addEventListener('click', doTurn);
-  squares[7].addEventListener('click', doTurn);
-  squares[8].addEventListener('click', doTurn);
+  squares[0].addEventListener('click', function() {
+    doTurn(this);
+  });
+  squares[1].addEventListener('click', function() {
+    doTurn(this);
+  });
+  squares[2].addEventListener('click', function() {
+    doTurn(this);
+  });
+  squares[3].addEventListener('click', function(){
+    doTurn(this);
+  });
+  squares[4].addEventListener('click', function(){
+    doTurn(this);
+  });
+  squares[5].addEventListener('click', function(){
+    doTurn(this);
+  });
+  squares[6].addEventListener('click', function(){
+    doTurn(this);
+  });
+  squares[7].addEventListener('click', function(){
+    doTurn(this);
+  });
+  squares[8].addEventListener('click',function(){
+    doTurn(this);
+  });
 }
 
 function checkWinner() {
   let board = [];
-  for (let i=0; i<9; i++) {
+  for (i=0; i< 9; i++) {
     board[i] = squares[i].innerHTML;
   }
   if (board[0] !== "" && board[0] === board[1] && board[1] === board[2]) {
@@ -64,9 +83,9 @@ function player() {
   }
 }
 
-function doTurn() {
+function doTurn(square) {
   turn = turn + 1;
-  updateState(this);
+  updateState(square);
   checkWinner();
 
 }
