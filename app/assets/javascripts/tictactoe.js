@@ -5,6 +5,7 @@ $(function(){
 const win_combos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
 var turn = 0
 var currentGame = 0
+var persisted = false
 
 function player(){
   return turn % 2 ? 'O' : 'X'
@@ -15,23 +16,66 @@ function updateState(sq){
 }
 
 function setMessage(msg){
-  $('#messages').text(msg)
+  $('#message').text(msg)
 }
 
 function checkWinner(){
   var winner = false
-  board = []
-  $('td').text((index, square) => board[index] = square);
+  var b = []
+  $('td').text((i, sq) => b[i] = sq);
   win_combos.some(function(a){
-    var wc = []
-    a.forEach(function(i){
-      wc.push(board[i])
-    })
-    if (wc[0] !== "" && wc[0] === wc[1] && wc[1] === wc[2])
-    //setMessage(`Player ${wc[0]} Won!`)
-    return winner = true
+      if (b[a[0]] !== "" && b[a[0]] === b[a[1]] && b[a[1]] === b[a[2]]){
+        setMessage(`Player ${b[a[0]]} Won!`)
+        return winner = true
+      }
   })
   return winner
+}
+
+function resetBoard(){
+  $('td').text('')
+  turn = 0
+  persisted = false
+  currentGame = 0
+}
+
+function saveGame(){
+  var board = []
+  var gamedata
+  $('td').text((i, sq) => {board.push(sq)});
+  gamedata = {state: board}
+  if (persisted && currentGame){
+    $.ajax({type: 'patch', url: `/games/${currentGame}`, data: gamedata})
+  } else {
+    $.post('/games', gamedata, function(game){
+      currentGame = game.data.id
+      getLink(game.data)
+    })
+    persisted = true
+  }
+}
+
+function getLink(game){
+  $('#games').append(`<button id="gameid-${game.id}" onclick="loadGame(${game.id})">${game.id}</button>`)
+}
+
+function showPreviousGames(){
+  $('#message').text('')
+  $('#games').text('')
+  $.get(`/games`, function(games){
+    games.data.forEach(getLink)
+  })
+}
+
+function loadGame(gameid){
+  $.get(`/games/${gameid}`, function(game){
+    currentGame = game.data.id
+    var board = game.data.attributes.state
+    turn = board.join('').length
+    i = 0
+    board.forEach((b) => {$('td')[i].innerHTML = b, i++})
+  })
+  persisted = true
 }
 
 function doTurn(sq){
@@ -53,4 +97,7 @@ function attachListeners(){
       doTurn(this)
     }
   })
+  $('#save').on('click', function(){ saveGame() })
+  $('#previous').on('click', function(){ showPreviousGames() })
+  $('#clear').on('click', function(){ resetBoard() })
 }
