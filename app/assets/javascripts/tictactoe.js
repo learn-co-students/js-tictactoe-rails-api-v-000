@@ -4,11 +4,21 @@ function player (turn) {
   return playerToken;
 }
 
-let turn = 1;
+let tieGame = true;
+let turn = 0;
 // turnCounter will be increased each time doTurn() gets called.
-// function doTurn() {
-//   return turn +=
-// }
+function doTurn() {
+   turn += 1 ;
+   updateState();
+   checkWinner();
+   if(tieGame){
+     setMessage("Tie Game");
+   } else if (gameWon) {
+     turn = 0;
+     //clear the board somehow. check the tests for how to make this work.
+   }
+
+}
 
 //listener needs to call doTurn() to increase the turn counter, then call updateState, passing in the coordinates of the square that was clicked (this will be using the data-x and data-y attributes)
 
