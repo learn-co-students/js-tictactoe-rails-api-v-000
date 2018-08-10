@@ -4,15 +4,19 @@ function player (turn) {
   return playerToken;
 }
 
-// let turn = 0;
+let turn = 1;
 // turnCounter will be increased each time doTurn() gets called.
 // function doTurn() {
 //   return turn +=
 // }
 
-  // increase the turnCounter, then use it as the argument for player(). that output is then used to getElementById="x-0, y-1" as an example for the middle left square and set that element's innerHTML to the playerToken?
-  function updateState(square) {
-    $()
+//listener needs to call doTurn() to increase the turn counter, then call updateState, passing in the coordinates of the square that was clicked (this will be using the data-x and data-y attributes)
+
+function updateState() {
+  $("td").html(player(turn));
+  // I know this isn't right because it's not precise to the specific td I want to alter. also turn is not currently a real thing, it's still just a stub.
+  //the square's coordinates are going to be available when this gets called in the on.click event listener
+  //set the innerHTML of that <td> to the return value of player(turn)
 }
 
 function setMessage(string) {
