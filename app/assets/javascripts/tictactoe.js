@@ -129,11 +129,22 @@ function resetSquares() {
 }
 
 function saveGame() {
-  setMessage("testing save");
+  let board = [];
+  for (i=0; i< 9; i++) {
+    board[i] = spaces[i].innerHTML;
+  }
+  var values = $(board).serialize();
+  var posting = $.post('games/, values');
+  posting.done(function(data){
+    var post = data;
+    $("#gameBoard").text(game["board"]);
+  });
 }
 
 function previousGame() {
-  setMessage("testing previous");
+  $.get("/games", function(data) {
+    alert(data);
+  });
 }
 
 function clearGame() {
