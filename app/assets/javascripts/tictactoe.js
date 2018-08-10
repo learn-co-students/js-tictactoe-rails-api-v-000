@@ -35,8 +35,16 @@ function checkWinner(){
 }
 
 function doTurn(sq){
-  ++turn
   updateState(sq)
+  turn++
+  if (checkWinner()) {
+    saveGame();
+    resetBoard();
+} else if (turn === 9) {
+    setMessage("Tie game.");
+    saveGame();
+    resetBoard();
+  }
 }
 
 function attachListeners(){
