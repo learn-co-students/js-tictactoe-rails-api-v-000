@@ -137,13 +137,13 @@ function resetSquares() {
 function saveGame(event) {
   event.preventDefault();
   alert("Save!");
-  let state = [];
+  let board = [];
   for (i=0; i< 9; i++) {
-    state[i] = spaces[i].innerHTML;
+    board[i] = spaces[i].innerHTML;
   }
   //var values = state.serialize();
   console.log(state[1]);
-  $.post("/games", game(state));
+  $.post("/games", :board);
   //posting.done(function(data){
     //var post = data;
     //$("#gameBoard").text(game["board"]);
