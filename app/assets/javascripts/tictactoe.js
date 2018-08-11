@@ -8,9 +8,15 @@ var turn = 0;
 var won = false;
 
 function attachListeners() {
-  document.getElementById("save").addEventListener('click', saveGame);
-  document.getElementById("previous").addEventListener('click', previousGame);
-  document.getElementById("clear").addEventListener('click', clearGame);
+  document.getElementById("save").addEventListener('click', function(){
+    saveGame(event);
+  });
+  document.getElementById("previous").addEventListener('click', function() {
+    previousGame(event)
+  });
+  document.getElementById("clear").addEventListener('click', function() {
+    clearGame(event)
+  });
   spaces[0].addEventListener('click', function() {
     doTurn(this);
   });
@@ -128,27 +134,33 @@ function resetSquares() {
   }
 }
 
-function saveGame() {
-  let board = [];
+function saveGame(event) {
+  event.preventDefault();
+  alert("Save!");
+  let state = [];
   for (i=0; i< 9; i++) {
-    board[i] = spaces[i].innerHTML;
+    state[i] = spaces[i].innerHTML;
   }
-  var values = $(board).serialize();
-  var posting = $.post('games/, values');
-  posting.done(function(data){
-    var post = data;
-    $("#gameBoard").text(game["board"]);
-  });
+  //var values = state.serialize();
+  console.log(state[1]);
+  $.post("/games", game(state));
+  //posting.done(function(data){
+    //var post = data;
+    //$("#gameBoard").text(game["board"]);
+  //});
 }
 
-function previousGame() {
+function previousGame(event) {
+  event.preventDefault();
+  alert("Previous!");
   $.get("/games", function(data) {
     alert(data);
   });
 }
 
-function clearGame() {
-  setMessage("testing clear");
+function clearGame(event) {
+  event.preventDefault();
+  alert("Clear!");
 }
 
 function setMessage(text) {
