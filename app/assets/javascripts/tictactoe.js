@@ -1,26 +1,37 @@
 // Code your JavaScript / jQuery solution here
-function player (turn) {
-  let playerToken = (turn % 2 === 0) ? "X" : "O";
-  return playerToken;
-}
+const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
-let tieGame = true;
 let turn = 0;
-// turnCounter will be increased each time doTurn() gets called.
-function doTurn() {
-   turn += 1 ;
+let currentGame = 0;
+
+$(document).ready(function() {
+  attachListeners();
+});
+
+let player = () => turn % 2 ? "O" : "X";
+
+function doTurn(square) {
    updateState();
-   checkWinner();
-   if(tieGame){
-     setMessage("Tie Game");
-   } else if (gameWon) {
-     turn = 0;
-     //clear the board somehow. check the tests for how to make this work.
+   turn++ ;
+   if (checkWinner()) {
+     saveGame();
+     resetBoard();
+   } else if (turn === 9) {
+     setMessage("Tie game.");
+     saveGame();
+     resetBoard();
+     }
    }
 
+function resetBoard() {
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
 }
 
-//listener needs to call doTurn() to increase the turn counter, then call updateState, passing in the coordinates of the square that was clicked (this will be using the data-x and data-y attributes)
+function saveGame(){
+  
+}
 
 function updateState() {
   $("td").html(player(turn));
@@ -42,6 +53,7 @@ function checkWinner() {
   let diagonalWin
   if (horizontalWin || verticalWin || diagonalWin) {
     setMessage(`Player ${player(turn)} Won!`);
+
     return true;
   } else {
     return false;
