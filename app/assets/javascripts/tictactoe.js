@@ -78,6 +78,26 @@ function loadGame(gameid){
   persisted = true
 }
 
+function saveGame(){
+  var state = []
+  $('td').text((i, sq) => state[i] = sq);
+  currentGame++
+  $.post('/games', state).done(function(data){
+    $('#games').text(data)
+  })
+}
+
+function previousGame(){
+  var index = parseInt(currentGame) -1
+  var board = $.get(`/games`)
+  $('td').text((i, sq) => sq.text(board[i]));
+}
+
+function clearGame(){
+  saveGame();
+  resetBoard();
+}
+
 function doTurn(sq){
   updateState(sq)
   turn++
