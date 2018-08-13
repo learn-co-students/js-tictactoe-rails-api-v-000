@@ -81,12 +81,11 @@ function attachListeners() {
   $("td").click(function() {
     if ($(this).text() == "" && checkWinner() == false  && turn != 9)  {
       doTurn(this)
-      saveGame()
     }
 
     if (checkWinner()) {
       $.post("/games" + "id", function(data) {
-        
+
       })
     }
   })
