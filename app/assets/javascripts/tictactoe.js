@@ -5,7 +5,6 @@ $(function(){
 const win_combos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
 var turn = 0
 var currentGame = 0
-var persisted = false
 
 function player(){
   return turn % 2 ? 'O' : 'X'
@@ -35,7 +34,6 @@ function checkWinner(){
 function resetBoard(){
   $('td').text('')
   turn = 0
-  persisted = false
   currentGame = 0
 }
 
@@ -44,14 +42,13 @@ function saveGame(){
   var gamedata
   $('td').text((i, sq) => {board.push(sq)});
   gamedata = {state: board}
-  if (persisted && currentGame){
+  if (currentGame){
     $.ajax({type: 'patch', url: `/games/${currentGame}`, data: gamedata})
   } else {
     $.post('/games', gamedata, function(game){
       currentGame = game.data.id
       getLink(game.data)
     })
-    persisted = true
   }
 }
 
@@ -74,16 +71,6 @@ function loadGame(gameid){
     turn = board.join('').length
     i = 0
     board.forEach((b) => {$('td')[i].innerHTML = b, i++})
-  })
-  persisted = true
-}
-
-function saveGame(){
-  var state = []
-  $('td').text((i, sq) => state[i] = sq);
-  currentGame++
-  $.post('/games', state).done(function(data){
-    $('#games').text(data)
   })
 }
 
