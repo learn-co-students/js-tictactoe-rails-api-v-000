@@ -5,7 +5,7 @@ $(document).ready(function () {
 const spaces = document.getElementsByTagName('td');
 //let state = Array.prototype.slice.call(squares);
 var turn = 0;
-var won = false;
+var win = false;
 
 function attachListeners() {
   document.getElementById("save").addEventListener('click', function(){
@@ -17,33 +17,11 @@ function attachListeners() {
   document.getElementById("clear").addEventListener('click', function() {
     clearGame(event)
   });
-  spaces[0].addEventListener('click', function() {
-    doTurn(this);
-  });
-  spaces[1].addEventListener('click', function() {
-    doTurn(this);
-  });
-  spaces[2].addEventListener('click', function() {
-    doTurn(this);
-  });
-  spaces[3].addEventListener('click', function(){
-    doTurn(this);
-  });
-  spaces[4].addEventListener('click', function(){
-    doTurn(this);
-  });
-  spaces[5].addEventListener('click', function(){
-    doTurn(this);
-  });
-  spaces[6].addEventListener('click', function(){
-    doTurn(this);
-  });
-  spaces[7].addEventListener('click', function(){
-    doTurn(this);
-  });
-  spaces[8].addEventListener('click',function(){
-    doTurn(this);
-  });
+  for (i=0; i< 9; i++) {
+    spaces[i].addEventListener('click', function() {
+      doTurn(this);
+    });
+  }
 }
 
 function checkWinner() {
@@ -52,56 +30,43 @@ function checkWinner() {
     board[i] = spaces[i].innerHTML;
   }
   if (board[0] !== "" && board[0] === board[1] && board[1] === board[2]) {
-    setMessage("Player " + board[0] + " Won!");
-    resetSquares();
-    turn = 0;
-    return true;
+    won(board[0]);
   } else if (board[3] !== "" && board[3] === board[4] && board[4] === board[5]) {
-    setMessage("Player " + board[3] + " Won!");
-    resetSquares();
-    turn = 0;
-    return true;
+    won(board[3]);
   } else if (board[6] !== "" && board[6] === board[7] && board[7] === board[8]) {
-    setMessage("Player " + board[6] + " Won!");
-    resetSquares();
-    turn = 0;
-    return true;
+    won(board[6]);
   } else if (board[0] !== "" && board[0] === board[3] && board[3] === board[6]) {
-    setMessage("Player " + board[0] + " Won!");
-    resetSquares();
-    turn = 0;
-    return true;
+    won(board[0]);
   } else if (board[1] !== "" && board[1] === board[4] && board[4] === board[7]) {
-    setMessage("Player " + board[1] + " Won!");
-    resetSquares();
-    turn = 0;
-    return true;
+    won(board[1]);
   } else if (board[2] !== "" && board[2] === board[5] && board[5] === board[8]) {
-    setMessage("Player " + board[2] + " Won!");
-    resetSquares();
-    turn = 0;
-    return true;
+    won(board[2]);
   } else if (board[0] !== "" && board[0] === board[4] && board[4] === board[8]) {
-    setMessage("Player " + board[0] + " Won!");
-    resetSquares();
-    turn = 0;
-    return true;
+    won([board[0]]);
   } else if (board[6] !== "" && board[6] === board[4] && board[4] === board[2]) {
-    setMessage("Player " + board[6] + " Won!");
-    resetSquares();
-    turn = 0;
-    return true;
+    won(board[6]);
   } else {
     if (turn === 9) {
-      setMessage('Tie game.');
-      resetSquares();
-      console.log(turn);
-      turn = 0;
-      console.log(turn);
-      turn = 0;
+      tie();
     }
     return false;
   };
+}
+
+function tie(){
+    setMessage('Tie game.');
+    resetSquares();
+    //console.log(turn);
+    turn = 0;
+    //console.log(turn);
+    //turn = 0;
+}
+
+function won(square){
+  setMessage("Player " + square + " Won!");
+  resetSquares();
+  turn = 0;
+  return true;
 }
 
 function updateState(square) {
@@ -110,21 +75,20 @@ function updateState(square) {
 
 function player() {
   if (turn % 2 == 0) {
-    return "X"
-  } else {
-    return "O"
-  }
+    return "X" }
+  else {
+    return "O" }
 }
 
 function doTurn(square) {
-  if (square.innerHTML === "" && (won !== true && turn !== 9)) {
+  if (square.innerHTML === "" && (win !== true && turn !== 9)) {
 
-    console.log(turn);
+    //console.log(turn);
     //console.log(player());
     updateState(square);
     turn = turn + 1;
     checkWinner();
-    console.log(turn);
+    //console.log(turn);
   }
 }
 
@@ -137,14 +101,14 @@ function resetSquares() {
 function saveGame(event) {
   event.preventDefault();
   alert("Save!");
-  let board = [];
+  let state = [];
   for (i=0; i< 9; i++) {
-    board[i] = spaces[i].innerHTML;
+    state[i] = spaces[i].innerHTML;
   }
-  //var values = state.serialize();
-  console.log(state[1]);
-  $.post("/games", :board);
-  //posting.done(function(data){
+  //var values = spaces.serialize();
+  //console.log(values);
+  var posting = $.post('/games', {attributes: state});
+    //posting.done(function(data){
     //var post = data;
     //$("#gameBoard").text(game["board"]);
   //});
