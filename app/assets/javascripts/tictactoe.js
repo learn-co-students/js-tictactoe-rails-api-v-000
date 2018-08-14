@@ -3,15 +3,15 @@ $(function() {
   attachListeners()
 });
 
-let turn = 1
+var turn = 0
 
 function player() {
-  return turn%2 == 0 ? "O" : "X"
+  return turn%2 == 0 ? "X" : "O"
 }
 
-function doTurn(e) {
-  updateState(e.target)
+function doTurn(el) {
   turn++
+  updateState(el)
 }
 
 function updateState(el) {
@@ -22,6 +22,6 @@ function updateState(el) {
 function attachListeners() {
   var cells = Array.from(document.getElementsByTagName("td"))
   cells.forEach(cell => {
-    cell.addEventListener("click", (e) => {doTurn(e)}, {once: true})
+    cell.addEventListener("click", (e) => {doTurn(e.target)}, {once: true})
   })
 }
