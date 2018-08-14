@@ -31,20 +31,28 @@ function checkWinner() {
   }
   if (board[0] !== "" && board[0] === board[1] && board[1] === board[2]) {
     won(board[0]);
+    return true;
   } else if (board[3] !== "" && board[3] === board[4] && board[4] === board[5]) {
     won(board[3]);
+    return true
   } else if (board[6] !== "" && board[6] === board[7] && board[7] === board[8]) {
     won(board[6]);
+    return true;
   } else if (board[0] !== "" && board[0] === board[3] && board[3] === board[6]) {
     won(board[0]);
+    return true;
   } else if (board[1] !== "" && board[1] === board[4] && board[4] === board[7]) {
     won(board[1]);
+    return true;
   } else if (board[2] !== "" && board[2] === board[5] && board[5] === board[8]) {
     won(board[2]);
+    return true;
   } else if (board[0] !== "" && board[0] === board[4] && board[4] === board[8]) {
     won([board[0]]);
+    return true;
   } else if (board[6] !== "" && board[6] === board[4] && board[4] === board[2]) {
     won(board[6]);
+    return true;
   } else {
     if (turn === 9) {
       tie();
@@ -66,7 +74,7 @@ function won(square){
   setMessage("Player " + square + " Won!");
   resetSquares();
   turn = 0;
-  return true;
+  //return true;
 }
 
 function updateState(square) {
@@ -105,20 +113,14 @@ function saveGame(event) {
   for (i=0; i< 9; i++) {
     state[i] = spaces[i].innerHTML;
   }
-  //var values = spaces.serialize();
-  //console.log(values);
-  var posting = $.post('/games', {attributes: state});
-    //posting.done(function(data){
-    //var post = data;
-    //$("#gameBoard").text(game["board"]);
-  //});
+  var posting = $.post('/games', {state: state});
 }
 
 function previousGame(event) {
   event.preventDefault();
   alert("Previous!");
   $.get("/games", function(data) {
-    alert(data);
+    alert(data["id"]);
   });
 }
 
