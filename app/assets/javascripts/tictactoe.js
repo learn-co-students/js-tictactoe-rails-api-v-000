@@ -1,29 +1,27 @@
 // Code your JavaScript / jQuery solution here
+$(function() {
+  attachListeners()
+});
+
 let turn = 1
 
-const player = () => {
+function player() {
   return turn%2 == 0 ? "O" : "X"
 }
 
-const doTurn = () => {
-  return turn++
+function doTurn(e) {
+  updateState(e.target)
+  turn++
 }
 
-function updateState(event) {
-  let token = player(turn)
-  event.target.textContent = token
-  doTurn(turn)
+function updateState(el) {
+  let token = player()
+  el.textContent = token
 }
 
-const attachListeners = () => {
+function attachListeners() {
   var cells = Array.from(document.getElementsByTagName("td"))
   cells.forEach(cell => {
-    cell.addEventListener("click", (e) => {updateState(e)}, {once: true})
+    cell.addEventListener("click", (e) => {doTurn(e)}, {once: true})
   })
-  
 }
-
-$(function() {
-  attachListeners()
- 
-});
