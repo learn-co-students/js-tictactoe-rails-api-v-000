@@ -10,6 +10,7 @@ const WIN_COMBINATIONS = [
  [0, 4, 8], [2, 4, 6]
 ]
 var board = []
+var currentGame = 0
 
 
 function player() {
@@ -28,9 +29,6 @@ function setMessage(string) {
   $("div#message").text(string)
 }
 
-function positionTaken() {
-
-}
 
 function boardState() {
   $("td").text((index, square) => board[index] = square)
@@ -56,6 +54,7 @@ function checkWinner() {
 function resetBoard() {
   $("td").empty()
   turn = 0
+  currentGame = 0
 }
 
 function doTurn(square) {
@@ -65,17 +64,78 @@ function doTurn(square) {
   var fullBoard = boardState().every(e => e != "")
 
   if (checkWinner()) {
+    saveGame()
     resetBoard()
   } else if (turn === 9) {
+      saveGame()
       setMessage("Tie game.")
       resetBoard()
   }
 }
 
 function saveGame() {
+  let state = []
+  let gameData;
 
-  $("#games").html("<button data-id="<%= game.id %>">Game</button>")
+  $("td").text((index, square) => state[index] = square)
+  gameData = {state: state}
+  if (currentGame) {
+    $.ajax({url: "/games/" + currentGame, type: "patch", data: gameData})
+  } else {
+    $.post("/games", gameData, function(game) {
+      currentGame = game.data.id
+      $("#games").append("<button data-id=" + currentGame + ">"+ currentGame +"</button>")
+    })
+  }
+
 }
+
+
+
+function previousGames(){
+  $("#games").empty();
+
+  $.get("/games", function(games) {
+    games.data.forEach(buttonizePreviousGame)
+  })
+}
+
+function buttonizePreviousGame(game) {
+  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+}
+
+function reloadGame(gameId) {
+  document.getElementById('message').innerHTML = ''; //message will be used later for won or drawn games
+
+  const xhr = new XMLHttpRequest;
+  xhr.overrideMimeType('application/json');
+  xhr.open("GET", `/games/${gameId}`, true);
+  xhr.onload = () => {
+    const data = JSON.parse(xhr.responseText).data;
+    const id = data.id;
+    const state = data.attributes.state;
+
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index]; //repopulate board //elements with state
+        index++;
+      }
+    }
+
+    turn = state.join("").length//how can you use the .length property to figure out what turn it is?
+    currentGame = id;
+
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
+    }
+  };
+
+  xhr.send(null);
+}
+
+
 
 function attachListeners() {
   $("td").click(function() {
@@ -83,26 +143,30 @@ function attachListeners() {
       doTurn(this)
     }
 
-    if (checkWinner()) {
-      $.post("/games" + "id", function(data) {
-
-      })
+    if (checkWinner() || turn === 9) {
+      saveGame()
     }
   })
 
   $("#previous").click(function() {
-    $.get("/games", function(data) {
-
-    })
+    previousGames()
   })
 
   $("#save").click(function() {
-    $.post("/games", function(data) {
-
-    })
+    saveGame()
   })
 
   $("#clear").click(function() {
     resetBoard()
+  })
+
+  $("#games button")[0].click(function() {
+    alert("I was clicked")
+    debugger
+
+    var id = $(this).data("id")
+    $.get("/games/" + id, function(game) {
+      game
+    })
   })
 }
