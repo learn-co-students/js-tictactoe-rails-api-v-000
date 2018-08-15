@@ -26,9 +26,19 @@ function setMessage(string) {
 }
 
 function checkWinner() {
-
+  debugger
+  let winningArray = winCombinations.find(function(e) {
+    board()[e[0]] == board()[e[1]] && board()[e[0]] == board()[e[2]] &&
+    board()[e[1]] == board()[e[2]] && board()[0] != "" && board()[1] != ""
+  })
+  return winningArray()
 }
 
+//def won?
+//    WIN_COMBINATIONS.detect do |win_combo|
+//      @board[win_combo[0]] == @board[win_combo[1]] && @board[win_combo[0]] == @board[win_combo[2]] && position_taken?(win_combo[0])
+//    end
+//  end
 function doTurn() {
   this.turn += 1
   checkWinner()
