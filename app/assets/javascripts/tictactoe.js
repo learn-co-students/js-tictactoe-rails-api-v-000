@@ -1,15 +1,30 @@
 // Code your JavaScript / jQuery solution here
-function player(turn) {
-  debugger
-  if (turn == null || turn % 2 == 0) {
+var board = $('td')
+
+var turn = 0
+
+function player() {
+  if (this.turn % 2 == 0) {
     return 'X'
   } else {
     return 'O'
   }
 }
 
-function updateState() {
+function updateState(cell) {
+  let index = cell - 1
+  let token = player()
+  if (board[index].innerHTML == "") {
+    board[index].innerHTML = token
+  } else {
+    return error
+  }
+}
 
+class Game {
+  constructor(turn) {
+    this.turn = turn
+  }
 }
 
 function setMessage() {
