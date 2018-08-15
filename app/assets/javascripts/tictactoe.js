@@ -1,5 +1,10 @@
 // Code your JavaScript / jQuery solution here
-var board = $('td')
+const winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
+
+let board = function () {
+  let array = Array.prototype.slice.call(document.querySelectorAll('td'))
+  return array.map(function (i) {return i.innerHTML})
+}
 
 var turn = 0
 
@@ -12,23 +17,12 @@ function player() {
 }
 
 function updateState(cell) {
-  let index = cell - 1
   let token = player()
-  if (board[index].innerHTML == "") {
-    board[index].innerHTML = token
-  } else {
-    return error
-  }
+  cell.innerHTML = token
 }
 
-class Game {
-  constructor(turn) {
-    this.turn = turn
-  }
-}
-
-function setMessage() {
-
+function setMessage(string) {
+  $("#message").html(string)
 }
 
 function checkWinner() {
@@ -36,7 +30,9 @@ function checkWinner() {
 }
 
 function doTurn() {
-
+  this.turn += 1
+  checkWinner()
+  updateState()
 }
 
 function attachListener() {
