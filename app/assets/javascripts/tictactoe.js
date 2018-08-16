@@ -1,4 +1,3 @@
-// Code your JavaScript / jQuery solution here
 const winCombinations = [
   [0,1,2],
   [3,4,5],
@@ -31,10 +30,8 @@ var updateState = function (square) {
   // 3. find the current token using player
   // 4. updates that element in the table with current token
   var token = player();
-  if (square.innerHTML) {
-    debugger
-    $(square).text(token);
-  }
+
+  $(square).text(token);
 
 }
 
@@ -93,12 +90,22 @@ var doTurn = function(square) {
     this.turn = 0;
   } else if( boardValues.every(value => value !== "")){
     setMessage('Tie game.')
+    populateBoard(['','','','','','','','','']);
+    this.turn = 0;
   }
+}
+
+var saveGame = function() {
+  $.post('')
 }
 
 var attachListeners = function() {
   $("td").on("click", function() {
-    // get the position
-    doTurn(this)
+    if(!this.innerHTML && !checkWinner()){
+      doTurn(this);
+    }
   })
-}
+
+  // implement AJAX get and post reqs here
+  $('#save').on('click', () => saveGame())
+};
