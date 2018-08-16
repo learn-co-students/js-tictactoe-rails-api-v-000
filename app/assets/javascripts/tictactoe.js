@@ -87,14 +87,12 @@ var doTurn = function(square) {
   $('td').text((index, square) => boardValues[index] = square);
 
   if(checkWinner()){
-    populateBoard(['','','','','','','','','']);
-    this.turn = 0;
-    this.currentGame = 0;
+    saveGame();
+    clearGame();
   } else if( boardValues.every(value => value !== "")){
-    setMessage('Tie game.')
-    populateBoard(['','','','','','','','','']);
-    this.turn = 0;
-    this.currentGame = 0;
+    setMessage('Tie game.');
+    saveGame();
+    clearGame();
   }
 }
 
@@ -113,7 +111,10 @@ var saveGame = function() {
   } else {
     // pass that board to create route as params
     $.post('/games', gameData, function(game){
-      $('#games').append(`${game.data.id}<br>`)
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`)
+      // attach listener
+      $(`#gameid-${game.data.id}`).on('click', () => reloadGame(game.data.id))
     })
   }
 }
@@ -121,7 +122,32 @@ var saveGame = function() {
 var showGames = function() {
   // uses get request to render all games
   $.get('/games', function(games){
-    games.data.map
+    $('#games').empty();
+    games.data.forEach(function(game) {
+      $('#games').append(`<button id="gameid-${game.id}">${game.id}</button>`);
+      // attach listener
+      $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+    })
+  })
+}
+
+var clearGame = function() {
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
+}
+
+var reloadGame = function(gameID) {
+  $('#games').empty();
+  // send get request to show route
+  $.get(`/games/${gameID}`, function(game){
+    // show the previous board
+    board = game.data.attributes.state
+    populateBoard(board)
+    // set the correct turn
+    turn = board.filter(square => !!square).length
+    // set the correct currentGame
+    currentGame = game.data.id
   })
 }
 
