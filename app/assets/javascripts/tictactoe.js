@@ -106,8 +106,8 @@ var saveGame = function() {
   // update if already existing game
   if(currentGame){
     $.ajax({
-      type: 'PATCH'
-      url: `/games/${currentGame}`
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
       data: gameData
     })
   } else {
@@ -116,6 +116,13 @@ var saveGame = function() {
       $('#games').append(`${game.data.id}<br>`)
     })
   }
+}
+
+var showGames = function() {
+  // uses get request to render all games
+  $.get('/games', function(games){
+    games.data.map
+  })
 }
 
 var attachListeners = function() {
@@ -127,4 +134,6 @@ var attachListeners = function() {
 
   // implement AJAX get and post reqs here
   $('#save').on('click', () => saveGame())
+  $('#previous').on('click', () => showGames())
+  $('#clear').on('click', () => clearGame())
 };
