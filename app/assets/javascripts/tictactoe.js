@@ -6,6 +6,11 @@ let board = function () {
   return array.map(function (i) {return i.innerHTML})
 }
 
+function positionTaken(index) {
+  if (board()[index] != "") { return true }
+  else { return false }
+}
+
 var turn = 0
 
 function player() {
@@ -25,14 +30,37 @@ function setMessage(string) {
   $("#message").html(string)
 }
 
+function won(array) {
+  if (positionTaken(array[0]) == true) {
+    if (board()[array[0]] == board()[array[1]] && board()[array[0]] == board()[array[2]] &&
+    board()[array[1]] == board()[array[2]]) { return true }
+      else { return false }
+  } else { return false }
+}
+
 function checkWinner() {
   debugger
-  let winningArray = winCombinations.find(function(e) {
-    board()[e[0]] == board()[e[1]] && board()[e[0]] == board()[e[2]] &&
-    board()[e[1]] == board()[e[2]] && board()[0] != "" && board()[1] != ""
+  let winner = winCombinations.find(function (e) {
+    return won(e) == true
   })
-  return winningArray()
 }
+//      if (won(e) == true) {
+//        if (e[0] == 'X') {
+//          setMessage('Player X Won!')
+//        } else {
+//          setMessage('Player O Won!')
+//        }
+//      } else {
+//        setMessage('LOSE')
+//      }
+//  })
+//}
+
+//    board()[e[0]] == board()[e[1]] && board()[e[0]] == board()[e[2]] &&
+//    board()[e[1]] == board()[e[2]] && board()[0] != "" && board()[1] != ""
+//  })
+//  return winningArray()
+//}
 
 //def won?
 //    WIN_COMBINATIONS.detect do |win_combo|
