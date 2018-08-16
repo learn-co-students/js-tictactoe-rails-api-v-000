@@ -10,6 +10,7 @@ const winCombinations = [
 ]
 
 var turn = 0
+var currentGame = 0
 
 $(document).ready(function() {
   attachListeners();
@@ -88,10 +89,12 @@ var doTurn = function(square) {
   if(checkWinner()){
     populateBoard(['','','','','','','','','']);
     this.turn = 0;
+    this.currentGame = 0;
   } else if( boardValues.every(value => value !== "")){
     setMessage('Tie game.')
     populateBoard(['','','','','','','','','']);
     this.turn = 0;
+    this.currentGame = 0;
   }
 }
 
@@ -99,13 +102,20 @@ var saveGame = function() {
   // get the current board
   var boardValues = []
   $('td').text((index, square) => boardValues[index] = square);
-
-  // pass that board to create route as params
   var gameData = {state: boardValues}
-
-  $.post('/games', gameData, function(game){
-    debugger
-  })
+  // update if already existing game
+  if(currentGame){
+    $.ajax({
+      type: 'PATCH'
+      url: `/games/${currentGame}`
+      data: gameData
+    })
+  } else {
+    // pass that board to create route as params
+    $.post('/games', gameData, function(game){
+      $('#games').append(`${game.data.id}<br>`)
+    })
+  }
 }
 
 var attachListeners = function() {
