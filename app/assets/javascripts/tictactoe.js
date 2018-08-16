@@ -27,11 +27,14 @@ function resetBoard() {
 }
 
 function fullBoard() {
-
+  let notFull = function(e) {
+    return e == ""
+  }
+  return !board().some(notFull)
 }
 
 function tieGame() {
-  if (fullBoard() == true && won() == false) {
+  if (fullBoard() == true && checkWinner() == false) {
     return true
   } else {
     return false
@@ -78,17 +81,20 @@ function checkWinner() {
 }
 
 function doTurn(cell) {
-  this.turn += 1
   updateState(cell)
-  checkWinner()
+  this.turn += 1
   if (checkWinner() == true) {
+    checkWinner()
     this.turn = 0
     resetBoard()
   } else {
-    if (
+    if (tieGame() == true) {
+      setMessage('Tie game.')
+      resetBoard()
+    }
   }
 }
-
-function attachListener() {
+//
+function attachListeners() {
 
 }
