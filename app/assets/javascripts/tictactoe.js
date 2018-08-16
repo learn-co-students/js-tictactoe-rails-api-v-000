@@ -96,7 +96,16 @@ var doTurn = function(square) {
 }
 
 var saveGame = function() {
-  $.post('')
+  // get the current board
+  var boardValues = []
+  $('td').text((index, square) => boardValues[index] = square);
+
+  // pass that board to create route as params
+  var gameData = {state: boardValues}
+
+  $.post('/games', gameData, function(game){
+    debugger
+  })
 }
 
 var attachListeners = function() {
