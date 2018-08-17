@@ -43,6 +43,10 @@ function tieGame() {
   }
 }
 
+//function over() {
+//
+//}
+
 //End Helper Functions
 
 var turn = 0
@@ -83,16 +87,18 @@ function checkWinner() {
 }
 
 function doTurn(cell) {
-  updateState(cell)
-  this.turn += 1
-  if (checkWinner() == true) {
-    checkWinner()
-    this.turn = 0
-    resetBoard()
-  } else {
-    if (tieGame() == true) {
-      setMessage('Tie game.')
+  if (cell.innerHTML == "") {
+    updateState(cell)
+    this.turn += 1
+    if (checkWinner() == true) {
+      checkWinner()
+      this.turn = 0
       resetBoard()
+    } else {
+      if (tieGame() == true) {
+        setMessage('Tie game.')
+        resetBoard()
+      }
     }
   }
 }
@@ -103,6 +109,5 @@ function attachListeners() {
     tds[i].addEventListener('click', function () {
       doTurn(tds[i])
     })
-    debugger
   }
 }

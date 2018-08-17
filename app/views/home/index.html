@@ -23,3 +23,24 @@
 <button id="save">Save Game</button>
 <button id="previous">Show Previous Games</button>
 <button id="clear">Clear Current Game</button>
+
+<script type="text/javascript" charset="utf-8">
+	$(function () {
+		$('table').submit(function(event) {
+			event.preventDefault();
+			var values = $(this).serialize();
+			var game = $.post('/games', values);
+			game.done(function(data) {
+				$("#games").text(game["id"])
+			})
+		})
+	})
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	$(function () {
+		$("#save").submit(function(event) {
+			event.preventDefault()
+			alert("we r hack3rz")
+		})
+	})
