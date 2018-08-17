@@ -1,12 +1,7 @@
 // Code your JavaScript / jQuery solution here
-const winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
+$(document).ready(attachListeners)
 
-function attachListeners(tdElement) {
-  document.body.addEventListener('click', function(element) {
-    if 
-  }
-  tdElement.addEventListener('click', doTurn(tdElement))
-}
+const winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
 //Begin helper functions
 let board = function () {
@@ -99,5 +94,15 @@ function doTurn(cell) {
       setMessage('Tie game.')
       resetBoard()
     }
+  }
+}
+
+function attachListeners() {
+  let tds = document.querySelectorAll('td')
+  for (let i = 0; i < tds.length; i++) {
+    tds[i].addEventListener('click', function () {
+      doTurn(tds[i])
+    })
+    debugger
   }
 }
