@@ -3,6 +3,7 @@ $(document).ready(function () {
 });
 
 const spaces = document.getElementsByTagName('td');
+//var savedGames = document.getElementById('#games').querySelectorAll('button');
 var turn = 0;
 var win = false;
 
@@ -113,17 +114,32 @@ function saveGame() {
 }
 
 function previousGame() {
+  $("#games").empty();
   $.get("/games", function(data){
       var games = data;
       for (i=0; i< games["data"].length; i++) {
           $("#games").append("<button>" + games["data"][i]["id"] + "</button>");
         }
   });
+  //var x = document.getElementById("myDIV").querySelectorAll("p");
+  var gameDiv = document.getElementById("games");
+  var gameMarkers = gameDiv.getElementsByTagName('button');
+  console.log(gameMarkers.length);
+  for (i=0; i< gameMarkers.length; i++) {
+    gameMarkers[i].addEventListener('click', function() {
+      loadGame(this);
+    });
+  }
 }
 
+function loadGame(game) {
+  console.log(game[innerHTML]);
+}
+
+
 function clearGame() {
-  //event.preventDefault();
-  //alert("Clear!");
+  resetSquares();
+  turn = 0;
 }
 
 function setMessage(text) {
