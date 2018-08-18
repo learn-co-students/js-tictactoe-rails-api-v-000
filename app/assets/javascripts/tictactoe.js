@@ -1,11 +1,27 @@
 // Code your JavaScript / jQuery solution here
 $(document).ready(attachListeners)
 $(function () {
-  $("#save").on("click", (function (e) {
+  $("#save").on("click", function (e) {
     e.preventDefault();
-    alert("SAVE")
+    debugger
+
+    let values = $(this).serialize()
+    let posting = $.post('/games', values)
+    posting.done(function(data) {
+      //var product = data;
+      //$(#games).append(data["id"])
+    })
+    //$.postJSON("/games", function(data) {
   })
-)
+})
+
+$(function () {
+  $("#previous").on("click", function (e) {
+    e.preventDefault();
+    $.getJSON("/games", function(data) {
+      $("#games").html(data["id"])
+    })
+  })
 })
 
 
