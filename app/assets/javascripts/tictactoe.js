@@ -114,13 +114,24 @@ function saveGame(event) {
     state[i] = spaces[i].innerHTML;
   }
   var posting = $.post('/games', {state: state});
+  posting.done(function(data){
+    //var game = data;
+    console.log(data);
+    //$("#games").text(games[0]["id"]);
+  });
 }
 
 function previousGame(event) {
   event.preventDefault();
-  alert("Previous!");
-  $.get("/games", function(data) {
-    alert(data["id"]);
+  alert("Testing Previous!");
+  $.get("/games", function(data){
+      //console.log(data);
+      //console.log(data["data"][0]);
+      var games = data;
+      console.log(games["data"].length);
+    for (i=0; i< games["data"].length; i++) {
+        $("#games").append("<li>" + games["data"][i]["id"] + "</li>");
+      }
   });
 }
 
