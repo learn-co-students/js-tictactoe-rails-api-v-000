@@ -3,7 +3,6 @@ $(document).ready(function () {
 });
 
 const spaces = document.getElementsByTagName('td');
-//var savedGames = document.getElementById('#games').querySelectorAll('button');
 var turn = 0;
 var win = false;
 
@@ -106,11 +105,6 @@ function saveGame() {
     state[i] = spaces[i].innerHTML;
   }
   var posting = $.post('/games', {state: state});
-  posting.done(function(data){
-    //var game = data;
-    console.log(data);
-    //$("#games").text(games[0]["id"]);
-  });
 }
 
 function previousGame() {
@@ -118,22 +112,21 @@ function previousGame() {
   $.get("/games", function(data){
       var games = data;
       for (i=0; i< games["data"].length; i++) {
-          $("#games").append("<button>" + games["data"][i]["id"] + "</button>");
+          let game = games["data"][i]["id"];
+          $("#games").append("<button onclick='loadGame(" + game + ")'>" + game + "</button>");
         }
   });
-  //var x = document.getElementById("myDIV").querySelectorAll("p");
-  var gameDiv = document.getElementById("games");
-  var gameMarkers = gameDiv.getElementsByTagName('button');
-  console.log(gameMarkers.length);
-  for (i=0; i< gameMarkers.length; i++) {
-    gameMarkers[i].addEventListener('click', function() {
-      loadGame(this);
-    });
-  }
 }
 
 function loadGame(game) {
-  console.log(game[innerHTML]);
+  console.log(game);
+  $.get("/games/" + game, function(data){
+      var gameState = data["data"]["attributes"]["state"];
+      //console.log(gameState);
+    for (i=0; i<9; i++) {
+        spaces[i].innerHTML = gameState[i];
+    }
+  });
 }
 
 
