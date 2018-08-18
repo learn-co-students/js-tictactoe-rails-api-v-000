@@ -8,13 +8,13 @@ var turn = 0;
 var win = false;
 
 function attachListeners() {
-  document.getElementById("save").addEventListener('click', function(){
+  document.getElementById("save").addEventListener('click', function(event){
     saveGame(event);
   });
-  document.getElementById("previous").addEventListener('click', function() {
+  document.getElementById("previous").addEventListener('click', function(event) {
     previousGame(event)
   });
-  document.getElementById("clear").addEventListener('click', function() {
+  document.getElementById("clear").addEventListener('click', function(event) {
     clearGame(event)
   });
   for (i=0; i< 9; i++) {
@@ -108,7 +108,7 @@ function resetSquares() {
 
 function saveGame(event) {
   event.preventDefault();
-  alert("Save!");
+  //alert("Save!");
   let state = [];
   for (i=0; i< 9; i++) {
     state[i] = spaces[i].innerHTML;
@@ -123,7 +123,7 @@ function saveGame(event) {
 
 function previousGame(event) {
   event.preventDefault();
-  alert("Testing Previous!");
+  //alert("Testing Previous!");
   $.get("/games", function(data){
       var games = data;
       for (i=0; i< games["data"].length; i++) {
@@ -134,7 +134,7 @@ function previousGame(event) {
 
 function clearGame(event) {
   event.preventDefault();
-  alert("Clear!");
+  //alert("Clear!");
 }
 
 function setMessage(text) {
