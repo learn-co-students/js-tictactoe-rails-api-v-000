@@ -3,7 +3,6 @@ $(document).ready(function () {
 });
 
 const spaces = document.getElementsByTagName('td');
-//let state = Array.prototype.slice.call(squares);
 var turn = 0;
 var win = false;
 
@@ -62,19 +61,17 @@ function checkWinner() {
 }
 
 function tie(){
+    saveGame();
     setMessage('Tie game.');
     resetSquares();
-    //console.log(turn);
     turn = 0;
-    //console.log(turn);
-    //turn = 0;
 }
 
 function won(square){
+  saveGame();
   setMessage("Player " + square + " Won!");
   resetSquares();
   turn = 0;
-  //return true;
 }
 
 function updateState(square) {
@@ -90,13 +87,9 @@ function player() {
 
 function doTurn(square) {
   if (square.innerHTML === "" && (win !== true && turn !== 9)) {
-
-    //console.log(turn);
-    //console.log(player());
     updateState(square);
     turn = turn + 1;
     checkWinner();
-    //console.log(turn);
   }
 }
 
@@ -106,9 +99,7 @@ function resetSquares() {
   }
 }
 
-function saveGame(event) {
-  event.preventDefault();
-  //alert("Save!");
+function saveGame() {
   let state = [];
   for (i=0; i< 9; i++) {
     state[i] = spaces[i].innerHTML;
@@ -121,19 +112,17 @@ function saveGame(event) {
   });
 }
 
-function previousGame(event) {
-  event.preventDefault();
-  //alert("Testing Previous!");
+function previousGame() {
   $.get("/games", function(data){
       var games = data;
       for (i=0; i< games["data"].length; i++) {
-          $("#games").append("<li>" + games["data"][i]["id"] + "</li>");
+          $("#games").append("<button>" + games["data"][i]["id"] + "</button>");
         }
   });
 }
 
-function clearGame(event) {
-  event.preventDefault();
+function clearGame() {
+  //event.preventDefault();
   //alert("Clear!");
 }
 
