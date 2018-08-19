@@ -3,6 +3,7 @@ $(document).ready(function () {
 });
 
 const spaces = document.getElementsByTagName('td');
+var idGame = "";
 var turn = 0;
 var win = false;
 
@@ -104,7 +105,22 @@ function saveGame() {
   for (i=0; i< 9; i++) {
     state[i] = spaces[i].innerHTML;
   }
-  var posting = $.post('/games', {state: state});
+  if (idGame === "") {
+    var posting = $.post('/games', {state: state});
+    posting.done(function(data) {
+      //console.log(data["data"]["id"]);
+      idGame = data["data"]["id"];
+      //console.log("idGame = " + idGame)
+    });
+  } else {
+    //var patchPath = '/games/4' + gameId;
+//    console.log(gameNum);
+    var posting = $.ajax({
+        type: "PATCH",
+        url: '/games/' + idGame,
+        data: {state: state}
+      });
+  }
 }
 
 function previousGame() {
@@ -119,12 +135,19 @@ function previousGame() {
 }
 
 function loadGame(game) {
-  console.log(game);
+  //console.log(game);
+  //gameNum = game;
+  //console.log(gameNum);
   $.get("/games/" + game, function(data){
+
       var gameState = data["data"]["attributes"]["state"];
-      //console.log(gameState);
-    for (i=0; i<9; i++) {
-        spaces[i].innerHTML = gameState[i];
+      idGame = data["data"]["id"];
+      turn = 0;
+      for (i=0; i<9; i++) {
+        if (gameState[i] != "") {
+        turn = turn + 1;
+      }
+      spaces[i].innerHTML = gameState[i];
     }
   });
 }
@@ -133,6 +156,7 @@ function loadGame(game) {
 function clearGame() {
   resetSquares();
   turn = 0;
+  idGame = "";
 }
 
 function setMessage(text) {
