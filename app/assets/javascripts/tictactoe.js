@@ -108,13 +108,9 @@ function saveGame() {
   if (idGame === "") {
     var posting = $.post('/games', {state: state});
     posting.done(function(data) {
-      //console.log(data["data"]["id"]);
       idGame = data["data"]["id"];
-      //console.log("idGame = " + idGame)
     });
   } else {
-    //var patchPath = '/games/4' + gameId;
-//    console.log(gameNum);
     var posting = $.ajax({
         type: "PATCH",
         url: '/games/' + idGame,
@@ -135,11 +131,7 @@ function previousGame() {
 }
 
 function loadGame(game) {
-  //console.log(game);
-  //gameNum = game;
-  //console.log(gameNum);
   $.get("/games/" + game, function(data){
-
       var gameState = data["data"]["attributes"]["state"];
       idGame = data["data"]["id"];
       turn = 0;
