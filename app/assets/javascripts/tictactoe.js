@@ -4,10 +4,9 @@ const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
 
 var turn = 0
 
-  $(document).ready(function() {
-    attachListeners()
-  });
-
+$(document).ready(function() {
+  attachListeners()
+});
 
 function player(){
   if (turn % 2 === 0){
@@ -61,24 +60,30 @@ function checkWinner(){
   return winner
 }
 
+function resetGame(){
+  for (let i = 0; i < 9; i++) {
+    $('td')[i].innerHTML = '';
+  }
+  turn = 0
+}
+
 function doTurn(element){
-  turn++
   updateState(element)
-  if (turn === 9 && checkWinner() === false){
+  turn++
+  if (turn === 9 && !checkWinner()){
+    resetGame()
     setMessage("Tie game.")
   }
+
   if (checkWinner()){
-    turn = 0
-    for (let i = 0; i < 9; i++) {
-      $('td')[i].innerHTML = '';
-    }
+    resetGame()
   }
 }
 
 
 function attachListeners(){
     $('td').on( "click", function (){
-      if (this.innerText === "") {
+      if (this.innerText === "" && !checkWinner()) {
         doTurn(this);
       }
     })
