@@ -5,6 +5,7 @@ $(document).ready(function(){
 })
 
 var turn = 0 
+var gameId = 0
 
 var WIN_COMBINATIONS = [
     [0, 1, 2],
@@ -37,7 +38,7 @@ function setMessage(string) {
 
 function checkWinner() {
     var winner = false;
-    var board = {};
+    var board = [];
 
     $('td').text((index, square) => board[index] = square);
 
@@ -54,13 +55,71 @@ function doTurn(square) {
 updateState(square)
 turn++;
 if (checkWinner()) {
-    $('td').empty()
-    turn = 0;
+    saveGame()
+    resetBoard()
 } else if (turn === 9) {
     setMessage('Tie game.')
+    saveGame()
+    resetBoard()
 }
 }
+
+function saveGame() {
+    let state = Array.from($('td'), e => e.innerText);
+    if (gameId) {
+        $.ajax({
+            type: 'PATCH',
+            url: `/games/${gameId}`,
+            dataType: 'json',
+            data: {state: state}
+        });
+    } else {
+        $.post(`/games`, {state: state}, function(game) {
+            gameId = parseInt(game.data.id);
+        });
+    };
+};
+
+
+
+function resetBoard() {
+    turn = 0
+    $('td').empty()
+}
+
+function previousGames() {
+    $('div#games').empty();
+    $.get('/games', function(games) {
+        if (games.data.length) {
+            games.data.map(function(game) {
+                $('div#games').append(`<button id="gameid-${game.id}">Retrieve Game: #${game.id}</button><br>`)
+                $("#gameid-"+game.id).on('click', () => loadGame(game.id))
+            })
+        }
+    })
+}
+
+function loadGame(gameid) {
+    $.get(`/games/${gameid}`, function(game) {
+        let state = game.data.attributes.state;
+        $('td').text((index, token) => state[index]);
+        gameId = gameid
+        turn = state.join('').length;
+        checkWinner();
+    });
+};
 
 function attachListeners() {
-
+    $('td').on('click', function() {
+        if (!$.text(this) && !checkWinner()) {
+            doTurn(this);
+        }
+    })
+    $("#save").on('click', () => saveGame())
+    $("#previous").on('click', () => previousGames())
+    $("#clear").on('click', () => {
+        resetBoard()
+        gameId = 0
+        setMessage("")
+    })
 }
