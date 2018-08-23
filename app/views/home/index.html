@@ -23,3 +23,23 @@
 <button id="save">Save Game</button>
 <button id="previous">Show Previous Games</button>
 <button id="clear">Clear Current Game</button>
+
+<script type="text/javascript" charset="UTF-8">
+	// on load, with jquery
+	$(function() {
+		// upon page load, turn should be 0/reset
+		var turnCount = 0;
+		// capture clicks on the table cells
+		$('td').on('click', function(e) {
+			e.preventDefault();
+			// if even/odd, do the opposite turn's symbol
+			if (turnCount%2) {
+				// grab the particular td, and change it's value
+				$(this).text("X");
+			} else {
+				$(this).text("O");
+			}
+			turnCount = turnCount + 1;
+		});
+	});
+</script>
