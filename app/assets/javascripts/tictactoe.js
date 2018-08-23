@@ -20,8 +20,9 @@ $(document).ready(function() {
         }else if (turn === 9){
             //debugger
             setMessage("Tie game.");
-            saveGame();
+            setMessage("Tie game.");
             resetBoard();
+            saveGame();
         }
     }
 
@@ -106,7 +107,7 @@ $(document).ready(function() {
           }
         });
       
-        $('#save').on('click', () => saveGame());
+        $('#save').on('click', saveGame)
         $('#previous').on('click', () => showPreviousGames());
         $('#clear').on('click', () => resetBoard());
 }
