@@ -6,7 +6,7 @@ $(document).ready(function(){
 
 var turn = 0 
 
-const WIN_COMBINATIONS = [
+var WIN_COMBINATIONS = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -36,12 +36,29 @@ function setMessage(string) {
 }
 
 function checkWinner() {
+    var winner = false;
+    var board = {};
 
+    $('td').text((index, square) => board[index] = square);
+
+    WIN_COMBINATIONS.forEach(function(position) {
+        if (board[position[0]] === board[position[1]] && board[position[1]] == board[position[2]] && board[position[0]] !== "") {
+            setMessage(`Player ${board[position[0]]} Won!`)
+            return winner = true 
+        }
+    })
+    return winner;
 }
 
-function doTurn() {
-++turn 
+function doTurn(square) {
 updateState(square)
+turn++;
+if (checkWinner()) {
+    $('td').empty()
+    turn = 0;
+} else if (turn === 9) {
+    setMessage('Tie game.')
+}
 }
 
 function attachListeners() {
