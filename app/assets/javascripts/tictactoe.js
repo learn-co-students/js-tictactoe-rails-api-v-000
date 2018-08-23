@@ -40,7 +40,8 @@ function checkWinner() {
 }
 
 function doTurn() {
-
+++turn 
+updateState(square)
 }
 
 function attachListeners() {
