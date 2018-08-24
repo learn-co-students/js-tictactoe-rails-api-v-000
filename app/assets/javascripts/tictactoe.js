@@ -84,6 +84,7 @@ function resetGame(){
   }
   turn = 0
   GAME_NUMBER = 0
+  $('#message').empty
 }
 
 function doTurn(element){
@@ -91,8 +92,8 @@ function doTurn(element){
   turn++
   if (turn > 8 && !checkWinner()){
     saveGame()
-    resetGame()
     setMessage("Tie game.")
+    resetGame()
   }
 
   if (checkWinner()){
