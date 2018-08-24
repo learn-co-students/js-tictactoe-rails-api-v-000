@@ -37,10 +37,15 @@ function setMessage(message){
   $('#message').text(e => message)
 }
 
-function compareArrays(a, b) {
-  return !a.some(function (e, i) {
-      return e != b[i];
-  });
+function compareArrays(x, y) {
+   var objectsAreSame = true;
+   for(var propertyName in x) {
+      if(x[propertyName] !== y[propertyName]) {
+         objectsAreSame = false;
+         break;
+      }
+   }
+   return objectsAreSame;
 }
 
 function checkWinner(){
@@ -84,7 +89,7 @@ function resetGame(){
 function doTurn(element){
   updateState(element)
   turn++
-  if (turn === 9 && !checkWinner()){
+  if (turn > 8 && !checkWinner()){
     saveGame()
     resetGame()
     setMessage("Tie game.")
