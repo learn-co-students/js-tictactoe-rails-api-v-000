@@ -88,12 +88,12 @@ function loadPreviousGames() {
   $('#games').empty();
   $.get('/games', (savedGames) => {
     if (savedGames.data.length) {
-      savedGames.data.forEach(buttonizePreviousGame);
+      savedGames.data.forEach(gameButtons);
     }
   });
 }
 
-function buttonizePreviousGame(game) {
+function gameButtons(game) {
   $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
   $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
 }
