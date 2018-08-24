@@ -1,3 +1,5 @@
+var squares = [] //need to declare? test seems to use.
+var board = [];
 var turnCount = 0;
 const winCombos= [
   [012], [345], [678], //vertical
@@ -33,6 +35,27 @@ function setMessage(message_string) {
   $('#message').html(message_string);
 }
 
-function checkWinner() {
+// function checkWinner() {
+//   //ideally:
+//   //sample find portion of an array
+//   // let found = arr1.some(r=> arr2.indexOf(r) >= 0)
+//   let winState = gameState.some(f => winCombos.indexOf(r) >= 0);
+//   if (winState == true) {
+//     return true
+//   }  else {
+//     return false
+//   }
+// }
 
+// $('td').text((index, square) => board[index] = square);
+function checkWinner() {
+  //some will return true or false
+  var winner = false;
+  winCombos.forEach(function(combo) {
+    if (board[combo[0]] === board[combo[1]] && board[combo[1]] == board[combo[2]] && board[combo[0]] !== ""){
+      winner = true;
+      return winner;
+    }
+  });
+  return winner;
 }
