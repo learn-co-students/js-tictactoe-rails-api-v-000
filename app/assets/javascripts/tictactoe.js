@@ -3,10 +3,24 @@ const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
 var turn = 0
+var gameNumber = 0;
 
 $(document).ready(function() {
   attachListeners()
 });
+
+function attachListeners(){
+  $('td').on( "click", function (){
+    if (this.innerText === "" && !checkWinner()) {
+      doTurn(this);
+    }
+  })
+
+  $('#previous').on('click', () => showPreviousGames())
+  $('#save').on('click', () => saveGame())
+  $('#clear').on('click', () => resetGame())
+  // $('#games > button').on('click', () => loadGame())
+}
 
 function player(){
   if (turn % 2 === 0){
@@ -25,9 +39,9 @@ function setMessage(message){
 }
 
 function compareArrays(a, b) {
-    return !a.some(function (e, i) {
-        return e != b[i];
-    });
+  return !a.some(function (e, i) {
+      return e != b[i];
+  });
 }
 
 function checkWinner(){
@@ -65,26 +79,55 @@ function resetGame(){
     $('td')[i].innerHTML = '';
   }
   turn = 0
+  gameNumber = 0
 }
 
 function doTurn(element){
   updateState(element)
   turn++
   if (turn === 9 && !checkWinner()){
+    saveGame()
     resetGame()
     setMessage("Tie game.")
   }
 
   if (checkWinner()){
+    saveGame()
     resetGame()
   }
 }
 
+function showPreviousGames(){
+  if ($('#games').empty()) {
+    $.get( "/games", function( data ) {
+      data['data'].forEach( game => {
+          $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`)
+      })
+    });
+  }
+}
 
-function attachListeners(){
-    $('td').on( "click", function (){
-      if (this.innerText === "" && !checkWinner()) {
-        doTurn(this);
-      }
-    })
+function getState(){
+  var result = []
+  $('td').text( (index, state) => {
+    result.push(state)} )
+  return result
+}
+
+function saveGame(){
+  var data = { state: getState()}
+
+  if (gameNumber === 0){
+    $.post("/games", data).done( (resp) => { gameNumber = resp['data'].id })
+  } else {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${gameNumber}`,
+      data: data
+    });
+  }
+}
+
+function loadGame(){
+  debugger
 }
