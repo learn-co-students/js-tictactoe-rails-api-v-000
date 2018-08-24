@@ -109,9 +109,10 @@ function showPreviousGames(){
           var gameButton = `<button class="gameButton" id="gameid-${game.id}">${game.id}</button><br>`
           $('#games').append(gameButton)
       })
+      $(".gameButton").click( (e) => loadGame(e))
     });
   }
-  $(document).on('click', '.gameButton', (e) => loadGame(e))
+
 }
 
 function getState(){
