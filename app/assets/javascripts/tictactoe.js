@@ -3,11 +3,11 @@ const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
 var turn = 0
-var gameNumber = 0;
-
+var GAME_NUMBER
 $(document).ready(function() {
   attachListeners()
 });
+
 
 function attachListeners(){
   $('td').on( "click", function (){
@@ -19,7 +19,6 @@ function attachListeners(){
   $('#previous').on('click', () => showPreviousGames())
   $('#save').on('click', () => saveGame())
   $('#clear').on('click', () => resetGame())
-  // $('#games > button').on('click', () => loadGame())
 }
 
 function player(){
@@ -79,7 +78,7 @@ function resetGame(){
     $('td')[i].innerHTML = '';
   }
   turn = 0
-  gameNumber = 0
+  GAME_NUMBER = 0
 }
 
 function doTurn(element){
@@ -101,10 +100,12 @@ function showPreviousGames(){
   if ($('#games').empty()) {
     $.get( "/games", function( data ) {
       data['data'].forEach( game => {
-          $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`)
+          var gameButton = `<button class="gameButton" id="gameid-${game.id}">${game.id}</button><br>`
+          $('#games').append(gameButton)
       })
     });
   }
+  $(document).on('click', '.gameButton', (e) => loadGame(e))
 }
 
 function getState(){
@@ -117,17 +118,32 @@ function getState(){
 function saveGame(){
   var data = { state: getState()}
 
-  if (gameNumber === 0){
-    $.post("/games", data).done( (resp) => { gameNumber = resp['data'].id })
+  if (GAME_NUMBER === 0){
+    $.post("/games", data).done( (resp) => { GAME_NUMBER = resp['data'].id })
   } else {
     $.ajax({
       type: 'PATCH',
-      url: `/games/${gameNumber}`,
+      url: `/games/${GAME_NUMBER}`,
       data: data
     });
   }
 }
 
-function loadGame(){
-  debugger
+function reDrawBoard(state){
+  $("td").each(function( index, element ){
+    element.innerText = state[index]
+    if (element.innerText !== ''){
+      turn++
+    }
+  })
+}
+
+function loadGame(event){
+  var gameID = event['target'].innerText
+  resetGame()
+  $.get( `/games/${gameID}`, function( data ) {
+    GAME_NUMBER = parseInt(data["data"].id)
+    var gState = data["data"]["attributes"].state
+    reDrawBoard(gState)
+    })
 }
