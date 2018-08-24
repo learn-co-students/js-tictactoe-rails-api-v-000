@@ -122,7 +122,7 @@ function saveGame(){
     $.post("/games", data).done( (resp) => { GAME_NUMBER = resp['data'].id })
   } else {
     $.ajax({
-      type: 'PATCH',
+      method: 'PATCH',
       url: `/games/${GAME_NUMBER}`,
       data: data
     });
@@ -139,10 +139,10 @@ function reDrawBoard(state){
 }
 
 function loadGame(event){
-  var gameID = event['target'].innerText
+  var gameId = event['target'].innerText
   resetGame()
-  $.get( `/games/${gameID}`, function( data ) {
-    GAME_NUMBER = parseInt(data["data"].id)
+  $.get( `/games/${gameId}`, function( data ) {
+    GAME_NUMBER = parseInt(gameId)
     var gState = data["data"]["attributes"].state
     reDrawBoard(gState)
     })
