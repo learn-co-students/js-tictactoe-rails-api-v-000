@@ -50,7 +50,7 @@ function setMessage(message_string) {
 function checkWinner() {
   //some will return true or false
   var winner = false;
-  $('td').text((index, square) => board[index] = square);
+  // $('td').text((index, square) => board[index] = square);
   winCombos.forEach(function(combo) {
     if (board[combo[0]] === board[combo[1]] && board[combo[1]] == board[combo[2]] && board[combo[0]] !== ""){
       winner = true;
