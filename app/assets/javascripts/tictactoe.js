@@ -73,12 +73,14 @@ function resetBoard() {
 }
 
 function doTurn(square) {
-  turn++;
   updateState(square);
+  turn++;
   if (checkWinner() == true ) {
+    saveGame();
     resetBoard();
   } else if ( (turn == 9) ) {
     setMessage(`Tie game.`);
+    saveGame();
     resetBoard();
   }
 }
