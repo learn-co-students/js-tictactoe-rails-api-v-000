@@ -104,7 +104,7 @@ function previousGames() {
   $.get('/games', function(games) {
     if (games.data.length) {
       games.data.map(function(game) {
-        $('div#games').append(`<button id="gameid-${game.id}">Retrieve Game: #${game.id}</button><br>`)
+        $('div#games').append(`<button id="gameid-${game.id}">Get Game: #${game.id}</button><br>`)
         $("#gameid-"+game.id).on('click', () => loadGame(game.id))
       })
     }
