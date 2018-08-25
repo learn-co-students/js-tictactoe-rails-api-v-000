@@ -100,22 +100,23 @@ function saveGame() {
 };
 
 function previousGames() {
-    $('div#games').empty();
-    $.get('/games', function(games) {
-        if (games.data.length) {
-            games.data.map(function(game) {
-                $('div#games').append(`<button id="gameid-${game.id}">Retrieve Game: #${game.id}</button><br>`)
-                $("#gameid-"+game.id).on('click', () => loadGame(game.id))
-            })
-        }
-    })
+  $('div#games').empty();
+  $.get('/games', function(games) {
+    if (games.data.length) {
+      games.data.map(function(game) {
+        $('div#games').append(`<button id="gameid-${game.id}">Retrieve Game: #${game.id}</button><br>`)
+        $("#gameid-"+game.id).on('click', () => loadGame(game.id))
+      })
+    }
+  })
 }
- function loadGame(gameid) {
-    $.get(`/games/${gameid}`, function(game) {
-        let state = game.data.attributes.state;
-        $('td').text((index, token) => state[index]);
-        gameId = gameid
-        turn = state.join('').length;
-        checkWinner();
-    });
+
+function loadGame(gameid) {
+  $.get(`/games/${gameid}`, function(game) {
+      let state = game.data.attributes.state;
+      $('td').text((index, token) => state[index]);
+      gameId = gameid
+      turn = state.join('').length;
+      checkWinner();
+  });
 };
