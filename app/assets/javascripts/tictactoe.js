@@ -81,7 +81,7 @@ function doTurn(square) {
 }
 
 function saveGame() {
-  let state = Array.from($('td'), element => element.innerText);
+  let state = board
   if (gameId) {
       $.ajax({
         type: 'PATCH',
