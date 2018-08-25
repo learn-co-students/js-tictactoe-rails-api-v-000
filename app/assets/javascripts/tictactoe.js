@@ -1,14 +1,18 @@
-var squares = [] //need to declare? test seems to use.
+// var squares = [] //need to declare? test seems to use.
+// var squares = $('td').text
 var board = [];
 var turnCount = 0;
+var turn = 0;
+var gameId = 0;
+
 const winCombos= [
-  [012], [345], [678], //vertical
-  [036], [147], [258], //horizontal
-  [048], [246]  //diagonal
+  [0,1,2], [3,4,5], [6,7,8], //vertical
+  [0,3,6], [1,4,7], [2,5,8], //horizontal
+  [0,4,8], [2,4,6]  //diagonal
 ]
 
 $(document).ready(function() {
-  console.log("I am ready, sir.");
+  console.log("I am ready.");
   attachListeners();
 })
 
@@ -35,29 +39,28 @@ function setMessage(message_string) {
   $('#message').html(message_string);
 }
 
-// function checkWinner() {
-//   //ideally:
-//   //sample find portion of an array
-//   // let found = arr1.some(r=> arr2.indexOf(r) >= 0)
-//   let winState = gameState.some(f => winCombos.indexOf(r) >= 0);
-//   if (winState == true) {
-//     return true
-//   }  else {
-//     return false
-//   }
-// }
-
 function checkWinner() {
-  //some will return true or false
   var winner = false;
-  // $('td').text((index, square) => board[index] = square);
-  winCombos.forEach(function(combo) {
-    if (board[combo[0]] === board[combo[1]] && board[combo[1]] == board[combo[2]] && board[combo[0]] !== ""){
+  $('td').text(function(index, oldVal) {
+    board[index] = oldVal;
+  })
+  winCombos.forEach(function(combo) { //each combo is a 3 part array item eg: [ [0,1,2] ]
+    debugger;
+    if ((board[combo[0]] == board[combo[1]]) && (board[combo[1]] == board[combo[2]]) && (board[combo[0]] !== "")){
       winner = true;
+      let token = board[combo[0]]
+      setMessage(`Player ${board[combo[0]]} Won!`);
       return winner;
-    } else {
-      return winner = false;
     }
   });
   return winner;
+}
+
+function doTurn() {
+  turn += 1;
+  checkWinner();
+  updateState();
+  if ((checkWinner == false) && turn == 9) {
+    setMessage('Tie game');
+  }
 }
