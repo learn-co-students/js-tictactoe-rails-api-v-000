@@ -17,8 +17,20 @@ $(document).ready(function() {
 })
 
 function attachListeners() {
-  // listen for click on what?
   console.log("I am listening...");
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner() ) {
+      doTurn(this);
+    }
+  });
+
+  $("#save").on('click', () => saveGame())
+  $("#previous").on('click', () => previousGames())
+  $("#clear").on('click', () => {
+      resetBoard();
+      gameId = 0;
+      setMessage("");
+  })
 }
 
 function player() {
@@ -31,8 +43,8 @@ function player() {
   }
 }
 
-function updateState(element) {
-  $(element).text(player());
+function updateState(square) {
+  $(square).text(player());
 }
 
 function setMessage(message_string) {
@@ -45,7 +57,6 @@ function checkWinner() {
     board[index] = oldVal;
   })
   winCombos.forEach(function(combo) { //each combo is a 3 part array item eg: [ [0,1,2] ]
-    debugger;
     if ((board[combo[0]] == board[combo[1]]) && (board[combo[1]] == board[combo[2]]) && (board[combo[0]] !== "")){
       winner = true;
       let token = board[combo[0]]
@@ -56,11 +67,34 @@ function checkWinner() {
   return winner;
 }
 
-function doTurn() {
-  turn += 1;
-  checkWinner();
-  updateState();
-  if ((checkWinner == false) && turn == 9) {
-    setMessage('Tie game.');
+function resetBoard() {
+  turn = 0;
+  $('td').empty();
+}
+
+function doTurn(square) {
+  turn++;
+  updateState(square);
+  if (checkWinner() == true ) {
+    resetBoard();
+  } else if ( (turn == 9) ) {
+    setMessage(`Tie game.`);
+    resetBoard();
   }
 }
+
+function saveGame() {
+  let state = Array.from($('td'), element => element.innerText);
+  if (gameId) {
+      $.ajax({
+        type: 'PATCH',
+        url: `/games/${gameId}`,
+        dataType: 'json',
+        data: {state: state}
+      });
+  } else {
+      $.post(`/games`, {state: state}, function(game) {
+          gameId = parseInt(game.data.id);
+      });
+  };
+};
