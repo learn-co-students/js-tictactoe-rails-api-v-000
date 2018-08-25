@@ -61,6 +61,6 @@ function doTurn() {
   checkWinner();
   updateState();
   if ((checkWinner == false) && turn == 9) {
-    setMessage('Tie game');
+    setMessage('Tie game.');
   }
 }
