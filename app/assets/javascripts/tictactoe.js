@@ -3,8 +3,8 @@ $(document).ready(function() {
         attachListeners();
       });
 
-      let turn = 0
-      let currentGame = 0
+      var turn = 0
+      var currentGame = 0
       
 
     function player(){
@@ -21,8 +21,9 @@ $(document).ready(function() {
             //debugger
             setMessage("Tie game.");
             setMessage("Tie game.");
-            resetBoard();
             saveGame();
+            resetBoard();
+            
         }
     }
 
