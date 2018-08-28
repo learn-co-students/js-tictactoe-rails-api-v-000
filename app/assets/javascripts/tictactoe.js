@@ -68,10 +68,6 @@ function reloadGame(gameId) {
   })
 }
 
-function player() {
-  
-}
-
 function clearGame() {
   currentGame = 0;
   turn = 0
