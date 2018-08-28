@@ -1,6 +1,4 @@
-$(function() {
-  attachListeners();
-});
+$(attachListeners);
 
 var turn = 0;
 var WINNING_COMBOS = [
@@ -88,14 +86,15 @@ function attachListeners(){
     }
   });
 
-  $('#save').on('click', () => saveGame());
-  $('#previous').on('click', () => previousGames());
-  $('#clear').on('click', () => clearGame());
+  $('#save').click(() => saveGame());
+  $('#previous').click(() => previousGames());
+  $('#clear').click(() => clearGame());
 }
 
 function saveGame(){
   // if the game has not be saved yet, it sends a POST request to the "/games" route
   // when the game already exists in the database, it sends a PATCH request to '/games/id' route
+  console.log('in save game')
 }
 
 function previousGames(){
@@ -103,7 +102,16 @@ function previousGames(){
   // does not add any children to the div#games elment when no previously-saved games exist in the db
   // adds previous games as buttons in the DOM's div#games element when previously saved games exist in the db
   // AND does not re-add saved games already present in div#gmes when the 'previous' button is clicked a second time
-  console.log('in previous games')
+ $.getJSON('/games', function(r){
+   var games = r.data
+   debugger
+   $("#games").append("<ul class='gamesList'>Previous Games</ul>");
+    games.forEach(game => {
+      var id = game["id"];
+      var state = game["attributes"]["state"];
+      $('.gamesList').html(`<li>${id}</li>`)
+    })
+ })
 }
 
 
@@ -112,6 +120,8 @@ function clearGame(){
   // does not save the cleared game
   // when the in-progress game has already been saved it fully resets the gameboard so that the next press
   // of the save button results in a new game being saved.
+  $('td').empty();
+  turn = 0;
 }
 
 // Completing a GAME
