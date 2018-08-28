@@ -3,7 +3,7 @@ var turn = 0;
 const WINNING_COMBINATIONS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
 
 function player(){
-  if (turn % 2 === 0 || turn === 0){ 
+  if (turn % 2 === 0 || turn === 0){
     return "X";
   } else {
     return "O";
@@ -15,7 +15,7 @@ function updateState(cell){
 }
 
 function setMessage(message){
-  $("#message").html(message)  
+  $("#message").html(message)
 }
 
 function checkWinner() {
@@ -25,13 +25,31 @@ function checkWinner() {
         setMessage(`Player ${board[combo[0]]} Won!`)
         return winner = true;
       }
-      else { 
+      else {
         return winner = false;
       }
     })
-    return winner 
+    return winner
 }
 
 function getBoard(){
   return $("td").toArray().map((element) => {return element.innerHTML})
+}
+
+function doTurn(){
+  updateState(function addListeners(){
+    $("td").on('click')
+  });
+  turn++ ;
+  if (checkWinner()){
+      resetBoard();
+  }else if(turn === 9){
+    setMessage("Tie game.");
+    resetBoard();
+  }
+}
+
+function resetBoard(){
+  $('td').empty();
+  turn = 0;
 }
