@@ -3,7 +3,7 @@ $(function() {
   attachListeners();
 })
 
-let currentGame = 0;
+var currentGame = 0;
 var turn = 0;
 const winningCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
@@ -41,6 +41,9 @@ function saveGame() {
         currentGame = gameId;
         $('#games').append(`<button id="game-${gameId}" data-id="${gameId}">Game #${gameId}</button>`)
         $(`#game-${gameId}`).on('click', () => reloadGame(gameId));
+        if (checkWinner() || turn === 9) {
+          clearGame();
+        }
       });
     }
 }
@@ -70,7 +73,7 @@ function reloadGame(gameId) {
 
 function clearGame() {
   currentGame = 0;
-  turn = 0
+  turn = 0;
   $('td').text((index, content) => {
     $('td')[index].innerHTML = "";
   })
