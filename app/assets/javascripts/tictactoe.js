@@ -36,11 +36,9 @@ function getBoard(){
   return $("td").toArray().map((element) => {return element.innerHTML})
 }
 
-function doTurn(){
-  updateState(function addListeners(){
-    $("td").on('click')
-  });
-  turn++ ;
+function doTurn(cell){
+  updateState(cell);
+  turn++
   if (checkWinner()){
       resetBoard();
   }else if(turn === 9){
@@ -51,5 +49,12 @@ function doTurn(){
 
 function resetBoard(){
   $('td').empty();
-  turn = 0;
+  turn = 0
+}
+
+
+function attachListeners(){
+  $("td").on('click', function(){
+    doTurn(this);
+  })
 }
