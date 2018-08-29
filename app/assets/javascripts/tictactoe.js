@@ -66,30 +66,46 @@ function attachListeners(){
       doTurn(this);
     }
   });
-  $('#previous').on('click', () => showPreviousGames());
+  $('#previous').on('click', () => previousGames());
   $('#save').on('click', () => saveGame());
   $('#clear').on('click', () => resetBoard());
 }
 
-function previousGames() {
-  // $.get('/games', function(previousGames){
-  //   for(i=0; i <previousGames.data.length; i++){
-  //     $("games").append('<button name="BUTTON" class="game_button" data-id="' + previousGame.data[i].id + '" data-state="' + previousGame.data[i].state + '">Game #' + (i+1) + '</button>')
-  //   }
-  //   loadGame();
-  // }, "json");
+function previousGames(){
+  $("#games").empty();
+  $.get('/games', function(previousGame){
+    for(i=0; i < previousGame.data.length; i++){
+      $("#games").append('<button name="BUTTON" class="game_button" data-id="' + previousGame.data[i].id + '" data-state="' + previousGame.data[i].state + '">Game #' + (i+1) + '</button>')
+    };
+    loadGame();
+  }, "json");
 }
 
+function loadGame() {
+  $("button").on("click", function() {
+    $.get(`/games/${this.attributes["data-id"].value}`, function(game) {
+      boardState = game.data.attributes.state;
+      currentGame = game.data.id;
+      for (var i = 0; i < 9; i++) {
+        $("td")[i].innerHTML = boardState[i];
+      }
+      turn = boardState.join('').length;
+    });
+  });
+}
+
+
 function saveGame() {
+  var gameState = getBoard();
   if (currentGame){
     $.ajax({
       type: 'PATCH',
       url: `/games/${currentGame}`,
-      data: {state: getBoard()}
+      data: {state: gameState}
     });
   }else{
-    $.post('/games', {state: getBoard()}, function(game){
-      curentGame = game.data.id;
-  })
+    $.post('/games', {state: gameState}, function(game){
+      currentGame = game.data.id;
+  });
   }
 }
