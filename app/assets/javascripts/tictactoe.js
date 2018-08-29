@@ -78,8 +78,8 @@ function saveGame() {
   var state = [];
   var gameData;
 
-  $('td').text((index, square) => {
-    state.push(square);
+  $('td').text((index, cell) => {
+    state.push(cell);
   });
 
   gameData = { state: state };
