@@ -53,3 +53,20 @@ function checkWinner() {
 	});
 	return winner
 }
+
+function doTurn(square) {
+	updateState(square)
+	turn ++
+	getBoard()
+
+	if (checkWinner()) {
+		resetBoard()
+	} else if (turn === 9) {
+		setMessage('Tie game.')
+	}
+}
+
+function resetBoard() {
+	turn = 0
+	$("td").empty()
+}
