@@ -1,6 +1,8 @@
 $(attachListeners);
 
 var turn = 0;
+var currentGame = 0;
+var board = [];
 var WINNING_COMBOS = [
   [0,1,2],
   [3,4,5],
@@ -12,40 +14,27 @@ var WINNING_COMBOS = [
   [2,4,6]
 ]
 
-
 function player(){
-  //returns X when turn count is even and O when odd
-  if (turn % 2 === 0){
-    return "X";
-  } else {
-    return "O";
-  }
+ return turn % 2 ? "O" : "X";
 }
 
-function updateState(square){
-  //invokes the player() function
-  //adds the current player's token to the passed in <td> element
-  var token = player();
-  square.innerHTML = token;
+
+function updateState(td){
+  td.innerHTML = player();
 }
+
 
 function setMessage(message){
-  // sets a provided string as the innerHTML of the div#message element
   $('#message').html(message);
 }
 
+function boardArrFromTd(){
+  $('td').text((index,td)=>(board[index] = td));
+}
+
 function checkWinner(){
-  // returns true when a player wins horizontally, diagonally or vertically
-  // returns false if no winning combination is present on the board
-  // invokes the setMessage() function with the argument "Player X Won!" when player X wins
-  // invokes the setMessage() function witht he argument "Player O Won!" when player O wins
-  let board = [];
-  let winner = false;
-
-  $('td').text(function(index, td){
-    board[index] = td;
-  })
-
+  var winner = false;
+  boardArrFromTd();
   WINNING_COMBOS.forEach(function(combo){
     if (board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[0]] !== ''){
       winner = true;
@@ -57,80 +46,74 @@ function checkWinner(){
   return winner;
 }
 
-function doTurn(square){
-  // increments the value of the "turn variable"
-  // invokes the checkWinner() function
-  // invokes the updateState() function
-  // invokes the setMessage() function with the argument "Tie game" when the game is tied
-  // resets the board and the "turn" counter when a game is won
-  updateState(square);
+
+function doTurn(td){
+  updateState(td);
   turn ++;
   if (checkWinner()){
-    turn = 0;
-    $('td').empty();
+    clearGame();
+    saveGame();
   } else if (turn === 9 ){
     setMessage("Tie game.");
-    turn = 0;
-    $('td').empty();
+    saveGame();
+    clearGame();
   }
 }
-
-
   
+
 function attachListeners(){
-  // attaches event listeners that invoke doTurn() when a square is clicked on
-  // passes the clicked on <td> element to doTurn()
   $('td').on('click', function(){
     if (!this.innerHTML && !checkWinner()){
     doTurn(this);
     }
   });
-
   $('#save').click(() => saveGame());
   $('#previous').click(() => previousGames());
   $('#clear').click(() => clearGame());
 }
 
+
 function saveGame(){
-  // if the game has not be saved yet, it sends a POST request to the "/games" route
-  // when the game already exists in the database, it sends a PATCH request to '/games/id' route
-  console.log('in save game')
+  boardArrFromTd();
+  var game_data = { state: board }
+  if (currentGame){
+    $.ajax({
+      type: "PATCH",
+      url: `/games/${currentGame}`,
+      data: game_data
+    });
+  } else {
+    $.post("/games", game_data).done(function(res){
+      currentGame = res.data.id;
+    });
+  };
 }
 
+
 function previousGames(){
-  //clicking the button#previous sends a GET request to the "/games" route
-  // does not add any children to the div#games elment when no previously-saved games exist in the db
-  // adds previous games as buttons in the DOM's div#games element when previously saved games exist in the db
-  // AND does not re-add saved games already present in div#gmes when the 'previous' button is clicked a second time
- $.getJSON('/games', function(r){
-   var games = r.data
-   debugger
-   $("#games").append("<ul class='gamesList'>Previous Games</ul>");
-    games.forEach(game => {
-      var id = game["id"];
-      var state = game["attributes"]["state"];
-      $('.gamesList').html(`<li>${id}</li>`)
-    })
- })
+  $("#games").html("");
+  $.getJSON('/games', function(games){
+    games.data.map(function(game){
+      $("#games").append(`<button id="gameId-${game.id}">${game.id}</button>`);
+      $(`#gameId-${game.id}`).click(function(){ getSavedGame(game.id);})
+    });
+ });
 }
 
 
 function clearGame(){
-  // clears the gameboard
-  // does not save the cleared game
-  // when the in-progress game has already been saved it fully resets the gameboard so that the next press
-  // of the save button results in a new game being saved.
   $('td').empty();
   turn = 0;
+  currentGame = 0;
 }
 
-// Completing a GAME
-// [] autosaves tie games
-// [] autosaves won games
 
-// Clicking a saved game button (in the div#games element)
-// [] gets a GET request to the '/games/id' route
-// [] loads the saved game's state into the board
-// [] marks the newly-loaded game state such taht clicking the 'save' button hafter loading a game sends a PATCH request
-
-
+function getSavedGame(gameId){
+  $.get(`/games/${gameId}`, function(game){
+    var state = game.data.attributes.state;
+    $("td").text((i, text) => state[i]);
+    currentGame = gameId;
+    turn = state.join("").length;
+    checkWinner();
+  });
+ }
