@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 // $( "td:contains('x')" )
-let turnCount = 0
+let turn = 0
 const winCombinations = [
   [[0,0],[1,0],[2,0]],
   [[0,1],[1,1],[2,1]],
@@ -17,15 +17,15 @@ function isEven(n) {
 }
 
 function player(){
-  return isEven(turnCount) ? 'X' : 'O'
+  return isEven(turn) ? 'X' : 'O'
 }
 
 function updateState(element){
   $(element).html(player())
 }
 
-function setMessage(player){
-  $('#message').html(`Player ${player} Won!`)
+function setMessage(message){
+  $('#message').html(message)
 }
 
 function checkWinner(){
@@ -38,9 +38,18 @@ function checkWinner(){
     return value1 !== "" && value1 === value2 && value2 === value3
   })
     if (winningCombo) {
-      setMessage(winner)
+      setMessage(`Player ${winner} Won!`)
       return true
     } else {
       return false
     }
+}
+
+function checkTie(){
+
+}
+
+function doTurn(element){
+  turn += 1
+  updateState(element)
 }
