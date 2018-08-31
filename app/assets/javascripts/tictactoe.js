@@ -1,6 +1,7 @@
 // Code your JavaScript / jQuery solution here
 // $( "td:contains('x')" )
 let turn = 0
+const newGame = $("table")
 const winCombinations = [
   [[0,0],[1,0],[2,0]],
   [[0,1],[1,1],[2,1]],
@@ -53,7 +54,7 @@ function checkTie(){
   const tie = board.findIndex(element => {
     return element === ""
   })
- return tie < 0 ? true : false 
+ return tie < 0 ? true : false
 }
 
 function doTurn(element){
