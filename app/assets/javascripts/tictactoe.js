@@ -46,7 +46,14 @@ function checkWinner(){
 }
 
 function checkTie(){
-
+  let board = []
+  $("td").each(function(index, item){
+    board.push(item.innerHTML)
+  })
+  const tie = board.findIndex(element => {
+    return element === ""
+  })
+ return tie < 0 ? true : false 
 }
 
 function doTurn(element){
