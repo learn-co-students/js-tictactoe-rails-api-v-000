@@ -12,5 +12,6 @@ function player(){
 }
 
 function updateState(){
-  
+  console.log($(this))
+  debugger
 }
