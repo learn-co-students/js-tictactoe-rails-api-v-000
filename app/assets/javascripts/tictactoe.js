@@ -61,9 +61,12 @@ function doTurn(square) {
 	getBoard()
 
 	if (checkWinner()) {
+		saveGame()
 		resetBoard()
 	} else if (turn === 9) {
 		setMessage('Tie game.')
+		saveGame()
+		resetBoard()
 	}
 }
 
@@ -81,9 +84,40 @@ function attachListeners() {
 	$("#save").on('click', function() {
 		saveGame()
 	});
+	$("#previous").on('click', function() {
+		previousGames()
+	})
 	$("#clear").on('click', function() {
 		resetBoard()
 		gameId = 0
+	})
+}
+
+function clearPreviousGames() {
+	$('div#games').empty()
+}
+
+function previousGames() {
+	clearPreviousGames()
+	$.get('/games', function (games) {
+		if (games.data.length) {
+			games.data.map(function(game) {
+				$('div#games').append(`<button id="gameid-${game.id}">Show Game - ${game.id}</button><br>`)
+				$(`#gameid-${game.id}`).on('click', function() {
+					showGame(game.id);
+				})
+			})
+		}
+	})
+}
+
+function showGame(gameID) {
+	$.get(`/games/${gameID}`, function (game) {
+		let state = game.data.attributes.state;
+		$('td').text(i => state[i]) 
+		gameId = gameID
+		turn = state.reduce((acc, e) => acc + e).length
+		checkWinner()
 	})
 }
 
