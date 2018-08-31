@@ -27,7 +27,7 @@ function squareAvailable(square) {
 }
 
 function setMessage(string) {
-	return $('div#message').append(string)
+	return $('div#message').append(string + "<br>")
 }
 
 function getBoard() {
@@ -50,6 +50,7 @@ function checkWinner() {
 		if (threeXInARow || threeYInARow) {
 			setMessage(`Player ${position1} Won!`)
 			winner = true
+			saveGame()
 		} 
 	});
 	return winner
@@ -77,7 +78,7 @@ function resetBoard() {
 
 function attachListeners() {
 	$("td").on('click', function () {
-		if (!checkWinner() && this.innerText === "") {
+		if (!checkWinner() && !$.text(this)) {
 			doTurn(this)
 		}
 	})
