@@ -11,7 +11,7 @@ function player(){
   return isEven(turnCount) ? 'X' : 'O'
 }
 
-function updateState(){
-  console.log($(this))
-  debugger
+function updateState(element){
+  $(element).html(player())
+  turnCount += 1
 }
