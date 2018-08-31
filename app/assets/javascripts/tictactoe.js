@@ -1,5 +1,4 @@
 // Code your JavaScript / jQuery solution here
-// $("td[data-x='1'][data-y='0'")
 // $( "td:contains('x')" )
 let turnCount = 0
 const winCombinations = [
@@ -25,17 +24,23 @@ function updateState(element){
   $(element).html(player())
 }
 
-function setMessage(){
-  $('#message').html(`Player ${player()} Won!`)
+function setMessage(player){
+  $('#message').html(`Player ${player} Won!`)
 }
 
 function checkWinner(){
+  let winner = ""
   let winningCombo = winCombinations.find( combo => {
-    debugger
-    const value1 = $(`td[data-x='${combo[0][0]}'][data-y='${combo[0][1]}'`).html()
-    const value2 = $(`td[data-x='${combo[1][0]}'][data-y='${combo[1][1]}'`).html()
-    const value3 = $(`td[data-x='${combo[2][0]}'][data-y='${combo[2][1]}'`).html()
+    const value1 = $(`td[data-x='${combo[0][0]}'][data-y='${combo[0][1]}']`).html()
+    const value2 = $(`td[data-x='${combo[1][0]}'][data-y='${combo[1][1]}']`).html()
+    const value3 = $(`td[data-x='${combo[2][0]}'][data-y='${combo[2][1]}']`).html()
+    winner = value1
     return value1 !== "" && value1 === value2 && value2 === value3
   })
-  return winningCombo ? true : false
+    if (winningCombo) {
+      setMessage(winner)
+      return true
+    } else {
+      return false
+    }
 }
