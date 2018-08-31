@@ -1,5 +1,6 @@
 var turn = 0;
 var board = []
+var gameId = 0
 var winningCombinations = [
 	[0,1,2], //top row
 	[3,4,5], //middle row
@@ -70,3 +71,40 @@ function resetBoard() {
 	turn = 0
 	$("td").empty()
 }
+
+function attachListeners() {
+	$("td").on('click', function () {
+		if (!checkWinner() && this.innerText === "") {
+			doTurn(this)
+		}
+	})
+	$("#save").on('click', function() {
+		saveGame()
+	});
+	$("#clear").on('click', function() {
+		resetBoard()
+		gameId = 0
+	})
+}
+
+function saveGame() {
+	let state = Array.from($('td'), e => e.innerText)
+	if(gameId) {
+		// Update the game if gameID is != 0
+		$.ajax({
+			type: 'PATCH',
+			url: `/games/${gameId}`,
+			dataType: 'json',
+			data: {state: state}
+		})
+	} else {
+		// Save the game if gameID = 0
+		$.post('/games', {state: state}, function(game) {
+			gameId = parseInt(game.data.id)
+			})
+	}
+}
+
+$(document).ready(() => {
+	attachListeners();	
+})
