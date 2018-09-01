@@ -13,3 +13,29 @@
  *= require_tree .
  *= require_self
  */
+
+ .main {
+   display:flex;
+   flex-direction: column;
+   /* justify-content: center; */
+   align-items: center;
+   width: 100%;
+   color: pink;
+ }
+
+ th, td {
+  border: 1px solid pink;
+}
+
+table {
+  border: hotpink solid 1px;
+  text-align: center;
+}
+
+button {
+  border: hotpink solid 1px;
+  border-radius: 5px;
+  padding: .5rem;
+  color: hotpink;
+  cursor: pointer;
+}
