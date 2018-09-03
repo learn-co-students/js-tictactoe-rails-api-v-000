@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 // $( "td:contains('x')" )
-let turn = 0
+var turn = 0
 const newGame = $("table")
 const winCombinations = [
   [[0,0],[1,0],[2,0]],
@@ -39,10 +39,10 @@ function checkWinner(){
     return value1 !== "" && value1 === value2 && value2 === value3
   })
     if (winningCombo) {
-      setMessage(`Player ${winner} Won!`)
-      return true
+      setMessage(`Player ${winner} Won!`);
+      return true;
     } else {
-      return false
+      return false;
     }
 }
 
@@ -58,6 +58,26 @@ function checkTie(){
 }
 
 function doTurn(element){
-  turn += 1
   updateState(element)
+  turn += 1
+  if (checkWinner()) {
+    $('td').text("");
+    turn = 0
+  } else if (checkTie()) {
+    setMessage("Tie game.");
+    $('td').text("");
+    turn = 0
+  }
+}
+
+$(document).ready(function() {
+  attachListeners();
+});
+
+function attachListeners() {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  })
 }
