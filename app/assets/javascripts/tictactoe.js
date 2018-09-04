@@ -1,6 +1,7 @@
 // Code your JavaScript / jQuery solution here
 // $( "td:contains('x')" )
 var turn = 0
+var id = null
 const newGame = $("table")
 const winCombinations = [
   [[0,0],[1,0],[2,0]],
@@ -39,6 +40,7 @@ function checkWinner(){
     return value1 !== "" && value1 === value2 && value2 === value3
   })
     if (winningCombo) {
+      saveGame();
       setMessage(`Player ${winner} Won!`);
       return true;
     } else {
@@ -61,13 +63,64 @@ function doTurn(element){
   updateState(element)
   turn += 1
   if (checkWinner()) {
-    $('td').text("");
-    turn = 0
+    clearGame();
   } else if (checkTie()) {
+    saveGame();
+    clearGame();
     setMessage("Tie game.");
-    $('td').text("");
-    turn = 0
   }
+}
+
+
+function saveGame(){
+  let game = {
+    state: []
+  }
+  $('td').each(function(){
+    game["state"].push($(this).text())
+  })
+  if (id === null) {
+   $.post('/games', game).done(function(data){
+     id = data["data"]["id"]
+   })
+ } else {
+   $.ajax({
+      url: '/games/' + id,
+      method: 'PATCH',
+      data: game,
+      });
+    setMessage("Game Saved");
+ }
+}
+
+function clearGame(){
+  $('td').text("");
+  turn = 0
+  id = null
+}
+
+function loadGame(element){
+  id = element.dataset["id"]
+  $.get('/games/' + id, function(data){
+    let gameState = data["data"]["attributes"]["state"];
+    debugger;
+    id = data["data"]["id"];
+    turn = gameState.join('').length
+    $('td').each(function(index, element){
+      element.innerHTML = gameState[index]
+    })
+  })
+}
+
+
+function previousGames(){
+  $.get('/games', function(data){
+    data["data"].forEach(function(item){
+      if ($(`button[data-id='${item["id"]}']`).text() == false ){
+        $('#games').append('<button data-id =' + item["id"] + ' onclick="loadGame(this)"> Game #' + item["id"] + '</button>');
+      }
+    })
+  })
 }
 
 $(document).ready(function() {
@@ -75,9 +128,19 @@ $(document).ready(function() {
 });
 
 function attachListeners() {
+  $('#save').on("click", function(){
+    saveGame();
+  });
+  $('#previous').on('click', function(){
+    previousGames();
+  });
+  $('#clear').on('click', function(){
+    clearGame();
+  });
+
   $('td').on('click', function() {
     if (!$.text(this) && !checkWinner()) {
       doTurn(this);
-    }
-  })
+    };
+  });
 }
