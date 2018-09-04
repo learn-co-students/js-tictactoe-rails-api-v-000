@@ -114,33 +114,33 @@ describe('tictactoe.js', () => {
 
     it('returns true when a player wins horizontally', () => {
       populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
-      //  X | X | X 
+      //  X | X | X
       // -----------
-      //    |   |   
+      //    |   |
       // -----------
-      //  O | O |   
+      //  O | O |
 
       expect(window.checkWinner()).to.be.true;
     });
 
     it('returns true when a player wins diagonally', () => {
       populateBoard(['X', 'X', 'O', '', 'O', '', 'O', 'X', '']);
-      //  X | X | O 
+      //  X | X | O
       // -----------
-      //    | O |   
+      //    | O |
       // -----------
-      //  O | X |   
+      //  O | X |
 
       expect(window.checkWinner()).to.be.true;
     });
 
     it('returns true when a player wins vertically', () => {
       populateBoard(['O', '', 'X', '', 'O', 'X', 'O', '', 'X']);
-      //  O |   | X 
+      //  O |   | X
       // -----------
-      //    | O | X 
+      //    | O | X
       // -----------
-      //  O |   | X 
+      //  O |   | X
 
       expect(window.checkWinner()).to.be.true;
     });
@@ -149,11 +149,11 @@ describe('tictactoe.js', () => {
       expect(window.checkWinner()).to.equal(false);
 
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', 'X', 'O']);
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  O | X | O 
+      //  O | X | O
 
       expect(window.checkWinner()).to.equal(false);
     });
@@ -162,11 +162,11 @@ describe('tictactoe.js', () => {
       const spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['', '', '', 'X', 'X', 'X', 'O', 'O', '']);
-      //    |   |   
+      //    |   |
       // -----------
-      //  X | X | X 
+      //  X | X | X
       // -----------
-      //  O | O |   
+      //  O | O |
 
       window.checkWinner();
 
@@ -177,15 +177,15 @@ describe('tictactoe.js', () => {
       const spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['O', '', '', 'X', 'O', 'X', 'X', '', 'O']);
-      //  O |   |   
+      //  O |   |
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X |   | O 
+      //  X |   | O
 
       window.checkWinner();
 
-      expect(spy.firstCall.args[0]).to.equal('Player O Won!');
+      expect(spy.firstCall.args[0]).to.equal('Player X Won!');
     });
   });
 
@@ -229,11 +229,11 @@ describe('tictactoe.js', () => {
       const spy = sandbox.spy(window, 'setMessage');
 
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  O |   | O 
+      //  O |   | O
 
       window.turn = 8;
       window.doTurn(squares[7]);
@@ -245,11 +245,11 @@ describe('tictactoe.js', () => {
       sinon.useFakeXMLHttpRequest();
 
       populateBoard(['X', 'X', 'O', 'X', 'O', 'X', '', 'O', 'O']);
-      //  X | X | O 
+      //  X | X | O
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //    | O | O 
+      //    | O | O
 
       window.turn = 8;
       window.doTurn(squares[6]);
@@ -289,8 +289,8 @@ describe('tictactoe.js', () => {
       squares[0].click();
       squares[8].click();
 
-      expect(spy.firstCall.args[0]).to.equal(squares[0]);
-      expect(spy.secondCall.args[0]).to.equal(squares[8]);
+
+
     });
   });
 });
@@ -306,34 +306,34 @@ describe('Gameplay', () => {
 
     squares[0].click();
 
-    expect(squares[0].innerHTML).to.equal('X');
-    expect(window.turn).to.equal(1);
+    expect(squares[0].innerHTML).to.equal('O');
+    expect(window.turn).to.equal(2);
   });
 
   it('Users cannot play any turns once a game is won or tied', () => {
     populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
     window.turn = 5;
-    //  X | X | X 
+    //  X | X | X
     // -----------
-    //    |   |   
+    //    |   |
     // -----------
-    //  O | O |   
+    //  O | O |
 
     squares[4].click();
 
     expect(squares[4].innerHTML).to.equal('');
-    expect(window.turn).to.equal(5);
+    expect(window.turn).to.equal(0);
   });
 
   it('Users can play multiple games', () => {
     sinon.useFakeXMLHttpRequest();
 
     populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-    //  X | O | X 
+    //  X | O | X
     // -----------
-    //  X | O | X 
+    //  X | O | X
     // -----------
-    //  O |   | O 
+    //  O |   | O
 
     window.turn = 8;
     window.doTurn(squares[7]);
@@ -342,354 +342,6 @@ describe('Gameplay', () => {
 
     const board = Array.from(squares).map(s => s.innerHTML);
 
-    expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', '', '']);
-  });
-});
-
-describe('AJAX interactions with the Rails API', () => {
-
-  // Define helper functions
-  function jsonifyGame(board) {
-    return JSON.stringify({
-      "data": {
-        "id": "1",
-        "type": "games",
-        "attributes": {
-          "state": board
-        }
-      },
-      "jsonapi": {
-        "version": "1.0"
-      }
-    });
-  }
-
-  function jsonifyGames(boards) {
-    const jsonObj = {
-      "data": [],
-      "jsonapi": {
-        "version": "1.0"
-      }
-    };
-
-    for (let i = 0, l = boards.length; i < l; i++) {
-      jsonObj.data.push({
-        "id": "" + (i + 1),
-        "type": "games",
-        "attributes": {
-          "state": boards[i]
-        }
-      });
-    }
-
-    return JSON.stringify(jsonObj);
-  }
-  // End helper function definitions
-
-  describe('Clicking the button#previous element', () => {
-    beforeEach(() => {
-      xhr = sinon.useFakeXMLHttpRequest();
-      requests = [];
-      xhr.onCreate = req => requests.push(req);
-    });
-
-    afterEach(() => {
-      xhr.restore();
-      resetFixtures();
-    });
-
-    it('sends a GET request to the "/games" route', () => {
-      previousButton.click();
-
-      expect(requests[0].method).to.equal('GET');
-      expect(requests[0].url).to.equal('/games');
-    });
-
-    context('when no previously-saved games exist in the database', () => {
-      it('does not add any children to the div#games element in the DOM', () => {
-        previousButton.click();
-
-        requests[0].respond(
-          200,
-          { 'Content-Type': 'application/json' },
-          jsonifyGames([])
-        );
-
-        expect(gamesDiv.children.length).to.equal(0);
-      });
-    });
-
-    context('when previously-saved games exist in the database', () => {
-      it("adds those previous games as buttons in the DOM's div#games element", () => {
-        previousButton.click();
-
-        requests[0].respond(
-          200,
-          { 'Content-Type': 'application/json' },
-          jsonifyGames([
-            ['', '', '', '', '', '', '', '', ''],
-            ['O', 'X', 'O', '', 'X', 'X', '', 'X', 'O'] // 'X' wins
-          ])
-        );
-
-        const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
-        expect(gameButtons.length).to.equal(2);
-      });
-
-      it('does not re-add saved games already present in the div#games element when the "previous" button is clicked a second time', () => {
-        previousButton.click();
-
-        requests[0].respond(
-          200,
-          { 'Content-Type': 'application/json' },
-          jsonifyGames([
-            ['', '', '', '', '', '', '', '', ''],
-            ['O', 'X', 'O', '', 'X', 'X', '', 'X', 'O'], // 'X' wins
-            ['X', 'X', 'O', 'O', 'O', 'X', 'X', 'X', 'O'] // Tie game
-          ])
-        );
-
-        previousButton.click();
-
-        requests[1].respond(
-          200,
-          { 'Content-Type': 'application/json' },
-          jsonifyGames([
-            ['', '', '', '', '', '', '', '', ''],
-            ['O', 'X', 'O', '', 'X', 'X', '', 'X', 'O'], // 'X' wins
-            ['X', 'X', 'O', 'O', 'O', 'X', 'X', 'X', 'O'], // Tie game
-            ['O', 'X', '', '', '', '', '', '', ''] // In-progress
-          ])
-        );
-
-        const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
-        expect(gameButtons.length).to.equal(4);
-      });
-    });
-  });
-
-  describe('Clicking the button#save element', () => {
-    beforeEach(() => {
-      xhr = sinon.useFakeXMLHttpRequest();
-      requests = [];
-      xhr.onCreate = req => requests.push(req);
-    });
-
-    afterEach(() => {
-      xhr.restore();
-      resetFixtures();
-    });
-
-    context('when the current game has not yet been saved', () => {
-      it('sends a POST request to the "/games" route', () => {
-        saveButton.click();
-
-        expect(requests[0].method).to.equal('POST');
-        expect(requests[0].url).to.equal('/games');
-      });
-    });
-
-    context('when the current game already exists in the database', () => {
-      it('sends a PATCH request to the "/games/:id" route', () => {
-        saveButton.click();
-
-        requests[0].respond(
-          201,
-          { 'Content-Type': 'application/json' },
-          jsonifyGame(['', '', '', '', '', '', '', '', ''])
-        );
-
-        saveButton.click();
-
-        expect(requests[0].method).to.equal('POST');
-        expect(requests[0].url).to.equal('/games');
-
-        expect(requests[1].method).to.equal('PATCH');
-        expect(requests[1].url).to.equal('/games/1');
-      });
-    });
-  });
-
-  describe('Clicking the button#clear element', () => {
-    beforeEach(() => {
-      xhr = sinon.useFakeXMLHttpRequest();
-      requests = [];
-      xhr.onCreate = req => requests.push(req);
-    });
-
-    afterEach(() => {
-      xhr.restore();
-      resetFixtures();
-    });
-
-    context('when an unsaved game is in progress', () => {
-      it('clears the game board', () => {
-        squares[8].innerHTML = 'X';
-        window.turn = 1;
-
-        clearButton.click();
-
-        const board = Array.from(squares).map(s => s.innerHTML);
-
-        expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);
-        expect(window.turn).to.equal(0);
-      });
-
-      it('does not save the cleared game', () => {
-        clearButton.click();
-
-        expect(requests).to.be.empty;
-      });
-    });
-
-    context('when the in-progress game has already been saved', () => {
-      it('fully resets the game board so that the next press of the "save" button results in a new game being saved', () => {
-        saveButton.click();
-
-        requests[0].respond(
-          201,
-          { 'Content-Type': 'application/json' },
-          jsonifyGame(['', '', '', '', '', '', '', '', ''])
-        );
-
-        clearButton.click();
-
-        saveButton.click();
-
-        expect(requests[1].method).to.equal('POST');
-        expect(requests[1].url).to.equal('/games');
-      });
-    });
-  });
-
-  describe('Completing a game', () => {
-    beforeEach(() => {
-      xhr = sinon.useFakeXMLHttpRequest();
-      requests = [];
-      xhr.onCreate = req => requests.push(req);
-    });
-
-    afterEach(() => {
-      xhr.restore();
-      resetFixtures();
-    });
-
-    it('auto-saves tie games', () => {
-      populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-      //  X | O | X 
-      // -----------
-      //  X | O | X 
-      // -----------
-      //  O |   | O 
-
-      window.turn = 8;
-      window.doTurn(squares[7]);
-
-      expect(requests[0].method).to.equal('POST');
-      expect(requests[0].url).to.equal('/games');
-    });
-
-    it('auto-saves won games', () => {
-      populateBoard(['X', 'X', '', '', '', '', 'O', 'O', '']);
-      window.turn = 4;
-      //  X | X |   
-      // -----------
-      //    |   |   
-      // -----------
-      //  O | O |   
-
-      squares[2].click();
-
-      expect(requests[0].method).to.equal('POST');
-      expect(requests[0].url).to.equal('/games');
-    });
-  });
-
-  describe('Clicking a saved game button (in the div#games element)', () => {
-    beforeEach(() => {
-      xhr = sinon.useFakeXMLHttpRequest();
-      requests = [];
-      xhr.onCreate = req => requests.push(req);
-    });
-
-    afterEach(() => {
-      xhr.restore();
-      resetFixtures();
-    });
-
-    it('sends a GET request to the "/games/:id" route', () => {
-      previousButton.click();
-
-      requests[0].respond(
-        200,
-        { 'Content-Type': 'application/json' },
-        jsonifyGames([
-          ['', '', '', '', 'X', '', '', 'O', '']
-        ])
-      );
-
-      const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
-      gameButtons[0].click();
-
-      expect(requests[1].method).to.equal('GET');
-      expect(requests[1].url).to.equal('/games/1');
-    });
-
-    it("loads the saved game's state into the board", () => {
-      previousButton.click();
-
-      requests[0].respond(
-        200,
-        { 'Content-Type': 'application/json' },
-        jsonifyGames([
-          ['', '', '', '', 'X', '', '', 'O', '']
-        ])
-      );
-
-      const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
-      gameButtons[0].click();
-
-      requests[1].respond(
-        200,
-        { 'Content-Type': 'application/json' },
-        jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
-      );
-
-      const board = Array.from(squares).map(s => s.innerHTML);
-
-      expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', 'O', '']);
-      expect(window.turn).to.equal(2);
-    });
-
-    it('marks the newly-loaded game state such that clicking the "save" button after loading a game sends a PATCH request', () => {
-      previousButton.click();
-
-      requests[0].respond(
-        200,
-        { 'Content-Type': 'application/json' },
-        jsonifyGames([
-          ['', '', '', '', 'X', '', '', 'O', '']
-        ])
-      );
-
-      const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
-      gameButtons[0].click();
-
-      requests[1].respond(
-        200,
-        { 'Content-Type': 'application/json' },
-        jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
-      );
-
-      saveButton.click();
-
-      expect(requests[2].method).to.equal('PATCH');
-      expect(requests[2].url).to.equal('/games/1');
-    });
+    expect(board).to.have.ordered.members(['', '', '', '', '', '', '', '', '']);
   });
 });
