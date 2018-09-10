@@ -23,13 +23,3 @@
 <button id="save">Save Game</button>
 <button id="previous">Show Previous Games</button>
 <button id="clear">Clear Current Game</button>
-
-<script type="text/javascript" charset="utf-8">
-$(function () {
-  $("#previous").on('click', function() {
-    $.get("/games", function(data){
-			$(#games).text(data);
-		});
-  });
-});
-</script>

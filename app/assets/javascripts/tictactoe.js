@@ -3,6 +3,7 @@ var turn = 0;
 
 $(document).ready(attachListeners);
 
+
 function player(){
   //debugger;
   let remainder = turn % 2
@@ -62,7 +63,7 @@ function checkWinner(){
 
 
 function doTurn(square){
-  debugger;
+  //debugger;
   //checkWinner();
   //debugger;
   updateState(square);
@@ -79,11 +80,22 @@ function doTurn(square){
   }
 }
 
-
 function attachListeners() {
   $("td").click(function() {
     if (this.innerHTML === "" && checkWinner() === false ) {
       doTurn(this)
     }
   })
+  $('#previous').on('click', () => showPreviousGames());
+}
+
+function showPreviousGames () {
+  //debugger;
+  $("#previous").on('click', function() {
+		//debugger;
+    $.get('/games', function(data){
+      console.log(data)
+			//$("#games").text(data);
+		});
+  });
 }
