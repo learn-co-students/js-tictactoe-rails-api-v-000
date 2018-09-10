@@ -89,11 +89,27 @@ function attachListeners() {
   $('#previous').on('click', () => showPreviousGames());
 }
 
+
 function showPreviousGames () {
   //debugger;
+  $('#games').empty();
+		//debugger;
+  $.get('/games', function(data){
+    debugger;
+    console.log(data)
+		//$("#games").text(data);
+	});
+}
+
+
+
+function showPreviousGames2 () {
+  //debugger;
+  $('#games').empty();
   $("#previous").on('click', function() {
 		//debugger;
     $.get('/games', function(data){
+      debugger;
       console.log(data)
 			//$("#games").text(data);
 		});
