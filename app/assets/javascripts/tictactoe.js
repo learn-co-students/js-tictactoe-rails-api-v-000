@@ -86,32 +86,72 @@ function attachListeners() {
       doTurn(this)
     }
   })
+  //$('#save').click(function(){
+  //  var thisvar = this;
+  //  debugger;
+  //})
   $('#previous').on('click', () => showPreviousGames());
+  $('#save').on('click', ()=> saveGame());
+  $('#clear').on('click', ()=> clearGame());
 }
 
 
 function showPreviousGames () {
   //debugger;
   $('#games').empty();
-		//debugger;
   $.get('/games', function(data){
     debugger;
-    console.log(data)
-		//$("#games").text(data);
+    var games = data["data"]
+    var gamesList = "";
+    games.forEach(function(game){
+      gamesList += '<button class="prevGames" data-id="' + game["id"]+ '">' + game["id"] + '</button><br>';
+      //debugger;
+    });
+    debugger;
+    $("#games").html(gamesList);
 	});
 }
 
-
-
-function showPreviousGames2 () {
-  //debugger;
-  $('#games').empty();
-  $("#previous").on('click', function() {
-		//debugger;
-    $.get('/games', function(data){
+function saveGame (){
+  debugger;
+  var arraystate = [];
+  let squares = window.document.querySelectorAll('td');
+  for (let i=0; i < squares.length; i++) {
+    arraystate.push(squares[i].innerHTML);
+  }
+  let match;
+  let gameid;
+  $.get('/games', function(data){
+    var games = data["data"]
+    debugger;
+    for (var i = 0; i<9; i++){
+    //games.forEach(function(game){
       debugger;
-      console.log(data)
-			//$("#games").text(data);
-		});
+      if (JSON.stringify(games[i]) === JSON.stringify(arraystate)){
+        debugger;
+        gameid = games[i]["id"];
+        match = true;
+        break;
+      } else {
+        match = false;
+      }
+    };
   });
+  if (match === true){
+    var postarray = $.post('/games', {state: arraystate})
+  } else {
+    var patcharray = $.post('/games/' + gameid, {state: arraystate})
+  }
+}
+
+
+  //debugger;
+  //var stat_serialize = $(state).serialize();
+  //debugger;
+  //var posting = $.post('/games' {state: arraystate})
+  //var posting = $.post('/games', state_serialize)
+  //debugger;
+
+function clearGame(){
+
 }
