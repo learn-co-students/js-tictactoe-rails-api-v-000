@@ -1,5 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
+var gameID = 0;
 
 $(document).ready(attachListeners);
 
@@ -61,11 +62,7 @@ function checkWinner(){
 }
 
 
-
 function doTurn(square){
-  //debugger;
-  //checkWinner();
-  //debugger;
   updateState(square);
   turn += 1;
   checkWinner();
@@ -86,10 +83,6 @@ function attachListeners() {
       doTurn(this)
     }
   })
-  //$('#save').click(function(){
-  //  var thisvar = this;
-  //  debugger;
-  //})
   $('#previous').on('click', () => showPreviousGames());
   $('#save').on('click', ()=> saveGame());
   $('#clear').on('click', ()=> clearGame());
@@ -112,45 +105,26 @@ function showPreviousGames () {
 	});
 }
 
-function saveGame (){
+function getBoard(){
+  var board = $("td").toArray().map((el) => { return el.innerHTML })
+  return board;
+}
+
+function saveGame(gameID){
+  let game = {"state": getBoard()}
   debugger;
-  var arraystate = [];
-  let squares = window.document.querySelectorAll('td');
-  for (let i=0; i < squares.length; i++) {
-    arraystate.push(squares[i].innerHTML);
-  }
-  let match;
-  let gameid;
-  $.get('/games', function(data){
-    var games = data["data"]
-    debugger;
-    for (var i = 0; i<9; i++){
-    //games.forEach(function(game){
-      debugger;
-      if (JSON.stringify(games[i]) === JSON.stringify(arraystate)){
-        debugger;
-        gameid = games[i]["id"];
-        match = true;
-        break;
-      } else {
-        match = false;
-      }
-    };
-  });
-  if (match === true){
-    var postarray = $.post('/games', {state: arraystate})
+  if (gameID === 0) {
+    var postarray = $.post('/games', game)
   } else {
-    var patcharray = $.post('/games/' + gameid, {state: arraystate})
+    var patcharray = $.post('/games', game)
+    var patcharray = $.ajax({
+
+    })
   }
 }
 
 
-  //debugger;
-  //var stat_serialize = $(state).serialize();
-  //debugger;
-  //var posting = $.post('/games' {state: arraystate})
-  //var posting = $.post('/games', state_serialize)
-  //debugger;
+
 
 function clearGame(){
 
