@@ -1,22 +1,24 @@
 // Code your JavaScript / jQuery solution here
 $(document).ready(function() {
-  turn = 0;
+  reset();
   attachListeners();
 })
 
 function attachListeners() {
-  document.getElementById("save").addEventListener("click", function() {
-    alert("Hello");
+  saveButton.addEventListener("click", function() {
+    // alert("Hello");
   });
-  document.getElementById("previous").addEventListener("click", function() {
-    alert("Hello");
+  previousButton.addEventListener("click", function() {
+    // alert("Hello");
   });
-  document.getElementById("clear").addEventListener("click", function() {
-    alert("Hello");
+  clearButton.addEventListener("click", function() {
+    // alert("Hello");
   });
   Array.from(document.getElementsByTagName("td")).forEach(function(square) {
     square.addEventListener("click", function() {
-      doTurn(square);
+      if (square.innerHTML == "" && !checkWinner() && !gameOver()) {
+        doTurn(square);
+      };
     });
   });
 }
@@ -69,13 +71,13 @@ function doTurn(square) {
   ++turn;
   if (checkWinner()) {
     reset();
-  } else if (tieCheck()) {
+  } else if (gameOver()) {
     setMessage("Tie game.");
     reset();
   };
 };
 
-function tieCheck() {
+function gameOver() {
   return Array.from(squares).map(i => i.innerHTML).filter(s => s === "").length === 0;
 }
 
