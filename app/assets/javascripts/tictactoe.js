@@ -1,5 +1,5 @@
-var board = []
-var turn = 0
+const board = []
+const turn = 0
 win_combos = [
   [0,1,2],
   [3,4,5],
