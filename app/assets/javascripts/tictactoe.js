@@ -1,4 +1,6 @@
 // Code your JavaScript / jQuery solution here
+$(document.ready())
+
 function player() {
   return (turn % 2 == 1) ? "O" : "X"
 };
