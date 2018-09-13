@@ -41,3 +41,18 @@ function threeInRow(symbols) {
 function noneEmpty(symbols) {
   return !symbols.includes("");
 }
+
+function doTurn() {
+  // updateState(square);
+  ++turn;
+  checkWinner();
+  // debugger;
+  if (tieCheck()) {
+    setMessage("Tie game.");
+  };
+
+};
+
+function tieCheck() {
+  return Array.from(squares).map(i => i.innerHTML).filter(s => s === "").length === 0;
+}
