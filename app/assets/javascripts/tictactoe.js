@@ -1,10 +1,23 @@
 // Code your JavaScript / jQuery solution here
 $(document).ready(function() {
-
+  attachListeners();
 })
 
 function attachListeners() {
-  document.getElementById("save").addEventListener("click", alert("hi"))
+  document.getElementById("save").addEventListener("click", function() {
+    alert("Hello");
+  });
+  document.getElementById("previous").addEventListener("click", function() {
+    alert("Hello");
+  });
+  document.getElementById("clear").addEventListener("click", function() {
+    alert("Hello");
+  });
+  Array.from(document.getElementsByTagName("td")).forEach(function(square) {
+    square.addEventListener("click", function() {
+      alert("Hello");
+    });
+  });
 }
 
 function player() {
