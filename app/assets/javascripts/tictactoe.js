@@ -1,5 +1,6 @@
 // Code your JavaScript / jQuery solution here
 $(document).ready(function() {
+  turn = 0;
   attachListeners();
 })
 
@@ -15,7 +16,7 @@ function attachListeners() {
   });
   Array.from(document.getElementsByTagName("td")).forEach(function(square) {
     square.addEventListener("click", function() {
-      alert("Hello");
+      doTurn(square);
     });
   });
 }
@@ -63,17 +64,22 @@ function noneEmpty(symbols) {
   return !symbols.includes("");
 }
 
-function doTurn() {
-  // updateState(square);
+function doTurn(square) {
+  updateState(square);
   ++turn;
-  checkWinner();
-  // debugger;
-  if (tieCheck()) {
+  if (checkWinner()) {
+    reset();
+  } else if (tieCheck()) {
     setMessage("Tie game.");
+    reset();
   };
-
 };
 
 function tieCheck() {
   return Array.from(squares).map(i => i.innerHTML).filter(s => s === "").length === 0;
+}
+
+function reset() {
+  turn = 0;
+  Array.from(squares).map(i => i.innerHTML = "");
 }
