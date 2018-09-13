@@ -1,5 +1,11 @@
 // Code your JavaScript / jQuery solution here
-$(document.ready())
+$(document).ready(function() {
+
+})
+
+function attachListeners() {
+
+}
 
 function player() {
   return (turn % 2 == 1) ? "O" : "X"
