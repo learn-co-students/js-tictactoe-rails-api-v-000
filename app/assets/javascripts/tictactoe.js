@@ -4,7 +4,7 @@ $(document).ready(function() {
 })
 
 function attachListeners() {
-
+  document.getElementById("save").addEventListener("click", alert("hi"))
 }
 
 function player() {
