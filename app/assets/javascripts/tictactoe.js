@@ -33,17 +33,21 @@ function showGames(games){
 }
 
 function addButton(game){
-  const buttonSelector = "#" + game["id"]
+  const id = game["id"];
   const button = document.createElement("button");
-  button.innerHTML = "Show Game " + game["id"];
-  $(button).attr("id", game["id"]);
-  debugger;
-  const gamesDiv = $("#games")[0];
+  button.innerHTML = "Show Game " + id;
+  $(button).attr("id", id);
   button.addEventListener("click", function(){
-    $(gamesDiv).prepend(JSON.stringify(game["attributes"]["state"]));
+    $.get("/games/" + id, function(game) {
+      currentGameId = id;
+      turn = game["data"]["attributes"]["state"].filter(s => s !== "").length;
+      board().forEach(function(square, index) {
+        board()[index].innerHTML = game["data"]["attributes"]["state"][index];
+      });
+    })    
   });
-  if ($(buttonSelector).length == 0) {
-    $(gamesDiv).append(button);
+  if ($("#" + id).length == 0) {
+    $("div#games").append(button);
   }; 
 };
 
