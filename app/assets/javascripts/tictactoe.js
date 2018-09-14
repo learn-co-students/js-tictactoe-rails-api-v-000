@@ -1,29 +1,49 @@
 // Code your JavaScript / jQuery solution here
 $(document).ready(function() {
-  games = 0;
   reset();
   attachListeners();
 })
 
 function attachListeners() {
-  saveButton.addEventListener("click", function() {
-    const state = $.makeArray(squares).map(s => s.innerHTML);
-    const posting = $.post("/games", JSON.stringify({"state": state}));
+  $("#save")[0].addEventListener("click", function() {
+    // alert("Hello");
+    const state = {"state": board().map(s => s.innerHTML)};
+    if (currentGameId) {
+      const patching = $.ajax ({
+        url: "/games/" + currentGameId,
+        method: "PATCH",
+        dataType: "json",
+        data: state
+      });
+      // debugger;
+      patching.success(function(game) {
+        alert("Game " + currentGameId + " updated.");
+
+      });
+    } else {
+      const posting = $.post("/games", state);
+      posting.success(function(game) {
+        currentGameId = game["data"]["id"];
+        alert("Game " + currentGameId + " saved.");
+      });
+    }
+    // const posting = $.post("/games", state)
     // posting.done(function(game) {
-    //   debugger;
-    //   const button = document.createElement("button");
-    //   button.innerHTML = "Game" + game["data"]["id"];
-    //   games.innerHTML += button
+    // //   const button = document.createElement("button");
+    // //   button.innerHTML = "Game" + game["data"]["id"];
+    // //   games.innerHTML += button
     // });
   });
-  previousButton.addEventListener("click", function() {
-    $.get("/games", function(resp) {
+  $("#previous")[0].addEventListener("click", function() {
+    // alert("Hello");
+    $.get("/games", function(games) {
+      debugger;
     });
   });
-  clearButton.addEventListener("click", function() {
+  $("#clear")[0].addEventListener("click", function() {
     reset();
   });
-  $.makeArray($("td")).forEach(function(square) {
+  board().forEach(function(square) {
     square.addEventListener("click", function() {
       if (square.innerHTML == "" && !checkWinner() && !gameOver()) {
         doTurn(square);
@@ -41,12 +61,12 @@ function updateState(square) {
 };
 
 function setMessage(message) {
-  messageDiv.innerHTML = message;
+  $('#message')[0].innerHTML = message;
 };
 
 function checkWinner() {
   if (!!checkRows()) {
-    const winner = squares[checkRows()[0]].innerHTML;
+    const winner = board()[checkRows()[0]].innerHTML;
     setMessage("Player " + winner + " Won!")
     return true;
   } else {
@@ -57,7 +77,7 @@ function checkWinner() {
 function checkRows() {
   const rows = [[0, 4, 8], [2, 4, 6], [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8]];
   return rows.find(function(row) {
-    const symbols = row.map(s => squares[s].innerHTML);
+    const symbols = row.map(s => board()[s].innerHTML);
     return threeInRow(symbols) && noneEmpty(symbols);
   });
   // return [0, 1, 2].some(function(row_index) {
@@ -80,19 +100,22 @@ function doTurn(square) {
   ++turn;
   if (checkWinner()) {
     reset();
-    ++games
   } else if (gameOver()) {
     setMessage("Tie game.");
     reset();
-    ++games;
   };
 };
 
 function gameOver() {
-  return $.makeArray(squares).map(i => i.innerHTML).filter(s => s === "").length === 0;
+  return board().map(i => i.innerHTML).filter(s => s === "").length === 0;
 }
 
 function reset() {
   turn = 0;
-  $.makeArray(squares).map(i => i.innerHTML = "");
+  board().map(i => i.innerHTML = "");
+  currentGameId = false;
+}
+
+function board() {
+  return $.makeArray($("td"))
 }
