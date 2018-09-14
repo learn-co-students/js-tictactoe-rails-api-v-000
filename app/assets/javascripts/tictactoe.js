@@ -7,21 +7,11 @@ $(document).ready(function() {
 function attachListeners() {
   $("#save")[0].addEventListener("click", function() {
     save();
+    // debugger;
   });
   $("#previous")[0].addEventListener("click", function() {
-    // alert("Hello");
     $.get("/games", function(games) {
-      // debugger;
-      $.makeArray(games["data"]).forEach(function(game) {
-        // debugger;
-        const button = document.createElement("button");
-        button.innerHTML = "Show Game " + game["id"];
-        const gamesDiv = $("#games")[0];
-        button.addEventListener("click", function(){
-          gamesDiv.prepend(JSON.stringify(game["attributes"]["state"]));
-        });
-        gamesDiv.append(button);
-      });
+      showGames(games);
     });
   });
   $("#clear")[0].addEventListener("click", function() {
@@ -36,24 +26,37 @@ function attachListeners() {
   });
 }
 
+function showGames(games){
+  $.makeArray(games["data"]).forEach(function(game) {
+    addButton(game);
+  });
+}
+
+function addButton(game){
+  const button = document.createElement("button");
+  button.innerHTML = "Show Game " + game["id"];
+  const gamesDiv = $("#games")[0];
+  button.addEventListener("click", function(){
+    gamesDiv.prepend(JSON.stringify(game["attributes"]["state"]));
+  });
+  $(gamesDiv).append(button);
+}
+
 function save() {
   const state = {"state": board().map(s => s.innerHTML)};
-  if (currentGameId) {
+  // debugger;
+  if (currentGameId === 0) {
+    $.post("/games", state, function(game) {
+      currentGameId = game["data"]["id"];
+    });
+  } else {
     const patching = $.ajax ({
       url: "/games/" + currentGameId,
       method: "PATCH",
       dataType: "json",
       data: state
-    });
-    patching.success(function(game) {
+    }, function(game) {
       alert("Game " + currentGameId + " updated.");
-
-    });
-  } else {
-    const posting = $.post("/games", state);
-    posting.success(function(game) {
-      currentGameId = game["data"]["id"];
-      alert("Game " + currentGameId + " saved.");
     });
   };
 }
@@ -121,7 +124,7 @@ function gameOver() {
 function reset() {
   turn = 0;
   board().map(i => i.innerHTML = "");
-  currentGameId = false;
+  currentGameId = 0;
 }
 
 function board() {
