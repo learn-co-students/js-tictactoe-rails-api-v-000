@@ -34,19 +34,19 @@ function showGames(games){
 
 function addButton(game){
   const id = game["id"];
-  const button = document.createElement("button");
-  button.innerHTML = "Show Game " + id;
-  $(button).attr("id", id);
-  button.addEventListener("click", function(){
-    $.get("/games/" + id, function(game) {
-      currentGameId = id;
-      turn = game["data"]["attributes"]["state"].filter(s => s !== "").length;
-      board().forEach(function(square, index) {
-        board()[index].innerHTML = game["data"]["attributes"]["state"][index];
-      });
-    })    
-  });
   if ($("#" + id).length == 0) {
+    const button = document.createElement("button");
+    button.innerHTML = "Show Game " + id;
+    $(button).attr("id", id);
+    button.addEventListener("click", function(){
+      $.get("/games/" + id, function(game) {
+        currentGameId = id;
+        turn = game["data"]["attributes"]["state"].filter(s => s !== "").length;
+        board().forEach(function(square, index) {
+          board()[index].innerHTML = game["data"]["attributes"]["state"][index];
+        });
+      })    
+    });
     $("div#games").append(button);
   }; 
 };
