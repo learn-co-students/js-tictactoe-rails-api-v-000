@@ -1,20 +1,29 @@
 // Code your JavaScript / jQuery solution here
 $(document).ready(function() {
+  games = 0;
   reset();
   attachListeners();
 })
 
 function attachListeners() {
   saveButton.addEventListener("click", function() {
-    // alert("Hello");
+    const state = $.makeArray(squares).map(s => s.innerHTML);
+    const posting = $.post("/games", JSON.stringify({"state": state}));
+    // posting.done(function(game) {
+    //   debugger;
+    //   const button = document.createElement("button");
+    //   button.innerHTML = "Game" + game["data"]["id"];
+    //   games.innerHTML += button
+    // });
   });
   previousButton.addEventListener("click", function() {
-    // alert("Hello");
+    $.get("/games", function(resp) {
+    });
   });
   clearButton.addEventListener("click", function() {
-    // alert("Hello");
+    reset();
   });
-  Array.from(document.getElementsByTagName("td")).forEach(function(square) {
+  $.makeArray($("td")).forEach(function(square) {
     square.addEventListener("click", function() {
       if (square.innerHTML == "" && !checkWinner() && !gameOver()) {
         doTurn(square);
@@ -71,17 +80,19 @@ function doTurn(square) {
   ++turn;
   if (checkWinner()) {
     reset();
+    ++games
   } else if (gameOver()) {
     setMessage("Tie game.");
     reset();
+    ++games;
   };
 };
 
 function gameOver() {
-  return Array.from(squares).map(i => i.innerHTML).filter(s => s === "").length === 0;
+  return $.makeArray(squares).map(i => i.innerHTML).filter(s => s === "").length === 0;
 }
 
 function reset() {
   turn = 0;
-  Array.from(squares).map(i => i.innerHTML = "");
+  $.makeArray(squares).map(i => i.innerHTML = "");
 }
