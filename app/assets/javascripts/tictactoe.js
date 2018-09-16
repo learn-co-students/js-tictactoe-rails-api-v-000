@@ -116,9 +116,11 @@ function saveGame(gameID){
   if (gameID === 0) {
     var postarray = $.post('/games', game)
   } else {
-    var patcharray = $.post('/games', game)
     var patcharray = $.ajax({
-
+      type: 'PATCH',
+      url: '/games/gameID',
+      data: game,
+      dataType: 'json'
     })
   }
 }
