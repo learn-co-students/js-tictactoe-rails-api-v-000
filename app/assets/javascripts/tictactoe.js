@@ -145,12 +145,18 @@ function saveGame(){
   let game = {}
   game = {"state": getBoard()}
   debugger;
-  if (gameID === 0) {
+  if (gameID !== 0) {
     //debugger;
     //var postarray = $.post('/games', game)
-    var postarray = $.ajax({
-      type: 'POST',
-      url: '/games',
+    //var postarray = $.ajax({
+    //  type: 'POST',
+    //  url: '/games',
+    //  data: game,
+    //  dataType: 'json'
+    //})
+    var patcharray = $.ajax({
+      type: 'PATCH',
+      url: '/games/'+gameID,
       data: game,
       dataType: 'json'
     })
@@ -158,15 +164,19 @@ function saveGame(){
     //  debugger;
     //  gameID = data["data"].length
     //  debugger;
-    //});
   } else {
     //debugger;
-    var patcharray = $.ajax({
-      type: 'PATCH',
-      url: '/games/'+gameID,
+    var postarray = $.ajax({
+      type: 'POST',
+      url: '/games',
       data: game,
-      dataType: 'json'
+      dataType: 'json',
+      success: handledata
     })
+    function handledata(data){
+      gameID = data["data"]["id"]
+      debugger;
+    }
   }
 
 }
