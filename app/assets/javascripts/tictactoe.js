@@ -46,6 +46,7 @@ function checkWinner(){
   }
 
   if (state === true){
+    saveGame();
     if (winplayer === 'X') {
       setMessage('Player X Won!');
     } else{
@@ -54,6 +55,7 @@ function checkWinner(){
     return true;
   } else {
     if (turn === 9) {
+      saveGame();
       setMessage('Tie game.')
     }
     setMessage('');
@@ -97,28 +99,100 @@ function showPreviousGames () {
     var games = data["data"]
     var gamesList = "";
     games.forEach(function(game){
-      gamesList += '<button class="prevGames" data-id="' + game["id"]+ '">' + game["id"] + '</button><br>';
+      //gamesList += '<button class="prevGames" data-id="' + game["id"]+ '">' + game["id"] + '</button></br>';
+      gamesList += '<button class="prevgames" id="game["id"] ">' + game["id"] + '</button></br>';
+      $("#games").html(gamesList);
+      $('.prevgames').on('click', function(){showGame(this)});
       //debugger;
     });
-    debugger;
-    $("#games").html(gamesList);
 	});
 }
+
+
+function showGame(game){
+  gameID = game.innerHTML
+  //debugger;
+  $.get('/games/'+gameID, function(data){
+    console.log(data)
+    var board = data["data"]["attributes"]["state"]
+    turn = board.filter(Boolean).length;
+    $("td").each(function(i){
+      //debugger;
+      let board = []
+      board = data["data"]["attributes"]["state"]
+      this.innerHTML = board[i]
+      //debugger;
+
+    })
+
+  });
+}
+
 
 function getBoard(){
   var board = $("td").toArray().map((el) => { return el.innerHTML })
   return board;
 }
 
-function saveGame(gameID){
-  let game = {"state": getBoard()}
+function retrieveGameID() {
+  return gameID;
+}
+
+function saveGame(){
+  debugger;
+  //console.log(data)
+  //let gameID = retrieveGameID();
+  let game = {}
+  game = {"state": getBoard()}
   debugger;
   if (gameID === 0) {
-    var postarray = $.post('/games', game)
+    //debugger;
+    //var postarray = $.post('/games', game)
+    var postarray = $.ajax({
+      type: 'POST',
+      url: '/games',
+      data: game,
+      dataType: 'json'
+    })
+    //$.get('/games', function(data){
+    //  debugger;
+    //  gameID = data["data"].length
+    //  debugger;
+    //});
   } else {
+    //debugger;
     var patcharray = $.ajax({
       type: 'PATCH',
-      url: '/games/gameID',
+      url: '/games/'+gameID,
+      data: game,
+      dataType: 'json'
+    })
+  }
+
+}
+
+
+function saveGame2(){
+  debugger;
+  //console.log(data)
+  let gameID = retrieveGameID();
+  let game = {}
+  game = {"state": getBoard()}
+  debugger;
+  if (gameID === 0) {
+    //debugger;
+    //var postarray = $.post('/games', game)
+    var postarray = $.ajax({
+      type: 'POST',
+      url: '/games',
+      data: game,
+      dataType: 'json'
+    })
+  } else {
+    //debugger;
+    var patcharray = $.ajax({
+      type: 'PATCH',
+      url: '/games/'+gameID,
       data: game,
       dataType: 'json'
     })
@@ -129,5 +203,7 @@ function saveGame(gameID){
 
 
 function clearGame(){
-
+  gameID = 0;
+  turn = 0;
+  $("td").html("");
 }
