@@ -5,25 +5,44 @@ $(document).ready(function() {
 })
 
 function attachListeners() {
+  addSaveListener();
+  addPreviousListeners();
+  addClearListener();
+  resetBoard();
+}
+
+function addClearListener() {
+  $("#clear")[0].addEventListener("click", function() {
+    reset();
+  });
+}
+
+function addSaveListener() {
   $("#save")[0].addEventListener("click", function() {
     save();
-    // debugger;
   });
+};
+
+function addPreviousListeners() {
   $("#previous")[0].addEventListener("click", function() {
     $.get("/games", function(games) {
       showGames(games);
     });
   });
-  $("#clear")[0].addEventListener("click", function() {
-    reset();
-  });
+}
+
+function resetBoard() {
   board().forEach(function(square) {
     square.addEventListener("click", function() {
-      if (square.innerHTML == "" && !checkWinner() && !gameOver()) {
+      if (blankSquare(square) && !checkWinner() && !gameOver()) {
         doTurn(square);
       };
     });
   });
+}
+
+function blankSquare(square) {
+  return square.innerHTML == "";
 }
 
 function showGames(games){
@@ -34,40 +53,62 @@ function showGames(games){
 
 function addButton(game){
   const id = game["id"];
-  if ($("#" + id).length == 0) {
+  if (buttonExists(id)) {
     const button = document.createElement("button");
-    button.innerHTML = "Show Game " + id;
-    $(button).attr("id", id);
-    button.addEventListener("click", function(){
-      $.get("/games/" + id, function(game) {
-        currentGameId = id;
-        turn = game["data"]["attributes"]["state"].filter(s => s !== "").length;
-        board().forEach(function(square, index) {
-          board()[index].innerHTML = game["data"]["attributes"]["state"][index];
-        });
-      })    
-    });
-    $("div#games").append(button);
-  }; 
+    buildButton(button, id)
+    addLoadListener(button, id);
+  };
 };
+
+function buildButton(button, id){
+  button.innerHTML = "Show Game " + id;
+  $(button).attr("id", id);
+  return $("div#games").append(button);
+}
+
+function addLoadListener(button, id) {
+  button.addEventListener("click", function(){
+    $.get("/games/" + id, function(game) {
+      currentGameId = id;
+      const state = game["data"]["attributes"]["state"];
+      turn = state.filter(s => s !== "").length;
+      board().forEach(function(square, index) {
+        board()[index].innerHTML = state[index];
+      });
+    })
+  });
+}
+
+function buttonExists(id) {
+  return $("#" + id).length == 0;
+}
 
 function save() {
   const state = {"state": board().map(s => s.innerHTML)};
-  // debugger;
-  if (currentGameId === 0) {
-    $.post("/games", state, function(game) {
-      currentGameId = game["data"]["id"];
-    });
+  if (gameNotSaved()) {
+    postGame(state);
   } else {
-    const patching = $.ajax ({
-      url: "/games/" + currentGameId,
-      method: "PATCH",
-      dataType: "json",
-      data: state
-    }, function(game) {
-      alert("Game " + currentGameId + " updated.");
-    });
+    patchGame(state)
   };
+}
+
+function postGame(state) {
+  $.post("/games", state, function(game) {
+    currentGameId = game["data"]["id"];
+  });
+}
+
+function patchGame(state) {
+  $.ajax ({
+    url: "/games/" + currentGameId,
+    method: "PATCH",
+    dataType: "json",
+    data: state
+  });
+}
+
+function gameNotSaved() {
+  return currentGameId === 0;
 }
 
 function player() {
@@ -84,7 +125,7 @@ function setMessage(message) {
 
 function checkWinner() {
   if (!!checkRows()) {
-    const winner = board()[checkRows()[0]].innerHTML;
+    const winner = getWinner();
     setMessage("Player " + winner + " Won!")
     return true;
   } else {
@@ -92,17 +133,20 @@ function checkWinner() {
   }
 }
 
+function getWinner() {
+  return board()[checkRows()[0]].innerHTML;
+}
+
 function checkRows() {
   const rows = [[0, 4, 8], [2, 4, 6], [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8]];
   return rows.find(function(row) {
-    const symbols = row.map(s => board()[s].innerHTML);
+    const symbols = getSymbols(row);
     return threeInRow(symbols) && noneEmpty(symbols);
   });
-  // return [0, 1, 2].some(function(row_index) {
-  //   const row = $("td[data-" + axis + "=" + row_index + "]");
-  //   const symbols = $.makeArray(row).map(square => square.innerHTML);
-  //   return threeInRow(symbols) && noneEmpty(symbols)
-  // });
+}
+
+function getSymbols(row) {
+  return row.map(s => board()[s].innerHTML);
 }
 
 function threeInRow(symbols) {
