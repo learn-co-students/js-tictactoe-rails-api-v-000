@@ -20,9 +20,6 @@ function attachListeners() {
     saveGame();
   });
 
-  //$("#previous").click(function() {
-  //  getPreviousGames();
-  //});
 }
 
 //BOARD + GAMEPLAY
@@ -147,29 +144,6 @@ $(function () {
   })
 })
 
-//HELPERS
-
-
-
-
-//$(function () {
-//  $("#previous").on("click", function (e) {
-//    e.preventDefault();
-//    getPreviousGames()
-    //$.getJSON("/games", function(data) {
-      //var games = data["data"]
-    //  debugger
-    //  var buttons = $()
-    //  for (var i = 0; i < data["data"].length; i++) {
-    //    var id = data["data"][i].id
-    //    var state = data["data"][i].attributes.state
-    //    buttons = buttons.add(`<button data-gameid='${id}' data-state='${state}' onclick='previousGame(this.getAttribute(${id}), this.getAttribute("${state}"))'>Game: ${id}</button><br>`)
-    //  }
-    //  $("#games").html(buttons)
-    //})
-//})
-
-
 //Begin helper functions
 
 function updateState(cell) {
@@ -178,7 +152,6 @@ function updateState(cell) {
 }
 
 function won(array) {
-  //debugger
   if (positionTaken(array[0]) == true) {
     if (currentBoard()[array[0]] == currentBoard()[array[1]] && currentBoard()[array[0]] == currentBoard()[array[2]] &&
     currentBoard()[array[1]] == currentBoard()[array[2]]) { return true }
