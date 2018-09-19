@@ -69,8 +69,6 @@ function checkWinner() {
 
 function attachListeners() {
 
-
-
   $("td").on("click", function() {
     if (!checkWinner()) {
       doTurn(this);
@@ -122,12 +120,10 @@ function previousGames() {
   });
 }
 
-
-
 function newBoard(data) {
   currentGameId = data["data"]["id"]
   newestBoard = data["data"]["attributes"]["state"]
-  turn = newestBoard.filter(word => word === "X" || word === "O").length  
+  turn = newestBoard.filter(word => word === "X" || word === "O").length
   for (let i = 0; i < newestBoard.length; i++) {
     $("td")[i].innerHTML = newestBoard[i];
   };
