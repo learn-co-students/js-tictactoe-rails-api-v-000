@@ -1,7 +1,11 @@
 // Code your JavaScript / jQuery solution here
-// $(document).ready(function() {
-//   attachListeners()
-// })
+$(document).ready(attachListeners());
+  $(window).on('load', function() {
+    window.square = $('td');
+});
+
+var gameStatus = false;
+
 const WINNING_COMBOS = [
   [0, 1, 2],
   [3, 4, 5],
@@ -55,16 +59,46 @@ function checkWinner() {
 }
 
 function doTurn(square) {
-  updateState(square);
-  turn ++;
-  if (checkWinner()) {
-    $('td').empty()
-    turn = 0;
-  } else if (turn === 9) {
-    setMessage("Tie game.")
+  if (!spaceTaken(square) && !gameStatus) {
+    updateState(square);
+    turn++;
+    if (checkWinner()) {
+      $('td').empty()
+      turn = 0;
+    } else if (turn === 9) {
+      setMessage("Tie game.")
+    }
   }
 }
 
-function attachListener() {
+function attachListeners() {
+  $('td').on('click', function() {
+    doTurn(this)
+  });
+  $("#save").click(function(event) {
+    saveGame();
+  });
+  $("#previous").click(function(event) {
+    previousGame();
+  });
+  $("#clear").click(function(event) {
+    clearBoard();
+  })
+}
 
+function saveGame() {
+
+}
+
+function previousGame() {
+
+}
+
+function clearBoard() {
+  turn = 0;
+  $('td').empty()
+}
+
+function spaceTaken(square) {
+  return $(square).text() !== ''
 }
