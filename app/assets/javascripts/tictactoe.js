@@ -30,7 +30,15 @@ function checkWinner() {
 	})
 	if (won === true) {
 		setMessage(`Player ${player()} Won!`)
+		return true
 	} else {
 		return false
 	}
+}
+
+
+function doTurn(square) {
+	checkWinner()
+	setMessage(string)
+	updateState(square)
 }
