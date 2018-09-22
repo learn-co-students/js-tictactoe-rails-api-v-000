@@ -49,7 +49,6 @@ function doTurn(square) {
 
 
 function attachListeners(square) {
-	debugger
 
 	$('td').on('click', function () {
 		console.log(this)
