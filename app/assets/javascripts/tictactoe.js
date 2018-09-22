@@ -7,5 +7,5 @@ function player () {
 }
 
 function updateState (square) {
-	square.innerHTML(player())
+	$(square).text(player())
 }
