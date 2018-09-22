@@ -45,3 +45,35 @@ function doTurn(square) {
 		setMessage("Tie game.")
 	}
 }
+
+
+
+function attachListeners(square) {
+	debugger
+
+	$('td').on('click', function () {
+		console.log(this)
+		doTurn(square)
+	})
+	
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
