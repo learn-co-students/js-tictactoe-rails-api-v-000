@@ -23,22 +23,20 @@ function checkWinner() {
 
 	$('td').text((index,square) => board[index] = square)
 
-	WINNING_COMBOS.forEach (position => {
+	WINNING_COMBOS.forEach (function (position) {
+
 		if (board[position[0]] === board[position[1]] && board[position[1]] === board[position[2]] && board[position[0]] !== "") {
+			setMessage(`Player ${board[position[0]]} Won!`)
 			won = true
 		}
 	})
-	if (won === true) {
-		setMessage(`Player ${player()} Won!`)
-		return true
-	} else {
-		return false
-	}
+	return won
 }
+
 
 
 function doTurn(square) {
 	checkWinner()
-	setMessage(string)
 	updateState(square)
+	turn++
 }
