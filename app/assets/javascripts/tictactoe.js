@@ -1,11 +1,6 @@
 // Code your JavaScript / jQuery solution here
-$(document).ready(attachListeners());
-  $(window).on('load', function() {
-    window.squares = $('td');
-});
-
-var gameStatus = false;
-var currentGame = 0;
+//window.gameStatus = false;
+window.currentGame = 0;
 
 const WINNING_COMBOS = [
   [0, 1, 2],
@@ -17,9 +12,14 @@ const WINNING_COMBOS = [
   [0, 4, 8],
   [6, 4, 2]
 ]
+window.turn = 0;
 
-
-var turn = 0;
+$(document).ready(function() {
+  attachListeners();
+});
+  $(window).on('load', function() {
+    window.squares = $('td');
+});
 
 function player() {
   return turn % 2 === 0 ? "X" : "O";
@@ -27,7 +27,7 @@ function player() {
 
 function updateState(clicked) {
   var currentPlayer = player();
-  $(clicked).text(currentPlayer);
+  $(clicked).text(currentPlayer).toggleClass("pushed");;
 }
 
 function setMessage(message) {
@@ -153,7 +153,7 @@ function loadGame(clicked) {
 function clearBoard() {
   turn = 0;
   currentGame = 0;
-  $('td').empty();
+  $('td').empty().toggleClass('pushed').removeClass('pushed');
 }
 
 function spaceTaken(clicked) {

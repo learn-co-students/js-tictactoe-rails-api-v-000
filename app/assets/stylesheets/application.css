@@ -13,3 +13,35 @@
  *= require_tree .
  *= require_self
  */
+
+ #grid{
+  border-spacing: 3px;
+}
+#grid td{
+  border-color: #92A5BD;
+  border-width: 3px;
+  border-style: outset;
+  padding: 3px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  width: 3em;
+  height: 3em;
+}
+#grid td:hover{
+  border-style: inset; /* button appearance w/ border style */
+  background-color: #99d0ff;
+}
+.pushed{
+  border-style: outset; /* button appearance w/ border style */
+  background-color: #999;
+}
+.winning_cell{
+  background-color: #1FC01F !important;
+}
+.indicator{
+  display:inline-block;
+  padding:0.5em 1em;
+  min-width:3em;
+}
