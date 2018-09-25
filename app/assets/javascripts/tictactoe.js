@@ -3,6 +3,10 @@ var turn = 0;
 var gameId = 0;
 var previousGames;
 
+function getSquares() {
+    var squaresDOM = $.find('td');
+    return $.makeArray(squaresDOM).map ( square => square.innerText); 
+}
 function player() {
     return turn & 1 ? 'O' : 'X';
 } 
@@ -12,9 +16,7 @@ function setMessage (message) {
 }
 
 function checkWinner () {
-  //  var squaresDOM = window.document.querySelectorAll('td');
-    var squaresDOM = $.find('td');
-    var squares = $.makeArray(squaresDOM).map ( square => square.innerText);
+    var squares = getSquares();
     console.log("Squares",squares);
     const winners = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7],  [2,5,8], [0,4,8], [2,4,6]];
 
@@ -61,8 +63,7 @@ function clearGame() {
 }
 
 function saveGame() {
-    var squaresDOM = $.find('td');
-    var squares = $.makeArray(squaresDOM).map ( square => square.innerText);
+    var squares = getSquares();
     if (gameId == 0) {
         $.post("/games", 
                 { state: squares}, 
@@ -86,13 +87,12 @@ function saveGame() {
 function showPreviousGame(e) {
     gameId=this.id;
     let turnCount = 0;
-    previousGames[this.id]["state"].forEach( function(square,index) {
+    let newGame = previousGames.find( (game) => game["id"]==this.id);
+    newGame["state"].forEach( function(square,index) {
     let y = (Math.floor(index/3)) + 1;
     let x = (index % 3) + 1;  
     $(`tr:nth-of-type(${y}) td:nth-of-type(${x})`).text(square);
         if (square != '') ++turnCount;
-        console.log("index",index,"tr",y,"td",x);   
-        console.log("Square)",square,"turncnt",turnCount);
     });
     turn = turnCount;
 }
@@ -109,7 +109,6 @@ function buildPreviousGameButtons() {
     });
 }
 function getPreviousGames() {
-    console.log("Previous Games");
     $.get("/games", function(response) { 
         previousGames = response.data.map ( function (game) {
             return { id: game["id"], state: game["attributes"]["state"] };
