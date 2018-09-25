@@ -1,6 +1,7 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
 var gameId = 0;
+var previousGames;
 
 function player() {
     return turn & 1 ? 'O' : 'X';
@@ -82,6 +83,41 @@ function saveGame() {
     }
 }
 
+function showPreviousGame(e) {
+    gameId=this.id;
+    let turnCount = 0;
+    previousGames[this.id]["state"].forEach( function(square,index) {
+    let y = (Math.floor(index/3)) + 1;
+    let x = (index % 3) + 1;  
+    $(`tr:nth-of-type(${y}) td:nth-of-type(${x})`).text(square);
+        if (square != '') ++turnCount;
+        console.log("index",index,"tr",y,"td",x);   
+        console.log("Square)",square,"turncnt",turnCount);
+    });
+    turn = turnCount;
+}
+function buildPreviousGameButtons() {
+    $("#games").empty();
+    previousGames.forEach ( function (game){
+        var button = $('<button/>',
+        {
+            text: `${game["id"]}`,
+            id: `${game["id"]}`,
+            click: showPreviousGame
+        });             
+        $("#games").append(button);
+    });
+}
+function getPreviousGames() {
+    console.log("Previous Games");
+    $.get("/games", function(response) { 
+        previousGames = response.data.map ( function (game) {
+            return { id: game["id"], state: game["attributes"]["state"] };
+        }) 
+        console.log("Previous Games",previousGames);
+        buildPreviousGameButtons();
+    });
+}
 function attachListeners() {
     $("td").click(function(e){    
         doTurn( this);
@@ -93,6 +129,10 @@ function attachListeners() {
     });
     $("#save").click(function(e){    
         saveGame();
+        return false;
+    });
+    $("#previous").click(function(e){    
+        getPreviousGames();
         return false;
     });
 }
