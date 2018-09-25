@@ -10,7 +10,8 @@ function setMessage (message) {
 }
 
 function checkWinner () {
-    var squaresDOM = window.document.querySelectorAll('td');
+  //  var squaresDOM = window.document.querySelectorAll('td');
+    var squaresDOM = $.find('td');
     var squares = $.makeArray(squaresDOM).map ( square => square.innerText);
     console.log("Squares",squares);
     const winners = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7],  [2,5,8], [0,4,8], [2,4,6]];
@@ -51,11 +52,19 @@ function doTurn (square) {
     }
 }
 
+function clearGame() {
+    $.find('td').forEach ( square => square.innerText='' );
+}
+
 function attachListeners() {
     $("td").click(function(e){    
         doTurn( this);
         return false;
     });
+    $("#clear").click(function(e){    
+        clearGame();
+        return false;
+    }); 
 }
 
 $(function () {
