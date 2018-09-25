@@ -1,5 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
+var gameId = 0;
 
 function player() {
     return turn & 1 ? 'O' : 'X';
@@ -54,6 +55,31 @@ function doTurn (square) {
 
 function clearGame() {
     $.find('td').forEach ( square => square.innerText='' );
+    turn = 0;
+    gameId = 0;
+}
+
+function saveGame() {
+    var squaresDOM = $.find('td');
+    var squares = $.makeArray(squaresDOM).map ( square => square.innerText);
+    if (gameId == 0) {
+        $.post("/games", 
+                { state: squares}, 
+                function(response,status) { 
+                    console.log("Create Game",response);
+                    gameId=response.data.id       
+                });
+    }
+    else {
+        let data = { state: squares};
+        console.log("Updating game",gameId,JSON.stringify(data));
+        $.ajax({
+            url : `/games/${gameId}`,
+            data : JSON.stringify(data),
+            type : 'PATCH',
+            contentType : 'application/json'
+        });
+    }
 }
 
 function attachListeners() {
@@ -64,7 +90,11 @@ function attachListeners() {
     $("#clear").click(function(e){    
         clearGame();
         return false;
-    }); 
+    });
+    $("#save").click(function(e){    
+        saveGame();
+        return false;
+    });
 }
 
 $(function () {
