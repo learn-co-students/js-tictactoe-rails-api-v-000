@@ -27,26 +27,37 @@ function checkWinner () {
     return (winner === undefined) ? false : true;
 }
 
-function doTurn (square) {
+function updateState (square) {
  
     let x = parseInt(square.dataset.x) + 1;
     let y = parseInt(square.dataset.y) + 1;
-    console.log("doTurn",x,y,player());
+    console.log("updateState",x,y,player());
     let currentSquare = $(`tr:nth-of-type(${y}) td:nth-of-type(${x})`).text();
-    if (currentSquare !== '') {
+    if (currentSquare === '') {
+        $(`tr:nth-of-type(${y}) td:nth-of-type(${x})`).text(player());
+        return true;
+    }
+    return false;
+}
+
+function doTurn (square) {
+    if (! updateState(square)) {
         setMessage("Invalid move. Square already taken.  Choose again");
     }
     else {
-        $(`tr:nth-of-type(${y}) td:nth-of-type(${x})`).text(player());
         ++turn;
         if (!checkWinner() && turn>8)
             setMessage("Draw!");
     }
 }
 
-$(function () {
+function attachListeners() {
     $("td").click(function(e){    
         doTurn( this);
         return false;
     });
+}
+
+$(function () {
+    attachListeners();
 });
