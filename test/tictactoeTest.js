@@ -394,7 +394,7 @@ describe('AJAX interactions with the Rails API', () => {
     });
 
     afterEach(() => {
-      xhr.restor e();
+      xhr.restore();
       resetFixtures();
     });
 

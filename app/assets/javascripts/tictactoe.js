@@ -1,7 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
 var gameId = 0;
-var previousGames;
 
 function getSquares() {
     var squaresDOM = $.find('td');
@@ -27,6 +26,8 @@ function checkWinner () {
     if (winner !== undefined) {
         let winnerMark = squares[winner[0]];
         setMessage(`Player ${winnerMark} Won!`);
+        saveGame();
+        clearGame();
     }
 
     return (winner === undefined) ? false : true;
@@ -36,7 +37,6 @@ function updateState (square) {
  
     let x = parseInt(square.dataset.x) + 1;
     let y = parseInt(square.dataset.y) + 1;
-    console.log("updateState",x,y,player());
     let currentSquare = $(`tr:nth-of-type(${y}) td:nth-of-type(${x})`).text();
     if (currentSquare === '') {
         $(`tr:nth-of-type(${y}) td:nth-of-type(${x})`).text(player());
@@ -45,14 +45,28 @@ function updateState (square) {
     return false;
 }
 
+function gameOver() {
+    const winners = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7],  [2,5,8], [0,4,8], [2,4,6]];
+    var squares = getSquares();
+    winner = winners.find ( function (combo) {       
+        return squares[combo[0]]!='' && squares[combo[0]]==squares[combo[1]] &&
+            squares[combo[0]]==squares[combo[2]]      
+    });
+    return (winner || turn>=9) ? true : false;    
+}
 function doTurn (square) {
-    if (! updateState(square)) {
-        setMessage("Invalid move. Square already taken.  Choose again");
-    }
-    else {
-        ++turn;
-        if (!checkWinner() && turn>8)
-            setMessage("Draw!");
+    if (!gameOver()) {
+        if (! updateState(square)) {
+            setMessage("Invalid move. Square already taken.  Choose again");
+        }
+        else {
+            ++turn;
+            if (!checkWinner() && turn>8) {
+                setMessage("Tie game.");
+                saveGame();
+                clearGame();
+            }
+        }
     }
 }
 
@@ -85,20 +99,23 @@ function saveGame() {
 }
 
 function showPreviousGame(e) {
-    gameId=this.id;
-    let turnCount = 0;
-    let newGame = previousGames.find( (game) => game["id"]==this.id);
-    newGame["state"].forEach( function(square,index) {
-    let y = (Math.floor(index/3)) + 1;
-    let x = (index % 3) + 1;  
-    $(`tr:nth-of-type(${y}) td:nth-of-type(${x})`).text(square);
-        if (square != '') ++turnCount;
-    });
-    turn = turnCount;
+    $.get(`/games/${this.id}`, function(response) { 
+        console.log("Get Previous Game",response)
+        gameId = response.data.id;
+        let turnCount = 0;
+        response.data.attributes.state.forEach( function (square,index) {
+            let y = (Math.floor(index/3)) + 1;
+            let x = (index % 3) + 1;  
+            $(`tr:nth-of-type(${y}) td:nth-of-type(${x})`).text(square);
+            if (square != '') ++turnCount;
+        });
+        turn = turnCount;;
+    });    
 }
-function buildPreviousGameButtons() {
+function buildPreviousGameButtons(games) {
     $("#games").empty();
-    previousGames.forEach ( function (game){
+
+    games.forEach ( function (game){
         var button = $('<button/>',
         {
             text: `${game["id"]}`,
@@ -110,11 +127,7 @@ function buildPreviousGameButtons() {
 }
 function getPreviousGames() {
     $.get("/games", function(response) { 
-        previousGames = response.data.map ( function (game) {
-            return { id: game["id"], state: game["attributes"]["state"] };
-        }) 
-        console.log("Previous Games",previousGames);
-        buildPreviousGameButtons();
+        buildPreviousGameButtons(response.data);
     });
 }
 function attachListeners() {
