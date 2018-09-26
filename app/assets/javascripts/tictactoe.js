@@ -1,7 +1,5 @@
 var turn = 0
 var gameId = 0
-
-
 $(function(){
   attachListeners();
 })
