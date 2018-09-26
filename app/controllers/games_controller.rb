@@ -20,6 +20,10 @@ class GamesController < ApplicationController
     render json: @game
   end
 
+  # def last_updated
+  #   game.attributes.updated_at.strftime("%A, %d %B %Y %R")
+  # end
+
   private
 
   def game_params
