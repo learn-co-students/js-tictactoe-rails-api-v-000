@@ -3,11 +3,12 @@ var turn = 0;
 var currentGame = 0;
 
 var player = () => turn % 2 == 0 ? "X" : "O";
+var isNewGame = () => { return currentGame === 0}
 
 function attachListeners() {
   $("td").on("click", function(e) { doTurn(e.target) })
-  $("#save").on("click", function(e) { saveGame(e) })
-  $("#previous").on("click", function(e) { previousGames(e) })
+  $("#save").on("click", function() { saveGame() })
+  $("#previous").on("click", function() { previousGames() })
   $("#clear").on("click", function() { clear() })
 }
 
@@ -23,19 +24,21 @@ function doTurn(targ) {
 
 
     if (checkWinner()) {
+      saveGame();
       clear();
     } else if (turn > 8) {
       setMessage("Tie game.");
+      saveGame();
       clear();
     };
 
   };
 }
 
-function saveGame(e) {
-  e.preventDefault();
+function saveGame() {
   var state = getState();
   const values = { "state": state }
+  // debugger;
 
   if (isNewGame()) {
     $.post('/games', values, function(json) {
@@ -59,8 +62,32 @@ function saveGame(e) {
 
 }
 
-function previousGames(e) {
+function previousGames() {
+  $.get('/games', function(resp) {
+    if (resp.data.length > 0) {
+      $("#games").empty();
+      resp.data.forEach(game => $("#games").append(`<button data-id=${game.id}>` + game.id + "</button>"));
+      attachPrevGameListeners();
+    };
+  });
+}
 
+function attachPrevGameListeners() {
+  $("#games button").on('click', function(e) {
+
+    $.get('/games/' + e.target.dataset.id, function(resp) {
+      currentGame = resp.data.id;
+      turn = 0;
+      state = resp.data.attributes.state  //Array
+      $("td").toArray().forEach(function(cell, index) {
+        cell.innerText = state[index];
+        if (state[index] != "") {
+          turn++;
+        };
+      });
+
+    });
+  });
 }
 
 function clear() {
@@ -70,7 +97,7 @@ function clear() {
 }
 
 function setMessage(str) {
-  $("#message").append("<p>" + str + "</p>")
+  $("#message").append("<p>" + str + "</p>");
 }
 
 // + Returns `true` if the current board contains any winning combinations (three `X` or `O` tokens in a row, vertically, horizontally, or diagonally). Otherwise, returns `false`.
@@ -87,7 +114,6 @@ function checkWinner() {
   ];
 
   const state = getState();
-  var msg = "";
   return winningCombos.some(combo => spotsMatch(combo, state));
 }
 
@@ -111,8 +137,6 @@ function getState() {
     return cell.innerText;
   });
 }
-
-var isNewGame = () => { return currentGame === 0}
 
 $(function () {
   attachListeners();
