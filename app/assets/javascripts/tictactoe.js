@@ -1,22 +1,17 @@
 //----------------------------------------------------
 // Game Board and Message Handling 
 //----------------------------------------------------
+function getBoard() {
+    return $.find('td');
+}
 function getState() {
-    var squaresDOM = $.find('td');
-    return $.makeArray(squaresDOM).map ( square => square.innerText); 
+    var squaresDOM = getBoard();
+    return $.makeArray(squaresDOM).map ( square => square.innerHTML); 
 }
-
-function updateBoard(row, col, mark) {
-    $(`tr:nth-of-type(${row}) td:nth-of-type(${col})`).text(mark);
-}
-
 function setMessage (message) {
     $('#message').append(message);
 }
 
-function currentSquare(row, col) {
-    return $(`tr:nth-of-type(${row}) td:nth-of-type(${col})`).text();
-}
 
 //------------------------------------------------------
 // Game Logic
@@ -28,12 +23,12 @@ function newGame (id=0, squares=["","","","","","","","",""]) {
     gameId = id;
     turn = 0;
 
+    var squaresDOM = getBoard();
+
     squares.forEach( function (square,index) {
-        let row = (Math.floor(index/3)) + 1;
-        let col = (index % 3) + 1; 
-        updateBoard(row,col,square);   
-        if (square != '') ++turn;
-    });
+        squaresDOM[index].innerHTML = square;
+        if (square != '') ++turn;        
+    });    
 }
 
 function player() {
@@ -42,17 +37,11 @@ function player() {
 
 function findWinner(state) {
     const winners = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7],  [2,5,8], [0,4,8], [2,4,6]];
-    let winnerMark="";
-
     winner = winners.find ( function (combo) {       
         return state[combo[0]]!='' && state[combo[0]]==state[combo[1]] &&
             state[combo[0]]==state[combo[2]]      
     });
-    if (winner !== undefined) {
-        winnerMark = state[winner[0]];
-    }
-
-    return winnerMark;
+    return (winner !== undefined) ? state[winner[0]] : "";
 }  
 
 function checkWinner () {
@@ -74,12 +63,9 @@ function gameOver() {
 
 
 function updateState (square) {
- 
-    let col = parseInt(square.dataset.x) + 1;
-    let row = parseInt(square.dataset.y) + 1;
-    if (currentSquare(row,col) === '') {
-        updateBoard(row,col,player());
-        ++turn;        
+    if (square.innerHTML === "") {
+        square.innerHTML = player();
+        ++turn;
         return true;
     }
     return false;
