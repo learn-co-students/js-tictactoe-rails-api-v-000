@@ -76,7 +76,7 @@ function getGames() {
     $('#games').empty()
     var games = data.data
     for (const el of games) {
-      $('#games').append(`<button id="${el.id}" onclick="loadGame(${el.id})">${el.id}</button><br>`)
+      $('#games').append(`<button id="${el.id}" onclick="loadGame(${el.id})">game: ${el.id} updated: ${el.attributes["updated-at"]}</button><br>`)
     }
   })
 }
