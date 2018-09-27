@@ -4,24 +4,23 @@ var currentGame = 0;
 
 var player = () => turn % 2 == 0 ? "X" : "O";
 var isNewGame = () => { return currentGame === 0}
+var getState = () => { return $('td').toArray().map(c => c.innerText)}
 
 function attachListeners() {
-  $("td").on("click", function(e) { doTurn(e.target) })
-  $("#save").on("click", function() { saveGame() })
-  $("#previous").on("click", function() { previousGames() })
-  $("#clear").on("click", function() { clear() })
+  $("td").on("click", function(e) {
+    if (e.target.innerText != "O" && e.target.innerText != "X" && !checkWinner()) {
+      doTurn(e.target)
+    }
+  });
+  $("#save").on("click", () => saveGame() )
+  $("#previous").on("click", () => previousGames() )
+  $("#clear").on("click", () => clear() )
 }
 
-// + Increments the `turn` variable by `1`.
-// + Invokes the `updateState()` function, passing it the element that was clicked.
-// + Invokes `checkWinner()` to determine whether the move results in a winning play.
-function doTurn(targ) {
+function doTurn(target) {
 
-  const t = targ.innerText
-  if (t != "O" && t != "X") {
-    updateState(targ);
+    updateState(target);
     turn += 1;
-
 
     if (checkWinner()) {
       saveGame();
@@ -32,34 +31,20 @@ function doTurn(targ) {
       clear();
     };
 
-  };
 }
 
 function saveGame() {
-  var state = getState();
-  const values = { "state": state }
-  // debugger;
+  const values = { "state": getState() }
 
   if (isNewGame()) {
-    $.post('/games', values, function(json) {
-      currentGame = json.data.id
-    })
-
+    $.post('/games', values, (json) => {currentGame = json.data.id});
   } else {
     $.ajax({
       url: `/games/${currentGame}`,
       method: 'PATCH',
-      data: { "state": state },
-      success: function(json) {
-        console.log("success savegame ajax")
-      },
-      fail: function(json) {
-        console.log("Error savegame ajax")
-      }
+      data: values
     });
-
   };
-
 }
 
 function previousGames() {
@@ -81,6 +66,7 @@ function attachPrevGameListeners() {
       state = resp.data.attributes.state  //Array
       $("td").toArray().forEach(function(cell, index) {
         cell.innerText = state[index];
+
         if (state[index] != "") {
           turn++;
         };
@@ -100,7 +86,6 @@ function setMessage(str) {
   $("#message").append("<p>" + str + "</p>");
 }
 
-// + Returns `true` if the current board contains any winning combinations (three `X` or `O` tokens in a row, vertically, horizontally, or diagonally). Otherwise, returns `false`.
 function checkWinner() {
   const winningCombos = [
     [0,1,2],
@@ -130,12 +115,6 @@ function spotsMatch(combo, state) {
 
 function updateState(square) {
   square.innerText = player();
-}
-
-function getState() {
-  return $('td').toArray().map(function(cell) {
-    return cell.innerText;
-  });
 }
 
 $(function () {
