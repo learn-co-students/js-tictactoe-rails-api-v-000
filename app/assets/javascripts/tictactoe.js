@@ -75,9 +75,11 @@ function getGames() {
   $.get("/games", function(data) {
     $('#games').empty()
     var games = data.data
-    for (const el of games) {
-      $('#games').append(`<button id="${el.id}" onclick="loadGame(${el.id})">game: ${el.id} updated: ${el.attributes["updated-at"]}</button><br>`)
-    }
+    games.forEach((el) => $('#games').append(`<button id="${el.id}" onclick="loadGame(${el.id})">game: ${el.id} updated: ${el.attributes["updated-at"]}</button><br>`))
+    //)
+    // for (const el of games) {
+    //   $('#games').append(`<button id="${el.id}" onclick="loadGame(${el.id})">game: ${el.id} updated: ${el.attributes["updated-at"]}</button><br>`)
+    // }
   })
 }
 
@@ -108,15 +110,12 @@ function attachListeners() {
     }
   })
 
-  $('#clear').on("click", function() {
-    resetBoard()
-  })
+  $('#clear').on("click", () =>
+    resetBoard())
 
-  $('#previous').on("click", function() {
-    getGames()
-  })
+  $('#previous').on("click",() =>
+    getGames())
 
-  $('#save').on("click", function() {
-    saveGame()
-  })
+  $('#save').on("click", () =>
+    saveGame())
 }
