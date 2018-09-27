@@ -1,5 +1,5 @@
 
-var turn = 0
+
 var winningCombinations = [
   [0,1,2],
   [3,4,5],
@@ -9,20 +9,21 @@ var winningCombinations = [
   [2,5,8],
   [0,4,8],
   [2,4,6]
-]
+];
 
-var gameId = 0
+var gameId = 0;
+var turn = 0;
 
 $(document).ready(function() {
   attachListeners()
-})
+});
 
 function attachListeners() {
   $("td").on('click', function(e) {
     if (checkWinner() === false) {
-      doTurn(this)
+      doTurn(this);
     }
-  })
+  });
 
   $("#previous").on("click", function() {
     $.get("/games", function(data) {
@@ -32,38 +33,44 @@ function attachListeners() {
         gamesList += '<button class="js-game" data-id="' + game["id"] + '">' + game["id"] + '</button>';
       });
       $("#games").html(gamesList);
-      attachPreviousGameListeners();
+      attachPreviousGames();
     });
   });
 
-  function attachPreviousGameListeners() {
+//(this can go inside here, or outside this function too? )
+//use class= js-game and datasets data_id
+  function attachPreviousGames() {
     $(".js-game").on("click", function() {
       gameId = parseInt($(this).attr("data-id"));
+      debugger
       $.get("/games/" + gameId, function(response) {
-        moves = document.querySelectorAll("td")
+        moves = document.querySelectorAll("td");
         tableElements = response.data.attributes.state
-        let square = 0
-        turn = 0
+        let square = 0;
+        turn = 0;
+
         moves.forEach(function(element) {
           element.innerHTML = tableElements[square]
           if (element.innerHTML != "") {
-            turn +=1
+            turn +=1;
           }
-          square += 1
+          square += 1;
         });
-        setMessage(" ")
+        setMessage(" ");
       });
     });
   }
 
+
   $("#clear").on("click", function() {
-    clearBoard()
+    clearBoard();
   });
 
   $('#save').click(function() {
-    saveGame()
+    saveGame();
   })
 }
+
 
 function player () {
   if(turn % 2 == 0) {
@@ -73,56 +80,59 @@ function player () {
   }
 }
 
-function updateState(move) {
-  if (move.innerHTML === "") {
-    move.innerHTML = player()
-  } else {
-    turn -= 1
-  }
+function doTurn(move) {
+    updateState(move);
+    if (checkWinner()) {
+      saveGame();
+      clearBoard();
+    } else if (turn === 8) {
+      setMessage("Tie game.")
+      saveGame();
+      clearBoard();
+    } else {
+      if (turn === 0) {
+        setMessage(" ");
+      }
+      turn+=1;
+    }
 }
 
-function setMessage(string) {
-  document.querySelector('div#message').innerHTML = string
-}
 
 function checkWinner() {
   var values = document.querySelectorAll('td')
   var state = Array.prototype.map.call(values, function (x) {return x.innerHTML;})
-  var winning = false
+  var winning = false;
   var winningCombination = []
   winningCombinations.forEach(function(combination) {
     if (winning === false && (combination.every(function(y) {return state[y] === "X"}) || combination.every(function(y) {return state[y] === "O"}))) {
       setMessage(`Player ${state[combination[1]]} Won!`)
-      winning = true
+      winning = true;
     }
   })
-  return winning
+  return winning;
 }
 
-function doTurn(move) {
-    updateState(move)
-    if (checkWinner()) {
-      saveGame()
-      clearBoard()
-    } else if (turn === 8) {
-      setMessage("Tie game.")
-      saveGame()
-      clearBoard()
-    } else {
-      if (turn === 0) {
-        setMessage(" ")
-      }
-      turn+=1
-    }
+
+function updateState(move) {
+  if (move.innerHTML === "") {
+    move.innerHTML = player()
+  } else {
+    turn -= 1;
+  }
 }
+
+function setMessage(message) {
+  document.querySelector("#message").innerHTML = message;
+}
+
 
 function saveGame() {
-  var values = document.querySelectorAll('td')
+  var values = document.querySelectorAll('td');
   state = Array.prototype.map.call(values, function (x) {return x.innerHTML;})
   if (!gameId) {
     var posting = $.post('/games', {"state": state});
     posting.done(function(response) {
-      gameId = response.data.id
+      gameId = response.data.id;
     })
   } else {
     $.ajax({
@@ -135,15 +145,23 @@ function saveGame() {
 }
 
 function clearBoard() {
-    turn = 0
-    moves = document.querySelectorAll("td")
+    turn = 0;
+    moves = document.querySelectorAll("td");
     moves.forEach(function(element) {
       element.innerHTML = ""
     });
-    gameId = 0
+    gameId = 0;
 }
 
+// go through again, stay close to tests and make sure I'm using the 
+//right function names etc that the tests want. 
+//Also, decide jquery or javascript. 
 
+// function resetBoard() { ADD iteration 
+//   // saveGame(true);
+//   $('td').html("");
+//   turn = 0; 
+// }
 
 // var winningCombos = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6] ];
 // // var gameId = 0;
@@ -318,7 +336,7 @@ function clearBoard() {
 //   state.push(square);
 //   });
   
-//   data = {state: state}
+//   data = {state: state} (Figure out what this really does, state is so abstract)
  
 //     $.ajax({
 //       method: 'PATCH',
