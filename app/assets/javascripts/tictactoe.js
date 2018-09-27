@@ -74,11 +74,6 @@ function saveGame() {
   }
 }
 
-function resetBoard(){
-  $('td').empty();
-  turn = 0;
-}
-
 function attachListeners() {
 $('td').on('click', function() {
   if(!$.text(this) && !checkWinner()){
