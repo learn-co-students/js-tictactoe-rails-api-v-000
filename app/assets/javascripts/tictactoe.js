@@ -16,15 +16,17 @@ let winners = [
 ]
 
 function turncount() {
-  turn += 1
+    turn += 1
 }
 
 function doTurn(thebox) {
-  var xAxis = $(thebox).data("x")
-  var yAxis = $(thebox).data("y")
-  updateState(xAxis, yAxis)
-  setMessage()
-  turncount()
+  if (checkWinner() !== "true") {
+    var xAxis = $(thebox).data("x")
+    var yAxis = $(thebox).data("y")
+    updateState(xAxis, yAxis)
+    setMessage()
+    turncount()
+  }
 }
 
 function player() {
