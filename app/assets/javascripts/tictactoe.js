@@ -4,7 +4,7 @@ let turn = 0
 
 let board = ["", "", "", "", "", "", "", "", ""]
 
-const winners = [
+const WINNERS = [
 [0,1,2],
 [3,4,5],
 [6,7,8],
@@ -56,7 +56,7 @@ function updateState(box) {
 
 function checkWinner() {
   let result = ""
-  winners.forEach(function (combo) {
+  WINNERS.forEach(function (combo) {
     var one = combo[0]
     var two = combo[1]
     var three = combo[2]
