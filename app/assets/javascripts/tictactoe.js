@@ -60,6 +60,8 @@ function checkWinner() {
     } else if ((board[one] === "O") && (board[two] === "O") && (board[three] === "O")) {
       result = "true"
       setMessage("Player O Won!")
+    } else {
+      tiedGame()
     }
   })
   return result
@@ -67,6 +69,18 @@ function checkWinner() {
 
 function setMessage(message) {
   $("div#message").text(message)
+}
+
+function tiedGame() {
+  let count = 0
+  board.forEach(function (spot) {
+    if ((spot == "X") || (spot == "O")) {
+      count += 1
+    }
+  })
+  if (count === 9) {
+    setMessage("Tie Game.")
+  }
 }
 
 $(function () {
