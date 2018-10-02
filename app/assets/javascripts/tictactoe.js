@@ -4,7 +4,7 @@ let turn = 0
 
 let board = ["", "", "", "", "", "", "", "", ""]
 
-let winners = [
+const winners = [
 [0,1,2],
 [3,4,5],
 [6,7,8],
@@ -25,25 +25,27 @@ function doTurn(thebox) {
     var yAxis = $(thebox).data("y")
     updateState(xAxis, yAxis)
     checkWinner()
-    turncount()
   }
 }
 
 function player() {
   if (turn % 2 == 0) {
-    return "X"
+    return 'X'
   } else {
-    return "O"
+    return 'O'
   }
 }
 
 function updateState(x, y) {
   for (const box of $(".box")) {
     if (($(box).data("x") === x) && ($(box).data("y") === y)) {
-    $(box).text(player())
-    $(box).attr("data-board", player())
-    var index = $(box).data("index")
-    board[index] = player()
+      if ($(box).context.innerHTML === '<span class="hideMe">X</span>') {
+        $(box).text(player())
+        $(box).attr("data-board", player())
+        var index = $(box).data("index")
+        board[index] = player()
+        turncount()
+      }
     }
   }
 }
@@ -87,4 +89,14 @@ $(function () {
   $(".box").on("click", function (e) {
     doTurn(this)
   })
+  $("#save").on("click", function (e) {
+    alert("save")
+  })
+  $("#previous").on("click", function (e) {
+    alert("previous")
+  })
+  $("#clear").on("click", function (e) {
+    alert("clear")
+  })
+
 })
