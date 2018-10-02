@@ -55,7 +55,7 @@ function updateState(box) {
 }
 
 function checkWinner() {
-  let result = ""
+  let result = "false"
   WINNERS.forEach(function (combo) {
     var one = combo[0]
     var two = combo[1]
