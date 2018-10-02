@@ -21,9 +21,9 @@ function turncount() {
 
 function doTurn(thebox) {
   if (checkWinner() !== "true") {
-    var xAxis = $(thebox).data("x")
-    var yAxis = $(thebox).data("y")
-    updateState(xAxis, yAxis)
+    // var xAxis = $(thebox).data("x")
+    // var yAxis = $(thebox).data("y")
+    updateState(thebox)
     checkWinner()
   }
 }
@@ -36,18 +36,22 @@ function player() {
   }
 }
 
-function updateState(x, y) {
-  for (const box of $(".box")) {
-    if (($(box).data("x") === x) && ($(box).data("y") === y)) {
-      if ($(box).context.innerHTML === '<span class="hideMe">X</span>') {
-        $(box).text(player())
-        $(box).attr("data-board", player())
-        var index = $(box).data("index")
-        board[index] = player()
-        turncount()
-      }
-    }
-  }
+function updateState(box) {
+  $(box).text(player())
+  var index = $(box).data("index")
+  board[index] = player()
+  turncount()
+  // for (const box of $(".box")) {
+  //   if (($(box).data("x") === x) && ($(box).data("y") === y)) {
+  //     if ($(box).context.innerHTML === '<span class="hideMe">X</span>') {
+  //       $(box).text(player())
+  //       $(box).attr("data-board", player())
+  //       var index = $(box).data("index")
+  //       board[index] = player()
+  //       turncount()
+  //     }
+  //   }
+  // }
 }
 
 function checkWinner() {
