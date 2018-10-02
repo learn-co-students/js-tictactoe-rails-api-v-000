@@ -24,7 +24,7 @@ function doTurn(thebox) {
     var xAxis = $(thebox).data("x")
     var yAxis = $(thebox).data("y")
     updateState(xAxis, yAxis)
-    setMessage()
+    checkWinner()
     turncount()
   }
 }
@@ -56,19 +56,17 @@ function checkWinner() {
     var three = combo[2]
     if ((board[one] === "X") && (board[two] === "X") && (board[three] === "X")) {
       result = "true"
+      setMessage("Player X Won!")
     } else if ((board[one] === "O") && (board[two] === "O") && (board[three] === "O")) {
       result = "true"
+      setMessage("Player O Won!")
     }
   })
   return result
 }
 
-function setMessage() {
-  if (checkWinner() === "true") {
-    let winner = player()
-    let message = `Player ${winner} Won!`
-    $("div#message").text(message)
-  }
+function setMessage(message) {
+  $("div#message").text(message)
 }
 
 $(function () {
