@@ -119,6 +119,7 @@ function previousGames () {
             counter++
           } )
           turn = state.filter(String).length
+          checkWinner()
       })
     })
   })}
