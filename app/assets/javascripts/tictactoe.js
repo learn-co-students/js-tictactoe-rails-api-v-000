@@ -107,7 +107,7 @@ function previousGames () {
     $game_section.html("")
     if (json.data.length !== 0){
     json.data.forEach(function(game){
-    $game_section.append(`<button id="${game.id}">` + `${game.id}` + "</button>")
+    $game_section.append(`<button id="${game.id}">` + `${game.id}` + "</button>" + `${game.attributes["updated-at"]}` + "<br>")
     $(`#${game.id}`).click(function() {
       gameID = game.id
       $.get(`/games/${this.id}`, function(game){
