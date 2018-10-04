@@ -15,9 +15,9 @@ const winningCombinationIndices = [
 ];
 
 function checkWinner(){
-//    if (turn < 6){
-  //      return false;
-    //}
+    if (turn < 4){
+        return false;
+    }
 
     let currentCombinations = ["", "", "", "", "", "", "", ""];
     let winner = "";
@@ -39,25 +39,45 @@ function checkWinner(){
         }
     }
 
+    console.log(currentCombinations);
+
     if ("" !== winner){
         setMessage(`Player ${winner} won!`);
     }
 }
 
 function doTurn(clickedSquare){
-    turn += 1;
+    if (updateState(clickedSquare)){
+        turn += 1;
+        checkWinner();
+    }
+}
 
-    updateState(clickedSquare);
-
-    checkWinner();
+function player(){
+    return (0 === (turn % 2)) ? 'X' : 'O';
 }
 
 function setMessage(message){
-    console.log(message);
+    $('#message').text(message);
 }
 
 function updateState(clickedSquare){
+    const clickedSquareIndex = parseInt(clickedSquare.dataset["y"]) * 3 + parseInt(clickedSquare.dataset["x"]);
 
+    // Square is taken! Invalid move
+    if ("X" === gameState[clickedSquareIndex] || "O" === gameState[clickedSquareIndex]){
+        return false;
+    }
+
+    $(clickedSquare).text(player());
+
+    gameState[clickedSquareIndex] = player();
+
+    console.log(clickedSquareIndex);
+    console.log(typeof clickedSquareIndex);
+    console.log(gameState);
+
+    return true;
 }
 
 // LISTENERS
