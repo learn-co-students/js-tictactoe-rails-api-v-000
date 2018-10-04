@@ -2,14 +2,14 @@
 let turn = 0;
 
 const winningCombinations = [
-    [[0, 0], [1, 0], [2, 0]], // across top
-    [[0, 1], [1, 1], [2, 1]], // across middle
-    [[0, 2], [1, 2], [2, 2]], // across bottom
-    [[0, 0], [0, 1], [0, 2]], // down left
-    [[1, 0], [1, 1], [1, 2]], // down middle
-    [[2, 0], [2, 1], [2, 2]], // down right
-    [[0, 0], [1, 1], [2, 2]], // top left to bottom right diagonal
-    [[0, 2], [1, 1], [2, 0]]  // bottom left to top right diagonal
+    [0, 1, 2], // across top
+    [3, 4, 5], // across middle
+    [6, 7, 8], // across bottom
+    [0, 3, 6], // down left
+    [1, 4, 7], // down middle
+    [2, 5, 8], // down right
+    [0, 4, 8], // top left to bottom right diagonal
+    [6, 4, 2]  // bottom left to top right diagonal
 ];
 
 function checkWinner(){
