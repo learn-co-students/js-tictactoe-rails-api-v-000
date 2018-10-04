@@ -1,32 +1,16 @@
 // Code your JavaScript / jQuery solution here
-let turn = 0;
+let gameId;
+let winningCombinationIndices;
 
-let gameId = null;
-
-let gameState = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
-
-const winningCombinationIndices = [
-    [0, 1, 2], // across top
-    [3, 4, 5], // across middle
-    [6, 7, 8], // across bottom
-    [0, 3, 6], // down left
-    [1, 4, 7], // down middle
-    [2, 5, 8], // down right
-    [0, 4, 8], // top left to bottom right diagonal
-    [6, 4, 2]  // bottom left to top right diagonal
-];
+let gameSquares;
 
 function checkWinner(){
-    if (turn < 4){
-        return false;
-    }
-
     let currentCombinations = ["", "", "", "", "", "", "", ""];
     let winner = "";
 
     for (let i = 0; i < winningCombinationIndices.length; i++){
         for (index of winningCombinationIndices[i]){
-            currentCombinations[i] += gameState[index];
+            currentCombinations[i] += gameSquares[index].innerHTML;
         }
     }
 
@@ -41,22 +25,40 @@ function checkWinner(){
         }
     }
 
-    console.log(currentCombinations);
-
     if ("" !== winner){
-        setMessage("Player " + winner + " won!");
+        setMessage("Player " + winner + " Won!");
+        return true;
+    }
+    else if (8 === window.turn){
+        setMessage("Tie game.");
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
 function doTurn(clickedSquare){
     if (updateState(clickedSquare)){
-        turn += 1;
-        checkWinner();
+        if (checkWinner()){
+            resetBoard();
+        }
+        else {
+            window.turn += 1;
+        }
     }
 }
 
 function player(){
-    return (0 === (turn % 2)) ? 'X' : 'O';
+    return ((0 === (window.turn % 2)) ? 'X' : 'O');
+}
+
+function resetBoard(){
+    for (square of gameSquares){
+        square.innerHTML = "";
+    }
+
+    window.turn = 0;
 }
 
 function setMessage(message){
@@ -67,22 +69,33 @@ function updateState(clickedSquare){
     const clickedSquareIndex = parseInt(clickedSquare.dataset["y"]) * 3 + parseInt(clickedSquare.dataset["x"]);
 
     // Square is taken! Invalid move
-    if ("X" === gameState[clickedSquareIndex] || "O" === gameState[clickedSquareIndex]){
+    if ("X" === clickedSquare.text || "O" === clickedSquare.text){
         return false;
     }
 
     $(clickedSquare).text(player());
 
-    gameState[clickedSquareIndex] = player();
-
-    console.log(clickedSquareIndex);
-    console.log(typeof clickedSquareIndex);
-    console.log(gameState);
-
     return true;
 }
 
-// LISTENERS
+// CALLBACKS
+function displayLoadedGame(json){
+    gameId = json["data"]["id"];
+
+    const state = json["data"]["attributes"]["state"];
+    console.log(state);
+    for (let i = 0; i < 9; i++){
+        gameSquares[i].innerHTML = state[i];
+    }
+}
+
+function displayPreviousGames(json){
+    for(previousGame of json["data"]){
+        const prevGameP = '<p data-game-id="' + previousGame["id"] + '">Game #' + previousGame["id"] + '</p>';
+        $('#games').append(prevGameP);
+    }
+}
+
 function handleBoardSquareClick(event){
     event.preventDefault();
 
@@ -92,8 +105,16 @@ function handleBoardSquareClick(event){
     doTurn(this);
 }
 
+function loadPreviousGame(event){
+    event.preventDefault();
+
+    $.get('/games/' + this.dataset["gameId"], displayLoadedGame);
+}
+
 function loadPreviousGames(event){
     event.preventDefault();
+
+    $.get('/games/', displayPreviousGames);
 
     console.log("loadPreviousGames called!");
 }
@@ -106,6 +127,11 @@ function saveGame(event){
     if (null !== gameId){
         path = "/games/" + gameId;
         method = "PATCH";
+    }
+
+    const gameState = [];
+    for (square of gameSquares){
+        gameState.push(square.innerHTML);
     }
 
     $.ajax({
@@ -126,15 +152,13 @@ function saveGame(event){
 function startNewGame(event){
     event.preventDefault();
 
-    $('td').text(' ');
-
-    gameState = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
+    resetBoard();
 
     gameId = null;
 
     console.log("startNewGame called!");
 }
-// /LISTENERS
+// /CALLBACKS
 
 function attachListeners(){
     console.log("START attaching listeners");
@@ -151,9 +175,29 @@ function attachListeners(){
     $('td').on('click', handleBoardSquareClick);
     console.log('   handleBoardSquareClick attached to each td board cell element in the game board table element');
 
+    $('#games').on('click', 'p', loadPreviousGame);
+    console.log('   loadPreviousGame attached to any p elements in #games div');
+
     console.log("DONE attaching listeners");
 }
 
-$(document).ready(function(){
-    attachListeners();
-});
+window.onload = () => { 
+    attachListeners(); 
+
+    window.turn = 0;
+
+    gameId = null;
+
+    gameSquares = window.document.querySelectorAll('td');
+
+    winningCombinationIndices = [
+        [0, 1, 2], // across top
+        [3, 4, 5], // across middle
+        [6, 7, 8], // across bottom
+        [0, 3, 6], // down left
+        [1, 4, 7], // down middle
+        [2, 5, 8], // down right
+        [0, 4, 8], // top left to bottom right diagonal
+        [6, 4, 2]  // bottom left to top right diagonal
+    ];
+}
