@@ -1,6 +1,8 @@
 // Code your JavaScript / jQuery solution here
 let turn = 0;
 
+let gameId = null;
+
 let gameState = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
 
 const winningCombinationIndices = [
@@ -42,7 +44,7 @@ function checkWinner(){
     console.log(currentCombinations);
 
     if ("" !== winner){
-        setMessage(`Player ${winner} won!`);
+        setMessage("Player " + winner + " won!");
     }
 }
 
@@ -96,14 +98,39 @@ function loadPreviousGames(event){
     console.log("loadPreviousGames called!");
 }
 
-function saveNewGame(event){
+function saveGame(event){
     event.preventDefault();
 
-    console.log("saveNewGame called!");
+    var path = "/games";
+    var method = "POST";
+    if (null !== gameId){
+        path = "/games/" + gameId;
+        method = "PATCH";
+    }
+
+    $.ajax({
+        url: path,
+        method: method,
+        data: {
+            state: gameState,
+            id: gameId
+        }
+    }).
+    done(function(response){
+        gameId = response["data"]["id"];
+    });
+
+    console.log("saveGame called!");
 }
 
 function startNewGame(event){
     event.preventDefault();
+
+    $('td').text(' ');
+
+    gameState = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
+
+    gameId = null;
 
     console.log("startNewGame called!");
 }
@@ -112,8 +139,8 @@ function startNewGame(event){
 function attachListeners(){
     console.log("START attaching listeners");
 
-    $('#save').on('click', saveNewGame);
-    console.log('   saveNewGame attached to Save button click event');
+    $('#save').on('click', saveGame);
+    console.log('   saveGame attached to Save button click event');
 
     $('#previous').on('click', loadPreviousGames);
     console.log('   loadPreviousGames attached to Show Previous Games button click event');
