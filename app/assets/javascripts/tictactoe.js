@@ -1,88 +1,161 @@
 // Code your JavaScript / jQuery solution here
-let turnCount = 0;
-let state = ["","","","","","","","",""]
+var turn = 0;
+const squares = document.getElementsByTagName('td');
+let gameId = 0;
 const WIN_COMBINATIONS = [
 	[0,1,2,],[1,3,6],[0,4,8],[1,4,7],[2,5,8],[2,4,6],[3,4,5],[6,7,8]
 	]
 
 function player(){
-		return turnCount%2 ? "X" : "O";
-	}
+	return turn%2 ? "O" : "X";
+}
 
 function doTurn(el){
-	el.innerHTML = player();
 	updateState(el);
-	checkWinner();
-	turnCount++;
+	if (checkWinner()){
+		saveGame();
+		turn = 0;
+		$("td").text("");
+		gameId = 0;
+	} else if (turn >= 8) {
+		setMessage("Tie game.")
+		saveGame();
+		turn = 0;
+		gameId = 0;
+		$("td").text("");
 
+	} 
 }
 
 function checkWinner(){
 
 	let xs = [];
 	let os = [];
-	for(let i = 0; i<=state.length-1; i++){
-		if (state[i] === "X"){
+	for(let i = 0; i<=8; i++){
+		if (squares[i].innerHTML === "X"){
 			xs.push(i);
-		} else if (state[i] === "O") {
+		} else if (squares[i].innerHTML === "O") {
 			os.push(i);
 		}
 	}
-		console.log("O = ", os);
-		console.log("X = ", xs);
 
-	WIN_COMBINATIONS.forEach(function(combo){
+	 let win = false;
+
+	 WIN_COMBINATIONS.forEach(function(combo){
 
 		 if (combo.every(v => os.includes(v))) {
-		 	return setMessage("O");
+		 	setMessage("Player O Won!")
+		 	win = true;
 		 } else if (combo.every(v => xs.includes(v))) {
-		 	return setMessage("X");
+		 	setMessage("Player X Won!");
+		 	win = true;
 		 }
+	});
+
+	 return win;
+
+}
+
+function setMessage(message){
+	$("#message").text(message);
+}
+
+function updateState(el){
+	if(el.innerHTML != "X" && el.innerHTML != "O"){
+		$(el).html(player());
+		turn++;
+	}
+	
+}
+
+function saveGame(){
+
+	let arr = [];
+	
+	for(let i = 0; i<squares.length; i++){
+		arr[i] = squares[i].innerHTML;
+	}
+
+
+	if (gameId > 0) {
+		$.ajax(`/games/${gameId}`, {
+		    contentType: "application/json",
+		    data: JSON.stringify({"state": arr}),
+		    dataType: "json",
+		    method: "PATCH"
+		});
+		console.log("Saved to old save slot");
+	} else {
+		// $.post('/games', {state: arr}, function(data){
+		// 	gameId = data.id
+		// 	console.log(data)
+		// })
+
+		$.ajax(`/games`, {
+		    contentType: "application/json",
+		    data: JSON.stringify({"state": arr}),
+		    dataType: "json",
+		    method: "POST",
+		    success: function(response){
+		    	gameId = response.data.id;	
+		    }
+		});
+
+
+	}
+
+}
+
+function attachListeners(){
+
+	$("td").on("click", function(){
+		if(!checkWinner() && turn < 8){
+			doTurn(this);
+		}
+	});
+
+	$("#save").on("click", function(){
+		saveGame();
+	});
+
+	$("#previous").on("click", function(){
+		$.get('/games').done(function(response){
+			if(response.data.length > 0){
+				let html = "";
+				response.data.forEach(function(game){
+
+					html += "<button class='gameButton'>" + game.id + "</button>";
+				});
+				$("#games").html(html);
+
+				$("button.gameButton").on("click", function(el){
+					$.get('/games/' + el.target.innerHTML).done(function(response){
+						
+						response.data.attributes.state.map((square, index) => squares[index].innerHTML = square )
+						turn = response.data.attributes.state.filter(s => s !== '').length
+						gameId = response.data.id
+					});
+					
+					
+				});
+
+			}
+		});
+	});
+
+
+
+	$("#clear").on("click", function(){
+		$("td").text("");
+		turn = 0;
+		$("#message").text("");
+		gameId = 0;
 	});
 
 }
 
-function setMessage(winner){
-	$("#message").text(`${winner} is the winner!`);
-}
-
-function updateState(el){
-	let position = $(el)[0].id;
-	state[position] = player();
-}
-
-
-
 $(function(){
 
+	attachListeners();
 
-	$("td").on("click", function(){
-		doTurn(this);
-		
-	})
-
-	$("#save").on("click", function(){
-		$.post('/games', {state: state})
-	})
-
-	$("#previous").on("click", function(){
-		$.get('/games').done(function(response){
-			let html = "<ul>";
-			response.data.forEach(function(game){
-				html += `<li id="gameListItem" >${game.id}</li>`
-			});
-			html+= "</ul>";
-			$("#games").html(html);
-		})
-	})
-
-	$("#gameListItem").on("click", function(){
-		console.log("Clicked game");
-	})
-
-	$("#clear").on("click", function(){
-		$("td").text("");
-		state = ["","","","","","","","",""];
-	})
-	
 });
