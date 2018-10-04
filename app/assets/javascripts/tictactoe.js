@@ -1,7 +1,9 @@
 // Code your JavaScript / jQuery solution here
 let turn = 0;
 
-const winningCombinations = [
+let gameState = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
+
+const winningCombinationIndices = [
     [0, 1, 2], // across top
     [3, 4, 5], // across middle
     [6, 7, 8], // across bottom
@@ -13,7 +15,33 @@ const winningCombinations = [
 ];
 
 function checkWinner(){
+//    if (turn < 6){
+  //      return false;
+    //}
 
+    let currentCombinations = ["", "", "", "", "", "", "", ""];
+    let winner = "";
+
+    for (let i = 0; i < winningCombinationIndices.length; i++){
+        for (index of winningCombinationIndices[i]){
+            currentCombinations[i] += gameState[index];
+        }
+    }
+
+    for (currentCombo of currentCombinations){
+        if ("XXX" === currentCombo){
+            winner = "X";
+            break;
+        }
+        else if ("OOO" === currentCombo){
+            winner = "O";
+            break;
+        }
+    }
+
+    if ("" !== winner){
+        setMessage(`Player ${winner} won!`);
+    }
 }
 
 function doTurn(clickedSquare){
@@ -22,6 +50,10 @@ function doTurn(clickedSquare){
     updateState(clickedSquare);
 
     checkWinner();
+}
+
+function setMessage(message){
+    console.log(message);
 }
 
 function updateState(clickedSquare){
