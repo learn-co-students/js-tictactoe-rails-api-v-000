@@ -27,10 +27,12 @@ function checkWinner(){
 
     if ("" !== winner){
         setMessage("Player " + winner + " Won!");
+
         return true;
     }
     else if (8 === window.turn){
         setMessage("Tie game.");
+
         return true;
     }
     else {
@@ -41,6 +43,7 @@ function checkWinner(){
 function doTurn(clickedSquare){
     if (updateState(clickedSquare)){
         if (checkWinner()){
+            $('#save').trigger('click');
             resetBoard();
         }
         else {
@@ -69,11 +72,11 @@ function updateState(clickedSquare){
     const clickedSquareIndex = parseInt(clickedSquare.dataset["y"]) * 3 + parseInt(clickedSquare.dataset["x"]);
 
     // Square is taken! Invalid move
-    if ("X" === clickedSquare.text || "O" === clickedSquare.text){
+    if ("X" === clickedSquare.innerHTML || "O" === clickedSquare.innerHTML){
         return false;
     }
 
-    $(clickedSquare).text(player());
+    $(clickedSquare).html(player());
 
     return true;
 }
@@ -82,16 +85,22 @@ function updateState(clickedSquare){
 function displayLoadedGame(json){
     gameId = json["data"]["id"];
 
+    window.turn = 0;
+
     const state = json["data"]["attributes"]["state"];
-    console.log(state);
     for (let i = 0; i < 9; i++){
         gameSquares[i].innerHTML = state[i];
+        if ("" !== state[i]){
+            window.turn++;
+        }
     }
 }
 
 function displayPreviousGames(json){
+    $('#games').html("");
+
     for(previousGame of json["data"]){
-        const prevGameP = '<p data-game-id="' + previousGame["id"] + '">Game #' + previousGame["id"] + '</p>';
+        const prevGameP = '<button data-game-id="' + previousGame["id"] + '">Game #' + previousGame["id"] + '</button>';
         $('#games').append(prevGameP);
     }
 }
@@ -99,8 +108,7 @@ function displayPreviousGames(json){
 function handleBoardSquareClick(event){
     event.preventDefault();
 
-    console.log("handleBoardSquareClick called!");
-    console.log("x: " + this.dataset["x"] + ", y: " + this.dataset["y"]);
+    if (checkWinner()) return;
 
     doTurn(this);
 }
@@ -114,7 +122,7 @@ function loadPreviousGame(event){
 function loadPreviousGames(event){
     event.preventDefault();
 
-    $.get('/games/', displayPreviousGames);
+    $.get('/games', displayPreviousGames);
 
     console.log("loadPreviousGames called!");
 }
@@ -175,7 +183,7 @@ function attachListeners(){
     $('td').on('click', handleBoardSquareClick);
     console.log('   handleBoardSquareClick attached to each td board cell element in the game board table element');
 
-    $('#games').on('click', 'p', loadPreviousGame);
+    $('#games').on('click', 'button', loadPreviousGame);
     console.log('   loadPreviousGame attached to any p elements in #games div');
 
     console.log("DONE attaching listeners");
