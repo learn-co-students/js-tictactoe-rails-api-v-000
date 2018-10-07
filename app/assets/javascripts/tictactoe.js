@@ -72,12 +72,12 @@ var checkReset = () => {
 }
 
 var saveGame = () => {
-  alert("not yet!")
+
 }
 
 var previousGames = () => {
-  alert("previous games")
-  //$.get('/games')
+  $.get('/games')
+  // append("<li><button>game.id</button></li>)
 }
 
 var clearGame = () => {

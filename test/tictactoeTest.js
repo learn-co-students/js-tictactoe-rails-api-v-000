@@ -318,7 +318,7 @@ describe('Gameplay', () => {
     //    |   |
     // -----------
     //  O | O |
-    debugger 
+    
     squares[4].click();
 
     expect(squares[4].innerHTML).to.equal('');
