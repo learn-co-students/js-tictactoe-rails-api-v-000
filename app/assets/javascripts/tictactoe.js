@@ -1,4 +1,5 @@
 // Code your JavaScript / jQuery solution here
+//const squares = document.querySelectorAll("td")
 
 var turn = 0;
 
@@ -26,6 +27,11 @@ var attachListeners = () => {
   $("button#clear").on('click', function() {
     clearGame()
   })
+
+  $(".load-game").on('click', function() {
+    displayGame()
+  })
+
 }
 
 var doTurn = (move) => {
@@ -72,12 +78,33 @@ var checkReset = () => {
 }
 
 var saveGame = () => {
+  var board = Array.from(document.querySelectorAll("td")).map(x => x.innerHTML)
 
+  $.post('/games', {state:board})
 }
 
 var previousGames = () => {
-  $.get('/games')
-  // append("<li><button>game.id</button></li>)
+  $.get('/games', function(data) {
+    gamesData = data["data"]
+    if (gamesData.length > 0) {
+      var buttons = "<ul>"
+      $.each(gamesData, function(i, v) {
+      buttons += `<li><button class="load-game" data-id="${gamesData[i]["id"]}">${gamesData[i]["id"]}</button></li>`
+      })
+      buttons += "</ul>"
+    } else {
+      buttons = ""
+    }
+    $("#games").html(buttons)
+  })
+}
+
+var displayGame = () => {
+  // var id = $(this).data("id")
+  // alert(`${id}`)
+//   //var board = document.querySelectorAll("td")
+//   //var state = ["L", "U", "V", "", "U", "", "L", "O", "T"]
+//   //$.each(board, (i) => {board[i].innerText = state[i]} )
 }
 
 var clearGame = () => {
