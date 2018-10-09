@@ -10,7 +10,7 @@ $(function() {
 
 var attachListeners = () => {
   $("td").on('click', function() {
-    if (this.innerText === "") {
+    if (!this.innerText && !checkWinner()) {
       doTurn(this)
     }
   })
@@ -24,7 +24,7 @@ var attachListeners = () => {
   })
 
   $("button#clear").on('click', function() {
-    clearGame()
+    resetBoard()
   })
 
   $(".previous-game").on('click', function() {
@@ -36,9 +36,14 @@ var doTurn = (move) => {
   // if game isn't won or tied
   updateState(move)
   turn ++
-  checkWinner()
-  tieGame()
-  checkReset()
+  if (checkWinner()) {
+    saveGame()
+    resetBoard()
+  } else if (turn === 9) {
+    setMessage("Tie game.")
+    saveGame()
+    resetBoard()
+  }
 }
 
 var player = () => {
@@ -65,36 +70,15 @@ var checkWinner = () => {
 
   if (winner !== "") {
     setMessage(`Player ${winner} Won!`)
-    saveGame()
-    turn = 0
   }
   return winner === "" ? false : true
 }
 
-var tieGame = () => {
-  if (turn === 9 && checkWinner() === false) {
-    setMessage("Tie game.")
-    saveGame()
-    turn = 0
-  } else {
-    false
-  }
-}
-
-var checkReset = () => {
-  if (turn === 9 || $("div#message").text() !== "") {
-    clearGame()
-  }
-}
-
 var saveGame = () => {
-
   var board = Array.from(document.querySelectorAll("td")).map(x => x.innerHTML)
   var table = document.querySelector("table")
-
   if (table.hasAttribute("id")) {
     var id = table.getAttribute("id")
-    // $.post(`/games/${id}`, {_method: "PATCH", id:id, state:board})
     $.ajax({url:`/games/${id}`, type:'PATCH', data:{id:id, state:board}});
     } else {
     $.post('/games', {state:board})
@@ -103,25 +87,14 @@ var saveGame = () => {
 
 var previousGames = () => {
   $.get('/games', function(data) {
-
     var gamesData = data["data"]
-
     if (gamesData.length > 0) {
-      var buttons = "<ul>"
+      var buttons = ""
       gamesData.forEach(function(game) {
-
-      buttons +=
-      `<li><button type="button" class="previous-game" onclick="displayGame(${game.id})" data-id="${game.id}">${game.id}</button></li>`
+      buttons += `<button type="button" class="previous-game" onclick="displayGame(${game.id})" data-id="${game.id}">${game.id}</button>`
       })
-
-      buttons += "</ul>"
-
-    } else {
-      buttons = ""
     }
-
     $("#games").html(buttons)
-
   })
 }
 
@@ -138,14 +111,11 @@ var displayGame = (gameId) => {
 }
 
 
-var clearGame = () => {
+var resetBoard = () => {
   var board = Array.from(document.querySelectorAll("td"))
   board.forEach(space => (space.innerHTML = ""))
-
   var table = document.querySelector("table")
   if (table.hasAttribute("id")) { table.removeAttribute("id") }
-
   setMessage("")
-
   turn = 0
 }
