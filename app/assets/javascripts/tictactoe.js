@@ -3,7 +3,7 @@
 
 var turn = 0;
 
-const winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
+var winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
 var square = (value) => {return squares[value].innerText}
 
@@ -28,17 +28,17 @@ var attachListeners = () => {
     clearGame()
   })
 
-  $(".load-game").on('click', function() {
-    displayGame()
+  $(".previous-game").on('click', function() {
+    alert("Clicked")
   })
-
 }
 
 var doTurn = (move) => {
+  // if game isn't won or tied
   if (move.innerText === "") {
     updateState(move)
-    checkWinner()
     turn += 1
+    checkWinner()
     tieGame()
     checkReset()
   }
@@ -58,17 +58,27 @@ var setMessage = (message) => {
 
 var checkWinner = () => {
   var winner = ""
-  $.each(winCombinations, function(index, value) {
-    if (square(value[0]) === square(value[1]) && square(value[1]) === square(value[2]) && square(value[2]) !== "") {
-      winner = square(value[2])
+
+  winCombinations.forEach((combo, index) => {
+    if (square(combo[0]) === square(combo[1]) && square(combo[1]) === square(combo[2]) && square(combo[2]) !== "") {
+      winner = square(combo[2])
     }
   })
-  if (winner !== "") {setMessage(`Player ${winner} Won!`)}
+
+  if (winner !== "") {
+    setMessage(`Player ${winner} Won!`)
+    saveGame()
+  }
   return winner === "" ? false : true
 }
 
 var tieGame = () => {
-  return turn === 9 && checkWinner() === false ? setMessage("Tie game.") : false
+  if (turn === 9 && checkWinner() === false) {
+    setMessage("Tie game.")
+    saveGame()
+  } else {
+    false
+  }
 }
 
 var checkReset = () => {
@@ -78,39 +88,64 @@ var checkReset = () => {
 }
 
 var saveGame = () => {
-  var board = Array.from(document.querySelectorAll("td")).map(x => x.innerHTML)
 
-  $.post('/games', {state:board})
+  var board = Array.from(document.querySelectorAll("td")).map(x => x.innerHTML)
+  var table = document.querySelector("table")
+
+  if (table.hasAttribute("id")) {
+    var id = table.getAttribute("id")
+    $.post(`/games/${id}`, {_method: "PATCH", id:id, state:board})
+    } else {
+    $.post('/games', {state:board})
+  }
 }
 
 var previousGames = () => {
   $.get('/games', function(data) {
-    gamesData = data["data"]
+
+    var gamesData = data["data"]
+
     if (gamesData.length > 0) {
       var buttons = "<ul>"
-      $.each(gamesData, function(i, v) {
-      buttons += `<li><button class="load-game" data-id="${gamesData[i]["id"]}">${gamesData[i]["id"]}</button></li>`
+      gamesData.forEach(function(game) {
+
+      buttons +=
+      `<li><button type="button" class="previous-game" onclick="displayGame(${game.id})" data-id="${game.id}">${game.id}</button></li>`
       })
+
       buttons += "</ul>"
+
     } else {
       buttons = ""
     }
+
     $("#games").html(buttons)
+  
   })
 }
 
-var displayGame = () => {
-  // var id = $(this).data("id")
-  // alert(`${id}`)
-//   //var board = document.querySelectorAll("td")
-//   //var state = ["L", "U", "V", "", "U", "", "L", "O", "T"]
-//   //$.each(board, (i) => {board[i].innerText = state[i]} )
+var displayGame = (gameId) => {
+
+  $.get(`/games/${gameId}`, function(data) {
+  var board = document.querySelectorAll("td")
+  var state = data.data.attributes.state
+  turn = 9 - (state.length - state.filter(String).length)
+  board.forEach((space, i) => { space.innerText = state[i]})
+  document.querySelector("table").setAttribute("id", gameId)
+  })
+
 }
+
 
 var clearGame = () => {
-  $.each(squares, function(index, value) {
-    squares[index].innerText = ""
-  })
-  $("div#message").innerText = ""
+  var board = Array.from(document.querySelectorAll("td"))
+  board.forEach(space => (space.innerHTML = ""))
+
+  var table = document.querySelector("table")
+
+  if (table.hasAttribute("id")) { table.removeAttribute("id") }
+
+  document.querySelector("div#message").innerText = ""
+
   turn = 0
 }
