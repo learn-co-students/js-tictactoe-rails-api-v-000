@@ -37,23 +37,36 @@ function checkWinner(){
 
     WIN_COMBINATIONS.some(
       function(array) {
-         if (board[array[0]] !== "" &&
-             board[array[0]] === board[array[1]] &&
-             board[array[1]] === board[array[2]])
-         {
-           setMessage(`Player ${board[array[0]]} Won!`);
-           return winner = true;
-         }
+     if (board[array[0]] !== "" &&
+         board[array[0]] === board[array[1]] &&
+         board[array[1]] === board[array[2]]) {
+       setMessage(`Player ${board[array[0]]} Won!`);
+       return winner = true;
+     }
    });
     return winner;
 }
 
-function doTurn(){
-  // player plays his turn, updateState for him and increase count by 1
-  // check if winner then save game and reset board
-  // else check if turn is 9 set message, save the game and  reset the board
+// function doTurn(){
+//   // player plays his turn, updateState for him and increase count by 1
+//   // check if winner then save game and reset board
+//   // else check if turn is 9 set message, save the game and  reset the board
+// 
+// }
 
+function doTurn(clicked_square) {
+  updateState(clicked_square);
+  window.turn += 1;
+  
+  if (checkWinner()) {
+    saveGame();
+    resetBoard();
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+    resetBoard();
+  } 
 }
+
 
 function resetBoard(){
   console.log("In resetBoard");
