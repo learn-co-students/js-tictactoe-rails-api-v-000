@@ -14,12 +14,7 @@ var setMessage = (msgString) => {
   }
 
 var checkWinner = () => {
-  // working? var tableElements = $('td');
   var wonGame = WINNING_COMBOS.filter(function(winCombo){
-    // var win_index_1 = winCombo[0]
-    // var win_index_2 = winCombo[1]
-    // var win_index_3 = winCombo[2]
-
     var position_1 = $('td')[winCombo[0]].textContent
     var position_2 = $('td')[winCombo[1]].textContent
     var position_3 = $('td')[winCombo[2]].textContent
@@ -30,7 +25,7 @@ var checkWinner = () => {
     var token = $('td')[wonGame[0][0]].textContent
     setMessage(`Player ${token} Won!`)
     return true
-  } else{
+  } else {
     return false
   }
 }
