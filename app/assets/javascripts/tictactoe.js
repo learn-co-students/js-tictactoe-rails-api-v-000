@@ -1,5 +1,5 @@
 // Code your JavaScript / jQuery solution here
-const WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
+const WIN_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                     [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
 var turn = 0;
@@ -23,13 +23,29 @@ function setMessage(msg){
 function checkWinner(){
   // how to check if player wins horizontally, vertically, diagonally
   // define win combinations'
+  // check for winner and set message and return true if won
   console.log("check winner");
 
   var board = {};
   var winner = false;
 
-  return winner;
+  var input = (index, square) => (
+        board[index] = square
+      );
 
+  $('td').text(input);
+
+    WIN_COMBINATIONS.some(
+      function(array) {
+         if (board[array[0]] !== "" &&
+             board[array[0]] === board[array[1]] &&
+             board[array[1]] === board[array[2]])
+         {
+           setMessage(`Player ${board[array[0]]} Won!`);
+           return winner = true;
+         }
+   });
+    return winner;
 }
 
 function doTurn(){
@@ -40,7 +56,6 @@ function doTurn(){
 }
 
 function resetBoard(){
-
   console.log("In resetBoard");
   $('td').empty;
   turn = 0;
