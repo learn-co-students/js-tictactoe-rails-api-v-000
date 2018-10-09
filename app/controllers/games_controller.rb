@@ -11,7 +11,12 @@ class GamesController < ApplicationController
   end
 
   def create
-    game = Game.create(game_params)
+    @game = Game.find(params[:id])
+    if @game
+      @game.save
+    else
+      @game = Game.create(game_params)
+    end
     render json: game, status: 201
   end
 
