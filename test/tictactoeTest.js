@@ -273,13 +273,9 @@ describe('tictactoe.js', () => {
 
     it('attaches event listeners that invoke doTurn() when a square is clicked on', () => {
       var spy = sandbox.stub(window, 'doTurn');
-
       squares[0].click();
-
       expect(spy.calledOnce).to.be.true;
-
       squares[8].click();
-
       expect(spy.calledTwice).to.be.true;
     });
 
@@ -318,9 +314,8 @@ describe('Gameplay', () => {
     //    |   |
     // -----------
     //  O | O |
-    
-    squares[4].click();
 
+    squares[4].click();
     expect(squares[4].innerHTML).to.equal('');
     expect(window.turn).to.equal(5);
   });

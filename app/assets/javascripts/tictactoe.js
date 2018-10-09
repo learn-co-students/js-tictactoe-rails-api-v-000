@@ -10,7 +10,9 @@ $(function() {
 
 var attachListeners = () => {
   $("td").on('click', function() {
-    doTurn(this)
+    if (this.innerText === "") {
+      doTurn(this)
+    }
   })
 
   $("button#save").on('click', function() {
@@ -32,13 +34,11 @@ var attachListeners = () => {
 
 var doTurn = (move) => {
   // if game isn't won or tied
-  if (move.innerText === "") {
-    updateState(move)
-    turn += 1
-    checkWinner()
-    tieGame()
-    checkReset()
-  }
+  updateState(move)
+  turn ++
+  checkWinner()
+  tieGame()
+  checkReset()
 }
 
 var player = () => {
@@ -66,6 +66,7 @@ var checkWinner = () => {
   if (winner !== "") {
     setMessage(`Player ${winner} Won!`)
     saveGame()
+    turn = 0
   }
   return winner === "" ? false : true
 }
@@ -74,6 +75,7 @@ var tieGame = () => {
   if (turn === 9 && checkWinner() === false) {
     setMessage("Tie game.")
     saveGame()
+    turn = 0
   } else {
     false
   }
@@ -141,10 +143,9 @@ var clearGame = () => {
   board.forEach(space => (space.innerHTML = ""))
 
   var table = document.querySelector("table")
-
   if (table.hasAttribute("id")) { table.removeAttribute("id") }
 
-  document.querySelector("div#message").innerText = ""
+  setMessage("")
 
   turn = 0
 }
