@@ -40,6 +40,7 @@ function doTurn(){
 }
 
 function resetBoard(){
+
   console.log("In resetBoard");
   $('td').empty;
   turn = 0;
