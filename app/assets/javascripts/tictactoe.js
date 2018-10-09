@@ -1,11 +1,8 @@
 // Code your JavaScript / jQuery solution here
-//const squares = document.querySelectorAll("td")
 
 var turn = 0;
 
 var winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
-
-var square = (value) => {return squares[value].innerText}
 
 $(function() {
   attachListeners()
@@ -58,10 +55,11 @@ var setMessage = (message) => {
 
 var checkWinner = () => {
   var winner = ""
+  var board = Array.from(document.querySelectorAll("td")).map(x => x.innerHTML)
 
   winCombinations.forEach((combo, index) => {
-    if (square(combo[0]) === square(combo[1]) && square(combo[1]) === square(combo[2]) && square(combo[2]) !== "") {
-      winner = square(combo[2])
+    if (board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[2]] !== "") {
+      winner = board[combo[2]]
     }
   })
 
