@@ -94,7 +94,8 @@ var saveGame = () => {
 
   if (table.hasAttribute("id")) {
     var id = table.getAttribute("id")
-    $.post(`/games/${id}`, {_method: "PATCH", id:id, state:board})
+    // $.post(`/games/${id}`, {_method: "PATCH", id:id, state:board})
+    $.ajax({url:`/games/${id}`, type:'PATCH', data:{id:id, state:board}});
     } else {
     $.post('/games', {state:board})
   }
@@ -120,7 +121,7 @@ var previousGames = () => {
     }
 
     $("#games").html(buttons)
-  
+
   })
 }
 
