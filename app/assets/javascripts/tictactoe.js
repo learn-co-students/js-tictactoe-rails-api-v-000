@@ -52,10 +52,10 @@ var updateState = (move) => $(move).text(player)
 var setMessage = (message) => $("div#message").text(message)
 
 var checkWinner = () => {
-  var winner = ""
+  var winner
   var board = Array.from(document.querySelectorAll("td")).map(x => x.innerHTML)
   winCombinations.forEach((combo) => {
-    if (board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[2]] !== "") {
+    if (board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && !!board[combo[2]]) {
       winner = board[combo[2]]
     }
   })
@@ -69,7 +69,7 @@ var checkWinner = () => {
 var saveGame = () => {
   var board = Array.from(document.querySelectorAll("td")).map(x => x.innerHTML)
   if (!!currentGame) {
-    $.ajax({url:`/games/${currentGame}`, type:'PATCH', data:{id:currentGame, state:board}});
+    $.ajax({type:'PATCH', url:`/games/${currentGame}`, data:{id:currentGame, state:board}});
     } else {
     $.post('/games', {state:board})
   }
@@ -79,7 +79,7 @@ var previousGames = () => {
   $.get('/games', function(data) {
     var gamesData = data.data
     if (!!gamesData) {
-      var buttons = ""
+      var buttons
       gamesData.forEach((game) =>
       buttons += `<button type="button" class="previous-game" onclick="displayGame(${game.id})" data-id="${game.id}">${game.id}</button>`
     )}
