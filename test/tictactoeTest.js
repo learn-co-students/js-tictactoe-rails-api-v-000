@@ -301,7 +301,6 @@ describe('Gameplay', () => {
     window.turn = 1;
 
     squares[0].click();
-
     expect(squares[0].innerHTML).to.equal('X');
     expect(window.turn).to.equal(1);
   });
@@ -656,6 +655,7 @@ describe('AJAX interactions with the Rails API', () => {
       const board = Array.from(squares).map(s => s.innerHTML);
 
       expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', 'O', '']);
+
       expect(window.turn).to.equal(2);
     });
 

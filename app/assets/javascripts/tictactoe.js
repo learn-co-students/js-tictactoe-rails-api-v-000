@@ -69,9 +69,11 @@ var checkWinner = () => {
 var saveGame = () => {
   var board = Array.from(document.querySelectorAll("td")).map(x => x.innerHTML)
   if (!!currentGame) {
-    $.ajax({type:'PATCH', url:`/games/${currentGame}`, data:{id:currentGame, state:board}});
+    $.ajax({type:'PATCH', url:`/games/${currentGame}`, data: {state:board}});
     } else {
-    $.post('/games', {state:board})
+    $.post('/games', {state:board}, function(data){
+      currentGame = data.data.id
+    })
   }
 }
 
