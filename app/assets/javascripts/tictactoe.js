@@ -71,21 +71,20 @@ function doTurn(clicked_square) {
 
 function resetBoard(){
   console.log("In resetBoard");
-  $('td').empty;
+  $('td').empty();
   turn = 0;
+  currentGame = 0;
 }
 
 function saveGame(){
-  console.log("In saveGame");
+//  console.log("In saveGame");
 // how to save data , change each box ie td with X or O
 
 var state = [];
-console.log("2");
 
 $('td').text((index, square) => {
    state.push(square);
  });
- console.log("3");
 
 game_data = {state: state};
   if(currentGame){
@@ -94,9 +93,7 @@ game_data = {state: state};
         url: `/games/${currentGame}`,
         data: game_data
       });
-
-    console.log("4");
-  }else {
+  }else{
         $.post('/games', game_data, function(game) {
           currentGame = game.data.id;
           $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
