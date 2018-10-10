@@ -64,61 +64,89 @@ var doTurn = (tdElement) => {
     var gameWon = checkWinner();
 
     if (gameWon) {
+      saveFunction();
       resetGame();
     } else if (gameOver()) {
       setMessage("Tie game.");
+      saveFunction();
       resetGame();
     }
   }
 }
 
 var renderGame = (game) => {
-  return `<li><a href="#" onclick="showGame(${game["id"]})">${game["id"]}</a></li>`
+  // return `<li><BUTTON onclick="showGame(${game["id"]})">${game["id"]}</BUTTON></li>`
+  return `<button onclick="showGame(${game["id"]})">${game["id"]}</button>`
+
 }
 
 var renderGamesList = (data) =>{
   var result = data["data"].map(game => renderGame(game)).join('');
-  console.log("render Games List", result);
   if (result){
-    return `<ul>${result}</ul>`
+    // return `<ul>${result}</ul>`
+    return result;
   }
 }
 
 var showGame = (gameID) => {
   $.get(`/games/${gameID}`, function(response){
-    console.log("showing the game response", response["data"]["attributes"]["state"] )
     let returnedState = response["data"]["attributes"]["state"]
     for (let i=0; i<9; i++) {
       $('td')[i].innerHTML = returnedState[i];
     }
     turn = turnPerState(returnedState);
-    currentGame = response["data"]["id"]
+    currentGame = parseInt(response["data"]["id"])
   })
 }
 
+var saveFunction = () => {
+  var captureState = [];
+  for (let i=0; i < 9; i++){
+    captureState[i] =  $("td")[i].textContent;
+  }
+  // console.log("state", captureState)
+
+  //if this is an existing game, update it
+    if (currentGame > 0) {
+      $.ajax({
+        url: `/games/${currentGame}`,
+        method: "PATCH",
+        data: {state: captureState}
+      })
+    } else {
+      //if this is an unsaved game, create it
+      $.post('/games', {state: captureState}, function(data){
+        // console.log("Post Saving New Game", data)
+        currentGame = data["data"]["id"]
+      });
+    }
+}
 
 var attachListeners = () => {
-  //click on table square listeners
+  //table square listeners
   $("td").on("click", function(){
-    // alert(`${$(this).data("x")} and ${$(this).data("y")} `)
     doTurn(this)
+    // alert(`${$(this).data("x")} and ${$(this).data("y")} `)
+
   })
 
   //Save Button functionality
   $("#save").on("click", function(){
-    var captureState = [];
-    for (let i=0; i < 9; i++){
-      captureState[i] =  $("td")[i].textContent;
-    }
-    console.log("state", captureState)
-    $.post('/games', {state: captureState});
+    //collect the current state of the board
+    saveFunction();
     })
 
-  //Previous Games functionality
+  //Previous Button functionality
   $("#previous").on("click", function(){
     $.get('/games', data => {
       $("#games").html(renderGamesList(data));
     })
+  })
+
+  //Clearn Button functionality
+  $("#clear").on("click", function(){
+    currentGame = 0;
+    resetGame();
   })
 }
 

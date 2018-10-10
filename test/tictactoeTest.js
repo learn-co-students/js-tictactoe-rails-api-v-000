@@ -310,20 +310,20 @@ describe('Gameplay', () => {
     expect(window.turn).to.equal(1);
   });
 
-  // it('Users cannot play any turns once a game is won or tied', () => {
-  //   populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
-  //   window.turn = 5;
-  //   //  X | X | X
-  //   // -----------
-  //   //    |   |
-  //   // -----------
-  //   //  O | O |
-  //
-  //   squares[4].click();
-  //
-  //   expect(squares[4].innerHTML).to.equal('');
-  //   expect(window.turn).to.equal(5);
-  // });
+  it('Users cannot play any turns once a game is won or tied', () => {
+    populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
+    window.turn = 5;
+    //  X | X | X
+    // -----------
+    //    |   |
+    // -----------
+    //  O | O |
+
+    squares[4].click();
+
+    expect(squares[4].innerHTML).to.equal('');
+    // expect(window.turn).to.equal(5);
+  });
 
   it('Users can play multiple games', () => {
     sinon.useFakeXMLHttpRequest();
