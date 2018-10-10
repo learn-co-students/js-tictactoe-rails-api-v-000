@@ -31,11 +31,31 @@ var checkWinner = () => {
   }
 }
 
+//Learn Solution for comparison
+// function checkWinner() {
+//   var board = {};
+//   var winner = false;
+//
+//   $('td').text((index, square) => board[index] = square);
+//
+//   WINNING_COMBOS.some(function(combo) {
+//     if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+//       setMessage(`Player ${board[combo[0]]} Won!`);
+//       return winner = true;
+//     }
+//   });
+//
+//   return winner;
+// }
+
 var resetGame = () => {
   for (let i=0; i<9; i++) {
     $('td')[i].innerHTML = "";
   }
+  // $('td').empty();
+
   turn = 0;
+  currentGame = 0;
 }
 
 var moveValid = (tdElement) => {
@@ -61,9 +81,9 @@ var doTurn = (tdElement) => {
   if (moveValid(tdElement)) {
     updateState(tdElement);
     turn ++;
-    var gameWon = checkWinner();
+    // var gameWon = checkWinner();
 
-    if (gameWon) {
+    if (checkWinner()) {
       saveFunction();
       resetGame();
     } else if (gameOver()) {
@@ -74,14 +94,14 @@ var doTurn = (tdElement) => {
   }
 }
 
-var renderGame = (game) => {
+var gameButton = (game) => {
   // return `<li><BUTTON onclick="showGame(${game["id"]})">${game["id"]}</BUTTON></li>`
   return `<button onclick="showGame(${game["id"]})">${game["id"]}</button>`
 
 }
 
-var renderGamesList = (data) =>{
-  var result = data["data"].map(game => renderGame(game)).join('');
+var gameButtonList = (data) =>{
+  var result = data["data"].map(game => gameButton(game)).join('');
   if (result){
     // return `<ul>${result}</ul>`
     return result;
@@ -89,11 +109,24 @@ var renderGamesList = (data) =>{
 }
 
 var showGame = (gameID) => {
+  document.getElementById('message').innerHTML = '';
+
   $.get(`/games/${gameID}`, function(response){
     let returnedState = response["data"]["attributes"]["state"]
+
     for (let i=0; i<9; i++) {
       $('td')[i].innerHTML = returnedState[i];
     }
+    //Optional solution per Learn
+
+    // let index = 0;
+    // for (let y = 0; y < 3; y++) {
+    //   for (let x = 0; x < 3; x++) {
+    //     document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = returnedState[index];
+    //     index++;
+    //   }
+    // }
+
     turn = turnPerState(returnedState);
     currentGame = parseInt(response["data"]["id"])
   })
@@ -101,10 +134,16 @@ var showGame = (gameID) => {
 
 var saveFunction = () => {
   var captureState = [];
+
   for (let i=0; i < 9; i++){
     captureState[i] =  $("td")[i].textContent;
   }
-  // console.log("state", captureState)
+
+  //Alternative to the above loop per Learn solution
+
+  // $('td').text((index, square) => {
+  //   state.push(square);
+  // });
 
   //if this is an existing game, update it
     if (currentGame > 0) {
@@ -139,13 +178,12 @@ var attachListeners = () => {
   //Previous Button functionality
   $("#previous").on("click", function(){
     $.get('/games', data => {
-      $("#games").html(renderGamesList(data));
+      $("#games").html(gameButtonList(data));
     })
   })
 
-  //Clearn Button functionality
+  //Clear Button functionality
   $("#clear").on("click", function(){
-    currentGame = 0;
     resetGame();
   })
 }
