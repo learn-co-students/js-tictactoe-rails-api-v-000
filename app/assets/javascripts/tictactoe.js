@@ -64,6 +64,7 @@ function doTurn(clicked_square) {
     resetBoard();
   } else if (turn === 9) {
     setMessage("Tie game.");
+    saveGame();
     resetBoard();
   }
 }
@@ -94,19 +95,56 @@ game_data = {state: state};
         data: game_data
       });
   }else{
-        $.post('/games', game_data, (game) => { currentGame = game.data.id; });
+        $.post('/games', game_data, (game) => {
+
+            currentGame = game.data.id;
+            // $('#games').append(`
+            //   <button game-id = <%= ${game.data.id} %> >
+            //     ${game.data.id}
+            //   </button>
+            //   </br>`
+            // );
+        });
+
       }
 }
 
-// function gameSuccess(data) {
-//   console.log("gameSuccess");
-//   debugger;
-// }
-
-function showPreviousGames(){
-  console.log("In showPreviousGames");
-// how to show previous games?
+function showPreviousGames() {
+  $('#games').empty();
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(previousGameButtons);
+    }
+  });
 }
+
+ function previousGameButtons(game){
+   $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+    $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+ }
+
+ function reloadGame(game_id){
+   console.log("reload game");
+
+   $.get(`/games/${game_id}`, (game) => {
+     console.log(game.data);
+
+
+    //
+    // $('td').text((index, square) => {
+    //    game.state  push(square);
+    //  });
+
+    // turn = game.state
+
+    currentGame = game_id;
+
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
+    }
+
+   });
+ }
 
 function attachListeners(){
 // also need to update the td box with
