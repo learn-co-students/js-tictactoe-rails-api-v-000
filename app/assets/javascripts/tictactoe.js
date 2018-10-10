@@ -21,6 +21,18 @@ const WIN_COMBO = [
     [2,4,6]
   ]
 
+const POSITIONS = [
+  [0, 0],
+  [1, 0],
+  [2, 0],
+  [0, 1],
+  [1, 1],
+  [2, 1],
+  [0, 2],
+  [1, 2],
+  [2, 2]
+]
+
 function board() {
   let state = [];
   let tds = document.querySelectorAll('td')
@@ -30,10 +42,12 @@ function board() {
   return state
 }
 
+function turn() {
+  return board().filter(p => p !== "").length
+}
+
 function player() {
-  const state = board()
-  let positions = state.filter(p => p !== "");
-  if(positions.length % 2 === 0) {
+  if(turn() % 2 === 0) {
     return "X"
   } else {
     return "O"
@@ -60,6 +74,26 @@ function checkWinner() {
   return result
 }
 
-function doTurn() {
-  
+function draw() {
+  return !board().some(el => el !== "") && !checkWinner()
+}
+
+function reset() {
+  for(const td of document.querySelectorAll('td')) {
+    td.innerHTML = ""
+  }
+}
+
+function doTurn(position) {
+  updateState(position);
+  if(checkWinner()) {
+    reset()
+  } else if (draw()) {
+    setMessage('Tie game.')
+    reset()
+  }
+}
+
+function attachListeners() {
+
 }
