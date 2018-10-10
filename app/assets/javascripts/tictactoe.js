@@ -48,12 +48,10 @@ function checkWinner(){
     return winner;
 }
 
-// function doTurn(){
 //   // player plays his turn, updateState for him and increase count by 1
 //   // check if winner then save game and reset board
 //   // else check if turn is 9 set message, save the game and  reset the board
 //
-// }
 
 function doTurn(clicked_square) {
   updateState(clicked_square);
@@ -78,7 +76,7 @@ function resetBoard(){
 }
 
 function saveGame(){
-console.log("In saveGame");
+//console.log("In saveGame");
 // how to save data , change each box ie td with X or O
 
 var state = [];
@@ -98,12 +96,6 @@ game_data = {state: state};
         $.post('/games', game_data, (game) => {
 
             currentGame = game.data.id;
-            // $('#games').append(`
-            //   <button game-id = <%= ${game.data.id} %> >
-            //     ${game.data.id}
-            //   </button>
-            //   </br>`
-            // );
         });
 
       }
@@ -113,7 +105,8 @@ function showPreviousGames() {
   $('#games').empty();
   $.get('/games', (savedGames) => {
     if (savedGames.data.length) {
-      savedGames.data.forEach(previousGameButtons);
+      savedGames.data.forEach(previousGameButtons)
+
     }
   });
 }
@@ -123,27 +116,34 @@ function showPreviousGames() {
     $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
  }
 
- function reloadGame(game_id){
-   console.log("reload game");
+ function reloadGame(gameID){
+   document.getElementById('message').innerHTML = '';
 
-   $.get(`/games/${game_id}`, (game) => {
-     console.log(game.data);
+   const xhr = new XMLHttpRequest;
+   xhr.overrideMimeType('application/json');
+   xhr.open('GET', `/games/${gameID}`, true);
+   xhr.onload = () => {
+     const data = JSON.parse(xhr.responseText).data;
+     const id = data.id;
+     const state = data.attributes.state;
 
+     let index = 0;
+     for (let y = 0; y < 3; y++) {
+       for (let x = 0; x < 3; x++) {
+         document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+         index++;
+       }
+     }
 
-    //
-    // $('td').text((index, square) => {
-    //    game.state  push(square);
-    //  });
+     turn = state.join('').length;
+     currentGame = id;
 
-    // turn = game.state
+     if (!checkWinner() && turn === 9) {
+       setMessage('Tie game.');
+     }
+   };
 
-    currentGame = game_id;
-
-    if (!checkWinner() && turn === 9) {
-      setMessage('Tie game.');
-    }
-
-   });
+   xhr.send(null);
  }
 
 function attachListeners(){
