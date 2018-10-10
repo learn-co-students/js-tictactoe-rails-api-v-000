@@ -3,6 +3,7 @@ const WIN_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                     [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
 var turn = 0;
+var currentGame = 0;
 
 $(document).ready(function() {
     attachListeners();
@@ -51,20 +52,20 @@ function checkWinner(){
 //   // player plays his turn, updateState for him and increase count by 1
 //   // check if winner then save game and reset board
 //   // else check if turn is 9 set message, save the game and  reset the board
-// 
+//
 // }
 
 function doTurn(clicked_square) {
   updateState(clicked_square);
-  window.turn += 1;
-  
+  turn++;
+
   if (checkWinner()) {
     saveGame();
     resetBoard();
   } else if (turn === 9) {
     setMessage("Tie game.");
     resetBoard();
-  } 
+  }
 }
 
 
@@ -77,7 +78,36 @@ function resetBoard(){
 function saveGame(){
   console.log("In saveGame");
 // how to save data , change each box ie td with X or O
+
+var state = [];
+console.log("2");
+
+$('td').text((index, square) => {
+   state.push(square);
+ });
+ console.log("3");
+
+game_data = {state: state};
+  if(currentGame){
+    $.ajax({
+        type: 'PATCH',
+        url: `/games/${currentGame}`,
+        data: game_data
+      });
+
+    console.log("4");
+  }else {
+        $.post('/games', game_data, function(game) {
+          currentGame = game.data.id;
+          $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+        });
+      }
 }
+
+// function gameSuccess(data) {
+//   console.log("gameSuccess");
+//   debugger;
+// }
 
 function showPreviousGames(){
   console.log("In showPreviousGames");
@@ -88,7 +118,9 @@ function attachListeners(){
 // also need to update the td box with
  $('td').on('click', function() {
     // check if winner else turn the board
+    if(!$.text(this) && !checkWinner){
       doTurn(this);
+    }
  });
 
     $('#save').on('click', () => saveGame());
