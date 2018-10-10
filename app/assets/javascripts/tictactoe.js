@@ -25,7 +25,7 @@ function checkWinner(){
   // how to check if player wins horizontally, vertically, diagonally
   // define win combinations'
   // check for winner and set message and return true if won
-  console.log("check winner");
+  // console.log("check winner");
 
   var board = {};
   var winner = false;
@@ -70,14 +70,14 @@ function doTurn(clicked_square) {
 
 
 function resetBoard(){
-  console.log("In resetBoard");
+  // console.log("In resetBoard");
   $('td').empty();
   turn = 0;
   currentGame = 0;
 }
 
 function saveGame(){
-//  console.log("In saveGame");
+console.log("In saveGame");
 // how to save data , change each box ie td with X or O
 
 var state = [];
@@ -94,10 +94,7 @@ game_data = {state: state};
         data: game_data
       });
   }else{
-        $.post('/games', game_data, function(game) {
-          currentGame = game.data.id;
-          $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
-        });
+        $.post('/games', game_data, (game) => { currentGame = game.data.id; });
       }
 }
 
@@ -115,7 +112,7 @@ function attachListeners(){
 // also need to update the td box with
  $('td').on('click', function() {
     // check if winner else turn the board
-    if(!$.text(this) && !checkWinner){
+    if(!$.text(this) && !checkWinner()){
       doTurn(this);
     }
  });
