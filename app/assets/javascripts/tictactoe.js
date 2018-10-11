@@ -19,7 +19,7 @@ function turn() {
   return board().filter(p => p !== "").length
 }
 
-function player() {
+function nextPlayer() {
   if(turn() % 2 === 0) {
     return "X"
   } else {
@@ -27,11 +27,19 @@ function player() {
   }
 }
 
+function currentPlayer() {
+  if(turn() % 2 === 0) {
+    return "O"
+  } else {
+    return "X"
+  }
+}
+
 function updateState(position) {
   if(position.innerText !== "") {
     alert("Position taken, choose another one")
   } else {
-    position.innerText = player()
+    position.innerText = nextPlayer()
   }
 }
 
@@ -42,10 +50,10 @@ function setMessage(string) {
 function checkWinner() {
   let result = WIN_COMBO.some(function (w) {
     return board()[w[0]] === board()[w[1]] &&
-      board()[w[1]] === board[w[2]] &&
+      board()[w[1]] === board()[w[2]] &&
       board()[w[2]] !== ""})
   if(result) {
-    setMessage('Player' + player() + "Won!")
+    setMessage('Player ' + currentPlayer() + " Won!")
   }
   return result
 }
@@ -72,8 +80,9 @@ function doTurn(position) {
 
 function attachListeners() {
   squares().forEach(function(td) {
-    debugger
-    td.addEventListener("click", doTurn(td))
+    td.addEventListener("click", function() {
+      doTurn(this)
+    })
   })
 }
 
