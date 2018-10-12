@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :set_game, only: [:show, :update]
+  before_action :set_game, only: [:show, :update, :destroy]
 
   def index
     games = Game.all
@@ -17,8 +17,13 @@ class GamesController < ApplicationController
   end
 
   def update
-    @game.update(game_params)
+    @game.update(state: params["state"])
     render json: @game
+  end
+
+  def destroy
+    @game.delete
+    render "home/index"
   end
 
   private

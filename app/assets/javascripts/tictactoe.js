@@ -3,7 +3,8 @@ document.addEventListener("DOMContentLoaded", function(){
   attachListeners();
   saveButton();
   previousButton();
-  clearButton()
+  clearButton();
+  deleteButton()
 })
 
 function squares() {
@@ -22,7 +23,7 @@ function turn() {
   return board().filter(p => p !== "").length
 }
 
-function nextPlayer() {
+function player() {
   if(turn() % 2 === 0) {
     return "X"
   } else {
@@ -42,7 +43,7 @@ function updateState(position) {
   if(position.innerText !== "") {
     alert("Position taken, choose another one")
   } else {
-    position.innerText = nextPlayer()
+    position.innerText = player()
   }
 }
 
@@ -51,7 +52,17 @@ function setMessage(string) {
 }
 
 function checkWinner() {
-  let result = WIN_COMBO.some(function (w) {
+  const winCombo = [
+      [0,1,2],
+      [3,4,5],
+      [6,7,8],
+      [0,3,6],
+      [1,4,7],
+      [2,5,8],
+      [0,4,8],
+      [2,4,6]
+    ]
+  let result = winCombo.some(function (w) {
     return board()[w[0]] === board()[w[1]] &&
       board()[w[1]] === board()[w[2]] &&
       board()[w[2]] !== ""})
@@ -62,7 +73,7 @@ function checkWinner() {
 }
 
 function draw() {
-  return !board().some(el => el !== "") && !checkWinner()
+  return !board().some(el => el === "") && !checkWinner()
 }
 
 function reset() {
@@ -94,20 +105,22 @@ function attachListeners() {
 
 function saveGame() {
   let table = document.querySelector('table')
-  let gameID = table.dataset.gameID
+  let gameID = table.dataset.gameid
   gameData = {state: board()}
   let reqData = {
     body: JSON.stringify(gameData),
     headers: {'Content-Type': 'application/json'}
   }
-  if(gameID === undefined || gameID === "") {
+  if(gameID === "") {
     reqData.method = "POST"
     fetch("/games", reqData).then(resp => resp.json()).then(function(resp) {
       table.setAttribute('data-gameid', resp.data.id)
     })
   } else {
     reqData.method = "PATCH"
-    fetch(`/games/${gameID}`, reqData).then(resp => resp.json())
+    fetch(`/games/${gameID}`, reqData).then(resp => resp.json()).then(
+      alert("Game saved.")
+    )
   }
 }
 
@@ -122,13 +135,12 @@ function previousButton() {
     var gamesDiv = document.getElementById("games")
     var gameID = parseInt(document.querySelector("table").dataset.gameid)
     var gameCount = document.querySelectorAll("div#games button").length
-    debugger
     if(gameCount === 0) {
       fetch("/games").then(resp => resp.json()).then(function(games) {
         if(games.data.length !== 0) {
           games.data.forEach(function(game) {
             gamesDiv.innerHTML +=
-            `<button data-id="${game.id}">Game ${game.id}</button><br>`
+            `<button id="game-${game.id}" data-id="${game.id}">Game ${game.id}</button><br>`
           })
           getPrevGame()
         }
@@ -154,12 +166,12 @@ function clearButton() {
   var clearButton = document.getElementById('clear')
   clearButton.addEventListener("click", function(e) {
     reset()
+    document.getElementById("message").innerHTML = ""
   })
 }
 
 function getPrevGame() {
   var games = document.querySelectorAll("div#games button")
-  debugger
   games.forEach(function(game) {
     game.addEventListener("click", function() {
       fetch("/games/" + this.dataset.id).then(resp => resp.json()).then(function(game) {
@@ -173,25 +185,14 @@ function getPrevGame() {
   })
 }
 
-const WIN_COMBO = [
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,3,6],
-    [1,4,7],
-    [2,5,8],
-    [0,4,8],
-    [2,4,6]
-  ]
-
-const POSITIONS = [
-  [0, 0],
-  [1, 0],
-  [2, 0],
-  [0, 1],
-  [1, 1],
-  [2, 1],
-  [0, 2],
-  [1, 2],
-  [2, 2]
-]
+function deleteButton() {
+  var deleteButton = document.getElementById("delete")
+  deleteButton.addEventListener("click", function() {
+    var gameID = parseInt(document.querySelector("table").dataset.gameid)
+    fetch(`/games/${gameID}`, {method: "DELETE"})
+    .then().then(function() {
+      reset()
+      document.getElementById(`game-${gameID}`).remove()
+    })
+  })
+}
