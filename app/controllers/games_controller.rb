@@ -1,4 +1,5 @@
 class GamesController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :set_game, only: [:show, :update]
 
   def index
@@ -11,7 +12,7 @@ class GamesController < ApplicationController
   end
 
   def create
-    game = Game.create(game_params)
+    game = Game.create(state: params["state"])
     render json: game, status: 201
   end
 
@@ -23,7 +24,7 @@ class GamesController < ApplicationController
   private
 
   def game_params
-    params.permit(state: [])
+    params.require(:game).permit(:state, :id, :game)
   end
 
   def set_game

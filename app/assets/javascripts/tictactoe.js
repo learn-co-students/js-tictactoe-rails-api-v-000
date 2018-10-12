@@ -1,6 +1,9 @@
 // Code your JavaScript / jQuery solution here
 document.addEventListener("DOMContentLoaded", function(){
-  attachListeners()
+  attachListeners();
+  saveButton();
+  previousButton();
+  clearButton()
 })
 
 function squares() {
@@ -66,14 +69,17 @@ function reset() {
   for(const td of squares()) {
     td.innerHTML = ""
   }
+  document.querySelector('table').setAttribute('data-gameid', "")
 }
 
 function doTurn(position) {
   updateState(position);
   if(checkWinner()) {
+    saveGame();
     reset()
   } else if (draw()) {
     setMessage('Tie game.')
+    saveGame();
     reset()
   }
 }
@@ -87,39 +93,83 @@ function attachListeners() {
 }
 
 function saveGame() {
+  let table = document.querySelector('table')
+  let gameID = table.dataset.gameID
+  gameData = {state: board()}
+  let reqData = {
+    body: JSON.stringify(gameData),
+    headers: {'Content-Type': 'application/json'}
+  }
+  if(gameID === undefined || gameID === "") {
+    reqData.method = "POST"
+    fetch("/games", reqData).then(resp => resp.json()).then(function(resp) {
+      table.setAttribute('data-gameid', resp.data.id)
+    })
+  } else {
+    reqData.method = "PATCH"
+    fetch(`/games/${gameID}`, reqData).then(resp => resp.json())
+  }
+}
+
+function saveButton() {
   document.getElementById("save").addEventListener("click", function(e) {
-    e.preventDefault();
-    const gameID = document.querySelector('table').dataset.gameID
-    gameData = JSON.stringify({state: board()})
-    if(gameID === "") {
-      const reqData = {method: "POST", body: gameData}
-      fetch("/games", reqData).then(function(resp) {
-        gameID = resp.id
+    saveGame()
+  })
+}
+
+function previousButton() {
+  document.getElementById("previous").addEventListener("click", function(e) {
+    var gamesDiv = document.getElementById("games")
+    var gameID = parseInt(document.querySelector("table").dataset.gameid)
+    var gameCount = document.querySelectorAll("div#games button").length
+    debugger
+    if(gameCount === 0) {
+      fetch("/games").then(resp => resp.json()).then(function(games) {
+        if(games.data.length !== 0) {
+          games.data.forEach(function(game) {
+            gamesDiv.innerHTML +=
+            `<button data-id="${game.id}">Game ${game.id}</button><br>`
+          })
+          getPrevGame()
+        }
       })
     } else {
-      const reqData = {method: "PATCH", body: gameData}
-      fetch(`/games/${gameID}`, reqData)
+      if(gameCount < gameID) {
+        var array = []
+        for(i = gameID - gameCount; i >=0; i--) {
+          array.push(gameID - i)
+        }
+        for(var id of array) {
+          fetch("/games/" + id).then(resp => resp.json()).then(function(game) {
+            gamesDiv.innerHTML +=
+            `<button data-id="${game.id}">Game ${game.id}</button><br>`
+          })
+        }
+      }
     }
   })
 }
 
-function previousGame() {
-  document.getElementById("previous").addEventListener("click", function(e) {
-    e.preventDefault();
-    var gamesDiv = document.getElementById("games")
-    if(gamesDiv.children.length === 0) {
-      fetch("/games").then(function(games) {
-        if(games.data.length !== 0) {
-          games.data.forEach(function(game) {
-            gamesDiv.innerHTML +=
-            `<button data-id = "${game.id}">Game ${game.id}</button>`
-          })
-        }
-      })
-    } else {
-      var count = document.querySelectorAll("div#games button").length
+function clearButton() {
+  var clearButton = document.getElementById('clear')
+  clearButton.addEventListener("click", function(e) {
+    reset()
+  })
+}
 
-    }
+function getPrevGame() {
+  var games = document.querySelectorAll("div#games button")
+  debugger
+  games.forEach(function(game) {
+    game.addEventListener("click", function() {
+      fetch("/games/" + this.dataset.id).then(resp => resp.json()).then(function(game) {
+        squares().forEach(function(td, i) {
+          td.innerText = game.data.attributes.state[i]
+        })
+        document.querySelector("table").setAttribute(
+          'data-gameid', game.data.id)
+      })
+    })
   })
 }
 
