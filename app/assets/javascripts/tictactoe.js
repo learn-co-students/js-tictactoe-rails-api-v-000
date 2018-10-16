@@ -105,17 +105,23 @@ function previousGames() {
 
 function reloadGame(game) {
   setMessage(" ")
-  $.get("/games/" + game, function(game) {
-    gameId = game["data"]["id"]
+  var loadGame = $.get("/games/" + game)
+   loadGame.done(function(game) {
+    // gameId = game["data"]["id"]
+    // currentGame = game["data"]["id"]
+    // turn = game["data"]["attributes"]["state"].length
+    // var state = game["data"]["attributes"]["state"]
+    // $('#games').empty();
+    // $('#games').append(gameId);
+    // state.forEach(function(token, index) {
+    //   $(`#${index}`).text(token)
+    // })
     currentGame = game["data"]["id"]
-    turn = game["data"]["attributes"]["state"].length
-    $('#games').empty();
-    $('#games').append(`<button id="gameid-${gameId}">${gameId}</button><br>`);
-    var s = game["data"]["attributes"]["state"]
-    s.forEach(function(token, index) {
-      $(`#${index}`).text(token)
-    })
-  })
-
+    var state = game["data"]["attributes"]["state"]
+    $('td').text(function(index) {
+           return state[index]
+       });
+      turn = state.filter(function(t) {return t !== ""}).length
+   })
 
 }
