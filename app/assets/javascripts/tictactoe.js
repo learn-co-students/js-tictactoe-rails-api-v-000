@@ -4,7 +4,6 @@ let turn = 0
 function populate(id) {
   let elements = $('td');
   $.get(`/games/${id}`, function(result) {
-    console.log(result["data"]["attributes"]["state"]);
     $("tbody").data("id", result["data"]["id"])
     $.each(result["data"]["attributes"]["state"], function( index, value) {
       if (value === 'X' || value ==='O') {
@@ -20,8 +19,7 @@ function isEven(value) {
 }
 
 function player() {
-  // return (isEven(turn) ? "X" : "O")
-  if (isEven(turn)) {
+  if (turn % 2 === 0) {
     return "X";
   }else {
     return "O";
