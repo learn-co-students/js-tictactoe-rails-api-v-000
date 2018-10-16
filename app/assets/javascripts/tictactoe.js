@@ -106,9 +106,14 @@ function previousGames() {
 
 function reloadGame(game) {
   $.get("/games/" + game, function(game) {
+    gameId = game["data"]["id"]
+    $('#games').empty();
+    $('#games').append(`<button id="gameid-${gameId}">${gameId}</button><br>`);
     var s = game["data"]["attributes"]["state"]
     s.forEach(function(token, index) {
       $(`#${index}`).text(token)
     })
   })
+
+
 }
