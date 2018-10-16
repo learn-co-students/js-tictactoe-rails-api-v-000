@@ -2,16 +2,18 @@
 var turn = 0
 
 function player() {
-  if (turn % 2 == 0) {
-    return "X"
-  } else {
+  if (turn % 2) {
     return "O"
+  } else {
+    return "X"
   }
 }
 
-function updateState() {
-  var turn = player()
-  $("td").on('click', function() {
-    $(this).text(turn);
-  })
+function updateState(box) {
+  var t = player()
+  $(box).text(t);
+}
+
+function setMessage(string) {
+  $("#message").text(string);
 }
