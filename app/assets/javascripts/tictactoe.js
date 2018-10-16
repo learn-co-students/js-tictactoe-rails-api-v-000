@@ -34,3 +34,16 @@ function checkWinner() {
   })
   return winner
 }
+
+function doTurn(box) {
+  turn ++
+  updateState(box)
+  if (checkWinner()) {
+    saveGame()
+    resetGame()
+  } else {
+    setMessage("Tie game.")
+    saveGame()
+    resetGame()
+  }
+}
