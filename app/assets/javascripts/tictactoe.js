@@ -33,7 +33,7 @@ function updateState(element) {
 
 function doTurn(element) {
   updateState(element);
-  turn ++;
+  turn++;
   if (checkWinner()) {
     turn = 0
     $('td').text("")
