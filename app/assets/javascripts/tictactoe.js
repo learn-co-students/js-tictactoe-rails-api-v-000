@@ -73,9 +73,29 @@ function resetBoard() {
 }
 
 function saveGame() {
+  var state = []
+  var data;
+  $('td').text(function(index, box) {
+    state.push(box);
+  });
+  var data = {state: state}
+
+  if (game) {
+    $.ajax({url: `/games/${gameId}`, type: 'PATCH', data: data})
+  } else {
+    $.post('/games', data, function(newGame) {
+      game = newGame.data.id
+      $("#games").append(`<button id="gameId-${game}">${game}</button><br>`)
+      $("#gameId-game" + game).on('click', function() {reloadGame(game)})
+    });
+  }
 
 }
 
 function previousGames() {
 
+}
+
+function reloadGame(game) {
+  
 }
