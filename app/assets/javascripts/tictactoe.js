@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
-let turn = 0
-let game = 0
+var turn = 0
+var game = 0
 
 const winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,4,8], [2,4,6], [0,3,6], [2,5,8], [1,4,7]]
 
@@ -59,7 +59,7 @@ function doTurn(box) {
   if (checkWinner()) {
     saveGame()
     resetBoard()
-  } else {
+  } else if (turn === 9) {
     setMessage("Tie game.")
     saveGame()
     resetBoard()
