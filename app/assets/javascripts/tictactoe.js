@@ -81,7 +81,7 @@ function saveGame() {
   var data = {state: state}
 
   if (game) {
-    $.ajax({url: `/games/${gameId}`, type: 'PATCH', data: data})
+    $.ajax({url: `/games/${game}`, type: 'PATCH', data: data})
   } else {
     $.post('/games', data, function(newGame) {
       game = newGame.data.id
@@ -105,5 +105,10 @@ function previousGames() {
 }
 
 function reloadGame(game) {
-
+  $.get("/games/" + game, function(game) {
+    var s = game["data"]["attributes"]["state"]
+    s.forEach(function(token, index) {
+      $(`#${index}`).text(token)
+    })
+  })
 }
