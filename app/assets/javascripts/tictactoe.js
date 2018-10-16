@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
-var game = 0
+var currentGame = 0
 
 const winCombinations = [[0,1,2], [3,4,5], [6,7,8], [0,4,8], [2,4,6], [0,3,6], [2,5,8], [1,4,7]]
 
@@ -22,7 +22,7 @@ function attachListeners() {
 
 
 function player() {
-  if (turn % 2) {
+  if (turn % 2 === 0) {
     return "X"
   } else {
     return "O"
@@ -47,15 +47,15 @@ function checkWinner() {
   winCombinations.some(function (winArray) {
     if (board[winArray[0]] !== "" && board[winArray[0]] === board[winArray[1]] && board[winArray[1]] === board[winArray[2]]) {
       setMessage(`Player ${board[winArray[0]]} Won!`)
-      winner = true
+      return winner = true
     }
   })
   return winner
 }
 
 function doTurn(box) {
-  turn ++
   updateState(box)
+  turn ++
   if (checkWinner()) {
     saveGame()
     resetBoard()
@@ -68,7 +68,7 @@ function doTurn(box) {
 
 function resetBoard() {
   turn = 0
-  game = 0
+  currentGame = 0
   $('td').empty();
 }
 
@@ -79,14 +79,13 @@ function saveGame() {
     state.push(box);
   });
   var data = {state: state}
-
-  if (game) {
-    $.ajax({url: `/games/${game}`, type: 'PATCH', data: data})
+  if (currentGame) {
+    $.ajax({url: `/games/${currentGame}`, type: 'PATCH', data: data})
   } else {
     $.post('/games', data, function(newGame) {
-      game = newGame.data.id
-      $("#games").append(`<button id="gameId-${game}">${game}</button><br>`)
-      $("#gameId-game" + game).on('click', function() {reloadGame(game)})
+      currentGame = newGame.data.id
+      $("#games").append(`<button id="gameId-${newGame.data.id}">${newGame.data.id}</button><br>`)
+      $("#gameId-" + newGame.data.id).on('click', function() {reloadGame(newGame.data.id)})
     });
   }
 
@@ -105,8 +104,11 @@ function previousGames() {
 }
 
 function reloadGame(game) {
+  setMessage(" ")
   $.get("/games/" + game, function(game) {
     gameId = game["data"]["id"]
+    currentGame = game["data"]["id"]
+    turn = game["data"]["attributes"]["state"].length
     $('#games').empty();
     $('#games').append(`<button id="gameid-${gameId}">${gameId}</button><br>`);
     var s = game["data"]["attributes"]["state"]
