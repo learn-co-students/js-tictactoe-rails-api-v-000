@@ -14,10 +14,6 @@ function populate(id) {
   });
 }
 
-function isEven(value) {
-	return (value%2 === 0 ? true : false)
-}
-
 function player() {
   if (turn % 2 === 0) {
     return "X";
@@ -106,108 +102,15 @@ function checkWinner() {
 }
 
 function attachListeners() {
-  $('td').forEach(function(square) {
-    square.click(function() {
-      if (checkWinner()) {
-        alert("This game has ended.");
-      }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
-        alert("Please choose a square that has not been taken.");
-      }else {
-        doTurn(this);
-      }
-    });
-  })
-//   $("td[data-x=0][data-y=0]").click(function() {
-//     if (checkWinner()) {
-//       alert("This game has ended.");
-//     }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
-//       alert("Please choose a square that has not been taken.");
-//     }else {
-//       doTurn(this);
-//     }
-//   });
-//
-//   $("td[data-x=1][data-y=0]").click(function() {
-//     if (checkWinner()) {
-//       alert("This game has ended.");
-//     }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
-//       alert("Please choose a square that has not been taken.");
-//     }else {
-//       doTurn(this);
-//     }
-//   });
-//
-//   $("td[data-x=2][data-y=0]").click(function() {
-//     if (checkWinner()) {
-//       alert("This game has ended.");
-//     }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
-//       alert("Please choose a square that has not been taken.");
-//     }else {
-//       doTurn(this);
-//     }
-//   });
-//
-//   $("td[data-x=0][data-y=1]").click(function() {
-//     if (checkWinner()) {
-//       alert("This game has ended.");
-//     }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
-//       alert("Please choose a square that has not been taken.");
-//     }else {
-//       doTurn(this);
-//     }
-//   });
-//
-//   $("td[data-x=1][data-y=1]").click(function() {
-//     if (checkWinner()) {
-//       alert("This game has ended.");
-//     }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
-//       alert("Please choose a square that has not been taken.");
-//     }else {
-//       doTurn(this);
-//     }
-//   });
-//
-//   $("td[data-x=2][data-y=1]").click(function() {
-//     if (checkWinner()) {
-//       alert("This game has ended.");
-//     }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
-//       alert("Please choose a square that has not been taken.");
-//     }else {
-//       doTurn(this);
-//     }
-//   });
-//
-//   $("td[data-x=0][data-y=2]").click(function() {
-//     if (checkWinner()) {
-//       alert("This game has ended.");
-//     }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
-//       alert("Please choose a square that has not been taken.");
-//     }else {
-//       doTurn(this);
-//     }
-//   });
-//
-//   $("td[data-x=1][data-y=2]").click(function() {
-//     if (checkWinner()) {
-//       alert("This game has ended.");
-//     }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
-//       alert("Please choose a square that has not been taken.");
-//     }else {
-//       doTurn(this);
-//     }
-//   });
-//
-//   $("td[data-x=2][data-y=2]").click(function() {
-//     if (checkWinner()) {
-//       alert("This game has ended.");
-//     }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
-//       alert("Please choose a square that has not been taken.");
-//     }else {
-//       doTurn(this);
-//     }
-//   });
-//
-//
+  $("td").click(function() {
+    if (checkWinner()) {
+      alert("This game has ended.");
+    }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
+      alert("Please choose a square that has not been taken.");
+    }else {
+      doTurn(this);
+    }
+  });
 }
 
 
@@ -215,23 +118,7 @@ $(function () {
   attachListeners();
 
   $("#save").on("click", function() {
-    elements = $('td')
-    state = $.map(elements, function(value, key) {
-      return value.textContent;
-    });
-    if ($("tbody").data("id")) {
-      const id = $("tbody").data("id");
-      $.ajax({
-        method: "PATCH",
-        url: `/games/${id}`,
-        data: { state: state }
-      })
-    }else {
-      const posting = $.post("/games", {"state": state})
-      posting.done(function(data) {
-        $("tbody").data("id", data["data"]["id"]);
-      });
-    };
+    saveGame();
   });
 
   $('#previous').on('click', function() {
