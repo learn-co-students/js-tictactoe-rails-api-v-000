@@ -1,5 +1,5 @@
 // Code your JavaScript / jQuery solution here
-let turn = 0
+turn = 0
 
 function populate(id) {
   let elements = $('td');
@@ -107,7 +107,9 @@ function checkWinner() {
 
 function attachListeners() {
   $("td[data-x=0][data-y=0]").click(function() {
-    if (($(this).text() === 'X') || ($(this).text() === 'O')) {
+    if (checkWinner()) {
+      alert("This game has ended.");
+    }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
       alert("Please choose a square that has not been taken.");
     }else {
       doTurn(this);
@@ -115,7 +117,9 @@ function attachListeners() {
   });
 
   $("td[data-x=1][data-y=0]").click(function() {
-    if (($(this).text() === 'X') || ($(this).text() === 'O')) {
+    if (checkWinner()) {
+      alert("This game has ended.");
+    }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
       alert("Please choose a square that has not been taken.");
     }else {
       doTurn(this);
@@ -123,7 +127,9 @@ function attachListeners() {
   });
 
   $("td[data-x=2][data-y=0]").click(function() {
-    if (($(this).text() === 'X') || ($(this).text() === 'O')) {
+    if (checkWinner()) {
+      alert("This game has ended.");
+    }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
       alert("Please choose a square that has not been taken.");
     }else {
       doTurn(this);
@@ -131,7 +137,9 @@ function attachListeners() {
   });
 
   $("td[data-x=0][data-y=1]").click(function() {
-    if (($(this).text() === 'X') || ($(this).text() === 'O')) {
+    if (checkWinner()) {
+      alert("This game has ended.");
+    }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
       alert("Please choose a square that has not been taken.");
     }else {
       doTurn(this);
@@ -139,7 +147,9 @@ function attachListeners() {
   });
 
   $("td[data-x=1][data-y=1]").click(function() {
-    if (($(this).text() === 'X') || ($(this).text() === 'O')) {
+    if (checkWinner()) {
+      alert("This game has ended.");
+    }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
       alert("Please choose a square that has not been taken.");
     }else {
       doTurn(this);
@@ -147,7 +157,9 @@ function attachListeners() {
   });
 
   $("td[data-x=2][data-y=1]").click(function() {
-    if (($(this).text() === 'X') || ($(this).text() === 'O')) {
+    if (checkWinner()) {
+      alert("This game has ended.");
+    }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
       alert("Please choose a square that has not been taken.");
     }else {
       doTurn(this);
@@ -155,7 +167,9 @@ function attachListeners() {
   });
 
   $("td[data-x=0][data-y=2]").click(function() {
-    if (($(this).text() === 'X') || ($(this).text() === 'O')) {
+    if (checkWinner()) {
+      alert("This game has ended.");
+    }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
       alert("Please choose a square that has not been taken.");
     }else {
       doTurn(this);
@@ -163,7 +177,9 @@ function attachListeners() {
   });
 
   $("td[data-x=1][data-y=2]").click(function() {
-    if (($(this).text() === 'X') || ($(this).text() === 'O')) {
+    if (checkWinner()) {
+      alert("This game has ended.");
+    }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
       alert("Please choose a square that has not been taken.");
     }else {
       doTurn(this);
@@ -171,7 +187,9 @@ function attachListeners() {
   });
 
   $("td[data-x=2][data-y=2]").click(function() {
-    if (($(this).text() === 'X') || ($(this).text() === 'O')) {
+    if (checkWinner()) {
+      alert("This game has ended.");
+    }else if (($(this).text() === 'X') || ($(this).text() === 'O')) {
       alert("Please choose a square that has not been taken.");
     }else {
       doTurn(this);
