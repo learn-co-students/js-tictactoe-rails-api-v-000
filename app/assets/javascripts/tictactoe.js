@@ -88,7 +88,8 @@ function saveGame() {
   if(gameId){
     $.ajax({
       method: "PATCH",
-      url: `/games/${gameId}`
+      url: `/games/${gameId}`,
+      data: {state: state}
     })
   } else {
     var jqXHRObject = $.post("/games", {state: state})
