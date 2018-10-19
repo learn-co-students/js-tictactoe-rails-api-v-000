@@ -113,6 +113,7 @@ function saveGame() {
 // the key "method" (which points to the value of "PATCH")
 // and the key "url" (which points to the string URL "/games/:id"
 // to which we're sending the AJAX PATCH request)
+// and the key "data" (which stores JS object w/ "state" key pointing to state array)
 // We interpolate the gameId in the URL string using `` and ${}
 // If there is NO gameId, this means that the game has NOT been saved to the DB yet
 // We're creating and saving a NEW game instance to the DB.
