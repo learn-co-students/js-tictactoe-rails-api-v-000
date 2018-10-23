@@ -1,7 +1,5 @@
-// Code your JavaScript / jQuery solution here
-var WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
+var WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
-
 var turn = 0;
 var currentGame = 0;
 
@@ -9,91 +7,20 @@ $(document).ready(function() {
   attachListeners();
 });
 
-function player(){
-  return turn % 2 === 0 ? 'X' : 'O'
-}
+var player = () => turn % 2 ? 'O' : 'X';
 
-function attachListeners(){
-  $('td').on('click', function(){
-    if (!$.text(this) && !checkWinner()){
-    doTurn(this)
-    }
-  })
-
-  $('#save').on('click', ()=> saveGame())
-  $('#previous').on('click', ()=> previousGame())
-  $('#clear').on('click', ()=> clearGame())
-}
-
-function doTurn(square){
-  updateState(square)
-  turn++
-  checkWinner()
-}
-
-function updateState(square){
-
-  (square).append(player())
-}
-
-function setMessage(str){
-  $('#message').append(str)
-}
-
-function checkWinner(){
-  var board = {}
-  var winner = false;
-
-  $('td').text((index, square) => board[index] = square);
-  WINNING_COMBINATIONS.some(function(win_combo){
-    if (board[win_combo[0]] == board[win_combo[1]] && board[win_combo[2]] == board[win_combo[1]] && board[win_combo[1]] !== ""){
-      setMessage(`Player ${board[win_combo[0]]} Won!`);
-      return winner = true;
-      save()
-      resetBoard()
-    }
-    else if (!winner && turn === 9){
-      setMessage('Tie game.')
-      resetBoard()
-    }
-  })
-  return winner
-}
-function currentBoard(){
-  var board =[];
-   $('td').each(function() {
-     board.push(this.innerHTML)
-   })
-   return board;
-}
-
-function saveGame(){
-  var url, method;
-  var game = {state: currentBoard()}
-
-  if (currentGame){
-    url ="/games/" + currentGame
-    method = "PATCH"
-  } else {
-    url = "/games"
-    method = "POST"
+function doTurn(square) {
+  updateState(square);
+  turn++;
+  if (checkWinner()) {
+    saveGame();
+    resetBoard();
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+    saveGame();
+    resetBoard();
   }
-
-  $.ajax({
-    url: url,
-    method: method,
-    data: game,
-    success: function(data){
-    debugger; 
-    }
-  })
-
 }
-
-function clearGame(){
-  resetBoard()
-}
-
 
 function resetBoard() {
   $('td').empty();
@@ -101,5 +28,108 @@ function resetBoard() {
   currentGame = 0;
 }
 
+function attachListeners() {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  });
 
-function previousGame(){}
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => showPreviousGames());
+  $('#clear').on('click', () => resetBoard());
+}
+
+function checkWinner() {
+  var board = {};
+  var winner = false;
+
+  $('td').text((index, square) => board[index] = square);
+
+  WINNING_COMBOS.some(function(combo) {
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      return winner = true;
+    }
+  });
+
+  return winner;
+}
+
+function updateState(square) {
+  var token = player();
+  $(square).text(token);
+}
+
+function setMessage(string) {
+  $('#message').text(string);
+}
+
+function saveGame() {
+  var state = [];
+  var gameData;
+
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+
+  gameData = { state: state };
+
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
+  }
+}
+
+function showPreviousGames() {
+  $('#games').empty();
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(buttonizePreviousGame);
+    }
+  });
+}
+
+function buttonizePreviousGame(game) {
+  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+}
+
+function reloadGame(gameID) {
+  document.getElementById('message').innerHTML = '';
+
+  const xhr = new XMLHttpRequest;
+  xhr.overrideMimeType('application/json');
+  xhr.open('GET', `/games/${gameID}`, true);
+  xhr.onload = () => {
+    const data = JSON.parse(xhr.responseText).data;
+    const id = data.id;
+    const state = data.attributes.state;
+
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+
+    turn = state.join('').length;
+    currentGame = id;
+
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
+    }
+  };
+
+  xhr.send(null);
+}
