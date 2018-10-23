@@ -124,9 +124,10 @@ function previousGame(gameID){
 }
 
 function reloadGame(gameID) {
-  document.getElementById('message').innerHTML = '';
+  document.getElementById('games').innerHTML = '';
 
   const xhr = new XMLHttpRequest;
+  debugger
   xhr.overrideMimeType('application/json');
   xhr.open('GET', `/games/${gameID}`, true);
   xhr.onload = () => {
