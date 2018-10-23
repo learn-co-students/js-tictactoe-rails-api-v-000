@@ -85,8 +85,7 @@ function saveGame(){
     data: game['state'] = currentBoard,
     success: function(data){
       currentGame = data.data.id
-      $('#games').append(`<button id="gameid-${currentGame}">${currentGame}</button><br>`);
-      $("#gameid-" + currentGame).on('click', () => getGame(currentGame));
+
     }
   })
   }
@@ -124,12 +123,12 @@ function previousGame(gameID){
   reloadGame(gameID)
 }
 
-function getGame(gameID) {
+function reloadGame(gameID) {
   document.getElementById('message').innerHTML = '';
 
   const xhr = new XMLHttpRequest;
   xhr.overrideMimeType('application/json');
-  xhr.open('GET', `/games/${gameID}`, f);
+  xhr.open('GET', `/games/${gameID}`, true);
   xhr.onload = () => {
     const data = JSON.parse(xhr.responseText).data;
     const id = gameID;
@@ -138,7 +137,6 @@ function getGame(gameID) {
     let index = 0;
     for (let y = 0; y < 3; y++) {
       for (let x = 0; x < 3; x++) {
-        debugger;
         document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
         index++;
       }
