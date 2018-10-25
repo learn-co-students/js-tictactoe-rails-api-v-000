@@ -88,6 +88,7 @@ function boardIsFull(){
 
 function resetBoard(){
     $('td').text('');
+    turn = 0;
 }
 
 function spotTaken(element){
@@ -160,32 +161,38 @@ function saveGame() {
           let id = currentBoardId;
           let currentGame;
           // $.get(`/games/${id}`, function(data){
-          //     return currentGame = data.data;
+          //     currentGame = data.data;
           // });
           // Check if currentGame exisits in the DB
 
           // debugger;
+          if (currentBoardId > 0) {
+            // PATCH game updating state.
+            debugger
+            let returnValue;
+            $.ajax({
+                type: "PATCH",
+                async: false,
+                url: "/games" + currentBoardId,
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({state: board})
+            }).then(function(data){
+                alert("Updated Game");
+                // addToBoard(data.data.attributes.state);
+                return returnValue = data;
+
+          });
+        } else {
             $.post('/games', { state: board })
             .then(function(response){
                 currentBoardId = parseInt(response.data['id']);
+                // addToBoard(response.data.attributes.state);
                 addAllGames();
                 alert("Saved");
             });
-        // } else {
-              // PATCH game updating state.
-            //   let returnValue;
-            //   $.ajax({
-            //       type: "PATCH",
-            //       async: false,
-            //       url: "/games" + currentBoardId,
-            //       dataType: 'json',
-            //       contentType: 'application/json; charset=utf-8',
-            //       data: JSON.stringify({state: board})
-            //   }).then(function(data){
-            //       alert("Updated Game");
-            //       return returnValue = data;
-            // });
-         // }
+         }
+
 }
 
 function attachListeners(){

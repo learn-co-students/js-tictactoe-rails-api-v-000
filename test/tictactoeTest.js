@@ -522,12 +522,11 @@ describe('AJAX interactions with the Rails API', () => {
       it('clears the game board', () => {
         squares[8].innerHTML = 'X';
         window.turn = 1;
-
         clearButton.click();
 
         const board = Array.from(squares).map(s => s.innerHTML);
 
-        expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);
+        expect(board).to.have.members(["", "", "", "", "", "", "", "", ""]);
         expect(window.turn).to.equal(0);
       });
 
