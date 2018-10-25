@@ -169,12 +169,7 @@ function saveGame() {
           let lastGameId = $('#games').children().last().text();
           let id = currentBoardId;
           let currentGame;
-          // $.get(`/games/${id}`, function(data){
-          //     currentGame = data.data;
-          // });
           // Check if currentGame exisits in the DB
-
-          // debugger;
           if (currentBoardId > 0) {
             // PATCH game updating state.
             let returnValue;
@@ -188,8 +183,6 @@ function saveGame() {
             }).then(function(data){
                 alert("Updated Game");
                 addToBoard(data.data.attributes.state);
-                return returnValue = data;
-
           });
         } else {
             $.post('/games', { state: board })
