@@ -116,32 +116,26 @@ function doTurn(element){
     }
 }
 
+function addAllGames(){
+    $.get('/games').then(function(data){
+        let gamesDiv = $('#games');
+            data.data.forEach(function(game){
+                let btn = document.createElement('button');
 
-function allGames(){
-    let returnValue;
-
-    $.get('/games').done(function(data){
-        returnValue = data;
-    });
-    //
-    // $.ajax({
-    //     type: "GET",
-    //     async: false,
-    //     url: "/games",
-    //     dataType: 'json',
-    //     contentType: 'application/json; charset=utf-8',
-    //     success: function (data) {
-    //         returnValue = data.data;
-    //     }
-    // });
-    debugger;
-        return returnValue;
-}
-
-function getGameById(gameId){
-        $.get(`/games/${id}`).done(function(response){
-            console.log(response);
+                if (gamesDiv.is(':empty')){
+                    btn.innerText = game.id;
+                    btn.dataset["id"] = game.id
+                    gamesDiv.append(btn);
+                } else{
+                    let lastBtnValue = $('#games').children().last().text();
+                    if (parseInt(lastBtnValue) < game.id){
+                        btn.innerText = game.id;
+                        btn.dataset["id"] = game.id
+                        gamesDiv.append(btn);
+                    }
+                }
         });
+    });
 }
 
 function addToBoard(state){
@@ -151,63 +145,31 @@ function addToBoard(state){
     }
 }
 
-function addPreviousGames(){
-    let gamesDiv = $('#games');
-    let allGamesData = allGames();
-    debugger;
-    allGamesData.forEach(function(game){
-            let btn = document.createElement('button');
-
-            if (gamesDiv.is(':empty')){
-                btn.innerText = game.id;
-                btn.dataset["id"] = game.id
-                gamesDiv.append(btn);
-            } else{
-                let lastBtnValue = $('#games').children().last().text();
-                if (parseInt(lastBtnValue) < game.id){
-                    btn.innerText = game.id;
-                    btn.dataset["id"] = game.id
-                    gamesDiv.append(btn);
-                }
-            }
-    });
-}
-
-function getCurrentBoardId(){
-    return currentBoardId;
-}
-
-function setCurrentBoardId(id){
-    currentBoardId = id;
-}
 
 function saveGame() {
     let board = getCurrentBoard();
-    let id = getCurrentBoardId();
     var game;
-    $.get("/games/" + id ).done(function(json){
-        game = response.data;
-    });
-          if (game.id == getCurrentBoardId){
-            //PATCH
-            let returnValue;
-            $.ajax({
-                type: "PATCH",
-                async: false,
-                url: "/games/" + game.id,
-                dataType: 'json',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({state: board}),
-                success: function (data) {
-                    returnValue = data.data;
-                }
+          if (currentBoardId === undefined){// Game has not been saved and getCurrentBoardId() has not been set POST game.
+            $.post('/games', { state: board })
+            .then(function(response){
+                currentBoardId = parseInt(response.data['id']);
+                addAllGames();
+                alert("Saved");
             });
-                return returnValue;
-          } else {
-                $.post('/games', { state: board })
-                .done(function(response){
-                    setCurrentBoardId(parseInt(response.data['id']));
-                });
+        } else {
+              //PATCH game updating state.
+              let returnValue;
+              $.ajax({
+                  type: "PATCH",
+                  async: false,
+                  url: "/games/" + currentBoardId,
+                  dataType: 'json',
+                  contentType: 'application/json; charset=utf-8',
+                  data: JSON.stringify({state: board})
+              }).then(function(data){
+                  alert("Updated Game");
+                  return returnValue = data;
+            });
          }
 }
 
@@ -216,7 +178,7 @@ function attachListeners(){
         doTurn(e.target);
     });
     $('#previous').on('click', function(){
-        addPreviousGames();
+        addAllGames();
     });
 
     $('#save').on('click', function(){

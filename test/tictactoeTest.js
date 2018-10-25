@@ -203,7 +203,6 @@ describe('tictactoe.js', () => {
       expect(window.turn).to.equal(0);
 
       window.doTurn(squares[0]);
-       // debugger
       expect(window.turn).to.equal(1);
     });
 
@@ -399,7 +398,6 @@ describe('AJAX interactions with the Rails API', () => {
 
     it('sends a GET request to the "/games" route', () => {
       previousButton.click();
-
       expect(requests[0].method).to.equal('GET');
       expect(requests[0].url).to.equal('/games');
     });
@@ -432,7 +430,7 @@ describe('AJAX interactions with the Rails API', () => {
         );
 
         const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
+        debugger
         expect(gameButtons.length).to.equal(2);
       });
 

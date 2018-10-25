@@ -2,7 +2,6 @@ class GamesController < ApplicationController
   before_action :set_game, only: [:show, :update]
 
   def index
-      binding.pry
     games = Game.all
     render json: games
   end
@@ -13,6 +12,7 @@ class GamesController < ApplicationController
 
   def create
     game = Game.create(game_params)
+    binding.pry
     render json: game, status: 201
   end
 
