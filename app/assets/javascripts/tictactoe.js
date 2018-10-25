@@ -157,12 +157,12 @@ function saveGame() {
                 alert("Saved");
             });
         } else {
-              //PATCH game updating state.
+              // PATCH game updating state.
               let returnValue;
               $.ajax({
                   type: "PATCH",
                   async: false,
-                  url: "/games/" + currentBoardId,
+                  url: "/games" + currentBoardId,
                   dataType: 'json',
                   contentType: 'application/json; charset=utf-8',
                   data: JSON.stringify({state: board})
