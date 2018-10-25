@@ -28,7 +28,7 @@
   "devDependencies": {
     "chai": "^4.0.2",
     "jsdom": "^11.0.0",
-    "mocha": "^3.4.2",
+    "mocha": "^5.2.0",
     "mocha-multi": "^0.11.0",
     "sinon": "^2.3.4"
   }
