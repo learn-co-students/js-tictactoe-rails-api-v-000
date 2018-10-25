@@ -1,4 +1,3 @@
-// Code your JavaScript / jQuery solution here
 $(document).ready(function(){
     attachListeners();
 });
@@ -115,10 +114,12 @@ function doTurn(element){
          turn++;
         if (checkWinner()){
             saveGame();
+            currentBoardId = 0;
             resetBoard();
             turn = 0;
         } else if(boardIsFull()) {
             saveGame();
+            currentBoardId = 0;
             resetBoard();
             turn = 0;
             setMessage(`Tie game.`);
@@ -154,46 +155,31 @@ function addToBoard(state){
     }
 }
 
-function hasBeenSaved(game) {
-    // debugger
-    if (game){
-        return true;
-    } else {
-        return false;
-    }
-}
-
-
 function saveGame() {
     let board = getCurrentBoard();
-          let lastGameId = $('#games').children().last().text();
-          let id = currentBoardId;
-          let currentGame;
-          // Check if currentGame exisits in the DB
-          if (currentBoardId > 0) {
-            // PATCH game updating state.
-            let returnValue;
-            $.ajax({
-                type: "PATCH",
-                async: false,
-                url: "/games/" + currentBoardId,
-                dataType: 'json',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({state: board})
-            }).then(function(data){
-                alert("Updated Game");
-                addToBoard(data.data.attributes.state);
-          });
-        } else {
-            $.post('/games', { state: board })
-            .then(function(response){
-                currentBoardId = parseInt(response.data['id']);
-                addToBoard(response.data.attributes.state);
-                addAllGames();
-                alert("Saved");
-            });
-         }
-
+     // currentBoardId is set when the game has either been clicked on or if it has been saved to the db.
+     if (currentBoardId >= 1) {
+        // PATCH game updating state.
+        let returnValue;
+        $.ajax({
+            type: "PATCH",
+            async: false,
+            url: "/games/" + currentBoardId,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({state: board})
+        })
+        .then(function(data){
+            addToBoard(data.data.attributes.state);
+       });
+    } else{
+        //POST persist new game.
+        $.post('/games', { state: board })            .then(function(response){
+            currentBoardId = parseInt(response.data['id']);
+            addToBoard(response.data.attributes.state);
+            addAllGames();
+        });
+   }
 }
 
 function attachListeners(){

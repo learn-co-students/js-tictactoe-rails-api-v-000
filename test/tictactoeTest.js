@@ -595,7 +595,7 @@ describe('AJAX interactions with the Rails API', () => {
       //  O | O |
 
       squares[2].click();
-
+      window.currentBoardId = 0;
       expect(requests[0].method).to.equal('POST');
       expect(requests[0].url).to.equal('/games');
     });
