@@ -22,6 +22,15 @@ function setMessage(winner){
     $('#message').text(winner);
 }
 
+function boardTurnCount(board){
+    let count = 0
+    board.forEach(function(square) {
+        if (square.trim() != "" || square.trim() != ''){
+            count+= 1
+        }
+    });
+    return count;
+}
 
 function playerWon(arr){
     const winningCombos = [[3, 4, 5], [0, 1, 2] ,[6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
@@ -168,18 +177,17 @@ function saveGame() {
           // debugger;
           if (currentBoardId > 0) {
             // PATCH game updating state.
-            debugger
             let returnValue;
             $.ajax({
                 type: "PATCH",
                 async: false,
-                url: "/games" + currentBoardId,
+                url: "/games/" + currentBoardId,
                 dataType: 'json',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify({state: board})
             }).then(function(data){
                 alert("Updated Game");
-                // addToBoard(data.data.attributes.state);
+                addToBoard(data.data.attributes.state);
                 return returnValue = data;
 
           });
@@ -187,7 +195,7 @@ function saveGame() {
             $.post('/games', { state: board })
             .then(function(response){
                 currentBoardId = parseInt(response.data['id']);
-                // addToBoard(response.data.attributes.state);
+                addToBoard(response.data.attributes.state);
                 addAllGames();
                 alert("Saved");
             });
@@ -216,6 +224,7 @@ function attachListeners(){
         let id = parseInt(e.toElement.dataset["id"]);
         $.get(`/games/${id}`, function(response){
             currentBoardId = id;
+            turn = boardTurnCount(response.data.attributes.state);
             addToBoard(response.data.attributes.state);
         });
     });
