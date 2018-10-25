@@ -144,14 +144,27 @@ function addToBoard(state){
     }
 }
 
+function hasBeenSaved(game) {
+    // debugger
+    if (game){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 function saveGame() {
     let board = getCurrentBoard();
-    var game;
-          // if (currentBoardId === undefined){// Game has not been saved and getCurrentBoardId() has not been set POST game.
           let lastGameId = $('#games').children().last().text();
+          let id = currentBoardId;
+          let currentGame;
+          // $.get(`/games/${id}`, function(data){
+          //     return currentGame = data.data;
+          // });
+          // Check if currentGame exisits in the DB
 
-
+          // debugger;
             $.post('/games', { state: board })
             .then(function(response){
                 currentBoardId = parseInt(response.data['id']);

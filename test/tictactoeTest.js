@@ -429,7 +429,6 @@ describe('AJAX interactions with the Rails API', () => {
           ])
         );
         const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-        debugger
         expect(gameButtons.length).to.equal(2);
       });
 
