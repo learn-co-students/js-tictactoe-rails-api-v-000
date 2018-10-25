@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   resources :games, only: [:index, :show, :create, :update]
 
+  get '/last_game' => 'games#last_game'
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
