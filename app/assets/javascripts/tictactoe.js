@@ -117,16 +117,15 @@ function doTurn(element){
 }
 
 function addAllGames(){
-    $.get('/games').then(function(data){
+    $.get('/games').done(function(data){
         let gamesDiv = $('#games');
             data.data.forEach(function(game){
                 let btn = document.createElement('button');
-
                 if (gamesDiv.is(':empty')){
                     btn.innerText = game.id;
                     btn.dataset["id"] = game.id
                     gamesDiv.append(btn);
-                } else{
+                } else {
                     let lastBtnValue = $('#games').children().last().text();
                     if (parseInt(lastBtnValue) < game.id){
                         btn.innerText = game.id;
@@ -149,28 +148,31 @@ function addToBoard(state){
 function saveGame() {
     let board = getCurrentBoard();
     var game;
-          if (currentBoardId === undefined){// Game has not been saved and getCurrentBoardId() has not been set POST game.
+          // if (currentBoardId === undefined){// Game has not been saved and getCurrentBoardId() has not been set POST game.
+          let lastGameId = $('#games').children().last().text();
+
+
             $.post('/games', { state: board })
             .then(function(response){
                 currentBoardId = parseInt(response.data['id']);
                 addAllGames();
                 alert("Saved");
             });
-        } else {
+        // } else {
               // PATCH game updating state.
-              let returnValue;
-              $.ajax({
-                  type: "PATCH",
-                  async: false,
-                  url: "/games" + currentBoardId,
-                  dataType: 'json',
-                  contentType: 'application/json; charset=utf-8',
-                  data: JSON.stringify({state: board})
-              }).then(function(data){
-                  alert("Updated Game");
-                  return returnValue = data;
-            });
-         }
+            //   let returnValue;
+            //   $.ajax({
+            //       type: "PATCH",
+            //       async: false,
+            //       url: "/games" + currentBoardId,
+            //       dataType: 'json',
+            //       contentType: 'application/json; charset=utf-8',
+            //       data: JSON.stringify({state: board})
+            //   }).then(function(data){
+            //       alert("Updated Game");
+            //       return returnValue = data;
+            // });
+         // }
 }
 
 function attachListeners(){
@@ -187,11 +189,13 @@ function attachListeners(){
 
     $('#clear').on('click', function(e){
         resetBoard();
+        currentBoardId;
     });
 
     $('#games').on('click', '*', function(e){
         let id = parseInt(e.toElement.dataset["id"]);
         $.get(`/games/${id}`, function(response){
+            currentBoardId = id;
             addToBoard(response.data.attributes.state);
         });
     });

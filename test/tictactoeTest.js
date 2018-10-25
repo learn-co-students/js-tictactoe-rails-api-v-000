@@ -428,7 +428,6 @@ describe('AJAX interactions with the Rails API', () => {
             ['O', 'X', 'O', '', 'X', 'X', '', 'X', 'O'] // 'X' wins
           ])
         );
-
         const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
         debugger
         expect(gameButtons.length).to.equal(2);
@@ -627,7 +626,7 @@ describe('AJAX interactions with the Rails API', () => {
       );
 
       const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
-
+      // debugger;
       gameButtons[0].click();
 
       expect(requests[1].method).to.equal('GET');
