@@ -117,7 +117,6 @@ function previous(){
 }
 
 function save(){
-  var saveType = 'PATCH'
   var board = []
   for (var i = 0; i < 9; i++) {
     board.push(rows[i].innerHTML)
