@@ -19,7 +19,7 @@ function attachListeners(){
   })
   $('#save').on('click', ()=> saveGame())
   $('#previous').on('click', ()=> previousGames())
-  $('#reset').on('click', ()=> resetGame())
+  $('#reset').on('click', ()=> resetBoard())
 }
 
 
@@ -66,6 +66,24 @@ function doTurn(square){
   turn++
   checkWinner()
 }
+
+
+function saveGame() {
+	var state = Array.from($('td'), e => e.innerText);
+	if (gameCount) {
+		$.ajax({
+			type: 'PATCH',
+			url: `/games/${gameCount}`,
+			dataType: 'json',
+			data: {state: state}
+		});
+		} else {
+			$.post(`/games`, {state: state}, function(game) {
+			gameCount = parseInt(game.data.id);
+		});
+	};
+};
+
 
 
 function resetBoard() {
