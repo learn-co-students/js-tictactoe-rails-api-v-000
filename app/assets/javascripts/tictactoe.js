@@ -1,4 +1,4 @@
-//Setup
+//Setup board
 var win_combos = [
     [0,1,2],
     [3,4,5],
@@ -29,7 +29,7 @@ function setMessage(string) {
 function checkWinner() {
   let winner = false;
   let board = Array.from($("td")).map(x => x.innerHTML)
-  win_combos.forEach((combo) => {
+  win_combos.forEach(function(combo) {
     if (board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[0]] !== "") {
       winner = board[combo[0]];
       setMessage(`Player ${winner} Won!`);
@@ -92,20 +92,17 @@ function saveGame(){
       currentGame = game.data.id;
     });
   }
-  alert("Game Saved!");
 }
 
 function previousGames(){
   $('#games').empty();
   $.get('/games', function(savedGames){
-    // if (!!savedGames.data) {
-      savedGames.data.forEach(function(game) {
-        $('#games').append(`<button id="gameid-${game.id}"># ${game.id}</button><br>`);
-        $(`#gameid-${game.id}`).on('click', function() {
-          loadGame(game.id);
-        })
-      });
-    // }
+    savedGames.data.forEach(function(game) {
+      $('#games').append(`<button id="gameid-${game.id}"># ${game.id} : ${game.attributes["updated-at"]}</button><br>`);
+      $(`#gameid-${game.id}`).on('click', function() {
+        loadGame(game.id);
+      })
+    });
   });
 }
 
