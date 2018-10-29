@@ -1,5 +1,5 @@
-let turn = 0
-let currentGame = 0
+var turn = 0
+var currentGame = 0
 var WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
@@ -42,24 +42,19 @@ function buttonizePreviousGame(game){
 }
 
 function updateState(square){
-  if ($(square).text() === ""){
     $(square).text(player())
-  }
 }
 
 // game funcitonality
 function reloadGame(gameId){
   $.ajax({type: "GET", url: `/games/${gameId}`, success: function(data){
-    let id = data.id
-    let state = data.data.attributes.state
+    var id = data.id
+    var gameState = data.data.attributes.state
     currentGame = gameId
-
-    let index = 0
-    for(let i = 0; i< 9; i++){
-      $(`#box-${i}`).text(state[index])
-      index++
-    }
-    turn = state.length
+    $.each(gameState, function(index){
+      $(`td:eq(${index})`).text(this)
+    })
+    turn = gameState.join('').length
     }
   })
 
@@ -93,15 +88,14 @@ function checkWinner(){
 function doTurn(square){
   updateState(square)
   turn++
-    if (checkWinner()){
+  if (checkWinner()){
       saveGame()
       resetBoard()
-    }else if (turn === 9) {
+  }else if (turn === 9) {
       setMessage("Tie game.")
       saveGame()
       resetBoard()
-    }
-
+  }
 }
 
 function resetBoard(){
