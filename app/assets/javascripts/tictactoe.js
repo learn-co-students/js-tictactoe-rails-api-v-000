@@ -40,7 +40,6 @@ function checkWinner() {
         {
             setMessage(`Player ${board[combo[0]]} Won!`);
             winner = true;
-            //turn = 0;
         }
     })
     return winner;
@@ -121,7 +120,8 @@ function previousGames(){
     }).done(function(response) {
         $("#games").empty();
         response["data"].forEach(function(game) {
-            $("#games").append(`<button id="gameid-${game.id}">Game ${game.id}</button>`)
+            console.log(game.attributes["updated-at"])
+            $("#games").append(`<button id="gameid-${game.id}">Game ${game.id}</button>Updated At ${game.attributes["updated-at"]}<br>`)
             $(`#gameid-${game.id}`).on('click',function(){
                 $.get(`/games/${game.id}`,function(response){
                     response["data"]["attributes"]["state"].forEach(function(v,i) {
