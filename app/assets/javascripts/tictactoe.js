@@ -30,7 +30,7 @@ function updateState(element) {
 }
 
 function setMessage(string) {
-  $('div#message').text(string);
+  $('#message').text(string);
 }
 
 function checkWinner() {
@@ -39,15 +39,17 @@ function checkWinner() {
   let board = [];
   let winner = false;
 
-  $('td').text((index, square) => board[index] = square);
+  $('td').text((index, square) => {
+    board[index] = square;
+  });
 
   winningCombos.some((winArray) => {
     if (board[winArray[0]] === board[winArray[1]] && board[winArray[1]] === board[winArray[2]] && board[winArray[0]] !== '') {
       setMessage(`Player ${board[winArray[0]]} Won!`);
       winner = true;
+      return winner;
     }
-    return winner;
-    });
+  });
   return winner;
 }
 
@@ -77,9 +79,9 @@ function attachListeners() {
     }
   });
 
-  $('#previous').on('click', showPreviousGames);
-  $('#save').on('click', saveGame);
-  $('#clear').on('click', resetBoard);
+  $('#previous').on('click', () => showPreviousGames());
+  $('#save').on('click', () => saveGame());
+  $('#clear').on('click', () => resetBoard());
 }
 
 function showPreviousGames() {
@@ -87,38 +89,68 @@ function showPreviousGames() {
   $.get('/games', (savedGames) => {
     savedGames.data.forEach((game) => {
       $('#games').append(() => {
-        return '<button>' + game.id + '</button>';
+        return `<button id="gameid-${game.id}">${game.id}</button>`;
       });
+      $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
     });
   });
 }
 
 function saveGame() {
   const state = [];
+  var gameData;
 
   $('td').text((index, square) => state.push(square));
-  const data = { state: state };
+
+  gameData = { state: state };
 
   if (!currentGame) {
-    $.post('/games', (game) => {
-      const id = game.data.id;
+    $.post('/games', gameData, (game) => {
+      let id = game.data.id;
       currentGame = id;
 
-      $('#games').append(`<button id="gameid-${id}>${game.data.id}</button><br>`);
+      $('#games').append(`<button id="gameid-${game.data.id}>${id}</button><br>`);
       $(`#gameid-${id}`).on('click', () => reloadGame(id));
     });
   } else {
     $.ajax({
       type: 'PATCH',
       url: `/games/${currentGame}`,
-      data: data
+      data: gameData
     });
   }
 }
 
-function reloadGame(id) {
-  currentGame = id;
-  $.get(`/games/${id}`, (res) => {
-    console.log('res', res);
-  });
+function reloadGame(gameId) {
+  $("#message").text('');
+  const req = new XMLHttpRequest();
+  req.overrideMimeType('application/json');
+  req.open('GET', `/games/${gameId}`);
+  req.onload = () => {
+    const data = JSON.parse(req.response).data;
+    const id = data.id;
+    const state = data.attributes.state;
+
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+
+    turn = state.join('').length;
+    currentGame = id;
+
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
+    }
+  }
+
+  req.send(null);
 }
+
+
+  // currentGame = id;
+  // $.get(`/games/${id}`, (res) => {
+  //   console.log('res', res);
