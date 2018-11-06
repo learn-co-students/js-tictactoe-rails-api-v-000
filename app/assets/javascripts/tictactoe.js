@@ -1,16 +1,23 @@
 // Code your JavaScript / jQuery solution here
+
+// Board -> Game Logic
+
 var WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
 var turn = 0;
 var gameCount = 0;
-// let turn = 0;
-// let gameCount = 0;
+
 
 $(document).ready(function(){
   attachListeners();
 });
 
 
+function player(){
+  return turn % 2 === 0 ? 'X' : 'O'
+}
+
+// Board -> Game Set Up
 function attachListeners(){
   $('td').on('click', function(){
     if (!$.text(this) && !checkWinner()){
@@ -19,23 +26,10 @@ function attachListeners(){
   })
   $('#save').on('click', ()=> saveGame())
   $('#previous').on('click', ()=> previousGames())
-  $('#reset').on('click', ()=> resetBoard())
+  $('#clear').on('click', ()=> resetBoard())
 }
 
-
-function player(){
-  return turn % 2 === 0 ? 'X' : 'O'
-}
-
-function updateState(square){
-  (square).append(player())
-}
-
-
-function setMessage(str){
-  $('#message').append(str)
-}
-
+// Board -> Game logic
 
 function checkWinner(){
 	var winner = false;
@@ -45,49 +39,107 @@ function checkWinner(){
 
   WINNING_COMBINATIONS.some(function(position){
     if (board[position[0]] == board[position[1]] && board[position[2]] == board[position[1]] && board[position[1]] !== "") {
-      saveGame()
+      saveGame();
       setMessage(`Player ${board[position[0]]} Won!`);
       return winner = true;
-      resetBoard()
+      resetBoard();
     }
     else if (!winner && turn === 9){
       setMessage('Tie game.')
-      saveGame()
-      resetBoard()
+      saveGame();
+      resetBoard();
     }
   })
   return winner
 }
 
 
+// Board -> Message Handling
 
-function doTurn(square){
-  updateState(square)
-  turn++
-  checkWinner()
+function setMessage(str){
+  $('#message').append(str)
 }
 
+function updateState(square){
+  (square).append(player())
+}
+
+// Board Click -> Event Handling
+
+function doTurn(spot) {
+  updateState(spot)
+  turn++
+    if (checkWinner() === true) {
+      saveGame()
+      resetBoard()
+			// setMessage("");
+    }
+    else if (turn === 9) {
+      setMessage("Tie game.")
+      saveGame()
+      resetBoard()
+			// setMessage("");
+    }
+}
+//
+// function doTurn(square){
+//   updateState(square)
+//   turn++
+//   checkWinner()
+// }
+
+
+ // Board -> Save Handling
 
 function saveGame() {
 	var state = Array.from($('td'), e => e.innerText);
+	var gameData = {state: state}
 	if (gameCount) {
 		$.ajax({
 			type: 'PATCH',
 			url: `/games/${gameCount}`,
 			dataType: 'json',
-			data: {state: state}
+			data: gameData
 		});
-		} else {
-			$.post(`/games`, {state: state}, function(game) {
-			gameCount = parseInt(game.data.id);
+	} else if (gameCount === 0){
+			$.post(`/games`, gameData, function(game) {
+			gameCount = game.data.id;
 		});
 	};
 };
 
 
+// Board -> Previous Game Handling
+
+function previousGames() {
+	$('#games').empty();
+
+		$.get('/games', function(game) {
+			if (game.data.length) {
+				game.data.map(function(game) {
+				$('#games').append(`<button id="gameCount-${game.id}">Retrieve Game: #${game.id}</button><br>`)
+				$("#gameCount-"+game.id).on('click', () => reloadGame(game.id))
+			})
+		}
+	})
+}
+
+
+function reloadGame(gameCount) {
+    $.get(`/games/${gameCount}`, function(game) {
+        var state = game.data.attributes.state;
+        $('td').text((index, token) => state[index]);
+        gameCount = gameCount
+        turn = state.join('').length;
+        checkWinner();
+    });
+};
+
+// Board -> Reset Handling
 
 function resetBoard() {
   $('td').empty();
   turn = 0;
   gameCount = 0;
+	setMessage("");
 }
