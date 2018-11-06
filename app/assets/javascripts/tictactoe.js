@@ -94,7 +94,8 @@ function doTurn(spot) {
 function saveGame() {
 	var state = Array.from($('td'), e => e.innerText);
 	var gameData = {state: state}
-	if (gameCount) {
+
+	if (!gameCount === 0) {
 		$.ajax({
 			type: 'PATCH',
 			url: `/games/${gameCount}`,
