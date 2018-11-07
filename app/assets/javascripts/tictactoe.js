@@ -87,7 +87,8 @@ function previousGames() {
 	$.get('/games', function(game) {
 		if (game.data.length) {
 			game.data.map(function(game) {
-				$('#games').append(`<button id="gameCount-${game.id}">Retrieve Game: #${game.id}</button><br>`)
+				// $('#games').append(`<button id="gameCount-${game.id}">Retrieve Game: #${game.id}</button><br>`)
+				$('#games').append(`<button id="gameCount-${game.id}">Retrieve Game: #${game.attributes["updated-at"]}</button><br>`)
 				$("#gameCount-"+game.id).on('click', () => reloadGame(game.id))
 			})
 		}
