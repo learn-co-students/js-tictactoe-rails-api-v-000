@@ -59,15 +59,11 @@ function doTurn(square){
 
  // Board -> Save Click Handling
 
- //at Context.it (test/tictactoeTest.js:691:37)
- // expect(requests[2].method).to.equal('PATCH');
- // expect(requests[2].url).to.equal('/games/1');
-
 function saveGame() {
 	var state = Array.from($('td'), e => e.innerText);
 	var gameData = {state: state}
 
-
+// console.log('gameCount', gameCount)
 	if (gameCount) {
 
 		$.ajax({
@@ -80,8 +76,8 @@ function saveGame() {
 
 			$.post(`/games`, gameData, function(game) {
 			gameCount = game.data.id;
-			$('#games').append(`<button id="gameCount-${game.data.id}">Retrieve Game: #${game.data.id}</button><br>`)
-			$("#gameCount-"+game.data.id).on('click', () => reloadGame(game.data.id))
+			// $('#games').append(`<button id="gameCount-${game.data.id}">Retrieve Game: #${game.data.id}</button><br>`)
+			// $("#gameCount-"+game.data.id).on('click', () => reloadGame(game.data.id))
 		});
 	};
 };
@@ -103,11 +99,11 @@ function previousGames() {
 }
 
 
-function reloadGame(gameCount) {
-	$.get(`/games/${gameCount}`, function(game) {
+function reloadGame(num) {
+	$.get(`/games/${num}`, function(game) {
 		var state = game.data.attributes.state;
 		$('td').text((index, token) => state[index]);
-		gameCount = gameCount
+		gameCount = num
 		turn = state.join('').length;
 		checkWinner();
 	});
