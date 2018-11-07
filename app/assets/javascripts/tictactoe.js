@@ -63,21 +63,17 @@ function saveGame() {
 	var state = Array.from($('td'), e => e.innerText);
 	var gameData = {state: state}
 
-// console.log('gameCount', gameCount)
 	if (gameCount) {
-
 		$.ajax({
 			type: 'PATCH',
 			url: `/games/${gameCount}`,
 			data: gameData
 		});
-	// } else if (gameCount === 0){
-} else {
-
-			$.post(`/games`, gameData, function(game) {
-			gameCount = game.data.id;
-			// $('#games').append(`<button id="gameCount-${game.data.id}">Retrieve Game: #${game.data.id}</button><br>`)
-			// $("#gameCount-"+game.data.id).on('click', () => reloadGame(game.data.id))
+	} else if (gameCount === 0){
+		$.post(`/games`, gameData, function(game) {
+		gameCount = game.data.id;
+		$('#games').append(`<button id="gameCount-${game.data.id}">Retrieve Game: #${game.data.id}</button><br>`)
+		$("#gameCount-"+game.data.id).on('click', () => reloadGame(game.data.id))
 		});
 	};
 };
