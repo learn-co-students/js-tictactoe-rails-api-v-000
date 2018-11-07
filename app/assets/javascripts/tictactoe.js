@@ -8,25 +8,8 @@ var turn = 0;
 var gameCount = 0;
 
 
-$(document).ready(function(){
-  attachListeners();
-});
-
-
 function player(){
   return turn % 2 === 0 ? 'X' : 'O'
-}
-
-// Board -> Game Set Up
-function attachListeners(){
-  $('td').on('click', function(){
-    if (!$.text(this) && !checkWinner()){
-    doTurn(this)
-    }
-  })
-  $('#save').on('click', ()=> saveGame())
-  $('#previous').on('click', ()=> previousGames())
-  $('#clear').on('click', ()=> resetBoard())
 }
 
 // Board -> Game logic
@@ -57,67 +40,61 @@ function checkWinner(){
 // Board -> Message Handling
 
 function setMessage(str){
-  $('#message').append(str)
+	 $(message).text(str);
+  // $('#message').append(str)
 }
 
 function updateState(square){
   (square).append(player())
 }
 
-// Board Click -> Event Handling
+// Board Click -> Event Click Handling
 
-function doTurn(spot) {
-  updateState(spot)
-  turn++
-    if (checkWinner() === true) {
-      saveGame()
-      resetBoard()
-			// setMessage("");
-    }
-    else if (turn === 9) {
-      setMessage("Tie game.")
-      saveGame()
-      resetBoard()
-			// setMessage("");
-    }
+function doTurn(square){
+	updateState(square)
+	turn++
+	checkWinner()
 }
-//
-// function doTurn(square){
-//   updateState(square)
-//   turn++
-//   checkWinner()
-// }
 
 
- // Board -> Save Handling
+ // Board -> Save Click Handling
+
+ //at Context.it (test/tictactoeTest.js:691:37)
+ // expect(requests[2].method).to.equal('PATCH');
+ // expect(requests[2].url).to.equal('/games/1');
 
 function saveGame() {
 	var state = Array.from($('td'), e => e.innerText);
 	var gameData = {state: state}
 
-	if (!gameCount === 0) {
+
+	if (gameCount) {
+
 		$.ajax({
 			type: 'PATCH',
 			url: `/games/${gameCount}`,
-			dataType: 'json',
 			data: gameData
 		});
-	} else if (gameCount === 0){
+	// } else if (gameCount === 0){
+} else {
+
 			$.post(`/games`, gameData, function(game) {
 			gameCount = game.data.id;
+			$('#games').append(`<button id="gameCount-${game.data.id}">Retrieve Game: #${game.data.id}</button><br>`)
+			$("#gameCount-"+game.data.id).on('click', () => reloadGame(game.data.id))
 		});
 	};
 };
 
 
-// Board -> Previous Game Handling
+// Board -> Previous Game Click Handling
 
 function previousGames() {
 	$('#games').empty();
 
-		$.get('/games', function(game) {
-			if (game.data.length) {
-				game.data.map(function(game) {
+	$.get('/games', function(game) {
+		if (game.data.length) {
+			game.data.map(function(game) {
 				$('#games').append(`<button id="gameCount-${game.id}">Retrieve Game: #${game.id}</button><br>`)
 				$("#gameCount-"+game.id).on('click', () => reloadGame(game.id))
 			})
@@ -127,20 +104,37 @@ function previousGames() {
 
 
 function reloadGame(gameCount) {
-    $.get(`/games/${gameCount}`, function(game) {
-        var state = game.data.attributes.state;
-        $('td').text((index, token) => state[index]);
-        gameCount = gameCount
-        turn = state.join('').length;
-        checkWinner();
-    });
+	$.get(`/games/${gameCount}`, function(game) {
+		var state = game.data.attributes.state;
+		$('td').text((index, token) => state[index]);
+		gameCount = gameCount
+		turn = state.join('').length;
+		checkWinner();
+	});
 };
 
-// Board -> Reset Handling
+
+// Board -> Game Set Up
+function attachListeners(){
+  $('td').on('click', function(){
+    if (!$.text(this) && !checkWinner()){
+    doTurn(this)
+    }
+  })
+  $('#save').on('click', ()=> saveGame());
+  $('#previous').on('click', ()=> previousGames());
+  $('#clear').on('click', ()=> resetBoard());
+}
+
+// Board -> Reset Click Handling
 
 function resetBoard() {
   $('td').empty();
   turn = 0;
   gameCount = 0;
-	setMessage("");
 }
+
+
+$(document).ready(function(){
+  attachListeners();
+});
