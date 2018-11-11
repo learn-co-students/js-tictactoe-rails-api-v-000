@@ -4,7 +4,7 @@
 // button#previous
 // button#clear
 
-let turn = 0;
+var turn = 0;
 let winner;
 
 function player() {
