@@ -69,7 +69,7 @@ function resetBoard(){
 
 //saves a game
 function saveGame(){
-  let state = Array.from($('td'), e => e.innerText);
+  let state = Array.from($('td'), e => e.innerText); //get the inner text of the td element as an array ["	", "	", "", "	", "X	", "O", "	", "X	", ""]
   if (currentGame) { //if currentGame exists then "update"
     $.ajax({
       type: 'PATCH',
@@ -108,7 +108,7 @@ function showPreviousGames() {
 
 function attachListeners(){
   $("td").on("click", function(){
-    if (!$.text(this) && !checkWinner()){ // this is the td element, if it's empty && not a winner
+    if (!$.text(this) && !checkWinner()){ // this is the td element(if it's empty) && not a winner
       doTurn(this);
     }
   })
