@@ -33,7 +33,7 @@ function checkWinner() {
 
 
 function doTurn() {
-  // ++turn;
+  ++turn;
   updateState();
   // need to pass in clicked element above
   checkWinner();
