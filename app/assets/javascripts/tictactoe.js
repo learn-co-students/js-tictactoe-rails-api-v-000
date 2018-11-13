@@ -17,6 +17,76 @@ function player(){
 };
 
 
-function updateState(){
-  var move = player();
+function updateState(square){
+    var token = player();
+    $(square).text(token);
+}
+
+function setMessage(msg){
+  $('div#message').html(msg);
+}
+
+function checkWinner(){
+  var board = {};
+  $('td').text((index, square) => board[index] = square);
+
+    return WINNING_COMBOS.some(function(combo) {
+      if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+        setMessage(`Player ${board[combo[0]]} Won!`);
+        return true;
+      }else{
+        return false;
+      }
+    });
+  }
+
+  function doTurn(move){
+    updateState(move);
+    var win = checkWinner();
+    turn++;
+
+    if(turn === 9 && win){
+      setMessage("Tie game.");
+    }else if(win){
+      saveGame();
+      $('td').empty();
+      turn = 0;
+      currentGame = 0;
+    }
+  }
+
+  function saveGame() {
+  var state = [];
+
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+
+  var gameinfo = { state: state };
+
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameinfo
+    });
+  } else {
+    $.post('/games', gameinfo, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
+  }
+}
+
+function attachListeners() {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  });
+
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => showPreviousGames());
+  $('#clear').on('click', () => resetBoard());
 }
