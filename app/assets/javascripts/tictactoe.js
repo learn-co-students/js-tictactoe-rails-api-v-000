@@ -1,92 +1,110 @@
-// Code your JavaScript / jQuery solution here
-const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
-                        [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+$(document).ready(function() {
+       attachListeners();
+     });
 
-//X , Y
-// const LABELS = {[0,0]: 1, [1,0]: 2, [2, 0]: 3, [0,1]: 4, [1,1]: 5, [2,1]: 6,
-//                 [0,2]: 7, [1,2]: 8, [2,2]: 9};
-var turn = 0;
-var currentGame = 0;
+ var turn = 0;
+ var currentGame = 0;
+ const winning_combos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+
 
 function player(){
-  if (turn % 2 == 0){
-    return 'X';
-  }else{
-    return 'O';
-  };
+   return (turn % 2 ? 'O' : 'X')
+}
+
+function doTurn(square){
+   updateState(square);
+   turn = turn + 1;
+   if (checkWinner()){
+       saveGame();
+       resetBoard();
+   }else if (turn === 9 && checkWinner() == false){
+       //debugger
+       setMessage("Tie game.");
+       saveGame();
+       resetBoard();
+   }
+}
+
+function setMessage(message){
+   $('#message').text(message)
+}
+
+function checkWinner() {
+   let board = {};
+   $('td').text((index, square) => board[index] = square);
+
+   return winning_combos.some(function(combo) {
+     if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+       setMessage(`Player ${board[combo[0]]} Won!`);
+       return true;
+     } else {
+       return false;
+     }
+   });
+
+}
+
+function resetBoard(){
+   $('td').empty()
+   turn = 0
+   currentGame = 0
+}
+
+function updateState(square){
+   let token = player()
+   $(square).text(token)
+}
+
+function saveGame() {
+   let state = Array.from($('td'), e => e.innerText);
+   if (currentGame) {
+       $.ajax({
+       type: 'PATCH',
+       url: `/games/${currentGame}`,
+       dataType: 'json',
+       data: {state: state}
+       });
+   } else {
+       debugger
+       $.post('/games', {state: state}, function(game) {
+       currentGame = parseInt(game.data.id);
+       });
+   };
+};
+
+function showPreviousGames(){
+   $('#games').empty()
+   $.get('/games', function(games) {
+       games.data.map(function(game) {
+           //debugger
+           $('#games').append(`<button id="gameid-${game.id}">Game: ${game.id}</button><br>`);
+           $("#gameid-" + game.id).click(() => loadGame(game.id));
+       })
+   })
+}
+
+function loadGame(gameId) {
+   //debugger
+   $('#message').text("");
+   const id = gameId;
+   $.get(`/games/${gameId}`, function(game) {
+       let state = game.data.attributes.state;
+       $('td').text((index, token) => state[index]);
+       currentGame = id;
+       turn = state.join('').length
+       checkWinner();
+   });
 };
 
 
-function updateState(square){
-    var token = player();
-    $(square).text(token);
-}
-
-function setMessage(msg){
-  $('div#message').html(msg);
-}
-
-function checkWinner(){
-  var board = {};
-  $('td').text((index, square) => board[index] = square);
-
-    return WINNING_COMBOS.some(function(combo) {
-      if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
-        setMessage(`Player ${board[combo[0]]} Won!`);
-        return true;
-      }else{
-        return false;
-      }
-    });
-  }
-
-  function doTurn(move){
-    updateState(move);
-    var win = checkWinner();
-    turn++;
-
-    if(turn === 9 && win){
-      setMessage("Tie game.");
-    }else if(win){
-      saveGame();
-      $('td').empty();
-      turn = 0;
-      currentGame = 0;
-    }
-  }
-
-  function saveGame() {
-  var state = [];
-
-  $('td').text((index, square) => {
-    state.push(square);
-  });
-
-  var gameinfo = { state: state };
-
-  if (currentGame) {
-    $.ajax({
-      type: 'PATCH',
-      url: `/games/${currentGame}`,
-      data: gameinfo
-    });
-  } else {
-    $.post('/games', gameinfo, function(game) {
-      currentGame = game.data.id;
-      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
-      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
-    });
-  }
-}
-
 function attachListeners() {
-  $('td').on('click', function() {
-    if (!$.text(this) && !checkWinner()) {
-      doTurn(this);
-    }
-  });
+   $('td').on('click', function() {
+     if (!$.text(this) && !checkWinner()) {
+       doTurn(this);
+     }
+   });
 
-  $('#save').on('click', () => saveGame());
-  $('#previous').on('click', () => showPreviousGames());
-  $('#clear').on('click', () => resetBoard());
-}
+   $('#save').on('click', () => saveGame());
+   $('#previous').on('click', () => showPreviousGames());
+   $('#clear').on('click', () => resetBoard());
+ }
