@@ -73,14 +73,26 @@ function attachListeners() {
     $('td').on('click', function() {
       doTurn(this);
     });
-    // $('#save').on('click', function() {
-    //   doTurn(this);
-    // });
-    // $('#previous').on('click', function() {
-    //   doTurn(this);
-    // });
-    // $('#clear').on('click', function() {
-    //   doTurn(this);
-    // });
+    $('#save').on('click', function() {
+      saveGame();
+    });
+    $('#previous').on('click', function() {
+      previousGame();
+    });
+    $('#clear').on('click', function() {
+      clearGame();
+    });
   });
+}
+
+function saveGame() {
+
+}
+
+function previousGame() {
+
+}
+
+function clearGame() {
+  
 }
