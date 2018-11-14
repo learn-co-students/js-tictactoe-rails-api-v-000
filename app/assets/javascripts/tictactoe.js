@@ -1,14 +1,13 @@
-// Code your JavaScript / jQuery solution here
+// using var instead of let/const because tests might not be updated for ES6
 
 // button#save
 // button#previous
 // button#clear
 
 var turn = 0;
-let winner;
-let possibles = [];
-
-const wins = [
+var winner;
+var possibles = [];
+var wins = [
     [0,1,2],
     [3,4,5],
     [6,7,8],
@@ -24,60 +23,51 @@ function player() {
 }
 
 
-function updateState(space) {
-  $(space).text(player())
+function updateState(square) {
+  $(square).text(player())
 }
 
 
-function setMessage(winner) {
-  $("#message").text(`Player ${winner} Won!`)
+function setMessage(message) {
+  $("#message").text(message)
 }
-
-// function winChecker(board) {
-//
-//   for (const el of wins) {
-//       possibles.unshift([board[el[0]],board[el[1]],board[el[2]]]);
-//   }
-//
-//   for (const el of possibles) {
-//       if(el[0] == "X" && el[1] == "X" && el[2] == "X") {
-//   		winner = "X"
-//   	} else if(el[0] == "O" && el[1] == "O" && el[2] == "O") {
-//           winner = "O"
-//       } else {
-//   		winner = false
-//   	};
-//   }
-//
-//   possibles = []
-//
-//   return winner
-//
-// }
-
 
 function checkWinner() {
-  // if() {
-  //   setMessage(winner);
-  //   return true
-  // }; else {
-  //   return false
-  // };
+  var board = [];
+  var winner = false;
 
-  // 	for (const element of myArray) {
-	//     console.log(element);
-	// }
+  $("td").each(function() {
+    board.push(this.textContent);
+  });
+
+  wins.some(function(combo) {
+    if (
+      board[combo[0]] !== "" &&
+      board[combo[0]] === board[combo[1]] &&
+      board[combo[1]] === board[combo[2]]
+    ) {
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      return (winner = true);
+    }
+  });
+
+  return winner;
 }
 
 
-function doTurn() {
-  ++turn;
-  updateState();
-  // need to pass in clicked element above
-  checkWinner();
+function doTurn(space) {
+  updateState(space);
+  turn++;
+  if (checkWinner()) {
+    $('td').empty();
+    turn = 0;
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+  }
+
 }
 
 
 function attachListeners() {
-
+  $(document).ready()
 }
