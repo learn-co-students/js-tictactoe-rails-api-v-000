@@ -69,5 +69,18 @@ function doTurn(space) {
 
 
 function attachListeners() {
-  $(document).ready()
+  $(document).ready(function() {
+    $('td').on('click', function() {
+      doTurn(this);
+    });
+    // $('#save').on('click', function() {
+    //   doTurn(this);
+    // });
+    // $('#previous').on('click', function() {
+    //   doTurn(this);
+    // });
+    // $('#clear').on('click', function() {
+    //   doTurn(this);
+    // });
+  });
 }
