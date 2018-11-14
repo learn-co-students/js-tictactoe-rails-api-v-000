@@ -7,3 +7,10 @@ function player() {
   }
   return window.turn
 }
+
+function updateState() {
+  let token = player();
+  $("td").click(function(){
+    return this;
+  });
+}
