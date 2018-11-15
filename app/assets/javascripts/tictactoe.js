@@ -35,7 +35,8 @@ const wins = [
 function checkWinner() {
   var i;
   var winner = 0;
-  for (i = 0; i < wins.length; i++) { 
+  for (i = 0; i < wins.length; i++) {
+    console.log(squares[wins[i][0]].innerHTML, squares[wins[i][1]].innerHTML, squares[wins[i][2]].innerHTML)
       if (squares[wins[i][0]].innerHTML == squares[wins[i][1]].innerHTML && squares[wins[i][0]].innerHTML == squares[wins[i][2]].innerHTML) {
         winner = squares[wins[i][0]].innerHTML
       } 
