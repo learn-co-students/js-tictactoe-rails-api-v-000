@@ -30,17 +30,18 @@ const wins = [
   [2, 4, 6]
   ]
   
-  const squares = window.document.querySelectorAll('td');
+const squares = window.document.querySelectorAll('td');
 
 function checkWinner() {
   var i;
   var winner = 0;
   for (i = 0; i < wins.length; i++) {
-    console.log(squares[wins[i][0]].innerHTML, squares[wins[i][1]].innerHTML, squares[wins[i][2]].innerHTML)
-      if (squares[wins[i][0]].innerHTML == squares[wins[i][1]].innerHTML && squares[wins[i][0]].innerHTML == squares[wins[i][2]].innerHTML) {
+
+      if (squares[wins[i][0]].innerHTML == squares[wins[i][1]].innerHTML && squares[wins[i][1]].innerHTML == squares[wins[i][2]].innerHTML) {
         winner = squares[wins[i][0]].innerHTML
       } 
   } 
+
   if (winner) {
     setMessage(`Player ${winner} Won!`)
     return true
