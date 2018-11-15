@@ -1,4 +1,5 @@
 // Code your JavaScript / jQuery solution here
+
 var turn = 0;
 
 function player() {
@@ -18,14 +19,34 @@ function setMessage(message) {
   $("#message").html(message);
 }
 
-function checkWinner() {
+const wins = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+  ]
+  
   const squares = window.document.querySelectorAll('td');
-  if (squares[0].innerHTML === squares[1].innerHTML === squares[2].innerHTML ||
-    squares[3].innerHTML === squares[4].innerHTML === squares[5].innerHTML ||
-    squares[6].innerHTML === squares[7].innerHTML === squares[8].innerHTML) {
-    return "true"
+
+function checkWinner() {
+  var i;
+  var winner = 0;
+  for (i = 0; i < wins.length; i++) { 
+      if (squares[wins[i][0]].innerHTML == squares[wins[i][1]].innerHTML && squares[wins[i][0]].innerHTML == squares[wins[i][2]].innerHTML) {
+        winner = squares[wins[i][0]].innerHTML
+      } 
+  } 
+  if (winner) {
+    setMessage(`Player ${winner} Won!`)
+    return true
+
   } else {
-    return "non horizontal"
+    return false
   }
-  squares[1].innerHTML
 }
+
+
