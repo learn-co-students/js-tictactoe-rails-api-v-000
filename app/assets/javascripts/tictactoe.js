@@ -1,9 +1,5 @@
 // using var instead of let/const because tests might not be updated for ES6
 
-// button#save
-// button#previous
-// button#clear
-
 var turn = 0;
 var gameId = 0;
 var wins = [
