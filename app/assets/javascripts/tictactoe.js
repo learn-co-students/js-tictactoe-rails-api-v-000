@@ -5,8 +5,7 @@
 // button#clear
 
 var turn = 0;
-var winner;
-var possibles = [];
+var gameId = 0;
 var wins = [
     [0,1,2],
     [3,4,5],
@@ -59,40 +58,89 @@ function doTurn(space) {
   updateState(space);
   turn++;
   if (checkWinner()) {
-    $('td').empty();
-    turn = 0;
+    saveGame();
+    clearGame();
   } else if (turn === 9) {
     setMessage("Tie game.");
-  }
-
+    saveGame();
+    clearGame();
+  };
 }
 
 
 function attachListeners() {
-  $(document).ready(function() {
-    $('td').on('click', function() {
+  $("td").on("click", function() {
+    if ($.text(this) == "" && !checkWinner()) {
       doTurn(this);
-    });
-    $('#save').on('click', function() {
-      saveGame();
-    });
-    $('#previous').on('click', function() {
-      previousGame();
-    });
-    $('#clear').on('click', function() {
-      clearGame();
-    });
+    }
+  });
+  $("#save").on("click", function() {
+    saveGame();
+  });
+  $("#previous").on("click", function() {
+    previousGame();
+  });
+  $("#clear").on("click", function() {
+    clearGame();
   });
 }
 
 function saveGame() {
-
+  var state = [];
+  $("td").each(function() {
+    state.push(this.textContent);
+  });
+  if(gameId != 0) {
+    $.ajax({
+      method: "PATCH",
+      url: `/games/${gameId}`,
+      data: { state: state }
+    });
+  } else {
+    var updatedGame = $.post("/games", { state: state } );
+    updatedGame.done(function(response) {
+      gameId = response.data.id;
+    });
+  }
 }
 
 function previousGame() {
-
+  $.get("/games").done(function(response) {
+    if (response.data.length !== 0) {
+      response.data.forEach(function(game) {
+        if (game.id > $("#games button:last").text()) {
+          $("#games").append(
+            `<button onclick="getBoard.call(this);" data-id="${game.id}">${game.id}</button>`
+          );
+        }
+      });
+    }
+  });
 }
 
 function clearGame() {
-  
+  $("td").each(function() {
+    $(this).text("");
+  });
+  turn = 0;
+  gameId = 0;
 }
+
+function getBoard() {
+  var selection = $(this).data("id");
+  $.get(`/games/${selection}`).done(function(response) {
+    var pulledBoard = response.data.attributes.state;
+    var currentBoard = $("td");
+    for (let i = 0; i < 9; i++) {
+      currentBoard[i].innerHTML = pulledBoard[i];
+      if (pulledBoard[i] !== "") {
+        turn++;
+      }
+    }
+    gameId = response.data.id;
+  })
+}
+
+$(document).ready(function() {
+  attachListeners();
+});
