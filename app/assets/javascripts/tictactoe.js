@@ -1,66 +1,135 @@
-// Code your JavaScript / jQuery solution here
-
+const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
+                        [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 var turn = 0;
+var currentGame = 0;
 
-function player() {
-  if (window.turn % 2 === 1) {
-    return 'O';
-  } else {
-    return 'X';
+$(document).ready(function() {
+  attachListeners();
+});
+
+var player = () => turn % 2 ? 'O' : 'X';
+
+function doTurn(square) {
+  updateState(square);
+  turn++;
+  if (checkWinner()) {
+    saveGame();
+    resetBoard();
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+    saveGame();
+    resetBoard();
   }
+}
+
+function resetBoard() {
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
+}
+
+function attachListeners() {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  });
+
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => showPreviousGames());
+  $('#clear').on('click', () => resetBoard());
+}
+
+function checkWinner() {
+  var board = {};
+  var winner = false;
+
+  $('td').text((index, square) => board[index] = square);
+
+  WINNING_COMBOS.some(function(combo) {
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      return winner = true;
+    }
+  });
+
+  return winner;
 }
 
 function updateState(square) {
-  square.innerHTML = player();
-  turn += 1
+  var token = player();
+  $(square).text(token);
 }
 
-function setMessage(message) {
-  $("#message").html(message);
+function setMessage(string) {
+  $('#message').text(string);
 }
 
-const wins = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-  ]
-  
-const squares = window.document.querySelectorAll('td');
+function saveGame() {
+  var state = [];
+  var gameData;
 
-function checkWinner() {
-  var i;
-  var winner = 0;
-  for (i = 0; i < wins.length; i++) {
-      if (squares[wins[i][0]].innerHTML == squares[wins[i][1]].innerHTML && squares[wins[i][1]].innerHTML == squares[wins[i][2]].innerHTML) {
-        winner = squares[wins[i][1]].innerHTML
-      } 
-  } 
-  if (winner) {
-    setMessage(`Player ${winner} Won!`)
-    return true
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+
+  gameData = { state: state };
+
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
   } else {
-    return false
+    $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
   }
 }
 
-function doTurn() {
-  turn + 1;
-  let clicked = 0;
-  $("td").click(function() {
-    clicked = this;
-  })
-  updateState(clicked);
-  if (checkWinner()) {
-    turn = 0;
-    $("td").innerHTML = "";
-  } else if (turn == 8){
-    setMessage(`Tie Game.`)
-  }
+function showPreviousGames() {
+  $('#games').empty();
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(buttonizePreviousGame);
+    }
+  });
 }
 
+function buttonizePreviousGame(game) {
+  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+}
 
+function reloadGame(gameID) {
+  document.getElementById('message').innerHTML = '';
+
+  const xhr = new XMLHttpRequest;
+  xhr.overrideMimeType('application/json');
+  xhr.open('GET', `/games/${gameID}`, true);
+  xhr.onload = () => {
+    const data = JSON.parse(xhr.responseText).data;
+    const id = data.id;
+    const state = data.attributes.state;
+
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+
+    turn = state.join('').length;
+    currentGame = id;
+
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
+    }
+  };
+
+  xhr.send(null);
+}
