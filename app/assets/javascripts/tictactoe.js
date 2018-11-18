@@ -58,7 +58,7 @@ function doTurn() {
   if (checkWinner()) {
     turn = 0;
     $("td").innerHTML = "";
-  } elseif (turn == 8){
+  } else if (turn == 8){
     setMessage(`Tie Game.`)
   }
 }
