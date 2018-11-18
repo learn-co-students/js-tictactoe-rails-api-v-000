@@ -36,18 +36,30 @@ function checkWinner() {
   var i;
   var winner = 0;
   for (i = 0; i < wins.length; i++) {
-
       if (squares[wins[i][0]].innerHTML == squares[wins[i][1]].innerHTML && squares[wins[i][1]].innerHTML == squares[wins[i][2]].innerHTML) {
-        winner = squares[wins[i][0]].innerHTML
+        winner = squares[wins[i][1]].innerHTML
       } 
   } 
-
   if (winner) {
     setMessage(`Player ${winner} Won!`)
     return true
-
   } else {
     return false
+  }
+}
+
+function doTurn() {
+  turn + 1;
+  let clicked = 0;
+  $("td").click(function() {
+    clicked = this;
+  })
+  updateState(clicked);
+  if (checkWinner()) {
+    turn = 0;
+    $("td").innerHTML = "";
+  } else if (turn == 8){
+    setMessage(`Tie Game.`)
   }
 }
 
