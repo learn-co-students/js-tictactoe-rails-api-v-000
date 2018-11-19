@@ -85,8 +85,36 @@ function isEven(turn) {
     $("#message").html(comment);
   }
 
+  function doTurn(selector){
+    updateState(selector);
+    turn += 1 ;
+    checkWinner();
+  }
+  
+  function clear(){ 
+    save()  // save the state of the board - need this to save state of the winning board
+    $("td").each(function() {
+      ($(this).html("")
+    )});
+    turn = 0
+    currentGame = 0 
+  }
 
-
+  function checkWinner(){
+    if (horizontalCheck() === "false" && verticalCheck() === "false" && diagnolCheck()=== "false" && fullBoard() === "true"){
+       setMessage("Tie game") 
+       clear()
+     }
+    else if (horizontalCheck() === "true" || verticalCheck() === "true" || diagnolCheck()=== "true") {
+       turn -= 1 
+       setMessage("Player " + player() + " Won!")
+       clear()
+    } else {
+     return false
+    }
+   }
+   
+/////////////////////////////////////////////
 
 
 function attachListeners(){
@@ -117,4 +145,31 @@ function attachListeners(){
   
    }
   
+   var save = function(resetCurrentGame) {
+    var url, method;
+    if(currentGame) {
+      url = "/games/" + currentGame
+      method = "PATCH"
+    } else {
+      url = "/games"
+      method = "POST"
+    }
   
+    $.ajax({
+      url: url,
+      method: method,
+      dataType: "json",
+      data: {
+        game: {
+          state: getMarks()
+        }
+      },
+      success: function(data) {
+        if(resetCurrentGame) {
+          currentGame = undefined;
+        } else {
+          currentGame = data.game.id;
+        }
+      }
+    })
+  }
