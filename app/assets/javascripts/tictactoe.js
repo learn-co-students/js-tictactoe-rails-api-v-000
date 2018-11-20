@@ -56,7 +56,7 @@ function checkWinner() {
   return winner;
 }
 
-function updateState(square) {
+function updateState(square) {``
   var token = player();
   $(square).text(token);
 }
