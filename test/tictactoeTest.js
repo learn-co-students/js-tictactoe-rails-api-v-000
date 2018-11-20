@@ -1,8 +1,12 @@
+
 try {
+  
   // If window is defined, it means we're running the tests in the browser, so we should use Mocha's BDD interface.
   window.document;
+  
   mocha.setup('bdd');
 } catch (e) {
+  
   // If window is not defined, window.document will result in an error, taking us to the catch block and assigning the JSDom virtual DOM's window object to the 'window' variable.
   var window = dom.window;
 }
