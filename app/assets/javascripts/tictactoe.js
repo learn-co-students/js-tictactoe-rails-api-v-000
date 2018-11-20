@@ -1,175 +1,137 @@
 // Code your JavaScript / jQuery solutio
+const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+var turn = 0;
+var currentGame = 0;
 
-$( document ).ready(function() {
-    attachListeners();
+
+
+function player() {
+  if (turn % 2 === 0){
+    return 'X';
+  } else {
+    return 'O';
+  }
+}
+
+
+function updateState(square) {
+  var token = player();
+  $(square).text(token);
+}
+
+function setMessage(string) {
+    $("#message").text(string)
+}
+
+function checkWinner() {
+  var board = {};
+  var winner = false;
+  const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+  $('td').text((index, square) => board[index] = square);
+
+  WINNING_COMBOS.some(function(combo) {
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      return winner = true;
+    }
+  });
+  return winner;
+}
+
+function doTurn(square) {
+  updateState(square);
+  turn++;
+  if(checkWinner()) {
+    saveGame();
+    resetBoard();
+  }else if(turn === 9) {
+    setMessage("Tie game.");
+    saveGame();
+    resetBoard();
+  };
+};
+
+function saveGame() {
+  var state = [];
+  var gameData;
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+
+  gameData = { state: state };
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game) {
+    currentGame = game.data.id;
+    $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+    $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
+  }
+}
+
+function attachListeners() {
+$('td').on('click', function() {
+  if(!$.text(this) && !checkWinner()){
+    doTurn(this);debugger;
+  }
+})
+$('#save').on('click', () => saveGame());
+$('#previous').on('click', () => showPreviousGames());
+$('#clear').on('click', () => resetBoard());
+
+}
+
+$(document).ready(function(){
+  attachListeners();
 });
 
 
-var turn = 0;
-var currentGame;
+function resetBoard() {
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
+}
 
-// GAME WINNING COMBOS
-function verticalCheck(){
-    if ( $('td')[0].innerHTML === "X" && $('td')[3].innerHTML === "X" && $('td')[6].innerHTML === "X" ||
-         $('td')[1].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[7].innerHTML === "X" || 
-         $('td')[2].innerHTML === "X" && $('td')[5].innerHTML === "X" && $('td')[8].innerHTML === "X" ||
-         $('td')[0].innerHTML === "O" && $('td')[3].innerHTML === "O" && $('td')[6].innerHTML === "O" ||
-         $('td')[1].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[7].innerHTML === "O" || 
-         $('td')[2].innerHTML === "O" && $('td')[5].innerHTML === "O" && $('td')[8].innerHTML === "O" )
-    {
-         return "true"
-    } else {
-         return "false"
+function showPreviousGames() {
+  $("#games").empty();
+  $.get('/games', savedGames => {
+    if(savedGames.data.length) {
+      savedGames.data.forEach(function(game) {
+        $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+        $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id))
+      });
+    }
+  });
+}
+
+function reloadGame(gameID) {
+  document.getElementById('message').innerHTML = '';
+  const req = new XMLHttpRequest;
+
+  req.overrideMimeType('application/json');
+  req.open('GET', `/games/${gameID}`);
+  req.onload = () => {
+  const data = JSON.parse(req.responseText).data;
+  const id = data.id;
+  const state = data.attributes.state;
+  let index = 0;
+
+  for (let y = 0; y < 3; y++) {
+    for (let x = 0; x < 3; x++) {
+      document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+      index++;
     }
   }
-  
-  function diagnolCheck(){
-    if ( $('td')[0].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[8].innerHTML === "X" || 
-         $('td')[2].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[6].innerHTML === "X" ||
-         $('td')[0].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[8].innerHTML === "O" || 
-         $('td')[2].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[6].innerHTML === "O" )
-    {
-        return "true"
-    } else {
-        return "false"
-    }
+  turn = state.join('').length;
+  currentGame = id;
+  if (!checkWinner() && turn === 9) {
+    setMessage('Tie game.');
   }
-  
-  function horizontalCheck(){
-    if ( $('td')[0].innerHTML === "X" && $('td')[1].innerHTML === "X" && $('td')[2].innerHTML === "X" ||
-         $('td')[3].innerHTML === "X" && $('td')[4].innerHTML === "X" && $('td')[5].innerHTML === "X" || 
-         $('td')[6].innerHTML === "X" && $('td')[7].innerHTML === "X" && $('td')[8].innerHTML === "X" ||
-         $('td')[0].innerHTML === "O" && $('td')[1].innerHTML === "O" && $('td')[2].innerHTML === "O" ||
-         $('td')[3].innerHTML === "O" && $('td')[4].innerHTML === "O" && $('td')[5].innerHTML === "O" || 
-         $('td')[6].innerHTML === "O" && $('td')[7].innerHTML === "O" && $('td')[8].innerHTML === "O" )
-    {
-         return "true"
-    } else {
-         return "false"
-    }
-  }
-  
-  
-  function fullBoard() {
-    if ( $('td')[0].innerHTML === "" || $('td')[1].innerHTML === "" ||
-         $('td')[2].innerHTML === "" || $('td')[3].innerHTML === "" ||
-         $('td')[4].innerHTML === "" || $('td')[5].innerHTML === "" ||
-         $('td')[6].innerHTML === "" || $('td')[7].innerHTML === "" ||
-         $('td')[8].innerHTML === "" ){
-      return "false"
-    } else {
-      return "true"
-    }
-  }
-  
-// game logic
-function isEven(turn) {
-    return turn % 2 == 0;
- }
-
- function player(){
-    if (isEven(turn)) {
-      return "X"
-    } else {
-      return "O"
-    }
-  
-  }
- 
- function updateState(selector){
-   var selector = selector
-   $(selector).html(player());
- }
-
- function setMessage(comment){
-    $("#message").html(comment);
-  }
-
-  function doTurn(selector){
-    updateState(selector);
-    turn += 1 ;
-    checkWinner();
-  }
-  
-  function clear(){ 
-    save()  // save the state of the board - need this to save state of the winning board
-    $("td").each(function() {
-      ($(this).html("")
-    )});
-    turn = 0
-    currentGame = 0 
-  }
-
-  function checkWinner(){
-    if (horizontalCheck() === "false" && verticalCheck() === "false" && diagnolCheck()=== "false" && fullBoard() === "true"){
-       setMessage("Tie game") 
-       clear()
-     }
-    else if (horizontalCheck() === "true" || verticalCheck() === "true" || diagnolCheck()=== "true") {
-       turn -= 1 
-       setMessage("Player " + player() + " Won!")
-       clear()
-    } else {
-     return false
-    }
-   }
-   
-/////////////////////////////////////////////
-
-
-function attachListeners(){
-  
-    //get the data-x and data-y values of the clicked square  - this is a move
-  $('td').on("click", function() {
-    var x_value = ($(this).data('x'));
-    var y_value = ($(this).data('y'));
-    var selector =  `[data-x=${x_value}][data-y=${y_value}]`  // per spec format
-    doTurn(selector);
-    });
-  
-    // save your current game event listener
-  $("#save").click(function() {
-      save();
-    })
-  
-    // get all the old games event listener
-    $("#previous").click(function() {
-      getAllGames();
-    })
-  
-    //load an old game to the dom if the old games button was clicked - step 1 
-    $("#games").click(function(event) {
-      var state = parseState(event)
-      swapGame(state, getGameId(event))
-    })
-  
-   }
-  
-   var save = function(resetCurrentGame) {
-    var url, method;
-    if(currentGame) {
-      url = "/games/" + currentGame
-      method = "PATCH"
-    } else {
-      url = "/games"
-      method = "POST"
-    }
-  
-    $.ajax({
-      url: url,
-      method: method,
-      dataType: "json",
-      data: {
-        game: {
-          state: getMarks()
-        }
-      },
-      success: function(data) {
-        if(resetCurrentGame) {
-          currentGame = undefined;
-        } else {
-          currentGame = data.game.id;
-        }
-      }
-    })
-  }
+ };
+req.send(null);
+}
