@@ -45,22 +45,24 @@ function checkWinner() {
   updateState(square);
   turn++
   if (checkWinner()) {
-    checkWinner();
-    $('td').empty();
-    turn = 0;
+    clearBoard();
   } else if (turn === 9) {
     setMessage('Tie game.')
+    clearBoard();
   }
  } 
 
+ function clearBoard() {
+   $('td').empty();
+   turn = 0;
+ }
+
  function attachListeners() {
-   if (!checkWinner() && turn !== 9) {
-    $('td').click(function() {
-      if (this.innerHTML === "") { 
+  $('td').click(function() {
+    if (!checkWinner() && this.innerHTML === ""){
         doTurn(this);
-      }
-    })
-  }
+    }
+   })
  }
 
  $(document).ready(function() {
