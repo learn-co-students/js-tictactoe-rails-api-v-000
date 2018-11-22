@@ -14,10 +14,15 @@
  *= require_self
  */
 html, body {
-  padding-top: 30px;	
-  height: 100%;
-  width: 100%;
+  padding: 5px;	
   font-family: 'Georgia', serif;
   font-size: 20px;
 
+}
+.info {
+    background-color: lightgrey;
+   
+    border: 3px solid teal;
+    padding: 5px;
+    margin: 5px;
 }

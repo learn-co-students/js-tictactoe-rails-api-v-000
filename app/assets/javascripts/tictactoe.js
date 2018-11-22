@@ -70,6 +70,8 @@ function setMessage(string) {
   $('#message').text(string);
 }
 
+//state property, an array representing the current state of the board
+
 function saveGame() {
   var state = [];
   var gameData;
