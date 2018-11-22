@@ -175,6 +175,7 @@ describe('tictactoe.js', () => {
 
     it('invokes the setMessage() function with the argument "Player O Won!" when player O wins', () => {
       const spy = sandbox.stub(window, 'setMessage');
+      window.turn = 5;
 
       populateBoard(['O', '', '', 'X', 'O', 'X', 'X', '', 'O']);
       //  O |   |   
