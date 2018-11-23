@@ -3,6 +3,7 @@ const WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
 var turn=0
+var new=true
 
 $(document).ready(function() {
   attachListeners();
@@ -45,12 +46,12 @@ function saveGame(){
   var values = $(state).serialize(); 
   
   var posting = $.post('/games', state);
-  debugger
+
   posting.done(function(data) {
     var game = data["data"];
     $("#new").text(game["id"]);    
   });  
-  debugger
+
   
 }
 
@@ -80,13 +81,12 @@ function checkWinner(){
 function showPreviousGame(event){
   
     event.preventDefault();    
-    $.get("/games", function(data) {
-      debugger
+    $.get("/games", function(data) {      
       let gameList="";
       data["data"].forEach(function(game){
-        gameList=gameList+`<a href="#">Game #${game["id"]}</a><br />`;
+        gameList=gameList+`<button class="previous" id="${game["id"]}">Game #${game["id"]}</button> <br>`;
       });
-      $("#list").html(gameList);      
+      $("#games").html(gameList);      
     });  
 }
 
