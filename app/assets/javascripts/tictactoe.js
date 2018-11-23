@@ -39,6 +39,18 @@ function doTurn(position){
 
 
 function saveGame(){
+  var state={};
+  $('td').text((i,value) => state[i]=value);
+
+  var values = $(state).serialize(); 
+  
+  var posting = $.post('/games', state);
+  debugger
+  posting.done(function(data) {
+    var game = data["data"];
+    $("#new").text(game["id"]);    
+  });  
+  debugger
   
 }
 
@@ -65,12 +77,24 @@ function checkWinner(){
   return winner;
 }
 
+function showPreviousGame(event){
+  
+    event.preventDefault();    
+    $.get("/games", function(data) {
+      debugger
+      let gameList="";
+      data["data"].forEach(function(game){
+        gameList=gameList+`<a href="#">Game #${game["id"]}</a><br />`;
+      });
+      $("#list").html(gameList);      
+    });  
+}
 
 function attachListeners(){
  $('td').on('click', function(){
    if(!$.text(this)){ doTurn(this);}
  })
  $('#save').on('click', ()=>saveGame());
- $('#previous').on('click', ()=> showPreviousGame());
+ $('#previous').on('click', (event)=> showPreviousGame(event));
  $('#clear').on('click', ()=>resetBoard());
 }
