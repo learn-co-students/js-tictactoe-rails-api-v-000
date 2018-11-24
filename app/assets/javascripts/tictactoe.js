@@ -46,31 +46,35 @@ function saveGame(){
  
   $('td').text((i,value) => {state.push(value)});
  
-  data={state: state}
+  currentGame={state: state}
 
    //debugger
-  if (savedGameId==0){
-    var posting = $.post('/games', data)
-    posting.done(function(data) {
-    //ar game = data["data"];
-    setMessage(`Game #${data.data.id} saved`) 
-    savedGameId=data.data.id
-    showPreviousGame()
-    debugger
+  if (savedGameId===0){
+    var posting = $.post('/games', currentGame)
+    posting.done(function(savedGame) {
+        setMessage(`Game #${savedGame.data.id} saved`) 
+        savedGameId=savedGame.data.id
+        ///showPreviousGame()
+        debugger
     });  
   } else {
-    $.ajax({    
+    var patching=$.ajax({    
       type: 'PATCH',
       url: `/games/${savedGameId}`,      
-      data: data,
+      data: currentGame,
       success: function(response){
-        setMessage(`Game #${savedGameId} re-saved`)
-        console.log(response)    
-        debugger
-      }
+        //setMessage(`Game #${savedGameId} re-saved`)
+        //console.log(response)    
+        //debugger
+      }      
     });
-    debugger
-    setMessage(`Game #${savedGameId} saved`)
+    patching.done(
+    function(savedGame){
+      setMessage(`Game #${savedGame.data.id} re-saved`)      
+      debugger
+    })
+    //debugger
+    //setMessage(`Game #${savedGameId} saved`)
   }
   
   
@@ -80,6 +84,7 @@ function resetBoard(){
   $('td').empty();
   turn=0;  
   savedGameId=0;
+  setMessage("New Game")
 }
 
 function setMessage(message){
@@ -124,7 +129,8 @@ function loadGame(event){
   let state=[]
   
   //$('td').text((i,value) => state[i]=value);
-  $.get("/games/"+id, function(data) {      
+  var getting=$.get("/games/"+id)
+  getting.done(function(data) {      
       state=data.data.attributes.state
       let index = 0;
       for (let y = 0; y < 3; y++) {
@@ -136,8 +142,10 @@ function loadGame(event){
       }
       newGame=false
       savedGameId=id
+      setMessage(`Game #${id} loaded`)
+      turn=state.filter(cell => cell!=='').length
      });
-   //debugger
+    debugger     
     }
  
 
