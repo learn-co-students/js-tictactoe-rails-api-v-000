@@ -4,6 +4,7 @@ const WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
 
 var turn=0
 var newGame=true
+var endGame=false
 
 $(document).ready(function() {
   attachListeners();
@@ -23,18 +24,23 @@ function updateState(position){
 
 
 function doTurn(position){
-
- updateState(position);
- turn++;
  
+  if (!endGame){
+    updateState(position);
+    turn++;    
+  }
+
  if (checkWinner()){
-   saveGame();
-   resetBoard();
- } else if (turn===9){
-   setMessage('Tie game.')
+   endGame=true
    saveGame();
    resetBoard();   
- }
+ } else if (turn===9){
+   setMessage('Tie game.')
+   endGame=true
+   saveGame();
+   resetBoard();   
+ } 
+  
 }
 
 
@@ -63,7 +69,7 @@ function saveGame(){
 function resetBoard(){
   $('td').empty();
   turn=0;
-  
+  endGame=false  
 }
 
 function setMessage(message){
@@ -85,17 +91,21 @@ function checkWinner(){
 
 function showPreviousGame(event){
   
-    event.preventDefault();    
-    $.get("/games", function(data) {      
-      let gameList="<div id='games element'>";
-      data["data"].forEach(function(game){
-        gameList=gameList+`<button class="previous" id="${game["id"]}">Game #${game["id"]}</button> <br>`;
-      });
-      gameList+="</div>"
-      $("#games").html(gameList);  
-      $('.previous').on('click', (event)=>loadGame(event))    
-    });  
-}
+   // event.preventDefault();    
+    $.get("/games", function(data) {  
+      if (data.data.length){   
+        data.data.forEach(addButton); 
+      }
+    })    
+  
+  }
+
+  function addButton(game){
+     $("#games").append(`<button class="previous" id="${game.id}">Game #${game.id}</button></br>`);     
+     $(`#${game.id}`).on('click', (event)=>loadGame(event))    
+    }
+    
+
 
 function loadGame(event){
   //debugger
@@ -109,7 +119,7 @@ function loadGame(event){
     let index = 0;
     for (let y = 0; y < 3; y++) {
       for (let x = 0; x < 3; x++) {
-        //debugger
+        debugger
         document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
         console.log(state[index])
         index++;
