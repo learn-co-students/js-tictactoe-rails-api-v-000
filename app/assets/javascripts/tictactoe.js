@@ -42,10 +42,12 @@ function doTurn(position){
 
 function saveGame(){
   let state=[];
+  let data
  
   $('td').text((i,value) => {state.push(value)});
+ 
+  data={state: state}
 
-  const data={state: state}
    //debugger
   if (savedGameId==0){
     var posting = $.post('/games', data)
@@ -54,19 +56,21 @@ function saveGame(){
     setMessage(`Game #${data.data.id} saved`) 
     savedGameId=data.data.id
     showPreviousGame()
+    debugger
     });  
   } else {
     $.ajax({    
       type: 'PATCH',
-      url: `/games/${savedGameId}`,
-      headers: {'Content-Type': 'application/json'}, 
+      url: `/games/${savedGameId}`,      
       data: data,
       success: function(response){
-        setMessage(`Game #${savedGameId} saved`)    
+        setMessage(`Game #${savedGameId} re-saved`)
+        console.log(response)    
+        debugger
       }
     });
-    //debugger
-    //setMessage(`Game #${savedGameId} saved`)
+    debugger
+    setMessage(`Game #${savedGameId} saved`)
   }
   
   
