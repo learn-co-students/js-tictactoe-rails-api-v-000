@@ -3,7 +3,7 @@ const WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
 var turn=0
-var new=true
+var newGame=true
 
 $(document).ready(function() {
   attachListeners();
@@ -35,17 +35,22 @@ function doTurn(position){
    saveGame();
    resetBoard();   
  }
- 
 }
 
 
 function saveGame(){
-  var state={};
-  $('td').text((i,value) => state[i]=value);
+  let state=[];
+  $('td').text((i,value) => state.push(value));
 
-  var values = $(state).serialize(); 
+  const data={state: state}
+
+  //var values = $(state).serialize(); 
   
-  var posting = $.post('/games', state);
+  
+  var posting = $.post('/games', data, function(game){    
+      $('#games').append(`<button class="previous" id="${game.data.id}"> Game #${game.data.id}</button><br>`);
+      $(".previous").on('click', (event) => loadGame(event));
+  });
 
   posting.done(function(data) {
     var game = data["data"];
@@ -82,13 +87,38 @@ function showPreviousGame(event){
   
     event.preventDefault();    
     $.get("/games", function(data) {      
-      let gameList="";
+      let gameList="<div id='games element'>";
       data["data"].forEach(function(game){
         gameList=gameList+`<button class="previous" id="${game["id"]}">Game #${game["id"]}</button> <br>`;
       });
-      $("#games").html(gameList);      
+      gameList+="</div>"
+      $("#games").html(gameList);  
+      $('.previous').on('click', (event)=>loadGame(event))    
     });  
 }
+
+function loadGame(event){
+  //debugger
+  const id=event.target.id
+  let state=[]
+  //$('td').text((i,value) => state[i]=value);
+  $.get("/games/"+id, function(data) {      
+      state=data.data.attributes.state
+     });
+
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        //debugger
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        console.log(state[index])
+        index++;
+      }
+    }
+    //debugger
+
+}
+
 
 function attachListeners(){
  $('td').on('click', function(){
