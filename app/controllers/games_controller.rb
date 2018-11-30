@@ -7,6 +7,7 @@ class GamesController < ApplicationController
   end
 
   def show
+    binding.pry
     render json: @game
   end
 
