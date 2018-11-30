@@ -90,12 +90,16 @@ function checkWinner() {
 
  function gameRequest(gameId) {
    $.get(`/games/${gameId}`, function(game) {
-    debugger
-
     var board = game.data.attributes.state
     $('td').each(function(i) {
       $('td')[i].innerHTML = board[i]
     });
+    board.map(function(e) {
+      if (e === "X" || e === "O") {
+        turn++
+      }
+    })
+    currentGame = game.data.id
    });
  }
 
@@ -105,7 +109,7 @@ function checkWinner() {
       board.push(square);
     })
     var gameData = {state: board}
-    if (currentGame > 0) {
+    if (currentGame) {
       $.ajax({
         type: 'PATCH',
         url: `/games/${currentGame}`,
