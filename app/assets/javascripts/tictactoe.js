@@ -17,9 +17,10 @@ var player = () => turn % 2 === 0 ? "X" : "O"
 
 
 function doTurn(td) {
-  turn += turn + 1
+  console.log('start turn #: ${turn}')
   updateState(td)
   checkWinner()
+  turn ++
 }
 
 function updateState(td) {
