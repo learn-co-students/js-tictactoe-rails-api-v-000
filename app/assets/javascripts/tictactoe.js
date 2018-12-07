@@ -13,17 +13,17 @@ var win_combinations = [
 
 $( document ).ready( attachListeners )
 
-function player() {
-  return turn % 2 === 0 ? "X" : "O"
-}
+var player = () => turn % 2 === 0 ? "X" : "O"
 
-function doTurn() {
+
+function doTurn(td) {
   turn += turn + 1
-  updateState()
+  updateState(td)
+  checkWinner()
 }
 
-function updateState() {
-  token = player()
+function updateState(td) {
+  $(td).text(player())
 
 }
 
@@ -32,11 +32,12 @@ function setMessage(string) {
 }
 
 function checkWinner() {
+  var board = []
 
 }
 
 function attachListeners() {
   $("td").on('click', function() {
-    
+    doTurn(this)
   })
 }
