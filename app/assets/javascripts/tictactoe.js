@@ -17,15 +17,22 @@ var player = () => turn % 2 === 0 ? "X" : "O"
 
 
 function doTurn(td) {
-  console.log('start turn #: ${turn}')
+  // console.log(`start turn #: ${turn}`)
   updateState(td)
-  checkWinner()
   turn ++
-}
+  if (checkWinner()) {
+    resetBoard()
+  } else if (turn === 9) {
+    setMessage("Tie game.")
+    resetBoard()
+    }
+  }
+
 
 function updateState(td) {
-  $(td).text(player())
-
+  console.log(`current turn #: ${turn}`)
+      $(td).text(player())
+      debugger
 }
 
 function setMessage(string) {
@@ -34,7 +41,21 @@ function setMessage(string) {
 
 function checkWinner() {
   var board = []
+  var winner = false
+  $("td").text(function(index, token){ board[index] = token})
 
+  win_combinations.some(function(combo) {
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+     setMessage(`Player ${board[combo[0]]} Won!`);
+     return winner = true;
+    }
+  })
+  return winner
+}
+
+function resetBoard() {
+  $('td').empty()
+  turn = 0
 }
 
 function attachListeners() {
