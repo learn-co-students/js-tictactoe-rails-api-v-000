@@ -32,7 +32,6 @@ function doTurn(td) {
 function updateState(td) {
   console.log(`current turn #: ${turn}`)
       $(td).text(player())
-      debugger
 }
 
 function setMessage(string) {
@@ -58,8 +57,14 @@ function resetBoard() {
   turn = 0
 }
 
+function saveGame() {
+  debugger
+}
+
 function attachListeners() {
   $("td").on('click', function() {
-    doTurn(this)
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this)
+    }
   })
 }
