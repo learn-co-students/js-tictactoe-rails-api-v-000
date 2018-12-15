@@ -46,7 +46,6 @@ var doTurn = (square) => {
 function attachListeners() {
   $('td').on('click', function() {
     if (!$.text(this) && !checkWinner()) {
-      debugger
       doTurn(this);
     };
   });
