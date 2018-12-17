@@ -21,7 +21,7 @@ function checkWinner() {
 //grab current board
   var board = getBoard()
 //compare board to winning combinations, return true or false
-  WIN_COMBINATIONS.forEach(combo = {
+  WIN_COMBINATIONS.forEach(combo => {
      !!(board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]])
   })
 }
