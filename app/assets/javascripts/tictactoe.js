@@ -18,7 +18,7 @@ function attachListeners() {
 
   $('#previous').on('click', previousGames)
   $('#save').on('click', saveGame)
-  // $('#clear').on('click', setNewGame)
+  $('#clear').on('click', setNewBoard)
 }
 
 function checkWinner() {
@@ -84,10 +84,28 @@ function gameButton(game) {
 }
 
 function saveGame() {
-  $('td').submit(function(event) {
-    event.preventDefault();
-    var values = $(this).serialize();
-    var posting = $.post('/games', values)
+  var state = []
+  var gameState
+  var savedGame = null
+  $('td').text((index, el) => {state.push(el)})
+  
+  gameState = {state: state} 
 
-  })
+  if(savedGame !== null) {
+    $.ajax({
+      method: 'PATCH',
+      url: `/games/${savedGame}`,
+      data: gameState
+    })
+  } else {
+    $.post('/games', gameState, function(game) {
+      savedGame = game.data.id;
+      $('#games').append(`<button id="game-id-${game.data.id}">${game.data.id}</button>`)
+      $(`#game-id-${game.data.id}`).on('click', () => LoadPreviousGame(game.data.id))
+    })
+  }
+}
+
+function loadPreviousGame(game) {
+  
 }
