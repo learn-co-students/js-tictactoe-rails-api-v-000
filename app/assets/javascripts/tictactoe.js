@@ -49,10 +49,12 @@ function doTurn(el) {
   turn ++
   if (turn === 9) {
     setMessage("Tie game.")
+    saveGame()
     setNewBoard()
   }
   else if (checkWinner()) {
     checkWinner()
+    saveGame()
     setNewBoard()
   }
 }
@@ -80,32 +82,39 @@ function previousGames() {
 }
 
 function gameButton(game) {
-  $('#games').append(`<button id="game-id-${game.id}">${game.id}</button>`)
+  $('#games').append(`<button id="game-id-${game.id}">Game #${game.id}</button><br>`)
+  $(`#game-id-${game.id}`).on('click', () => loadPreviousGame(game.id))
 }
 
 function saveGame() {
   var state = []
   var gameState
-  var savedGame = null
-  $('td').text((index, el) => {state.push(el)})
-  
-  gameState = {state: state} 
 
-  if(savedGame !== null) {
+  $('td').text((index, el) => {state.push(el)})
+
+  gameState = {state: state}
+
+  if(gameNum) {
+    debugger
     $.ajax({
       method: 'PATCH',
-      url: `/games/${savedGame}`,
+      url: `/games/${gameNum}`,
       data: gameState
     })
   } else {
     $.post('/games', gameState, function(game) {
-      savedGame = game.data.id;
-      $('#games').append(`<button id="game-id-${game.data.id}">${game.data.id}</button>`)
-      $(`#game-id-${game.data.id}`).on('click', () => LoadPreviousGame(game.data.id))
+      gameNum = game.data.id;
+      $('#games').append(`<button id="game-id-${game.data.id}">Game #${game.data.id}</button>`)
+      $(`#game-id-${game.data.id}`).on('click', () => loadPreviousGame(game.data.id))
     })
   }
 }
 
-function loadPreviousGame(game) {
-  
+function loadPreviousGame(game_id) {
+  $('#message').text("")
+  $.get(`/games/${game_id}`, function(data) {
+    debugger
+  })
+
+  gameNum = game_id
 }
