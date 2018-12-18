@@ -1,4 +1,3 @@
-// Code your JavaScript / jQuery solution here
 var turn = 0;
 var gameNum = 0;
 
@@ -8,33 +7,18 @@ $(function() {
   attachListeners();
 })
 
-function player() {
-  if (!!(turn % 2)) {
-    return 'O'
-  } else {
-    return 'X'
-  }
-}
+function attachListeners() {
+//attach listeners to board and 3 buttons
+//if board is clicked call doTurn(), else call button specific function
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this)
+    }
+  })
 
-function getBoard() {
-  board = {}
-  $('td').text((index, el) => board[index] = el)
-  return board
-}
-
-function setNewGame() {
-  $('td').empty();
-  turn = 0;
-  gameNum = 0;
-}
-
-function setMessage(string) {
-  $('#message').text(string)
-}
-
-function updateState(el) {
-  //el is the clicked element, so query for that and update text of element
-  $(el).text(player())
+  $('#previous').on('click', previousGames)
+  $('#save').on('click', saveGame)
+  // $('#clear').on('click', setNewGame)
 }
 
 function checkWinner() {
@@ -50,34 +34,40 @@ function checkWinner() {
   return winner
 }
 
+function getBoard() {
+  board = {}
+  $('td').text((index, el) => board[index] = el)
+  return board
+}
+
+function setMessage(string) {
+  $('#message').text(string)
+}
+
 function doTurn(el) {
   updateState(el)
   turn ++
   if (turn === 9) {
     setMessage("Tie game.")
-    setNewGame()
+    setNewBoard()
   }
   else if (checkWinner()) {
     checkWinner()
-    setNewGame()
+    setNewBoard()
   }
 }
 
-function isTaken(el) {
-  !(el.text === '')
+function updateState(el) {
+  //el is the clicked element, so query for that and update text of element
+  $(el).text(player())
 }
-function attachListeners() {
-//attach listeners to board and 3 buttons
-//if board is clicked call doTurn(), else call button specific function
-  $('td').on('click', function() {
-    if (!$.text(this) && !checkWinner()) {
-      doTurn(this)
-    }
-  })
 
-  $('#previous').on('click', previousGames)
-  $('#save').on('click', saveGame)
-  // $('#clear').on('click', setNewGame)
+var player = () => (turn % 2) ? 'O' : 'X'
+
+function setNewBoard() {
+  $('td').empty();
+  turn = 0;
+  gameNum = 0;
 }
 
 function previousGames() {
