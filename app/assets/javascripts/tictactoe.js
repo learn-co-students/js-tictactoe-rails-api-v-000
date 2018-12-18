@@ -113,11 +113,13 @@ function loadPreviousGame(game_id) {
   $('#message').text("")
   el_num = 0
   $.get(`/games/${game_id}`, function(data) {
-    var board = data.data.attributes.state
+    const board = data.data.attributes.state
+
     board.forEach( square => {
       $('td')[el_num].innerHTML = square
       el_num ++
   })
+  turn = board.join('').length
   gameNum = game_id
 })
 }
