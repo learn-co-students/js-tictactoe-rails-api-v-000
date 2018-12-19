@@ -82,12 +82,13 @@ function previousGames() {
 }
 
 function gameButton(game) {
-  $('#games').append(`<button id="game-id-${game.id}">Game #${game.id}</button><br>`)
+  $('#games').append(`<button id="game-id-${game.id}">Game #${game.id} - Last updated: ${updatedAt(game)}</button> <br>`)
   $(`#game-id-${game.id}`).on('click', () => loadPreviousGame(game.id))
 }
 
 function saveGame() {
   var state = []
+  var updated_at
   var gameState
 
   $('td').text((index, el) => {state.push(el)})
@@ -103,10 +104,16 @@ function saveGame() {
   } else {
     $.post('/games', gameState, function(game) {
       gameNum = game.data.id;
-      $('#games').append(`<button id="game-id-${game.data.id}">Game #${game.data.id}</button>`)
+      $('#games').append(`<button id="game-id-${game.data.id}">Game #${game.data.id} - Last updated: ${updatedAt(game.data)}</button>`)
       $(`#game-id-${game.data.id}`).on('click', () => loadPreviousGame(game.data.id))
     })
   }
+}
+
+function updatedAt(game_data) {
+  date = new Date(game_data.attributes['updated-at'])
+  debugger
+  return date
 }
 
 function loadPreviousGame(game_id) {
@@ -114,7 +121,6 @@ function loadPreviousGame(game_id) {
   el_num = 0
   $.get(`/games/${game_id}`, function(data) {
     const board = data.data.attributes.state
-
     board.forEach( square => {
       $('td')[el_num].innerHTML = square
       el_num ++
