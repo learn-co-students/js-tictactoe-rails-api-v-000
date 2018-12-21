@@ -83,17 +83,16 @@ function saveGame() {
 }
 
 function previousGames() {
-//when button#previous clicked then all persisted games grabbed and then
-//added to the dom in clickable format to div#games
-  console.log("Prior Games here");
   var gameList = "";
   $.getJSON('/games', function(response) {
     response["data"].forEach(function(game) {
       var gameButton = `<button class="prior-game" data-id="${game["id"]}">${game["id"]}</button>`;
-      $(".prior-game").on('click', loadGame);
-      gameList.push(gameButton);
+      gameList += gameButton;
+      debugger;
     });
+    $(".prior-game").on('click', loadGame);
   });
+  debugger;
   const gamesDiv = document.getElementById('games');
   gamesDiv.innerHTML = gameList
   console.log(gameList)
