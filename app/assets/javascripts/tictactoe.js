@@ -1,9 +1,13 @@
-// Code your JavaScript / jQuery solution here
-
 $(document).ready(function() {
   attachListeners();
 });
 
+const winCombinations = [
+  [0, 1, 2], [3, 4, 5], [6, 7, 8],
+  [0, 3, 6], [1, 4, 7], [2, 5, 8],
+  [0, 4, 8], [2, 4, 6]
+];
+var gameID = 0;
 var turn = 0;
 //tests would not pass when "let" was used instead of "var"
 
@@ -12,7 +16,6 @@ function player() {
 }
 
 function updateState(square) {
-//tests would not pass when innerText used
   square.innerHTML = player();
 }
 
@@ -22,56 +25,87 @@ function setMessage(string) {
 }
 
 function checkWinner() {
-//Returns true if the current board contains any winning combinations
-//if winner, should invoke setMessage(), passing in the appropriate string
-//based on who won: 'Player X Won!' or 'Player O Won!'
   const squares = document.querySelectorAll('td');
   let values = [];
   squares.forEach(square => values.push(square.innerHTML));
-//squares[i].dataset.x (will get the x value)
+  var winner;
+  winCombinations.forEach(function(win) {
+    if (values[win[0]] == values[win[1]] && values[win[1]] == values[win[2]] && values[win[0]] !== "") {
+      winner = values[win[0]]
+      setMessage(`Player ${winner} Won!`)
+    };
+  });
+  if (winner) {return true}
 }
 
 function doTurn() {
-//Increments the turn variable by 1
   updateState(this);
-  ++turn;
-  checkWinner();
-//Invokes checkWinner() to see whether move results in a winning play.
+  turn++;
+  if (checkWinner()) {
+    //saveGame();
+    clearGame();
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+    //saveGame();
+    clearGame();
+  }
+}
+
+function clearGame() {
+  const squares = document.querySelectorAll('td');
+  squares.forEach(function(square) {
+    square.innerHTML = "";
+  });
+  gameID = 0;
+  turn = 0;
 }
 
 function saveGame() {
 //when button#save clicked, creates a new game if does not already exist
 //otherwise updates
-  const squares = document.querySelectorAll('td');
-  let state = [];
-  squares.forEach(square => state.push(square.innerHTML));
-  console.log(state);
-  debugger;
-  let savedGame = $.post('/games', state);
-  savedGame.done(function(data) {
-    console.log(data);
-  })
+//  const squares = document.querySelectorAll('td');
+//  let state = [];
+//  squares.forEach(square => state.push(square.innerHTML));
+//  console.log(state);
+//  debugger;
+//  let savedGame = $.post('/games', state);
+//  savedGame.done(function(data) {
+//    console.log(data);
+//  })
+  if (gameID !== 0) {
+    //locate existing game
+    //update board
+  } else {
+    //create new game
+    //set gameID by the game instance id
+  }
   setMessage("Game saved");
 }
 
 function previousGames() {
 //when button#previous clicked then all persisted games grabbed and then
 //added to the dom in clickable format to div#games
-  var gameList = "<ul>";
-  $.getJSON('/games', function(data) {
-    data["data"].forEach(game => gameList += "<li><a href='/games/" + game["id"]+ "'>" + game["id"] + "</a></li>")
+  console.log("Prior Games here");
+  var gameList = "";
+  $.getJSON('/games', function(response) {
+    response["data"].forEach(function(game) {
+      var gameButton = `<button class="prior-game" data-id="${game["id"]}">${game["id"]}</button>`;
+      $(".prior-game").on('click', loadGame);
+      gameList.push(gameButton);
+    });
   });
-  gameList += "</ul>";
   const gamesDiv = document.getElementById('games');
   gamesDiv.innerHTML = gameList
   console.log(gameList)
 }
 
-function clearGame() {
-//should clear the game board and start a completely new game when
-//button#clear clicked
-  const gamesDiv = document.getElementById('games');
-  gamesDiv.innerHTML = "games cleared"
+function loadGame() {
+  //get gameID from data
+  var gameID = $(this).data("id");
+  $.getJSON(`/games/${gameID}`, function(response) {
+    var gameState = response["data"]["attributes"]["state"];
+    //transfer gameState to DOM
+  })
 }
 
 function attachListeners() {
