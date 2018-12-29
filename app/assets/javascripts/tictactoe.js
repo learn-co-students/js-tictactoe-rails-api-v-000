@@ -54,8 +54,8 @@ function doTurn(square) {
 
   function attachListeners() {
     $(`td`).on(`click`, function() {
-      if (this.innerHTML === `` || ` ` === this.innerHTML){
-          doTurn(this).innerHTML;
+      if (this.innerHTML === `` || ` ` === this.innerHTML && checkWinner() === false && turn !== 9) { 
+          doTurn(this);
       };
     });
   }
