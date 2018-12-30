@@ -6,6 +6,8 @@ $(document).ready(function() {
 const WINNING_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
 var turn = 0;
+var game_id = 0;
+var now_playing = 0
 
 function player () {
   if (turn % 2 === 0 ){
@@ -58,22 +60,52 @@ function doTurn(square) {
           doTurn(this);
       };
     });
+    $('#save').on('click',saveGame);
+    $('#clear').on('click',clearGame);
+    $('#previous').on('click',previousGame)
   }
 
 
-  function saveGame () {
-   $('#save').submit(function(event) {
-     //prevent form from submitting the default way
-     event.preventDefault();
+  function saveGame() {
+    event.preventDefault();
+    let board = [];
+    $('td').text((index, square) => board[index] = square);
+  //  let state = {state: board};
+      let state = $('td').toArray().map(function(cell){
+        cell.innerText
+      }
+    )
 
-     var values = $(this).serialize();
+     if (now_playing) {
+       $.ajax({
+         type: 'PATCH',
+         url: `/games/${now_playing}`,
+         data: state,
+        dateType: `JSON`})
+      } else {
+        //var values = $(this).serialize();
+         $.post('/games', state, function(rep){
+          now_playing = rep.data.id;
 
-     var posting = $.post('/games', values);
+        }
+      );
+    }
+  }
 
-     posting.done(function(data) {
-       var post = data;
-       $("#postTitle").text(post["title"]);
-       $("#postBody").text(post["description"]);
-     });
-   });
- });
+  function clearGame() {
+    $('td').empty();
+    turn = 0;
+    game_id = 0;
+  }
+
+  function previousGame() {
+    $('#games').empty();
+//  let id = this.id - 1;
+    $.get(`/games`).done (function(games){
+      games.data.forEach(function(game){
+        $('#games').append(`<button id= "game_id-${game.id}">Game: ${game.id}</button>`)
+        $('#game_id-' + game.id).on('click')
+      }
+    )
+   })
+  }
