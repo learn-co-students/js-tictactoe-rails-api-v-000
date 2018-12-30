@@ -7,7 +7,7 @@ const WINNING_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],
 
 var turn = 0;
 var game_id = 0;
-var now_playing = 0
+
 
 function player () {
   if (turn % 2 === 0 ){
@@ -32,7 +32,7 @@ function checkWinner() {
   var winner = false;
 
   $('td').text((index, square) => board[index] = square);
-
+  debugger
   WINNING_COMBOS.some(function(combo) {
     if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
       setMessage(`Player ${board[combo[0]]} Won!`);
@@ -50,19 +50,22 @@ function doTurn(square) {
     $(`td`).empty()
     turn = 0;
   } else if (turn === 9){
-    setMessage(`Tie game.`)
+    setMessage(`Tie game.`);
+    $(`td`).empty()
+    turn = 0;
     }
   }
 
   function attachListeners() {
+  
     $(`td`).on(`click`, function() {
       if ((this.innerHTML === `` || ` ` === this.innerHTML) && checkWinner() === false && turn !== 9) {
           doTurn(this);
       };
     });
-    $('#save').on('click',saveGame);
-    $('#clear').on('click',clearGame);
-    $('#previous').on('click',previousGame)
+    $('#save').on('click', saveGame);
+    $('#clear').on('click', clearGame);
+    $('#previous').on('click', previousGame)
   }
 
 
@@ -70,23 +73,17 @@ function doTurn(square) {
     event.preventDefault();
     let board = [];
     $('td').text((index, square) => board[index] = square);
-  //  let state = {state: board};
-      let state = $('td').toArray().map(function(cell){
-        cell.innerText
-      }
-    )
+    let current_board = {state: board};
 
-     if (now_playing) {
-       $.ajax({
-         type: 'PATCH',
-         url: `/games/${now_playing}`,
-         data: state,
-        dateType: `JSON`})
+     if (game_id) {
+         $.ajax({
+           type: 'PATCH',
+           url: `/games/${game_id}`,
+           data: current_board,
+           dataType: `JSON`})
       } else {
-        //var values = $(this).serialize();
-         $.post('/games', state, function(rep){
-          now_playing = rep.data.id;
-
+         $.post('/games', current_board, function(rep){
+           game_id = rep.data.id;
         }
       );
     }
@@ -103,9 +100,17 @@ function doTurn(square) {
 //  let id = this.id - 1;
     $.get(`/games`).done (function(games){
       games.data.forEach(function(game){
-        $('#games').append(`<button id= "game_id-${game.id}">Game: ${game.id}</button>`)
-        $('#game_id-' + game.id).on('click')
-      }
-    )
+        $('#games').append(`<button id= "game_id-${game.id}">${game.id}</button>`)
+        $('#game_id-' + game.id).on('click',function(game){
+          id = game.target.innerHTML;
+        $.get(`/games/${id}`).done (function(state){
+
+
+          $('td').each(function(i, element){
+            element.innerHTML = state.data.attributes.state[i]
+         })
+        })
+      })
+     })
    })
   }
