@@ -46,11 +46,13 @@ function doTurn(square) {
   updateState(square);
   turn++
   if (checkWinner()){
-    $(`td`).empty()
+    saveGame();
+    $(`td`).empty();
     turn = 0;
   } else if (turn === 9){
     setMessage(`Tie game.`);
-    $(`td`).empty()
+    $(`td`).empty();
+    saveGame();
     turn = 0;
     }
   }
@@ -67,8 +69,8 @@ function doTurn(square) {
   }
 
 
-  function saveGame(event) {
-    event.preventDefault();
+  function saveGame() {
+//    event.preventDefault();
     let board = [];
     $('td').text((index, square) => board[index] = square);
     let current_board = {state: board};
@@ -79,7 +81,7 @@ function doTurn(square) {
            type: 'PATCH',
            url: `/games/${game_id}`,
            data: current_board,
-           dataType: `JSON`
+           //dataType: `JSON`
          });
       } else {
          $.post('/games', current_board, function(rep){
