@@ -32,11 +32,10 @@ function checkWinner() {
   var winner = false;
 
   $('td').text((index, square) => board[index] = square);
-  debugger
   WINNING_COMBOS.some(function(combo) {
     if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
       setMessage(`Player ${board[combo[0]]} Won!`);
-       winner = true;
+      winner = true;
     }
   });
 
@@ -57,7 +56,6 @@ function doTurn(square) {
   }
 
   function attachListeners() {
-  
     $(`td`).on(`click`, function() {
       if ((this.innerHTML === `` || ` ` === this.innerHTML) && checkWinner() === false && turn !== 9) {
           doTurn(this);
@@ -69,18 +67,20 @@ function doTurn(square) {
   }
 
 
-  function saveGame() {
+  function saveGame(event) {
     event.preventDefault();
     let board = [];
     $('td').text((index, square) => board[index] = square);
     let current_board = {state: board};
 
      if (game_id) {
+
          $.ajax({
            type: 'PATCH',
            url: `/games/${game_id}`,
            data: current_board,
-           dataType: `JSON`})
+           dataType: `JSON`
+         });
       } else {
          $.post('/games', current_board, function(rep){
            game_id = rep.data.id;
