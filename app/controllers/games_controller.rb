@@ -17,6 +17,7 @@ class GamesController < ApplicationController
 
   def update
     @game.update(game_params)
+    binding.pry
     render json: @game
   end
 
