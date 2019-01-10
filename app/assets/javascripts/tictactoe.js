@@ -57,12 +57,32 @@ function checkWinner() {
 }
 
 function doTurn(clickedSquare) {
-  turn++
   updateState(clickedSquare);
-  checkWinner();
+  turn ++;
 
-  if (turn > 8){
-    setMessage("Tie game.")
-    // debugger
+  if (checkWinner()) {
+    saveGame();
+    clearGame();
+  } else if (turn > 8) {
+    setMessage("Tie game.");
+    saveGame();
+    clearGame();
   }
 }
+
+var attachListeners = () => {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  });
+
+  // $('#save').on('click', () => saveGame());
+  // $('#previous').on('click', () => showPreviousGames());
+  // $('#clear').on('click', () => resetBoard());
+ }
+ 
+$(document).ready(function() {
+  attachListeners();
+}); 
+ 
