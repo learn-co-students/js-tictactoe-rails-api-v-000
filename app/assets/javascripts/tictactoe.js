@@ -6,6 +6,10 @@ var WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8,], //Horizontal Wins
 [0,3,6], [1,4,7], [2,5,8], //Vertical Wins
 [0,4,8], [6,4,2]]; //Diagonal Wins
 
+$(document).ready(function() {
+  attachListeners();
+});
+
 function player(){
   if(turn % 2 === 0){
     return 'X';
@@ -48,17 +52,51 @@ function doTurn(square){
   updateState(square);
   turn++;
   if (checkWinner()){
-    //Steps to reset the board
-    //Clears the board
-    $('td').empty()
-    //resets turn to 0
-    turn = 0;
+    clearGame();
   }else if (turn === 9){
     setMessage("Tie game.")
   }
 }
 
 function attachListeners(){
+  $("td").on('click', function(){
+    // Check to ensure that the square is empty
+    if (this.innerHTML === ""){
+      doTurn(this);
+    }
+  });
+
+  $("#clear").on("click", function(){
+    clearGame();
+  });
+
+  $("#save").on("click", function(){
+    saveGame();
+  });
+
+  $("#previous").on("click", function(){
+    alert("You clicked previous")
+  });
+}
+
+
+function saveGame(){
+  var gameBoard = [];
+  var saveGameData;
+
+  $('td').each(function(){
+    gameBoard.push($(this).text());
+  });
+  saveGameData = {gameState: gameBoard}
+  
+  debugger;
+}
+
+function clearGame(){
+  //Clears the board
+  $('td').empty()
+  //resets turn to 0
+  turn = 0
 }
 
 
