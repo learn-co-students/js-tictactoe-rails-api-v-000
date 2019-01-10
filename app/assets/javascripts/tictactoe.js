@@ -79,10 +79,16 @@ var attachListeners = () => {
 
   // $('#save').on('click', () => saveGame());
   // $('#previous').on('click', () => showPreviousGames());
-  // $('#clear').on('click', () => resetBoard());
+  $('#clear').on('click', () => clearBoard());
  }
  
 $(document).ready(function() {
   attachListeners();
 }); 
  
+ 
+ var clearBoard = (click) => {
+   $('td').empty();
+   turn = 0;
+   
+ }
