@@ -44,15 +44,15 @@ function checkWinner() {
 	
 	if (!board.some(x => x  === "")) {
     	console.log("Tie Game!");
-    	return winner = false;
+    	 winner = false;
   }
 
 	WINNERS.forEach(function(arr) {
     if (arr.every(x => board[x]  === "X")) {
-    	return winner = true;
+    	 winner = true;
    
     } else if (arr.every(x => board[x]  === "O")) {
-    	return winner = true;
+    	 winner = true;
 	    }
 	});
 	return winner
