@@ -1,3 +1,6 @@
+![Screenshot](https://github.com/edb-c/js-tictactoe-rails-api-v-000/blob/master/Screenshot.png)
+
+
 # jQuery Tic-Tac-Toe with a Rails API — Part 2
 
 Congratulations on setting up your Rails API back-end! Hopefully you took a short break to celebrate because the real fun starts now.
