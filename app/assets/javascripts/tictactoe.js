@@ -2,21 +2,25 @@ $(document).ready(function() {
   attachListeners();
 });
 
-const winCombinations = [
+
+var winCombinations = [
   [0, 1, 2], [3, 4, 5], [6, 7, 8],
   [0, 3, 6], [1, 4, 7], [2, 5, 8],
   [0, 4, 8], [2, 4, 6]
 ];
 var gameID = 0;
 var turn = 0;
-//tests would not pass when "let" was used instead of "var"
+//tests would not pass when "let" or "const" was used instead of "var"
 
 function player() {
   return (turn % 2 === 0 ? "X" : "O")
 }
 
 function updateState(square) {
-  square.innerHTML = player();
+  if (!square.innerHTML) {
+    square.innerHTML = player();
+    return true;
+  } else {setMessage('Try another space.')};
 }
 
 function setMessage(string) {
@@ -36,23 +40,26 @@ function checkWinner() {
     };
   });
   if (winner) {return true}
+  else {return false}
 }
 
 function doTurn() {
-  updateState(this);
-  turn++;
+  if (updateState(this)) {
+    setMessage('')
+    turn++;
+  };
   if (checkWinner()) {
-    //saveGame();
-    clearGame();
+    saveGame();
+    resetGame();
   } else if (turn === 9) {
     setMessage("Tie game.");
-    //saveGame();
-    clearGame();
-  }
+    saveGame();
+    resetGame();
+  };
 }
 
-function clearGame() {
-  const squares = document.querySelectorAll('td');
+function resetGame() {
+  let squares = document.querySelectorAll('td');
   squares.forEach(function(square) {
     square.innerHTML = "";
   });
@@ -66,17 +73,22 @@ function saveGame() {
 //  const squares = document.querySelectorAll('td');
 //  let state = [];
 //  squares.forEach(square => state.push(square.innerHTML));
-//  console.log(state);
-//  debugger;
+//
 //  let savedGame = $.post('/games', state);
 //  savedGame.done(function(data) {
 //    console.log(data);
 //  })
   if (gameID !== 0) {
-    //locate existing game
-    //update board
+    //$.get("/games/" + gameID)
+    //update game info
+    //$.update?("/games/" +gameID)
+    currentGame.state
   } else {
     //create new game
+    //var newGame = $.post("/games", {state: state);
+    //newGame.done(function(saveData) {
+    //  gameID = saveData["data"]["id"];
+  //});
     //set gameID by the game instance id
   }
   setMessage("Game saved");
@@ -85,6 +97,7 @@ function saveGame() {
 function previousGames() {
   var gameList = "";
   $.getJSON('/games', function(response) {
+    console.log(response);
     response["data"].forEach(function(game) {
       var gameButton = `<button class="prior-game" data-id="${game["id"]}">${game["id"]}</button>`;
       gameList += gameButton;
@@ -100,6 +113,13 @@ function previousGames() {
 
 function loadGame() {
   //get gameID from data
+  //$.get("/games/" + gameID, function(response) {
+  //var gameState = response["data"]["attributes"]["state"];
+//})
+  //function updateSquare(square, index) {
+    //square.innerHTML = gameState[index];
+  //}
+  //squares.forEach(updateSquare);
   var gameID = $(this).data("id");
   $.getJSON(`/games/${gameID}`, function(response) {
     var gameState = response["data"]["attributes"]["state"];
