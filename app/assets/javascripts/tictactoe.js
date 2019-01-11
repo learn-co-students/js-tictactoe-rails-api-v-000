@@ -42,18 +42,22 @@ function checkWinner() {
 		board.push(this.innerHTML)
 		})
 	
-	if (!board.some(x => x  === "")) {
-    	console.log("Tie Game!");
-    	 winner = false;
-  }
+	// if (!board.some(x => x  === "")) {
+ //    	console.log("Tie Game!");
+ //    	 winner = false;
+ //  }
 
 	WINNERS.forEach(function(arr) {
+		
     if (arr.every(x => board[x]  === "X")) {
-    	 winner = true;
+    	 winner = true
+    	 return winner
    
     } else if (arr.every(x => board[x]  === "O")) {
-    	 winner = true;
-	    }
+    	 winner = true
+    	 return winner
+	    };
+    
 	});
 	return winner
 }
