@@ -5,7 +5,7 @@ var WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4
 var turn = 0
 var currentGame = 0
 
-// if turn modulus 2 = 0, it is falsey, and therefore returns right side (X). any odd number % 2 = 1, and so would be truthy, and return left side (O)
+// if turn modulus 2 = 0, it is falsey (because 0 is a falsey value; remember that modulus returns a value, and in this case, would be 0), and therefore returns right side (X). any odd number % 2 = 1, and so would be truthy, and return left side (O)
 var player = () => turn % 2 ? 'O' : 'X'
 
 function updateState(td){
