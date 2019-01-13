@@ -6,24 +6,23 @@
     <link rel="stylesheet" href="../../node_modules/mocha/mocha.css">
   </head>
 
-  <body>
-    <table border="1" cellpadding="40">
-      <tr>
-        <td data-x="0" data-y="0"></td>
-        <td data-x="1" data-y="0"></td>
-        <td data-x="2" data-y="0"></td>
-      </tr>
-      <tr>
-        <td data-x="0" data-y="1"></td>
-        <td data-x="1" data-y="1"></td>
-        <td data-x="2" data-y="1"></td>
-      </tr>
-      <tr>
-        <td data-x="0" data-y="2"></td>
-        <td data-x="1" data-y="2"></td>
-        <td data-x="2" data-y="2"></td>
-      </tr>
-    </table>
+<table id="board" border="1" cellpadding="40">
+  <tr>
+    <td class="cell" id="cell1" data-x="0" data-y="0"></td>
+    <td class="cell" id="cell2" data-x="1" data-y="0"></td>
+    <td class="cell" id="cell3" data-x="2" data-y="0"></td>
+  </tr>
+  <tr>
+    <td class="cell" id="cell4" data-x="0" data-y="1"></td>
+    <td class="cell" id="cell5"data-x="1" data-y="1"></td>
+    <td class="cell" id="cell6" data-x="2" data-y="1"></td>
+  </tr>
+  <tr>
+    <td class="cell" id="cell7" data-x="0" data-y="2"></td>
+    <td class="cell" id="cell8" data-x="1" data-y="2"></td>
+    <td class="cell" id="cell9" data-x="2" data-y="2"></td>
+  </tr>
+</table>
 
     <div id="games"></div>
 
