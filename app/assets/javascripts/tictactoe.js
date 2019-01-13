@@ -6,7 +6,7 @@ var currentGame = 0
 
 WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
-turn = 0
+
 
 
 $(document).ready(function() {
@@ -46,11 +46,11 @@ function doTurn(square) {
   updateState(square)
   turn++
   if (checkWinner()) {
-   $('td').empty()
-   turn = 0
-  } else if (turn === 9) {
-   setMessage("Tie game.")
    saveGame()
+   resetGame()
+  } else if (tieGame()) {
+   setMessage("Tie game.")
+   resetGame()
   }
 }
 
@@ -69,7 +69,8 @@ function attachListeners() {
 function resetGame() {
   $('td').empty()
   turn = 0
-  setMessage('')
+  //setMessage('')
+  currentGame = 0
 }
 
 function saveGame() {
@@ -85,17 +86,17 @@ function saveGame() {
     //console.log(state)
   gameData = {state: state}  //put the current games state into gameData hash
     //console.log(gameData)
-    //if(currentGame) {
-     //$.ajax({
-    //   url: `/games/${currentGame}`
-    //   type: "PATCH"
-      // data: gameData
-    //  });
-    // } else {
+    if(currentGame) {
+     $.ajax({
+       type: "PATCH",
+       url: `/games/${currentGame}`,
+       data: gameData
+      });
+     } else {
       $.post('/games', gameData, function(game) {
       currentGame = game.data.id;
     })
-  //  }
+  }
 }
 
 
@@ -103,3 +104,11 @@ function saveGame() {
 function previousGames() {
 
 }
+
+
+function tieGame() {
+  if (turn === 9) {
+    saveGame();
+    return true;
+  };
+};
