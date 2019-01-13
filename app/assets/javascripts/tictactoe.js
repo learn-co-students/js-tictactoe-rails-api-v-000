@@ -1,9 +1,13 @@
 // Code your JavaScript / jQuery solution here
 
+
 var turn = 0
 var currentGame = 0
 
 WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
+
+turn = 0
+
 
 $(document).ready(function() {
   attachListeners()
@@ -14,7 +18,7 @@ function player() {
 }
 
 function updateState(square) {
-  $(square).text(player())
+  $(square).text(player(square))
 }
 
 function setMessage(message) {
@@ -30,6 +34,7 @@ function checkWinner() {
   WINNING_COMBOS.forEach(function(position) {
    if (board[position[0]] === board[position[1]] && board[position[1]] === board[position[2]] && board[position[0]] !== "" ) {
      setMessage(`Player ${board[position[0]]} Won!`)
+     saveGame()
      winner = true;
    }
   })
@@ -45,6 +50,7 @@ function doTurn(square) {
    turn = 0
   } else if (turn === 9) {
    setMessage("Tie game.")
+   saveGame()
   }
 }
 
@@ -71,13 +77,28 @@ function saveGame() {
   //if already exists in db, update the game state  *possibly using PATCH
   //if not, will save to db          *possibly using POST
   //have a div w/id = 'games'
-  var state = []    //set up an array to handle the state of the game
+  var state = []    //set up an array to hold the state of the game
   var gameData;
   $('td').text((i, square) => {           //grab the text that's in the square
     state.push(square)             //push the text that's in the square into the state array
-    console.log(state)
   })
+    //console.log(state)
+  gameData = {state: state}  //put the current games state into gameData hash
+    //console.log(gameData)
+    //if(currentGame) {
+     //$.ajax({
+    //   url: `/games/${currentGame}`
+    //   type: "PATCH"
+      // data: gameData
+    //  });
+    // } else {
+      $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+    })
+  //  }
 }
+
+
 
 function previousGames() {
 
