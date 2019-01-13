@@ -54,6 +54,13 @@ function doTurn(square) {
   }
 }
 
+function tieGame() {
+  if (turn === 9) {
+    saveGame();
+    return true;
+  };
+};
+
 function attachListeners() {
   $('td').on('click', function() {              //attach listener on click of a square in 'td'
     if(!$.text(this) && !checkWinner()) {     //if there is no text in this square & we don't have a winner
@@ -63,7 +70,7 @@ function attachListeners() {
   })
   $('#clear').on('click', () => resetGame());
   $('#save').on('click', () => saveGame());
-  $('#previous').on('click', () => previousGames());
+  $('#previous').on('click', () => previousGame());
 }
 
 function resetGame() {
@@ -99,16 +106,38 @@ function saveGame() {
   }
 }
 
-
-
-function previousGames() {
-
+function previousGame() {
+  //must grab all saved games from the database & create a button for each one
+  //that when clicked, returns that game's state to the board
+  //all of the buttons s/b added to the div#games element in the DOM
+  $.get('/games', function(savedGames) {
+      $('#games').empty();
+      savedGames.data.forEach(function(game) {
+      if (savedGames.data.length !== 0) {
+        $("#games").append(`<button id="gameId-${game.id}">Game: ${game.id}</button><br>`);
+        $("#gameId-" + game.id).on('click', function() {
+        showGame(game.id)
+        })
+      }
+    })
+  })
 }
 
-
-function tieGame() {
-  if (turn === 9) {
-    saveGame();
-    return true;
-  };
-};
+function showGame(id) {
+  //click the saved game button
+  //sends Get request to "/games/:id" route
+  //loads the saved game into the board
+  //marks the newly loaded game so if saved again, it will send a PATCH request instead of a POST
+  $.get(`/games/${id}`, function(game) {
+  $("#games").empty();
+  gameID = game.data.id;
+  state = game.data.attributes.state;
+  turn = state.join("").length
+  i = 0;
+  state.forEach(function(element) {
+    $('td')[i].innerHTML = element;
+    i++;
+  })
+  })
+  currentGame = id
+}
