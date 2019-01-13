@@ -71,6 +71,12 @@ function saveGame() {
   //if already exists in db, update the game state  *possibly using PATCH
   //if not, will save to db          *possibly using POST
   //have a div w/id = 'games'
+  var state = []    //set up an array to handle the state of the game
+  var gameData;
+  $('td').text((i, square) => {           //grab the text that's in the square
+    state.push(square)             //push the text that's in the square into the state array
+    console.log(state)
+  })
 }
 
 function previousGames() {
