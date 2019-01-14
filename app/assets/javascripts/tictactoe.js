@@ -23,7 +23,7 @@ var updateState = (square) => {
 }
 
 function setMessage(string) {
-  $("#message").html('Player X Won!')
+  $("#message").text(string)
   // string = 'Player X Won!'
   // $("#message").innerHTML = string
 }
@@ -40,7 +40,9 @@ function checkWinner() {
       td[combo[0]] != ""){
       var winnerToken = td[combo[0]]
       winner = true;
-      }
+      setMessage(`Player ${winnerToken} Won!`)
+    }
   }) ;
+  
   return winner;
 }
