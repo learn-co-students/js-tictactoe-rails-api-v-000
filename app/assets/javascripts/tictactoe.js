@@ -28,12 +28,19 @@ function setMessage(string) {
   // $("#message").innerHTML = string
 }
 
-function checkWinner(params) {
-  // let td = $("td").map(() => { this.innerHTML });
-  // WIN_COMBINATIONS.find(function (combo ) {
+function checkWinner() {
+  let td = []
+  let winner = false
 
-  //   td[combo[0]] == td[combo[1]] &&
-  //     td[combo[1]] == td[combo[2]] &&
-  //     td[combo[0]] != " "
-  // }) 
+  $("td").text(function (index, text) { td.push(text) })
+
+  WIN_COMBINATIONS.forEach(function (combo) {
+    if( td[combo[0]] == td[combo[1]] &&
+      td[combo[1]] == td[combo[2]] &&
+      td[combo[0]] != ""){
+      var winnerToken = td[combo[0]]
+      winner = true;
+      }
+  }) ;
+  return winner;
 }
