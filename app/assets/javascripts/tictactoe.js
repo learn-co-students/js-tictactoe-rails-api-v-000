@@ -1,6 +1,7 @@
 // Code your JavaScript / jQuery solution here
 
 var turn = 0;
+var currentGame = 0;
 
 function player() {
   return turn % 2 ? "O" : "X";
@@ -62,11 +63,11 @@ function doTurn(clickedSquare) {
 
   if (checkWinner()) {
     saveGame();
-    clearGame();
+    resetBoard();
   } else if (turn > 8) {
     setMessage("Tie game.");
     saveGame();
-    clearGame();
+    resetBoard();
   }
 }
 
@@ -77,18 +78,103 @@ var attachListeners = () => {
     }
   });
 
-  // $('#save').on('click', () => saveGame());
-  // $('#previous').on('click', () => showPreviousGames());
-  $('#clear').on('click', () => clearBoard());
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => showPreviousGames());
+  $('#clear').on('click', () => resetBoard());
  }
- 
+
 $(document).ready(function() {
   attachListeners();
-}); 
- 
- 
- var clearBoard = (click) => {
+});
+
+
+ var resetBoard = (click) => {
    $('td').empty();
    turn = 0;
-   
+   currentGame = 0;
  }
+
+
+var saveGame = () => {
+  var state = [];
+
+  $('td').text((index, square) => state.push(square));
+
+  var gameData = {state: state}
+
+  if(currentGame){
+    $.ajax({
+     type: 'PATCH',
+     url: `/games/${currentGame}`,
+     data: gameData,
+     success: () => { console.log('Game update successful.')},
+     fail: () => { console.log('Game update failed.')},
+    });
+  } else {
+    // $.ajax({
+    //   type: 'POST',
+    //   url: '/games',
+    //   data: gameData,
+    //   success: successFn,
+    //   fail: failFn,
+    //   complete: function(xhr, status) {
+    //     console.log('Save game request is complete.')
+    //   }
+    // });
+    $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+      console.log("Save was successful")
+    });
+  }
+
+}
+
+var showPreviousGames = () => {
+  $("#games").empty();
+  // grab the data
+  $.get('/games', function(data) {
+    // create a button for each game-data and make it reload that game
+    data.data.forEach(function(game) {
+      $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+      $("#gameid-" + game.id).on('click', () => reloadGame(game.id));
+    })
+  })
+}
+var reloadGame = (gameId) => {
+  $.get(`/games/${gameId}`, function(data) {
+    var state = data.data.attributes.state;
+    // state.forEach(function(game) {
+    //   var index = 0
+    //   for (let y = 0; y < 3; y++) {
+    //     for (let x = 0; x < 3; x++) {
+    //       document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+    //       // $('td[data-x=""][data-y=""]').innerHTML = state[index]
+    //       index++;
+    //     }
+    //   }
+    // });
+    $("td").text(function(index) {
+      return state[index];
+    });
+
+    $('#games').empty();
+    turn = state.filter((ele) => ele !== '').length;
+    state = [];
+
+    currentGame = gameId;
+    checkWinner();
+  });
+
+}
+
+
+// function successFn(game) {
+//   currentGame = game.data.id;
+//   $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+//   $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+// }
+// function failFn() {
+//   console.log('failed')
+// }
