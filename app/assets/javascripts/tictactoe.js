@@ -22,6 +22,7 @@ var updateState = (square) => {
   $(square).text(token);
 }
 
+let doTurn = () => turn++
 function setMessage(string) {
   $("#message").text(string)
   // string = 'Player X Won!'
