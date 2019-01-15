@@ -120,9 +120,9 @@ function attachListeners() {
       }
     });
   
-    $('#save').on('click', () => saveGame());
-    $('#previous').on('click', () => showPreviousGames());
-    $('#clear').on('click', () => resetBoard());
+    $('#save').click(saveGame);
+    $('#previous').click(showPreviousGames);
+    $('#clear').click(resetBoard);
   }
 
   function showPreviousGames() {
