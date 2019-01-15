@@ -114,7 +114,7 @@ function resetBoard() {
 }
 
 function attachListeners() {
-    $('td').on('click', function() {
+    $('td').click(function() {
       if (!$.text(this) && !checkWinner()) {
         doTurn(this);
       }
