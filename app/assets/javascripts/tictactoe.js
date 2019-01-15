@@ -17,7 +17,7 @@ $(document).ready(function() {
     attachListeners();
     });
 
-squares = $('td')
+
 
 //REQUIRED FUNCTIONS
 //Identify player
@@ -44,8 +44,6 @@ let board = {}
 let counter = 0
 let winner = false 
 
-
-
 // convert square values to an array so that they can be compared to winCombinations 
 $('td').each(function() {
   board[counter] = $(this).text()
@@ -56,6 +54,7 @@ $('td').each(function() {
 WINNING_COMBOS.some(function(combo) {
     if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
       setMessage(`Player ${board[combo[0]]} Won!`);
+      winner = true;
     } 
   });
 return winner;
@@ -81,13 +80,6 @@ function doTurn(square) {
     }
   }
 
-function gameOver() {
-    if (checkWinner() || turn == 9) {
-        return true 
-    } else {
-        return false
-    }
-}
 
 function saveGame() {
     var state = [];
