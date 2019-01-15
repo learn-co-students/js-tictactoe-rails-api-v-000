@@ -140,7 +140,8 @@ function attachListeners() {
   }
 
   function reloadGame(gameID) {
-    document.getElementById('message').innerHTML = '';
+    $('#message').text = '';
+//    document.getElementById('message').innerHTML = '';
   
     const xhr = new XMLHttpRequest;
     xhr.overrideMimeType('application/json');
