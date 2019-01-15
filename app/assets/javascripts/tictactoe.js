@@ -17,6 +17,8 @@ $(document).ready(function() {
     attachListeners();
     });
 
+squares = $('td')
+
 //REQUIRED FUNCTIONS
 //Identify player
 //Update board in browser with player token 
@@ -41,14 +43,14 @@ function checkWinner() {
 let board = {}
 let counter = 0
 let winner = false 
+
+
+
 // convert square values to an array so that they can be compared to winCombinations 
-  $('tr').each(function() {
-    $(this).children('td').each(function(){
-      board[counter] = $(this).html();
-      counter++;
-    })
- 
-  });
+$('td').each(function() {
+  board[counter] = $(this).text()
+  counter++
+});
 // check that each winning index combination is not empty AND contains the same value 
 // check for winning combination and if present change winner variable to equal true
 WINNING_COMBOS.some(function(combo) {
