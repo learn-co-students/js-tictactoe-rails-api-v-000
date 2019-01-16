@@ -17,6 +17,17 @@ $(document).ready(function() {
     attachListeners();
     });
 
+function attachListeners() {
+  $('td').click(function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  });
+
+  $('#save').click(saveGame);
+  $('#previous').click(showPreviousGames);
+  $('#clear').click(resetBoard);
+}
 
 
 //REQUIRED FUNCTIONS
@@ -25,11 +36,7 @@ $(document).ready(function() {
 // determine whether the game is over, is there a winner?
 
 var player = function() {
-    if (turn % 2) {
-        return "O"
-    } else {
-        return "X"
-    }
+  return (turn % 2 ? "O" : "X")
 } 
 
 
@@ -70,7 +77,6 @@ function setMessage(string) {
 function doTurn(square) {
     updateState(square);
     turn++;
-
     gameOver()
   }
 
@@ -118,17 +124,7 @@ function resetBoard() {
     currentGame = 0;
 }
 
-function attachListeners() {
-    $('td').click(function() {
-      if (!$.text(this) && !checkWinner()) {
-        doTurn(this);
-      }
-    });
-  
-    $('#save').click(saveGame);
-    $('#previous').click(showPreviousGames);
-    $('#clear').click(resetBoard);
-  }
+
 
   function showPreviousGames() {
     $('#games').empty();
