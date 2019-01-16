@@ -17,10 +17,10 @@ function player() {
 }
 
 function updateState(square) {
-  if (!square.innerHTML) {
+  //if (!square.innerHTML) {
     square.innerHTML = player();
-    return true;
-  } else {setMessage('Try another space.')};
+  // return true;
+  //}// else {setMessage('Try another space.')}; - caused tests to fail
 }
 
 function currentState() {
@@ -28,6 +28,16 @@ function currentState() {
   let state = [];
   squares.forEach(square => state.push(square.innerHTML));
   return state;
+}
+
+function turnCount() {
+  turn = 0;
+  currentState().forEach(function(square) {
+    if (square !== "") {
+      turn++;
+    };
+  });
+  return turn;
 }
 
 function setMessage(string) {
@@ -48,45 +58,42 @@ function checkWinner() {
   else {return false}
 }
 
-function doTurn() {
-  if (updateState(this)) {
-    setMessage('')
-    turn++;
-  };
+function doTurn(square) {
+  updateState(square)
+  turn++;
   if (checkWinner()) {
     saveGame();
     resetGame();
   } else if (turn === 9) {
-    setMessage("Tie game.");
+    setMessage('Tie game.');
     saveGame();
     resetGame();
   };
 }
 
 function resetGame() {
-  let squares = document.querySelectorAll('td');
-  squares.forEach(function(square) {
-    square.innerHTML = "";
-  });
+  $('td').empty();
+  //let squares = document.querySelectorAll('td');
+  //squares.forEach(function(square) {
+  //  square.innerHTML = "";
+  //});
   gameID = 0;
   turn = 0;
 }
 
 function saveGame() {
-//when button#save clicked, creates a new game if does not already exist
-//otherwise updates
   if (gameID !== 0) {
     //update existing game
-    $.patch(`/games/${gameID}`, {state: currentState()});
+    $.ajax({
+      type: "patch",
+      url: `/games/${gameID}`,
+      data: {state: currentState()}
+    });
   } else {
-    //create new game
+    //create new game and save to db
     $.post("/games", {state: currentState()}, function(savedGame) {
       gameID = savedGame["data"]["id"];
     });
-    //newGame.done(function(saveData) {
-    //  gameID = saveData["data"]["id"];
-    //});
-    setMessage("Game saved");
   }
 }
 
@@ -105,7 +112,7 @@ function previousGames() {
 }
 
 function loadGame() {
-  var gameID = $(this).data("id");
+  gameID = $(this).data("id");
   $.getJSON(`/games/${gameID}`, function(response) {
     var gameState = response["data"]["attributes"]["state"];
     const squares = document.querySelectorAll('td');
@@ -113,19 +120,24 @@ function loadGame() {
       square.innerHTML = gameState[index];
     };
     squares.forEach(updateSquares);
-    debugger;
-  })
+    turnCount();
+  });
 }
 
 function attachListeners() {
-  const squares = document.querySelectorAll('td');
+  //const squares = document.querySelectorAll('td');
   const saveButton = document.getElementById('save');
   const previousButton = document.getElementById('previous');
   const clearButton = document.getElementById('clear');
 
-  squares.forEach(function(square) {
-    square.addEventListener('click', doTurn);
+  $('td').on('click', function () {
+    if(!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    };
   });
+  //squares.forEach(function(square) {
+  //  square.addEventListener('click', doTurn);
+  //}); - tests did not like this version; but still worked
   saveButton.addEventListener('click', saveGame);
   previousButton.addEventListener('click', previousGames);
   clearButton.addEventListener('click', resetGame);
