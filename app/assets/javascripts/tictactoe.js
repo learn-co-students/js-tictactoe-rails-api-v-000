@@ -121,7 +121,7 @@ var saveGame = () => {
         data: gameData
       });
     } else {  // if currentGame is still 0 (Note: 0 is *not* truthy in JavaScript)
-      $.post('/games', gameData, function (game) {  // save game first time
+      $.patch('/games', gameData, function (game) {  // save game first time
         currentGame = game.data.id; // save game first time
         $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
         $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
