@@ -23,15 +23,20 @@ function updateState(square) {
   } else {setMessage('Try another space.')};
 }
 
+function currentState() {
+  const squares = document.querySelectorAll('td');
+  let state = [];
+  squares.forEach(square => state.push(square.innerHTML));
+  return state;
+}
+
 function setMessage(string) {
   const messageDiv = document.getElementById('message');
   messageDiv.innerHTML = string
 }
 
 function checkWinner() {
-  const squares = document.querySelectorAll('td');
-  let values = [];
-  squares.forEach(square => values.push(square.innerHTML));
+  var values = currentState();
   var winner;
   winCombinations.forEach(function(win) {
     if (values[win[0]] == values[win[1]] && values[win[1]] == values[win[2]] && values[win[0]] !== "") {
@@ -70,60 +75,45 @@ function resetGame() {
 function saveGame() {
 //when button#save clicked, creates a new game if does not already exist
 //otherwise updates
-//  const squares = document.querySelectorAll('td');
-//  let state = [];
-//  squares.forEach(square => state.push(square.innerHTML));
-//
-//  let savedGame = $.post('/games', state);
-//  savedGame.done(function(data) {
-//    console.log(data);
-//  })
   if (gameID !== 0) {
-    //$.get("/games/" + gameID)
-    //update game info
-    //$.update?("/games/" +gameID)
-    currentGame.state
+    //update existing game
+    $.patch(`/games/${gameID}`, {state: currentState()});
   } else {
     //create new game
-    //var newGame = $.post("/games", {state: state);
+    $.post("/games", {state: currentState()}, function(savedGame) {
+      gameID = savedGame["data"]["id"];
+    });
     //newGame.done(function(saveData) {
     //  gameID = saveData["data"]["id"];
-  //});
-    //set gameID by the game instance id
+    //});
+    setMessage("Game saved");
   }
-  setMessage("Game saved");
 }
 
 function previousGames() {
+  const gamesDiv = document.getElementById('games');
   var gameList = "";
   $.getJSON('/games', function(response) {
-    console.log(response);
     response["data"].forEach(function(game) {
-      var gameButton = `<button class="prior-game" data-id="${game["id"]}">${game["id"]}</button>`;
+      var gameButton = `<button class="prior-game" data-id="${game["id"]}">Game ${game["id"]}</button><br>`;
       gameList += gameButton;
-      debugger;
     });
+  }).done(function() {
+    gamesDiv.innerHTML = gameList
     $(".prior-game").on('click', loadGame);
   });
-  debugger;
-  const gamesDiv = document.getElementById('games');
-  gamesDiv.innerHTML = gameList
-  console.log(gameList)
 }
 
 function loadGame() {
-  //get gameID from data
-  //$.get("/games/" + gameID, function(response) {
-  //var gameState = response["data"]["attributes"]["state"];
-//})
-  //function updateSquare(square, index) {
-    //square.innerHTML = gameState[index];
-  //}
-  //squares.forEach(updateSquare);
   var gameID = $(this).data("id");
   $.getJSON(`/games/${gameID}`, function(response) {
     var gameState = response["data"]["attributes"]["state"];
-    //transfer gameState to DOM
+    const squares = document.querySelectorAll('td');
+    function updateSquares(square, index) {
+      square.innerHTML = gameState[index];
+    };
+    squares.forEach(updateSquares);
+    debugger;
   })
 }
 
@@ -138,5 +128,5 @@ function attachListeners() {
   });
   saveButton.addEventListener('click', saveGame);
   previousButton.addEventListener('click', previousGames);
-  clearButton.addEventListener('click', clearGame);
+  clearButton.addEventListener('click', resetGame);
 };
