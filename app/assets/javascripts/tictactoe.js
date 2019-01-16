@@ -6,6 +6,8 @@ var WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8,], //Horizontal Wins
 [0,3,6], [1,4,7], [2,5,8], //Vertical Wins
 [0,4,8], [6,4,2]]; //Diagonal Wins
 
+var currentGame = 0;
+
 $(document).ready(function() {
   attachListeners();
 });
@@ -50,18 +52,21 @@ function checkWinner(){
 
 function doTurn(square){
   updateState(square);
-  turn++;
+  turn ++;
   if (checkWinner()){
+    saveGame();
     clearGame();
   }else if (turn === 9){
-    setMessage("Tie game.")
+    setMessage("Tie game.");
+    saveGame();
+    clearGame();
   }
 }
 
 function attachListeners(){
   $("td").on('click', function(){
     // Check to ensure that the square is empty
-    if (this.innerHTML === ""){
+    if (this.innerHTML === "" && checkWinner() === false){
       doTurn(this);
     }
   });
@@ -75,31 +80,60 @@ function attachListeners(){
   });
 
   $("#previous").on("click", function(){
-    alert("You clicked previous")
+    showPreviousGames();
   });
 }
 
 
 function saveGame(){
-  var gameBoard = [];
-  var saveGameData;
+  var state = [];
+  var gameData;
 
   $('td').each(function(){
-    gameBoard.push($(this).text());
+    state.push($(this).text());
   });
-  saveGameData = {gameState: gameBoard}
-  
-  debugger;
+
+  gameData = {state: state};
+
+  if (currentGame){
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  }else {
+    $.post('/games', gameData, function(game){
+      currentGame = game.data.id;
+   });
+  }
 }
 
 function clearGame(){
   //Clears the board
   $('td').empty()
   //resets turn to 0
-  turn = 0
+  turn = 0;
+  currentGame = 0;
 }
 
+function showPreviousGames(){
+  $('#games').text();
+  $.get('/games', function(games){
+    games.data.map(function(game){
+      $('#games').append(`<button id="gameid-${game.id}">Game: ${game.id}</button><br>`);
+      $("#gameid-" + game.id).click(() => reloadGame(game.id));
+    })
+  })
+}
 
-function isEven(value){
-
+function reloadGame(gameid){
+  $('#message').text("");
+  $.get(`/games/${gameid}`, function(game){
+    var state = game.data.attributes.state;
+    $("td").text((i,text) => state[i]);
+    board = gameid;
+    // set board equal to gameid
+    turn = state.join('').length
+    checkWinner();
+  })
 }
