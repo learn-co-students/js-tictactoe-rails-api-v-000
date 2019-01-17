@@ -44,18 +44,23 @@ function updateState(square) {
    $(square).text(player());
 }
 
+function captureState() {
+  let board = {};
+  let counter = 0;
+  $('td').each(function() {
+    board[counter] = $(this).text()
+    counter++
+  });
+  return board;
+}
 
 function checkWinner() {
 // set variable that will hold the current state of the board
-let board = {}
-let counter = 0
+
 let winner = false 
 
 // convert square values to an array so that they can be compared to winCombinations 
-$('td').each(function() {
-  board[counter] = $(this).text()
-  counter++
-});
+let board = captureState()
 // check that each winning index combination is not empty AND contains the same value 
 // check for winning combination and if present change winner variable to equal true
 WINNING_COMBOS.some(function(combo) {
@@ -153,11 +158,13 @@ function resetBoard() {
       const state = data.attributes.state;
   
       let index = 0;
-      for (let y = 0; y < 3; y++) {
-        for (let x = 0; x < 3; x++) {
-          document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+      while (index < 9) {
+        $('td').each(function() {
+          $(this).text(state[index]);
           index++;
-        }
+        
+        
+        })
       }
   
       turn = state.join('').length;
