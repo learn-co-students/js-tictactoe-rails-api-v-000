@@ -1,6 +1,6 @@
 // Code your JavaScript / jQuery solution here
 
-//Something with playing a game and it automatically saving while playing basiaclly reacting multiple games. 
+//Something with playing a game and it automatically saving while playing basiaclly reacting multiple games.
 var turn = 0;
 
 //Possible Winning Outcomes (This is a constant)
@@ -122,8 +122,10 @@ function showPreviousGames(){
   $('#games').text();
   $.get('/games', function(games){
     games.data.map(function(game){
+      if ($(`#gameid-${game.id}`).length === 0){
       $('#games').append(`<button id="gameid-${game.id}">Game: ${game.id}</button><br>`);
       $("#gameid-" + game.id).click(() => reloadGame(game.id));
+    }
     })
   })
 }
