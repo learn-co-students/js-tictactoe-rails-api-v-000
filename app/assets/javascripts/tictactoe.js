@@ -42,6 +42,10 @@ function clearState(){
 
 function doTurn(e){
     console.log('click!')
+    alignStateToWindow();
+    if(winner(true) || boardFull()){ 
+        return false;
+    }
     setMessage('')
     move(e)
 }
@@ -60,7 +64,6 @@ function updateState(coordData){
         coord = [coordData.dataset.x, coordData.dataset.y];
         state[coord[1]][coord[0]] = player;
     }else{
-        debugger
         console.log("INCORRECT PARAMETER PASSED TO UPDATESTATE")
     }
     displayMove(coord, playerToken);
@@ -166,9 +169,12 @@ function endGame(winner = null){
     }else{
         setMessage("Tie game.")
     }
-    // clearState();
-    // resetBoard();
-    
+    saveGame(cleanUp);
+}
+
+function cleanUp(){
+    resetBoard()
+    clearState()
 }
 
 function resetBoard(){
@@ -215,7 +221,7 @@ function findSource(e){
     return [src.dataset.x, src.dataset.y]
 }
 
-function createGame(){
+function createGame(callback){
     // fetch('/games', {
     //     method: "POST",
     //     body: JSON.stringify({
@@ -230,18 +236,25 @@ function createGame(){
     $.post('/games', {state: translateState()}, function(res){
         gameId = res.data.id
     })
+    if(isFunction(callback)){ 
+        callback() 
+    }
 }
 
-function saveGame(){
+function isFunction(functionToCheck) {
+    return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+   }
+
+function saveGame(callback){
     if(!!gameId){
-        updateGame();
+        updateGame(callback);
     }else{
-        createGame();
+        createGame(callback);
     }
     
 }
 
-function updateGame(){
+function updateGame(callback){
     // fetch('/games/' + gameId, {
     //     method: 'PUT',
     //     body: JSON.stringify({ 
@@ -257,6 +270,7 @@ function updateGame(){
         }), 
         contentType: "application/json"
     });
+    if(isFunction(callback)) callback();
 }
 
 
@@ -379,7 +393,6 @@ function unflattenState(stateArr){
 }
 
 function clearGame(){
-    saveGame();
     clearState();
     clearMoves();
 }
