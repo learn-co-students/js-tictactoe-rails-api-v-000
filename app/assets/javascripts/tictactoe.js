@@ -41,6 +41,7 @@ function clearState(){
 
 
 function doTurn(e){
+    console.log('click!')
     setMessage('')
     move(e)
 }
@@ -49,8 +50,20 @@ function player(){
     return (turn % 2 == 0) ? "X" : "O"
 }
 
-function updateState(coord){
-    state[coord[1]][coord[0]] = player();
+function updateState(coordData){
+    var coord;
+    var playerToken = player();
+    if(coordData.constructor === Array){
+        coord = coordData
+        state[coordData[1]][coordData[0]] = player();
+    }else if(coordData.constructor === HTMLTableCellElement){
+        coord = [coordData.dataset.x, coordData.dataset.y];
+        state[coord[1]][coord[0]] = player;
+    }else{
+        debugger
+        console.log("INCORRECT PARAMETER PASSED TO UPDATESTATE")
+    }
+    displayMove(coord, playerToken);
 }
 
 
@@ -61,6 +74,26 @@ function translateState(){
 function setMessage(msg){
     document.querySelector('#message').textContent = msg
 }
+
+function checkWinner(){
+    alignStateToWindow();
+    if(checkWinnerFor("X")){
+        setMessage("Player X Won!")
+    }
+    if(checkWinnerFor("O")){
+        setMessage("Player O Won!")
+    }
+    return !!(checkWinnerFor("X") || checkWinnerFor("O"))
+}
+
+function alignStateToWindow(){
+    for(var i = 0; i < 3; i++){
+        for(var j = 0; j < 3; j++){
+            state[i][j] = document.querySelector('[data-y="' + i + '"][data-x="' + j + '"]').innerHTML;
+        }
+    }
+}
+
 
 function checkWinnerFor(playerToken){
     var playerMoves = playerSpots(playerToken);
@@ -97,29 +130,51 @@ function playerSpots(player){
     return moveLocations;
 }
 
-function move(e){   
+function move(e){ 
     var coord = findSource(e)
     if(validCoord(coord)){
-        updateState(coord);
-        displayMove(coord);
-        checkGameOver();
-        turn += 1;
+        var el;
+        if(e.constructor === HTMLTableCellElement){
+            el = e;
+        }else{
+            el = e.target;
+        }
+        updateState(el);
+        if(!checkGameOver()) turn++
+        
     }else{
         invalidMove();
     }
 }
 
 function checkGameOver(bothPlayers = false){
-    var gameWinner = winner(bothPlayers)
-    if(gameWinner || boardFull()) endGame(gameWinner) 
+    if(checkWinner()){
+        var gameWinner = winner(bothPlayers)
+    }
+    if(gameWinner || boardFull()) {
+         endGame(gameWinner) 
+         return true;
+    }else{
+        return false;
+    }
 }
 
 function endGame(winner = null){
     clearMoveListener();
     if(!!winner){
-        setMessage(winner + " wins the game!")
+        setMessage("Player " + winner + " wins!")
     }else{
-        setMessage("Game is a draw")
+        setMessage("Tie game.")
+    }
+    // clearState();
+    // resetBoard();
+    
+}
+
+function resetBoard(){
+    var spots = document.querySelectorAll('td');
+    for(spot of spots){
+        spot.innerHTML = "";
     }
 }
 
@@ -140,8 +195,8 @@ function boardFull(){
     return !state.flat().includes("")
 }
 
-function displayMove(coord){
-    document.querySelector('[data-x="' + coord[0] +  '"][data-y="' + coord[1] + '"]').innerHTML = player();
+function displayMove(coord, player){
+    document.querySelector('[data-x="' + coord[0] +  '"][data-y="' + coord[1] + '"]').innerHTML = player;
 }
 
 function validCoord(coord){
@@ -153,29 +208,31 @@ function invalidMove(){
 }
 
 function findSource(e){
-    var src = e.target
+    var src = e;
+    if(e.constructor !== HTMLTableCellElement){
+        src = e.target;
+    }
     return [src.dataset.x, src.dataset.y]
 }
 
 function createGame(){
-    fetch('/games', {
-        method: "POST",
-        body: JSON.stringify({
-            state: translateState(),
-            credentials: "same-origin"
-        }),
-        headers: reqHeaders()
-    })
-    .then(res => res.json())
-    .then(json => gameId = json.data.id)
-
-    // $.post('/games', {state: translateState()}, function(res){
-    //     console.log(res)
+    // fetch('/games', {
+    //     method: "POST",
+    //     body: JSON.stringify({
+    //         state: translateState(),
+    //         credentials: "same-origin"
+    //     }),
+    //     headers: reqHeaders()
     // })
+    // .then(res => res.json())
+    // .then(json => gameId = json.data.id)
+
+    $.post('/games', {state: translateState()}, function(res){
+        gameId = res.data.id
+    })
 }
 
 function saveGame(){
-    console.log("SAVING GAME");
     if(!!gameId){
         updateGame();
     }else{
@@ -185,13 +242,21 @@ function saveGame(){
 }
 
 function updateGame(){
-    fetch('/games/' + gameId, {
-        method: 'PUT',
-        body: JSON.stringify({ 
+    // fetch('/games/' + gameId, {
+    //     method: 'PUT',
+    //     body: JSON.stringify({ 
+    //         state: translateState()
+    //     }),
+    //     headers: reqHeaders()
+    // })
+    $.ajax({
+        url: '/games/' + gameId,
+        type: 'PATCH', 
+        data: JSON.stringify({
             state: translateState()
-        }),
-        headers: reqHeaders()
-    })
+        }), 
+        contentType: "application/json"
+    });
 }
 
 
@@ -206,26 +271,46 @@ function reqHeaders(){
 
 function previousGames(){
     clearButtons();
-    games = loadAllGames();
-    games
-    .then(function(res){
-        return res.json();
-    })
-    .then(function(gamesData){
-        for(game of gamesData.data){
-            buttonizeGame(game.id)
-        }
-    })
+    loadAllGames();
 }
 
 function loadAllGames(){
-    return fetch('/games', {
-        headers: {
-            "Accept": "application/json"
+    $.ajax({
+        url: '/games',
+        success: function(gamesData){
+            for(game of gamesData.data){
+                buttonizeGame(game.id)
+            }
+        },
+        error: function(xhr, status, error){
+            console.log(error)
+            console.log(xhr)
+            console.log(xhr.responseText)
         }
-    })
-        
+    }) ; 
 }
+
+// function previousGames(){
+//     clearButtons();
+//     games = loadAllGames();
+//     games
+//     .then(function(res){
+//         return res.json();
+//     })
+//     .then(function(gamesData){
+//         for(game of gamesData.data){
+//             buttonizeGame(game.id)
+//         }
+//     })
+// }
+
+// function loadAllGames(){
+//     return fetch('/games', {
+//         headers: {
+//             "Accept": "application/json"
+//         }
+//     })  
+// }
 
 function buttonizeGame(id){
     var button = document.createElement('button')
@@ -243,22 +328,28 @@ function buttonizeGame(id){
 function loadGame(id){
     gameId = id;
     setMessage("");
-    fetch('/games/' + id, {
-        headers: {
-            "Accept": "application/json"
-        }
+    $.get('/games/' + id, function(gameData){
+        var stateArr = gameData.data.attributes.state;
+        state = unflattenState(stateArr);
+        renderBoard();
+        resetMoveListener();
+        checkGameOver(true);
     })
-        .then(function(res){
-            return res.json();
-        })
-        .then(function(gameData){
-            var stateArr = gameData.data.attributes.state;
-            console.log(stateArr);
-            state = unflattenState(stateArr);
-            renderBoard();
-            resetMoveListener();
-            checkGameOver(true);
-        })
+    // fetch('/games/' + id, {
+    //     headers: {
+    //         "Accept": "application/json"
+    //     }
+    // })
+    //     .then(function(res){
+    //         return res.json();
+    //     })
+    //     .then(function(gameData){
+    //         var stateArr = gameData.data.attributes.state;
+    //         state = unflattenState(stateArr);
+    //         renderBoard();
+    //         resetMoveListener();
+    //         checkGameOver(true);
+    //     })
 }
 
 function renderBoard(){
