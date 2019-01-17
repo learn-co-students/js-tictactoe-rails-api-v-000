@@ -2,12 +2,23 @@
 var turn = 0
 
 function player() {
-  // Returns 'X' when the turn variable is even and 'O' when it is odd.
-
+  // Returns 'X' or 'O' if turn is even or odd
+  if (turn%2 === 0) {
+    return 'X'
+  } else {
+    return 'O'
+  }
 }
 
 function updateState(element) {
+  var cell = element
 
+  if (player() === 'X') {
+    cell.append("X")
+  } else {
+    cell.append("O")
+  }
+  // adds the returned string ('X' or 'O') to the clicked square on the game board.
 }
 
 function setMessage() {
@@ -15,16 +26,16 @@ function setMessage() {
 }
 
 function checkWinner() {
-
+  console.log("insideCheckWinner")
 }
 
 function doTurn(element) {
   // Increments the turn variable by 1
   ++turn
 
-  // invoke updateState()
+  updateState(element)
 
-  // invoke checkWinner()
+  checkWinner()
 }
 
 // Listeners //
