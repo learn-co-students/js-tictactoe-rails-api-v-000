@@ -1,4 +1,4 @@
-// Game play functions
+// Game play functions //
 var turn = 0
 
 function player() {
@@ -18,96 +18,81 @@ function checkWinner() {
 
 }
 
-function doTurn() {
+function doTurn(element) {
   // Increments the turn variable by 1
   ++turn
+
   // invoke updateState()
 
   // invoke checkWinner()
 }
 
-// Listeners
+// Listeners //
 
 $(function attachListeners() {
   // Attaches the appropriate event listeners to:
+
   // Cells
-  const cell1 = $("tr#row-1 td:nth-child(1)")
-  const cell2 = $("tr#row-1 td:nth-child(2)")
-  const cell3 = $("tr#row-1 td:nth-child(3)")
+  const cell1 = $("tr#row-1 td#td-1")
+  const cell2 = $("tr#row-1 td#td-2")
+  const cell3 = $("tr#row-1 td#td-3")
 
-  const cell4 = $("tr#row-2 td:nth-child(1)")
-  const cell5 = $("tr#row-2 td:nth-child(2)")
-  const cell6 = $("tr#row-2 td:nth-child(3)")
+  const cell4 = $("tr#row-2 td#td-4")
+  const cell5 = $("tr#row-2 td#td-5")
+  const cell6 = $("tr#row-2 td#td-6")
 
-  const cell7 = $("tr#row-3 td:nth-child(1)")
-  const cell8 = $("tr#row-3 td:nth-child(2)")
-  const cell9 = $("tr#row-3 td:nth-child(3)")
+  const cell7 = $("tr#row-3 td#td-7")
+  const cell8 = $("tr#row-3 td#td-8")
+  const cell9 = $("tr#row-3 td#td-9")
 
+  // Upon cell click invoke doTurn
   $(cell1).click(function() {
-
+    doTurn(this)
   })
 
   $(cell2).click(function() {
-
+    doTurn(this)
   })
 
   $(cell3).click(function() {
-
+    doTurn(this)
   })
 
   $(cell4).click(function() {
-
+    doTurn(this)
   })
 
   $(cell5).click(function() {
-
+    doTurn(this)
   })
 
   $(cell6).click(function() {
-
+    doTurn(this)
   })
 
   $(cell7).click(function() {
-
+    doTurn(this)
   })
 
   $(cell8).click(function() {
-
+    doTurn(this)
   })
 
   $(cell9).click(function() {
-    
+    doTurn(this)
   })
 
+  // Buttons
 
-
-
-  // Save, previous, and clear buttons
-  // user clicks on a square on the game board, the event listener should invoke doTurn()
-})
-
-
-// Buttons
-
-$(function() {
-  $("#save").on("click", function() {
-
-    let posting = $.post('/games')
-
-    posting.done(function(data) {
-
-      let game = data["data"]
-      let state = game["attributes"]["state"]
-
-    })
+  $("#save").click(function() {
+    alert("you clicked save")
   })
-})
 
+  $("#previous").click(function() {
+    alert("you clicked previous")
+  })
 
-$("#previous").on("click", function() {
-
-})
-
-$("#clear").on("click", function() {
-
+  $("#clear").click(function() {
+    alert("you clicked clear")
+  })
 })
