@@ -103,10 +103,10 @@ function saveGame(){
       url: `/games/${currentGame}`,
       data: gameData
     });
-  }else {
-    $.post('/games', gameData, function(game){
+  }else{
+    $.post('/games', gameData).done(function(game){
       currentGame = game.data.id;
-   });
+   })
   }
 }
 
