@@ -17,7 +17,6 @@ var state = [
 
 window.onload = () => {
     attachListeners();
-    if(!gameId) createGame();
 }
 
 function attachListeners(){
@@ -35,13 +34,15 @@ function clearState(){
     state = [
         new Array(3).fill(""), new Array(3).fill(""), new Array(3).fill("")
     ]
+    gameId = null;
+    turn = 0;
+    resetMoveListener();
 }
 
 
 function doTurn(e){
     setMessage('')
     move(e)
-    turn += 1;
 }
 
 function player(){
@@ -49,13 +50,9 @@ function player(){
 }
 
 function updateState(coord){
-    state[coord[0]][coord[1]] = player();
+    state[coord[1]][coord[0]] = player();
 }
 
-
-function retrieveState(){
-    
-}
 
 function translateState(){
     return state.flat();
@@ -65,9 +62,8 @@ function setMessage(msg){
     document.querySelector('#message').textContent = msg
 }
 
-
-function winner(){
-    var playerMoves = playerSpots(player());
+function checkWinnerFor(playerToken){
+    var playerMoves = playerSpots(playerToken);
     for(combo of winCombos){
         var containsCombo = true;
         for(place of combo){
@@ -77,10 +73,18 @@ function winner(){
             }
         }
         if(containsCombo){
-            return player();
+            return playerToken;
         }
     }
     return false
+}
+
+function winner(bothPlayers = false){
+    if(bothPlayers){
+        return checkWinnerFor("X") || checkWinnerFor("O");
+    }else{
+        return checkWinnerFor(player());
+    }
 }
 
 function playerSpots(player){
@@ -99,23 +103,37 @@ function move(e){
         updateState(coord);
         displayMove(coord);
         checkGameOver();
+        turn += 1;
     }else{
         invalidMove();
     }
 }
 
-function checkGameOver(){
-    var gameWinner = winner()
+function checkGameOver(bothPlayers = false){
+    var gameWinner = winner(bothPlayers)
     if(gameWinner || boardFull()) endGame(gameWinner) 
 }
 
 function endGame(winner = null){
-    document.querySelector('table').removeEventListener('click', doTurn)
+    clearMoveListener();
     if(!!winner){
-        setMessage(winner + "wins the game!")
+        setMessage(winner + " wins the game!")
     }else{
         setMessage("Game is a draw")
     }
+}
+
+function clearMoveListener(){
+    document.querySelector('table').removeEventListener('click', doTurn)
+}
+
+function addMoveListener(){
+    document.querySelector('table').addEventListener('click', doTurn)
+}
+
+function resetMoveListener(){
+    clearMoveListener();
+    addMoveListener();
 }
 
 function boardFull(){
@@ -142,28 +160,142 @@ function findSource(e){
 function createGame(){
     fetch('/games', {
         method: "POST",
-        body: JSON.stringify({state: translateState()}),
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        body: JSON.stringify({
+            state: translateState(),
+            credentials: "same-origin"
+        }),
+        headers: reqHeaders()
     })
-    .then(res => res.text())
-    .then(json => console.log(json))
+    .then(res => res.json())
+    .then(json => gameId = json.data.id)
+
+    // $.post('/games', {state: translateState()}, function(res){
+    //     console.log(res)
+    // })
 }
 
 function saveGame(){
+    console.log("SAVING GAME");
+    if(!!gameId){
+        updateGame();
+    }else{
+        createGame();
+    }
+    
+}
 
+function updateGame(){
     fetch('/games/' + gameId, {
-        method: 'PATCH',
-        body: JSON.stringify({ state: translateState()})
+        method: 'PUT',
+        body: JSON.stringify({ 
+            state: translateState()
+        }),
+        headers: reqHeaders()
     })
 }
 
+
+function reqHeaders(){
+
+    return {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        'X-CSRF-Token': window._token
+    }
+}
+
 function previousGames(){
-    alert('prev games')
+    clearButtons();
+    games = loadAllGames();
+    games
+    .then(function(res){
+        return res.json();
+    })
+    .then(function(gamesData){
+        for(game of gamesData.data){
+            buttonizeGame(game.id)
+        }
+    })
+}
+
+function loadAllGames(){
+    return fetch('/games', {
+        headers: {
+            "Accept": "application/json"
+        }
+    })
+        
+}
+
+function buttonizeGame(id){
+    var button = document.createElement('button')
+    button.innerHTML = id;
+    button.dataset.id = id;
+    button.addEventListener('click', function(e){
+        var id = button.dataset.id;
+        clearGame();
+        loadGame(id);
+    });
+    document.querySelector('#games').appendChild(button);
+
+}
+
+function loadGame(id){
+    gameId = id;
+    setMessage("");
+    fetch('/games/' + id, {
+        headers: {
+            "Accept": "application/json"
+        }
+    })
+        .then(function(res){
+            return res.json();
+        })
+        .then(function(gameData){
+            var stateArr = gameData.data.attributes.state;
+            console.log(stateArr);
+            state = unflattenState(stateArr);
+            renderBoard();
+            resetMoveListener();
+            checkGameOver(true);
+        })
+}
+
+function renderBoard(){
+    turn = 0;
+    for(var i = 0; i < 3; i++){
+        for(var j = 0; j < 3; j++){
+            if(state[i][j] !== ""){
+                turn++;
+            }
+            document.querySelector('[data-y="' + i + '"][data-x="' + j + '"]').innerHTML = state[i][j];
+        }
+    }
+}
+
+function clearButtons(){
+    document.querySelector('#games').innerHTML = "";
+}
+
+function unflattenState(stateArr){
+    var newState = [];
+    for(var i = 0; i < 3; i++){
+        var start = i * 3;
+        var subState = stateArr.slice(start, start + 3);
+        newState.push(subState);
+    }
+    return newState;
 }
 
 function clearGame(){
-    alert('clear')
+    saveGame();
+    clearState();
+    clearMoves();
+}
+
+function clearMoves(){
+    document.querySelectorAll('td').forEach(function(el){
+        el.innerHTML = ""
+    })
 }
 
