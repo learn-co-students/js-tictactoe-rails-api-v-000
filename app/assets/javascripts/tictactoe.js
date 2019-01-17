@@ -146,7 +146,7 @@ function resetBoard() {
   }
 
   function reloadGame(gameID) {
-    $('#message').text = '';
+    $('#message').text('');
 //    document.getElementById('message').innerHTML = '';
   
     const xhr = new XMLHttpRequest;
@@ -162,8 +162,6 @@ function resetBoard() {
         $('td').each(function() {
           $(this).text(state[index]);
           index++;
-        
-        
         })
       }
   
