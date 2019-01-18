@@ -1,4 +1,5 @@
 // Code your JavaScript / jQuery solution here
+
 var turn = 0
 var currentGame = 0
 
@@ -100,6 +101,8 @@ function saveGame() {
      } else {
       $.post('/games', gameData, function(game) {
       currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+     $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
     })
   }
 }
