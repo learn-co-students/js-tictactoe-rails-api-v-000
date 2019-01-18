@@ -1,6 +1,4 @@
 // Code your JavaScript / jQuery solution here
-
-
 var turn = 0
 var currentGame = 0
 
