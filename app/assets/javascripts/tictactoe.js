@@ -37,69 +37,17 @@ function doTurn(element) {
 
 $(function attachListeners() {
   // Attaches the appropriate event listeners to:
-
-  // Cells
-
-  const cell1 = $("td#td-1")
-  const cell2 = $("td#td-2")
-  const cell3 = $("td#td-3")
-
-  const cell4 = $("td#td-4")
-  const cell5 = $("td#td-5")
-  const cell6 = $("td#td-6")
-
-  const cell7 = $("td#td-7")
-  const cell8 = $("td#td-8")
-  const cell9 = $("td#td-9")
-
-  // Upon cell click invoke doTurn
-  $(cell1).click(function() {
-    doTurn(this)
+  $('td').on('click', function() {
+    debugger
+    // If no text & no winner
+    if (!$.text(this) && !checkWinner()) {
+      // Make a play
+      doTurn(this)
+    }
   })
 
-  $(cell2).click(function() {
-    doTurn(this)
-  })
+  $('#save').on('click', () => saveGame())
+  $('#previous').on('click', () => showPreviousGames())
+  $('#clear').on('click', () => resetBoard())
 
-  $(cell3).click(function() {
-    doTurn(this)
-  })
-
-  $(cell4).click(function() {
-    doTurn(this)
-  })
-
-  $(cell5).click(function() {
-    doTurn(this)
-  })
-
-  $(cell6).click(function() {
-    doTurn(this)
-  })
-
-  $(cell7).click(function() {
-    doTurn(this)
-  })
-
-  $(cell8).click(function() {
-    doTurn(this)
-  })
-
-  $(cell9).click(function() {
-    doTurn(this)
-  })
-
-  // Buttons
-
-  $("#save").click(function() {
-    alert("you clicked save")
-  })
-
-  $("#previous").click(function() {
-    alert("you clicked previous")
-  })
-
-  $("#clear").click(function() {
-    alert("you clicked clear")
-  })
 })
