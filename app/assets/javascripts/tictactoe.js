@@ -53,102 +53,14 @@ var doTurn = (square) => {
   updateState(square)
   turn++
   if (checkWinner() == true) {
+    saveGame()
     resetBoard()
   } else if (turn == 9) {
     setMessage("Tie game.")
+    saveGame()
     resetBoard()
   }
 }
-
-var attachListeners = () => {
-  tdClicked()
-  $('#previous').on('click', () => previousGames());
-  saveGame()
-
-}
-
-let resetBoard = () => {
-  $("td").empty()
-  turn = 0
-}
-
-var previousGames = () => {
-  
-    $.get("/games", function (data) {
-      data.data.forEach(function (game) {
-        gameState()
-      })
-      // $.post('/games', { state: td }, function (data) {
-      //   debugger
-      //   $("#games").append(`<button >${data.data.id}</button>`)
-      //   debugger
-      // })
-      console.log(data.data)
-      // debugger
-     
-    
-    })
-    // debugger
-    // alert(this.state)
-
-}
-
-var gameState = (game) => {
-  $("#games").append(`<button id="game-${game.id}">${game.id}</button>`)
-  $(`#game-${game.id}`).on('click', relodeGame(game.id) 
-    
-  )
-} 
-
-function relodeGame(id) {
-  $.get(`/games/${id}`, function (params) {
-    debugger
-  })
-}
-var saveGame = () => { 
-  var gameData;
-  $("#save").on("click", function () {
-    // alert("save game")
-    let td = []
-
-    gameData = { state: td };
-    $("td").text(function (index, text) { td.push(text) })
-    if (currentGame) { // if currentGame has already been set with save button
-      // debugger
-      $.ajax({
-        type: 'PATCH',  //patch over already saved game
-        url: `/games/${currentGame}`,
-        data: gameData
-      });
-    } else {  // if currentGame is still 0 (Note: 0 is *not* truthy in JavaScript)
-      $.patch('/games', gameData, function (game) {  // save game first time
-        currentGame = game.data.id; // save game first time
-        $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
-        $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
-      });
-    }
-
-
-
-
-    // $.post('/games', {state: td}, function (data) {
-    //   debugger
-      
-    //   // $("#games").append(`<button >${data.data.id}</button>`)
-    //   // debugger
-    // })
-    // var values = $(this).serialize();
-
-    // var updating = $.post('/games', values);
-  })
-}
-
-
-
-
-
-
-
 
 var tdClicked = () => {
   $("td").on("click", function () {
@@ -157,3 +69,111 @@ var tdClicked = () => {
     }
   })
 }
+
+var attachListeners = () => {
+  tdClicked()
+  $('#previous').on('click', () => previousGames());
+  $('#save').on('click', () => saveGame());
+  $('#clear').on('click', () => resetBoard());
+}
+
+let resetBoard = () => {
+  $("td").empty()
+  turn = 0
+  currentGame = 0
+}
+
+var previousGames = () => {
+  $("#games").empty()
+    $.get("/games", function (data) {
+      if (data.data.length) {
+        data.data.forEach(function (game) {
+          // debugger
+          gameState(game)
+        })
+      }
+      // debugger
+    })
+    // debugger
+}
+
+var gameState = (game) => {
+  console.log(game)
+  // if (!`<button id="game-${game.id}">${game.id}</button>`) {
+  $("#games").append(`<button id="game-${game.id}">${game.id}</button>`)
+  $(`#game-${game.id}`).on('click',() => reloadGame(game.id))
+ 
+} 
+
+function reloadGame(id) {
+  $.get(`/games/${id}`, function (game) {
+    let state = game.data.attributes.state
+
+    console.log(state)
+    var n = 0
+    state.map(function (i) {
+      if (i == "X" || i == "O") {
+        n++
+      }
+    })
+    console.log("inside  ", n)
+    currentGame = game.data.id
+// debugger
+    turn = n
+    populateGame(id, state, turn )
+    
+  })
+  // debugger
+}
+var saveGame = () => { 
+  var gameData;
+  let td = []
+
+  $("td").text(function (index, text) { td.push(text) })
+  gameData = { state: td };
+  if (currentGame != 0) { // if currentGame has already been set with save button
+    
+    $.ajax({
+      type: 'PATCH',  //patch over already saved game
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  } else {  // if currentGame is still 0 (Note: 0 is *not* truthy in JavaScript)
+    $.post('/games', gameData, function (game) {  // save game first time
+      // debugger
+      currentGame = game.data.id; // save game first time
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
+  }
+}
+
+var populateGame = (id, state, t ) => {
+  turn = t 
+  let index = 0
+  for (let y = 0; y < 3; y++) {
+    for (let x = 0; x < 3; x++) {
+      document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index]
+      // debugger
+      index++
+    }
+
+  }
+
+}
+
+// <td data-x="1" data-y="2"></td>
+
+
+
+
+
+
+
+
+// let index = 0;
+// for (let y = 0; y < 3; y++) {
+//   for (let x = 0; x < 3; x++) {
+//     document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+//     index++;
+//   }
