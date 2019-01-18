@@ -49,7 +49,6 @@ function checkWinner() {
 }
 
 var doTurn = (square) => {
-  // checkWinner()
   updateState(square)
   turn++
   if (checkWinner() == true) {
@@ -85,16 +84,13 @@ let resetBoard = () => {
 
 var previousGames = () => {
   $("#games").empty()
-    $.get("/games", function (data) {
-      if (data.data.length) {
-        data.data.forEach(function (game) {
-          // debugger
-          gameState(game)
-        })
-      }
-      // debugger
-    })
-    // debugger
+  $.get("/games", function (data) {
+    if (data.data.length) {
+      data.data.forEach(function (game) {
+        gameState(game)
+      })
+    }
+  })
 }
 
 var gameState = (game) => {
@@ -108,22 +104,17 @@ var gameState = (game) => {
 function reloadGame(id) {
   $.get(`/games/${id}`, function (game) {
     let state = game.data.attributes.state
-
-    console.log(state)
     var n = 0
     state.map(function (i) {
       if (i == "X" || i == "O") {
         n++
       }
     })
-    console.log("inside  ", n)
     currentGame = game.data.id
-// debugger
     turn = n
     populateGame(id, state, turn )
     
   })
-  // debugger
 }
 var saveGame = () => { 
   var gameData;
@@ -154,26 +145,7 @@ var populateGame = (id, state, t ) => {
   for (let y = 0; y < 3; y++) {
     for (let x = 0; x < 3; x++) {
       document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index]
-      // debugger
       index++
     }
-
   }
-
 }
-
-// <td data-x="1" data-y="2"></td>
-
-
-
-
-
-
-
-
-// let index = 0;
-// for (let y = 0; y < 3; y++) {
-//   for (let x = 0; x < 3; x++) {
-//     document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
-//     index++;
-//   }
