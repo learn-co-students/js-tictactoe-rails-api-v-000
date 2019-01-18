@@ -12,13 +12,8 @@ function player() {
 
 function updateState(element) {
   var cell = element
-
-  if (player() === 'X') {
-    cell.append("X")
-  } else {
-    cell.append("O")
-  }
-  // adds the returned string ('X' or 'O') to the clicked square on the game board.
+  // adds returned string ('X' or 'O') to clicked square on board
+  cell.append(player())
 }
 
 function setMessage() {
@@ -26,7 +21,7 @@ function setMessage() {
 }
 
 function checkWinner() {
-  console.log("insideCheckWinner")
+
 }
 
 function doTurn(element) {
@@ -44,17 +39,18 @@ $(function attachListeners() {
   // Attaches the appropriate event listeners to:
 
   // Cells
-  const cell1 = $("tr#row-1 td#td-1")
-  const cell2 = $("tr#row-1 td#td-2")
-  const cell3 = $("tr#row-1 td#td-3")
 
-  const cell4 = $("tr#row-2 td#td-4")
-  const cell5 = $("tr#row-2 td#td-5")
-  const cell6 = $("tr#row-2 td#td-6")
+  const cell1 = $("td#td-1")
+  const cell2 = $("td#td-2")
+  const cell3 = $("td#td-3")
 
-  const cell7 = $("tr#row-3 td#td-7")
-  const cell8 = $("tr#row-3 td#td-8")
-  const cell9 = $("tr#row-3 td#td-9")
+  const cell4 = $("td#td-4")
+  const cell5 = $("td#td-5")
+  const cell6 = $("td#td-6")
+
+  const cell7 = $("td#td-7")
+  const cell8 = $("td#td-8")
+  const cell9 = $("td#td-9")
 
   // Upon cell click invoke doTurn
   $(cell1).click(function() {
