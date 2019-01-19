@@ -106,7 +106,6 @@ function saveGame(){
   } else {
     $.post('/games', gameData).done(function(game){
       board = game.data.id;
-      debugger;
    })
   }
 }
