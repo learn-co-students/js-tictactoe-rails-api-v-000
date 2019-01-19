@@ -1,5 +1,5 @@
 // Code your JavaScript / jQuery solution here
-var turn = 0 ;
+var turn = turn_count();
 var winning = false;
 var current_game = 0;
 
@@ -40,7 +40,7 @@ function resetBoard() {
   for (var i = 0; i < tags.length; i++) {
     tags[i].innerHTML = '';
   };
-  turn = 0;
+  turn = turn_count();
 }
 
 //get the token for the player depends on each move
@@ -110,7 +110,7 @@ function attachListeners() {
 
 function saveGame() {
   let state = setState();
-  debugger
+  // debugger
   // if current game == game.id
   if (current_game){
     $.ajax({
@@ -156,13 +156,14 @@ function clearGame() {
 }
 
 function showBoard() {
-  turn = turn_count();
   let id = $(this).data('id');
   $.get('/games/' + id, function (game) {
     let state = game.data.attributes.state
     let $tds = $('td');
     for (let index = 0; index < state.length; index++) {
       $tds[index].innerHTML = state[index];
-    }
+    };
+    current_game = id;
+    turn = turn_count();
   });
 }
