@@ -8,7 +8,7 @@ var WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8,], //Horizontal Wins
 [0,3,6], [1,4,7], [2,5,8], //Vertical Wins
 [0,4,8], [6,4,2]]; //Diagonal Wins
 
-var currentGame = 0;
+var board = 0;
 
 $(document).ready(function() {
   attachListeners();
@@ -97,15 +97,16 @@ function saveGame(){
 
   gameData = {state: state};
 
-  if (currentGame){
+  if (board){
     $.ajax({
       type: 'PATCH',
-      url: `/games/${currentGame}`,
+      url: `/games/${board}`,
       data: gameData
     });
-  }else{
+  } else {
     $.post('/games', gameData).done(function(game){
-      currentGame = game.data.id;
+      board = game.data.id;
+      debugger;
    })
   }
 }
@@ -115,7 +116,7 @@ function clearGame(){
   $('td').empty()
   //resets turn to 0
   turn = 0;
-  currentGame = 0;
+  board = 0;
 }
 
 function showPreviousGames(){
@@ -123,9 +124,9 @@ function showPreviousGames(){
   $.get('/games', function(games){
     games.data.map(function(game){
       if ($(`#gameid-${game.id}`).length === 0){
-      $('#games').append(`<button id="gameid-${game.id}">Game: ${game.id}</button><br>`);
-      $("#gameid-" + game.id).click(() => reloadGame(game.id));
-    }
+        $('#games').append(`<button id="gameid-${game.id}">Game: ${game.id}</button><br>`);
+        $("#gameid-" + game.id).click(() => reloadGame(game.id));
+      }
     })
   })
 }
