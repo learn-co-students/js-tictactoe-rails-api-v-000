@@ -1,5 +1,5 @@
 // Code your JavaScript / jQuery solution here
-var turn = turn_count();
+var turn = 0 ;
 var winning = false;
 var current_game = 0;
 
@@ -30,7 +30,7 @@ function setState() {
 
 //count how many occupied index, return turn count
 function turn_count() {
-  let arr = setState();
+  let arr = setState(); // state = ['', '', '', 'X', 'X', 'X', 'O', 'O', ''];
   return arr.length - arr.filter(word => word.length == 0).length
 }
 
@@ -110,16 +110,16 @@ function attachListeners() {
 
 function saveGame() {
   let state = setState();
-  // compare current game and game.id 
-  
-  //current_game = 0 (false)
+  debugger
+  // if current game == game.id
   if (current_game){
-    $.ajax('/games/' + current_game, {
+    $.ajax({
+      url: '/games/' + current_game,
       type: 'PATCH',
       data: {'state': state}
     })
   }
-  // if current game == game.id
+  //current_game = 0 (false)
   else {
     $.post('/games', {
       state: state
@@ -134,9 +134,11 @@ function previousGame() {
     if (games.data.length){
       var list = $('div#games').text()
       for (var i = 0; i < games.data.length; i++) {
+        let date = new Date(games.data[i].attributes['updated-at']);
+        let update = date.toUTCString();
         let id = games.data[i].id;
         if (!list.includes(id)) {
-          var html = '<button data-id="' + id + '">Game: ' + id + '</button><br>';
+          var html = '<button data-id="' + id + '">Game: ' + id + ' - Updated at: ' + update + '</button><br>';
           $('div#games').append(html);
           turn = turn_count();
           $(`button[data-id=${id}]`).on('click', showBoard)
@@ -154,7 +156,7 @@ function clearGame() {
 }
 
 function showBoard() {
-  // turn = turn_count();
+  turn = turn_count();
   let id = $(this).data('id');
   $.get('/games/' + id, function (game) {
     let state = game.data.attributes.state
