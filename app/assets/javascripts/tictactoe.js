@@ -155,6 +155,7 @@ function clearGame() {
   current_game = 0;
 }
 
+//update the board with a specific saved state
 function showBoard() {
   let id = $(this).data('id');
   $.get('/games/' + id, function (game) {
