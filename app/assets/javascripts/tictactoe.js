@@ -1,13 +1,8 @@
-// Code your JavaScript / jQuery solution here
-
-//Something with playing a game and it automatically saving while playing basiaclly reacting multiple games.
-var turn = 0;
+//------------ Initial Variables ------------//
 
 //Possible Winning Outcomes (This is a constant)
-var WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8,], //Horizontal Wins
-[0,3,6], [1,4,7], [2,5,8], //Vertical Wins
-[0,4,8], [6,4,2]]; //Diagonal Wins
-
+var WINNING_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8,], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [6,4,2]];
+var turn = 0;
 var board = 0;
 
 $(document).ready(function() {
