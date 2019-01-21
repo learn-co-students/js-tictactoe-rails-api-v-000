@@ -121,6 +121,28 @@ function showPreviousGames() {
   })
 }
 
+function reloadGame(gameID) {
+  $('#message').empty()
+
+  const xhr = new XMLHttpRequest;
+  xhr.overrideMimeType('application/json')
+  xhr.open('GET', `/games/${gameID}`, true)
+  xhr.onload = function() {
+    const data = JSON.parse(xhr.responseText).data
+    const id = data.id
+    const state = data.attributes.state
+    let squares = document.querySelectorAll('td')
+    squares.forEach(function(square, index) {
+      debugger
+      square.innerHTML = state[index]
+    })
+    turn = state.join('').length
+    gameCount = id
+  }
+
+  xhr.send(null)
+}
+
 function attachListeners() {
   $('td').on('click', function() {
     if (!$.text(this) && !checkWinner()) {
