@@ -1,5 +1,6 @@
 // Game play functions //
 var turn = 0
+var currentGame = 0
 const WINNINGCOMBOS = [
   [0, 1, 2], [3, 4, 5], [6, 7, 8],
   [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -21,8 +22,8 @@ function updateState(element) {
   cell.textContent = player()
 }
 
-function setMessage() {
-
+function setMessage(message) {
+  $("div#message").append(message)
 }
 
 function checkWinner() {
@@ -39,6 +40,8 @@ function checkWinner() {
     // combo values define the board's indices to check for winner
     if (board[combo[0]] != "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[0]] === board[combo[2]]) {
       winner = true
+      var message = `Player ${board[combo[0]]} Won!`
+      setMessage(message)
     }
   })
   return winner
@@ -50,22 +53,69 @@ function doTurn(element) {
 
   updateState(element)
 
-  checkWinner()
+  if (checkWinner() === true) {
+    turn = 0
+    $("td").empty()
+  } else if (turn === 9) {
+    setMessage("Tie game.")
+    turn = 0
+    $("td").empty()
+  }
 }
 
-// Listeners //
+// function reloadGame(gameID) {
+//
+// }
+
+// Listeners & Buttons //
+
+function saveGame() {
+  var gameData
+  var state = []
+
+  $('td').text(function(index, token){
+    state[index] = token
+  })
+
+  gameData = { state: state }
+
+  if (currentGame ) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    })
+    alert("Game Updated")
+  } else {
+    $.post("/games", gameData, function(game) {
+      currentGame = game.data.id
+      alert("Game Saved")
+    })
+  }
+}
+
+function showPreviousGames() {
+  // $('#games').append(`Game - ${game.data.id}`)
+  // $('#games').append(`<button id="gameid-${game.data.id}">Game - ${game.data.id}</button><br>`)
+  // $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id))
+}
+
+function resetBoard() {
+  if (currentGame) {
+    alert("Clear Game In Progress")
+  }
+  $("td").empty()
+}
 
 $(function attachListeners() {
   // Attaches the appropriate event listeners to:
   $('td').on('click', function() {
     // If no text & no winner
-    if (!$.text(this) ) {
+    if (!$.text(this) && !checkWinner() ) {
       // Make a play
       doTurn(this)
     }
   })
-
-  // && !checkWinner()
 
   $('#save').on('click', () => saveGame())
   $('#previous').on('click', () => showPreviousGames())
