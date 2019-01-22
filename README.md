@@ -61,4 +61,5 @@ You can run the test suite in one of two ways:
 ## Resources
 * [jQuery data()](https://api.jquery.com/jquery.data/)
 
+å
 <p class='util--hide'>View <a href='https://learn.co/lessons/js-tictactoe-rails-api'>jQuery Tic Tac Toe</a> on Learn.co and start learning to code for free.</p>
