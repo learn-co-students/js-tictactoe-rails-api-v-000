@@ -38,11 +38,10 @@ function checkWinner() {
   WINNINGCOMBOS.forEach( function(combo) {
     // combo values define the board's indices to check for winner
     if (board[combo[0]] != "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[0]] === board[combo[2]]) {
-      console.log("WIN!")
-    } else {
-      console.log("LOSE!")
+      winner = true
     }
   })
+  return winner
 }
 
 function doTurn(element) {
