@@ -1,49 +1,58 @@
-const win_combos = = [
-  [0,1,2],
-  [3,4,5],
-  [6,7,8],
-  [0,3,6],
-  [1,4,7],
-  [2,5,8],
-  [0,4,8],
-  [2,4,6]
-]
+const win_combos = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
 
 function player() {
-  return (window.turn % 2) === 0 ? 'X' : 'O'
+  return window.turn % 2 === 0 ? "X" : "O";
 }
 
 function updateState($td) {
-  const playerToken = window.player()
+  const playerToken = window.player();
   // cannot user innerText bc tests
-  $td.innerHTML = playerToken
+  $td.innerHTML = playerToken;
 }
 
 function setMessage(message) {
-  document.getElementById('message').innerHTML = message
+  document.getElementById("message").innerHTML = message;
 }
 
 function checkWinner() {
-  // const $grid = document.querySelectorAll('[data-x]')
-  // const grid = Array.from($grid).map($square => $square.innerHTML)
-  //
-  // for (let i = 0; i <= 6 ; i = i + 3 ) {
-  //   if ((grid[i] === grid[i + 1] === grid[i + 2])
-  //       && (grid[i] !== "")) {
-  //     return true
-  //   }
-  // }
+  let game = false
+  const $grid = document.querySelectorAll("[data-x]");
+  const board = Array.from($grid).map($square => $square.innerText);
+  const win_combos = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
 
+  win_combos.forEach(function(combo) {
+    if (
+      board[combo[0]] === board[combo[1]] &&
+      board[combo[1]] === board[combo[2]] &&
+      board[combo[0]] !== ""
+    ) {
+      setMessage(`Player ${board[combo[0]]} Won!`)
+      game = true
+    }
+  })
+  return game
 }
 
-function doTurn() {
+function doTurn() {}
 
-}
+function attachListeners() {}
 
-function attachListeners() {
-
-}
-
-function checkLine() {
-
-}
+function checkLine() {}
