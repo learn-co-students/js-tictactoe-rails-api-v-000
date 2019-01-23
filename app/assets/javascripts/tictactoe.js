@@ -28,7 +28,7 @@ function updateState(element) {
 }
 
 function setMessage(message) {
-  $("div#message").append(message)
+  $("div#message")[0].innerText = message
 }
 
 function checkWinner() {
@@ -40,7 +40,6 @@ function checkWinner() {
     board[index] = token
   })
   // check board for winning combos
-  // .some() tests whether at least one element in the array passes the test implemented by the provided function.
   WINNINGCOMBOS.forEach( function(combo) {
     // combo values define the board's indices to check for winner
     if (board[combo[0]] != "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[0]] === board[combo[2]]) {
@@ -61,21 +60,13 @@ function doTurn(cell) {
   if (turn === 9) {
     setMessage("Tie game.")
     saveGame()
-    resetBoard()
+    turn = 0
+    // resetBoard()
   } else if (checkWinner()) {
     saveGame()
-    resetBoard()
+    turn = 0
+    // resetBoard()
   }
-  // if (turn === 9) {
-  //   setMessage("Tie game.")
-  //   turn = 0
-  //   saveGame()
-  //   $("td").empty()
-  // } else if (checkWinner() === true) {
-  //   saveGame()
-  //   turn = 0
-  //   $("td").empty()
-  // }
 }
 
 // Listeners & Buttons //
@@ -96,11 +87,9 @@ function saveGame() {
       url: `/games/${currentGame}`,
       data: gameData
     })
-    alert(`Game ${currentGame} Updated`)
   } else {
     $.post('/games', gameData, function(game) {
       currentGame = game.data.id
-      alert(`Game ${currentGame} Saved`)
     })
   }
 }
