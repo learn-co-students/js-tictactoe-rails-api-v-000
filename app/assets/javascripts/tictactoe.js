@@ -63,10 +63,6 @@ function doTurn(element) {
   }
 }
 
-// function reloadGame(gameID) {
-//
-// }
-
 // Listeners & Buttons //
 
 function saveGame() {
@@ -85,26 +81,47 @@ function saveGame() {
       url: `/games/${currentGame}`,
       data: gameData
     })
-    alert("Game Updated")
+    alert(`Game ${currentGame} Updated`)
   } else {
-    $.post("/games", gameData, function(game) {
+    $.post('/games', gameData, function(game) {
       currentGame = game.data.id
-      alert("Game Saved")
+      alert(`Game ${currentGame} Saved`)
     })
   }
 }
 
+function reloadGame(gameID) {
+  $.get(`/games/${gameID}`, function(game) {
+    var state = (game["data"]["attributes"]["state"])
+    // ["", "", "X", "O", "O", "", "", "", ""]
+    // use the index from the html table cells to load the value of the state index
+    $('td').text(function(index) {
+      $(this).append(state[index])
+    })
+  })
+}
+
+
+// $('td').text(function(index, token){
+//   board[index] = token
+// })
+
 function showPreviousGames() {
-  // $('#games').append(`Game - ${game.data.id}`)
-  // $('#games').append(`<button id="gameid-${game.data.id}">Game - ${game.data.id}</button><br>`)
-  // $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id))
+  $('#games').empty()
+  // if there are saved games
+  $.get('/games', (savedGames) => {
+    var games = savedGames["data"]
+      games.forEach(function(game) {
+        $('#games').append(`<button id=gameid-${game["id"]}> Game: ${game["id"]} </button><br>`)
+        $('#gameid-' + game["id"]).on('click', () => reloadGame(game["id"]))
+      })
+  })
 }
 
 function resetBoard() {
-  if (currentGame) {
-    alert("Clear Game In Progress")
-  }
-  $("td").empty()
+  $('td').empty()
+  turn = 0
+  currentGame = 0
 }
 
 $(function attachListeners() {
