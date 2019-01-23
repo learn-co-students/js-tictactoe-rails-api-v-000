@@ -7,6 +7,11 @@ const WINNINGCOMBOS = [
   [0, 4, 8], [2, 4, 6]
 ]
 
+$(document).ready(function() {
+  attachListeners()
+})
+
+
 function player() {
   // Returns 'X' or 'O' if turn is even or odd
   if (turn%2 === 0) {
@@ -47,20 +52,30 @@ function checkWinner() {
   return winner
 }
 
-function doTurn(element) {
+function doTurn(cell) {
   // Increments the turn variable by 1
-  ++turn
+  turn++
 
-  updateState(element)
+  updateState(cell)
 
-  if (checkWinner() === true) {
-    turn = 0
-    $("td").empty()
-  } else if (turn === 9) {
+  if (turn === 9) {
     setMessage("Tie game.")
-    turn = 0
-    $("td").empty()
+    saveGame()
+    resetBoard()
+  } else if (checkWinner()) {
+    saveGame()
+    resetBoard()
   }
+  // if (turn === 9) {
+  //   setMessage("Tie game.")
+  //   turn = 0
+  //   saveGame()
+  //   $("td").empty()
+  // } else if (checkWinner() === true) {
+  //   saveGame()
+  //   turn = 0
+  //   $("td").empty()
+  // }
 }
 
 // Listeners & Buttons //
@@ -75,7 +90,7 @@ function saveGame() {
 
   gameData = { state: state }
 
-  if (currentGame ) {
+  if (currentGame) {
     $.ajax({
       type: 'PATCH',
       url: `/games/${currentGame}`,
@@ -92,19 +107,21 @@ function saveGame() {
 
 function reloadGame(gameID) {
   $.get(`/games/${gameID}`, function(game) {
+    currentGame = game["data"]["id"]
     var state = (game["data"]["attributes"]["state"])
     // ["", "", "X", "O", "O", "", "", "", ""]
     // use the index from the html table cells to load the value of the state index
     $('td').text(function(index) {
-      $(this).append(state[index])
+      // Error: append adds, so if already an "X", cell turns into "XX" or "XO"
+      // $(this).append(state[index])
+      $(this)[0].innerText = state[index]
     })
+    for(var i = 0; i < state.length; ++i){
+      if(state[i] != "")
+        ++turn
+    }
   })
 }
-
-
-// $('td').text(function(index, token){
-//   board[index] = token
-// })
 
 function showPreviousGames() {
   $('#games').empty()
@@ -122,9 +139,10 @@ function resetBoard() {
   $('td').empty()
   turn = 0
   currentGame = 0
+  $("div#message").empty()
 }
 
-$(function attachListeners() {
+function attachListeners() {
   // Attaches the appropriate event listeners to:
   $('td').on('click', function() {
     // If no text & no winner
@@ -137,4 +155,4 @@ $(function attachListeners() {
   $('#save').on('click', () => saveGame())
   $('#previous').on('click', () => showPreviousGames())
   $('#clear').on('click', () => resetBoard())
-})
+}
