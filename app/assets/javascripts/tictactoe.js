@@ -55,9 +55,10 @@ function doTurn(spot) {
   updateState(spot);
   turn++;
   if (checkWinner()) {
-    checkWinner();
+    saveGame();
     resetGame();
   } else if (turn === 9) {
+    saveGame();
     setMessage("Tie game.");
     resetGame();
   }
@@ -79,21 +80,22 @@ function attachListeners() {
   });
 
   $("#previous").click(function() {
+    clearButtons();
     previousGames();
   });
 }
 
 function resetGame() {
   const $grid = document.querySelectorAll("td");
-  const board = Array.from($grid).map($square => ($square.innerHTML = ""));
+  const board = Array.from($grid).map($spot => ($spot.innerHTML = ""));
   turn = 0;
   gameId = 0;
 }
 
 function saveGame() {
-  const $grid = document.querySelectorAll("td");
-  const board = Array.from($grid).map($square => $square.innerHTML);
-  if (gameId === undefined) {
+  const board = Array.from($("td")).map($spot => $spot.innerHTML);
+
+  if (gameId === 0) {
     $.ajax({
       type: "POST",
       url: "/games",
@@ -104,10 +106,14 @@ function saveGame() {
   } else {
     $.ajax({
       type: "PATCH",
-      url: `/games/#{gameId}`,
+      url: `/games/${gameId}`,
       data: { "state[]": board }
     });
   }
+}
+
+function clearButtons() {
+  $("#games").empty();
 }
 
 function previousGames() {
@@ -117,7 +123,8 @@ function previousGames() {
   }).done(function(resp) {
     const games = resp["data"];
     games.forEach(function(g) {
-      $("#games").append(`<button id="gameId-${g.id}" onClick="showGame(${g.id})">${g.id}</button>`);
+      $("#games").append(`<button id="gameId-${g.id}"
+                          onClick="showGame(${g.id})">${g.id}</button>`);
     });
   });
 }
