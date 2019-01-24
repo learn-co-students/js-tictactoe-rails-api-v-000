@@ -1,0 +1,8 @@
+<script typ="text/javascript" charset="utf-8">
+$(function () {
+	$("#previous").on('click', function () {
+		$.get("/games", previousGames(data) {
+		});
+	});
+});
+</script>
