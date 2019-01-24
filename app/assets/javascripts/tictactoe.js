@@ -1,13 +1,10 @@
-const win_combos = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-];
+function init() {
+  attachListeners()
+}
+// in order for the js to run in the browser
+// functions that rely on the DOM must be deferred until
+// the DOM is fully ready
+window.onload = init
 
 function player() {
   return window.turn % 2 === 0 ? "X" : "O";
@@ -25,8 +22,9 @@ function setMessage(message) {
 
 function checkWinner() {
   let game = false
-  const $grid = document.querySelectorAll("[data-x]");
-  const board = Array.from($grid).map($square => $square.innerText);
+  const $grid = document.querySelectorAll("td");
+  const board = Array.from($grid).map($square => $square.innerHTML);
+
   const win_combos = [
     [0, 1, 2],
     [3, 4, 5],
@@ -51,8 +49,43 @@ function checkWinner() {
   return game
 }
 
-function doTurn() {}
+function doTurn(spot) {
+  turn++
+  updateState(spot)
 
-function attachListeners() {}
+  if (checkWinner()) {
+    checkWinner()
+    resetGame()
+  } else if (turn === 9) {
+    setMessage('Tie game.')
+  }
+}
 
-function checkLine() {}
+function attachListeners() {
+  const saveButton = document.querySelector('#save')
+  const previousButton = document.querySelector('#previous')
+  const clearButton = document.querySelector('#clear')
+
+  saveButton.addEventListener('click', saveGame)
+  previousButton.addEventListener('click', previousGame)
+  clearButton.addEventListener('click', clearGame)
+
+  // cannot fill square if full
+  // no winner?
+}
+
+function resetGame() {
+  const $grid = document.querySelectorAll("td");
+  const board = Array.from($grid).map($square => $square.innerHTML = "")
+  turn = 0
+}
+
+function saveGame() {
+  const $grid = document.querySelectorAll("td");
+  const board = Array.from($grid).map($square => $square)
+  // turn?
+}
+
+function previousGames() {
+  // no idea
+}
