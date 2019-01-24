@@ -11,13 +11,11 @@ function init() {
 window.onload = init
 
 function player() {
-  return window.turn % 2 === 0 ? "X" : "O";
+  return (turn % 2 === 0) ? "X" : "O";
 }
 
-function updateState($td) {
-  const playerToken = window.player()
-  // cannot user innerText bc tests
-  $td.innerHTML = playerToken
+function updateState(spot) {
+  $(spot).text(player());
 }
 
 function setMessage(message) {
@@ -118,7 +116,8 @@ function previousGames() {
   $.ajax({
     type: "GET",
     url: "/games",
-  }).done(function (games) {
-    games["data"].each(g => g.id)
+  }).done(function (resp) {
+    const games = resp["data"]
+    games.forEach(g => $("#games").append(`<li> ${g.id} </li>`))
   })
 }
