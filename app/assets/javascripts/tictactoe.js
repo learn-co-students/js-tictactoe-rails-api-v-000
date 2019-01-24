@@ -52,14 +52,14 @@ function checkWinner() {
 }
 
 function doTurn(spot) {
-  turn++
   updateState(spot)
-
+  turn++
   if (checkWinner()) {
     checkWinner()
     resetGame()
   } else if (turn === 9) {
     setMessage('Tie game.')
+    resetGame()
   }
 }
 
@@ -70,25 +70,25 @@ function attachListeners() {
     }
   })
 
-  const saveButton = document.querySelector('#save')
-  const previousButton = document.querySelector('#previous')
-  const clearButton = document.querySelector('#clear')
+  $('#save').click(function () {
+    saveGame()
+  })
 
-  saveButton.addEventListener('click', saveGame)
-  previousButton.addEventListener('click', previousGame)
-  clearButton.addEventListener('click', resetGame)
+  $('#clear').click(function () {
+    resetGame()
+  })
+
+  $('#previous').click(function () {
+    previousGames()
+  })
+
 }
 
 function resetGame() {
-  if (gameId) {
-    $.ajax({
-      type: "DELETE",
-      url: `/games/#{gameId}`
-    })
-  }
   const $grid = document.querySelectorAll("td");
   const board = Array.from($grid).map($square => $square.innerHTML = "");
   turn = 0
+  gameId = 0
 }
 
 function saveGame() {
