@@ -1,9 +1,13 @@
+let gameId
+let turn = 0
+
 function init() {
   attachListeners()
 }
-// in order for the js to run in the browser
+// In order for the js to run in the browser
 // functions that rely on the DOM must be deferred until
-// the DOM is fully ready
+// the DOM is fully ready.
+// The browser will call window.onload().
 window.onload = init
 
 function player() {
@@ -11,9 +15,9 @@ function player() {
 }
 
 function updateState($td) {
-  const playerToken = window.player();
+  const playerToken = window.player()
   // cannot user innerText bc tests
-  $td.innerHTML = playerToken;
+  $td.innerHTML = playerToken
 }
 
 function setMessage(message) {
@@ -62,30 +66,59 @@ function doTurn(spot) {
 }
 
 function attachListeners() {
+  $('td').on('click', function () {
+    if (!$.text(this) && checkWinner() !== true) {
+      doTurn(this)
+    }
+  })
+
   const saveButton = document.querySelector('#save')
   const previousButton = document.querySelector('#previous')
   const clearButton = document.querySelector('#clear')
 
   saveButton.addEventListener('click', saveGame)
   previousButton.addEventListener('click', previousGame)
-  clearButton.addEventListener('click', clearGame)
-
-  // cannot fill square if full
-  // no winner?
+  clearButton.addEventListener('click', resetGame)
 }
 
 function resetGame() {
+  if (gameId) {
+    $.ajax({
+      type: "DELETE",
+      url: `/games/#{gameId}`
+    })
+  }
   const $grid = document.querySelectorAll("td");
-  const board = Array.from($grid).map($square => $square.innerHTML = "")
+  const board = Array.from($grid).map($square => $square.innerHTML = "");
   turn = 0
 }
 
 function saveGame() {
-  const $grid = document.querySelectorAll("td");
-  const board = Array.from($grid).map($square => $square)
-  // turn?
+  const $grid = document.querySelectorAll("td")
+  const board = Array.from($grid).map($square => $square.innerHTML)
+  if (gameId === undefined) {
+    $.ajax({
+      type: "POST",
+      url: "/games",
+      data: board
+    })
+    .done(function (response) {
+      gameId = response.data.id
+    })
+  } else {
+    $.ajax({
+      type: "PATCH",
+      url: `/games/#{gameId}`,
+      data: board
+    })
+  }
 }
 
 function previousGames() {
-  // no idea
+  $.ajax({
+    type: "GET",
+    url: "/games",
+  }).done(function (games) {
+    games["data"].each(g => g.id)
+  })
 }
