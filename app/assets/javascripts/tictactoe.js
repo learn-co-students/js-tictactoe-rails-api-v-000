@@ -58,9 +58,11 @@ function doTurn(spot) {
     saveGame();
     resetGame();
   } else if (turn === 9) {
-    saveGame();
-    setMessage("Tie game.");
-    resetGame();
+    debugger
+    saveGame(function () {
+      setMessage("Tie game.");
+      resetGame();
+    })
   }
 }
 
@@ -92,23 +94,25 @@ function resetGame() {
   gameId = 0;
 }
 
-function saveGame() {
+function saveGame(cb) {
+  console.log(cb);
   const board = Array.from($("td")).map($spot => $spot.innerHTML);
 
-  if (gameId === 0) {
+  if (!gameId) {
     $.ajax({
       type: "POST",
       url: "/games",
       data: { "state[]": board }
     }).done(function(response) {
       gameId = response.data.id;
+      cb && cb()
     });
   } else {
     $.ajax({
       type: "PATCH",
       url: `/games/${gameId}`,
       data: { "state[]": board }
-    });
+    }).done(cb);
   }
 }
 
@@ -134,6 +138,9 @@ function showGame(id) {
     type: "GET",
     url: `/games/${id}`
   }).done(function(game) {
+    // let { id, attributes: {state } } = game.data
+    // destructured assignment
+
     let gameBoard = game.data.attributes.state;
     turn = gameBoard.filter(spot => spot).length;
     gameId = game.data.id;
