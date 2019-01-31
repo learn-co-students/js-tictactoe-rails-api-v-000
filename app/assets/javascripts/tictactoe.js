@@ -82,7 +82,6 @@ var currentGame = 0;
    };
  };
 
-
   function saveGame() {
     var state = [];
     var gameData;
@@ -133,10 +132,14 @@ var currentGame = 0;
   };
 
   function previousGames() {
+    // empty list of games
       $('#games').empty();
+      // request for JSON object
       $.get('/games', (savedGames) => {
+        // save the response in savedGames
           if (savedGames.data.length) {
               savedGames.data.forEach(game => {
+                // if there are games iterate through to assign game id to the buttons
                   $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
                   $(`#gameid-${game.id}`).on('click', () => getGame(game.id));
               })
