@@ -29,7 +29,7 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
    };
 
  function updateState(square) {
-   let token = player();
+   var token = player();
    $(square).text(token);
  };
 
@@ -74,9 +74,9 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
      }
    });
    // add click events for save, previous and clear
-   $('#save').on('click', () => saveGame());
-   $('#previous').on('click', () => previousGame());
-   $('#clear').on('click', () => resetBoard());
+   $('#save').on('click',() => saveGame());
+   $('#previous').on('click',() => previousGame());
+   $('#clear').on('click',() => resetBoard());
  };
 
   function saveGame(){
@@ -85,7 +85,7 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
 
     // grab the text that's in the square
     $('td').text((index, square) => {
-    // push the text that's in the square into the status array
+    // push the text that's in the square into the state array
       state.push(square);
   });
   // put current game's status into gameData hash
@@ -97,20 +97,32 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
       url:`/games/${currentGame}`,
       data:gameData
     });
-
   }else{
   $.post("/games", gameData, function(game){
     currentGame = game.data.id
-    $('#games').append(`<button id="gameid-${game.data.id}"> ${game.data.id} </button><br>`);
-    // $("#gameid-" + game.data.id).on('click',() => reloadGame(game.data.id));
-
+    $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id} </button><br>`);
+    $('#gameid-' + game.data.id).on('click',() => getGame(game.data.id));
   }
 )}
-}
+};
 
-  function reloadGame() {
 
-  };
+  function getGame(gameid) {
+    // get JSON object and then store that game's state/status
+    $.get(`/games/${gameid}`, function(game){
+        state = game.data.attributes.state;
+
+        // add state to game
+        $.map($('td'), function(square, i) {
+          square.innerHTML = state[i];
+        });
+        // set currentGame based on game selected so can go back to game and continue play
+        currentGame = gameId;
+        // need correct turn so player picks up where left off on same game
+        turn = state.join("").length
+      })
+    };
+
 
 
   function resetBoard() {
@@ -120,7 +132,11 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
   };
 
    function previousGame(){
-     $.get("/games", (function(saveGame) {
-       // alert("almost");
+     $.get("/games", (function(savedGames) {
+        $('#games').empty();
+      
+
+        }
+
      }))
   };
