@@ -85,8 +85,11 @@ function doTurn(position) {
 function previousGames() {
   $("#previous").on("click", function(){
     $.get("/games", function(data) {
+      gameList = document.querySelector("#games")
+      gameButton = ""
       data["data"].forEach(function(game){
-        $("#games").html('<button id=' + game["id"] + ' onclick="getGame(' + game["id"] + ')"> Game ' + game["id"] + '</button>')
+        gameButton += '<button id=' + game["id"] + ' onclick="getGame(' + game["id"] + ')">Game ' + game["id"] + '</button>'
+        $("#games").html(gameButton)
       })
     })
   })
