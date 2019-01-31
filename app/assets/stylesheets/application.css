@@ -13,3 +13,12 @@
  *= require_tree .
  *= require_self
  */
+
+ * {
+   background-color: lightpink;
+   color: white;
+ }
+
+button {
+  background-color: #C4A3D7 ;
+}

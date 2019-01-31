@@ -69,10 +69,12 @@ function doTurn(position) {
   updateState(position)
   turn += 1
   if (checkWinner()) {
+    saveGames();
     turn = 0
     currentGame = 0
     $("td").empty()
   } else if (tieGame() === true) {
+    saveGames();
     turn = 0
     currentGame = 0
     $("td").empty()
@@ -80,15 +82,11 @@ function doTurn(position) {
   }
 
 
-var previous = function() {
+function previousGames() {
   $("#previous").on("click", function(){
     $.get("/games", function(data) {
-      var games = data
-      gameList = document.querySelector("#games")
-      gameButton = ""
-      games["data"].forEach(function(game){
-        gameButton += '<button id=' + game["id"] + ' onclick="getGame(' + game["id"] + ')">' + game + '</button>'
-        $("#games").html(gameButton)
+      data["data"].forEach(function(game){
+        $("#games").html('<button id=' + game["id"] + ' onclick="getGame(' + game["id"] + ')"> Game ' + game["id"] + '</button>')
       })
     })
   })
@@ -115,12 +113,12 @@ function attachListeners(){
       doTurn(this)
     }
   })
-  previous()
-  $("#save").on("click", function(){save()})
-  clear()
+  previousGames()
+  $("#save").on("click", function(){saveGames()})
+  clearGames()
 }
 
-var save = function(){
+function saveGames(){
   var state = [];
   var gameData;
   $("td").each(function(index, square){
@@ -142,7 +140,7 @@ var save = function(){
   }
 
 
-var clear = function(){
+function clearGames(){
   $("#clear").on("click", function(){
     turn = 0
     currentGame = 0
