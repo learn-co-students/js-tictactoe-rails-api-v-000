@@ -3,15 +3,33 @@
 var turn = 0;
 var currentGame = 0;
 
-WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
-];
+// WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
+// ];
 
   $(document).ready(function() {
     attachListeners()
   });
 
+  function attachListeners() {
+    // attach listener on click of a square in 'td'
+    $('td').on('click', function(e){
+      e.preventDefault();
+
+      // if no text in the square and no winner
+      if(!$.text(this) && !checkWinner()) {
+        // call the turn function
+        doTurn(this);
+      }
+    });
+    // add click events for save, previous and clear
+
+    $('#save').on('click',() => saveGame());
+    $('#previous').on('click',() => previousGames());
+    $('#clear').on('click',() => resetBoard());
+  };
+
  function player() {
-   return turn % 2 === 0 ?"X":"O"
+   return turn % 2 === 0 ? "X" : "O"
  };
 
 
@@ -29,7 +47,7 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
    };
 
  function updateState(square) {
-   var token = player();
+   let token = player();
    $(square).text(token);
  };
 
@@ -39,6 +57,9 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
 
 
  function checkWinner() {
+   const WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
+   ];
+
    var board = {};
    var winner = false;
 
@@ -62,24 +83,7 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
  };
 
 
- function attachListeners() {
-   // attach listener on click of a square in 'td'
-   $('td').on('click', function(e){
-     e.preventDefault();
-
-     // if no text in the square and no winner
-     if(!$.text(this) && !checkWinner()) {
-       // call the turn function
-       doTurn(this);
-     }
-   });
-   // add click events for save, previous and clear
-   $('#save').on('click',() => saveGame());
-   $('#previous').on('click',() => previousGame());
-   $('#clear').on('click',() => resetBoard());
- };
-
-  function saveGame(){
+  function saveGame() {
     var state = [];
     var gameData;
 
@@ -101,11 +105,10 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
   $.post("/games", gameData, function(game){
     currentGame = game.data.id
     $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id} </button><br>`);
-    $('#gameid-' + game.data.id).on('click',() => getGame(game.data.id));
+    $(`#gameid-${game.data.id}`).on('click',() => getGame(game.data.id));
   }
 )}
 };
-
 
   function getGame(gameid) {
     // get JSON object and then store that game's state/status
@@ -117,13 +120,11 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
           square.innerHTML = state[i];
         });
         // set currentGame based on game selected so can go back to game and continue play
-        currentGame = gameId;
+        currentGame = gameid;
         // need correct turn so player picks up where left off on same game
         turn = state.join("").length
       })
     };
-
-
 
   function resetBoard() {
       $('td').empty();
@@ -131,12 +132,14 @@ WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
       currentGame = 0;
   };
 
-   function previousGame(){
-     $.get("/games", (function(savedGames) {
-        $('#games').empty();
-      
-
-        }
-
-     }))
-  };
+  function previousGames() {
+      $('#games').empty();
+      $.get('/games', (savedGames) => {
+          if (savedGames.data.length) {
+              savedGames.data.forEach(game => {
+                  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+                  $(`#gameid-${game.id}`).on('click', () => getGame(game.id));
+              })
+          }
+      })
+  }
