@@ -146,11 +146,8 @@ var clear = function(){
   $("#clear").on("click", function(){
     turn = 0
     currentGame = 0
-    var nodes = document.querySelectorAll('td')
-    nodes.forEach(function(node) {
-        node.innerHTML = ""
+    $("td").empty()
     })
-  })
 }
 
 
