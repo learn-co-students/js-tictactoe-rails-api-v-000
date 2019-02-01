@@ -68,7 +68,6 @@ function attachListeners(){
   $('#clear').on('click', function(){
     clearGame();
   });
-
 }
 
 function saveGame(){
@@ -83,10 +82,10 @@ function saveGame(){
     });
   }
   else {
-    $.patch('/games', {state: state}, function(game){
+    $.post('/games', {state: state}, function(game){
       gameId = game.data.id;
     });
-  }
+  };
 }
 
 function previousGame(){
