@@ -41,7 +41,7 @@ function checkWinner(){
 
 function doTurn(cell){
   updateState(cell);
-  turn = turn + 1;
+  turn++;
   if(checkWinner()){
     saveGame();
     clearGame();
