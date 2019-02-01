@@ -83,7 +83,7 @@ function saveGame(){
     });
   }
   else {
-    $.post('/games', {state:state}, function(game){
+    $.patch('/games', {state: state}, function(game){
       gameId = game.data.id;
     });
   }
