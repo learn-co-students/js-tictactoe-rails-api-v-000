@@ -130,11 +130,12 @@ var currentGame = 0;
       $('#games').empty();
       // request for JSON object
       $.get('/games', (savedGames) => {
-        // save the response in savedGames
+        // request via get and then save the response in savedGames
           if (savedGames.data.length) {
               savedGames.data.forEach(game => {
                 // if there are games iterate through to assign game id to the buttons
-                  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+
+                  $('#games').append(`<button id="gameid-${game.id}">Game: ${game.id}, Updated At: ${game.attributes["updated-at"]}</button><br>`);
                   $(`#gameid-${game.id}`).on('click', () => getGame(game.id));
               })
           }
