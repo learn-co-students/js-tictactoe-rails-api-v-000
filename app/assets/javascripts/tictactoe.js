@@ -3,9 +3,6 @@
 var turn = 0;
 var currentGame = 0;
 
-// WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
-// ];
-
   $(document).ready(function() {
     attachListeners()
   });
@@ -22,7 +19,6 @@ var currentGame = 0;
       }
     });
     // add click events for save, previous and clear
-
     $('#save').on('click',() => saveGame());
     $('#previous').on('click',() => previousGames());
     $('#clear').on('click',() => resetBoard());
@@ -57,12 +53,11 @@ var currentGame = 0;
 
 
  function checkWinner() {
-   const WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]
-   ];
+   const WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]];
 
    var board = {};
    var winner = false;
-
+   // insert entered "X" or "O" into board[index]
    $('td').text((index, square) => board[index] = square);
 
    WIN_COMBOS.forEach(function(combo) {
@@ -73,7 +68,6 @@ var currentGame = 0;
    });
    return winner;
  };
-
 
   function tieGame(){
       if(turn === 9){
