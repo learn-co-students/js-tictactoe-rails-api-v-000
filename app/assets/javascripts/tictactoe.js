@@ -49,7 +49,6 @@ function attachListeners(){
       if (!$.text(this) && !checkWinner())
       doTurn(this)
   })
-
   $('#save').on('click', () => saveGame())
   $('#previous').on('click', () => previousGame())
   $('#clear').on('click', () => clearGame())
@@ -61,10 +60,7 @@ function previousGame(){
     if (data.data){
       $('div#games').empty()
       for (const game of data.data){
-         $('div#games').append(`
-          <button id=gameid-${game.id}> Game ${game.id} </button>
-          `)
-          $(`#gameid-${game.id}`).on('click', () => loadGame(game.id));
+        buttonMaker(game.id)
       }
     }
   })
@@ -97,13 +93,16 @@ function saveGame(){
   else{
    $.post('/games', gamedata, function(data){
      currentGame = data.data.id
-     $('div#games').append(`
-      <button id=gameid-${currentGame}> Game ${currentGame} </button>
-      `)
-      $(`#gameid-${currentGame}`).on('click', () => loadGame(currentGame));
+     buttonMaker(currentGame)
    })
-
   }
+}
+
+function buttonMaker(currentGame){
+  $('div#games').append(`
+   <button id=gameid-${currentGame}> Game ${currentGame} </button>
+   `)
+   $(`#gameid-${currentGame}`).on('click', () => loadGame(currentGame));
 }
 
 function clearGame(){
