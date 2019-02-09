@@ -127,7 +127,7 @@ function appendButtons(game) {
 function fixDate(date) {
   //2019-02-09T05:33:43.206Z
   let d = new Date(date);
-  console.log("d=", d);
+  // console.log("d=", d);
   var year = d.getFullYear();
   var month = addLeadingZero(d.getMonth());
   var day = addLeadingZero(d.getDay());
@@ -146,7 +146,7 @@ function fixDate(date) {
     minutes +
     ":" +
     seconds;
-  console.log("newDate=", newDate);
+  // console.log("newDate=", newDate);
   return newDate;
 }
 
