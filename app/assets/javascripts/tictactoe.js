@@ -41,8 +41,8 @@ function setMessage(string) {
 
 function doTurn(square) {
   $("#message").text("");
-  turn++;
   updateState(square);
+  turn++;
   if (checkWinner()) {
     saveGame();
     resetBoard();
@@ -88,7 +88,6 @@ function saveGame() {
   let gameData;
   gameData = {
     state: getState()
-    // createdAt: Date.now()
   };
   if (currentGame) {
     $.ajax({
@@ -167,8 +166,7 @@ function reloadGame(gameID) {
     let index = 0;
     for (let y = 0; y < 3; y++) {
       for (let x = 0; x < 3; x++) {
-        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML =
-          state[index];
+        $(`[data-x="${x}"][data-y="${y}"]`).html(state[index]);
         index++;
       }
     }
