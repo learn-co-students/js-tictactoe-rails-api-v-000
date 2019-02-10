@@ -117,7 +117,7 @@ function showPreviousGames() {
 
 function appendButtons(game) {
   $("#games").append(
-    `<button id="gameid-${game.id}">${game.id} - ${fixDate(
+    `<button id="gameid-${game.id}">Game# ${game.id} - ${fixDate(
       game.attributes["updated-at"]
     )}</button><br>`
   );
@@ -125,19 +125,19 @@ function appendButtons(game) {
 }
 
 function fixDate(date) {
-  //2019-02-09T05:33:43.206Z
+  //"2019-02-10T00:04:53.659Z"
   let d = new Date(date);
   // console.log("d=", d);
   var year = d.getFullYear();
-  var month = addLeadingZero(d.getMonth());
-  var day = addLeadingZero(d.getDay());
+  var month = addLeadingZeroMonth(d.getMonth());
+  var day = addLeadingZeroDay(d.getDay());
   var hours = d.getHours();
   var minutes = d.getMinutes();
   var seconds = d.getSeconds();
   var newDate =
     year +
     "-" +
-    (parseInt(month, 10)+1) +
+    month +
     "-" +
     day +
     " " +
@@ -150,8 +150,12 @@ function fixDate(date) {
   return newDate;
 }
 
-function addLeadingZero(n) {
-  return n < 10 ? "0" + n : "" + n;
+function addLeadingZeroMonth(n) {
+  return (n < 10 ? "0" + (n+1) : "" + (n+1));
+}
+
+function addLeadingZeroDay(n) {
+  return (n < 10 ? "0" + (n+3) : "" + (n+3));
 }
 
 function reloadGame(gameID) {
