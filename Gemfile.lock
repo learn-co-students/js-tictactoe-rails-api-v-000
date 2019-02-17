@@ -45,7 +45,6 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.3)
-    byebug (9.0.6)
     case_transform (0.2)
       activesupport
     coderay (1.1.1)
@@ -86,9 +85,6 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    pry-byebug (3.4.2)
-      byebug (~> 9.0)
-      pry (~> 0.10)
     rack (1.6.8)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -173,11 +169,9 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (= 0.10.6)
-  byebug
   coffee-rails (~> 4.1.0)
   jquery-rails
   pry
-  pry-byebug
   rails (= 4.2.5.1)
   rspec-rails (~> 3.0)
   sass-rails (~> 5.0)
@@ -188,4 +182,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.15.1
+   1.16.2
