@@ -1,3 +1,7 @@
+$(document).ready(() => {
+  attachListeners();
+});
+
 const WIN_COMBINATIONS = [
   [0, 1, 2],
   [3, 4, 5],
@@ -9,63 +13,60 @@ const WIN_COMBINATIONS = [
   [2, 4, 6]
 ];
 
-// Returns the token of the player whose turn it is, 'X' when the turn variable is even and 'O' when it is odd.
 var turn = 0;
+let currentGame = 0;
 
 function player() {
-  if (turn % 2 === 0) {
-    return "X";
-  } else {
-    return "O";
-  }
+  return turn % 2 === 0 ? "X" : "O";
 }
 
-$(document).ready(function() {
-  attachListeners();
-});
-
-// Attaches the appropriate event listeners to the squares of the game board as well as for the button#save, button#previous, and button#clear elements.
-// When a user clicks on a square on the game board, the event listener should invoke doTurn() and pass it the element that was clicked.
 function attachListeners() {
   square = document.querySelector("td");
   $("td").click(function() {
-    doTurn(this);
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  });
+
+  $("#save").click(() => {
+    saveGame();
+  });
+
+  $("#previous").click(() => {
+    previousGames();
+  });
+
+  $("#clear").click(() => {
+    resetBoard();
   });
 }
 
-// Increments the turn variable by 1.
-// Invokes the updateState() function, passing it the element that was clicked.
-// Invokes checkWinner() to determine whether the move results in a winning play.
 function doTurn(square) {
-  turn += 1;
   updateState(square);
-  console.log(turn);
+  turn += 1;
 
   if (checkWinner()) {
+    saveGame();
     resetBoard();
   } else if (turn === 9) {
     setMessage("Tie game.");
+    saveGame();
     resetBoard();
   }
 }
 
-// Invokes player() and adds the returned string ('X' or 'O') to the clicked square on the game board.
 function updateState(square) {
   let token = player();
   $(square).text(token);
 }
 
-// Accepts a string and adds it to the div#message element in the DOM.
 function setMessage(string) {
-  console.log(string);
   $("#message").text(string);
 }
 
-// Returns true if the current board contains any winning combinations (three X or O tokens in a row, vertically, horizontally, or diagonally). Otherwise, returns false.
-// If there is a winning combination on the board, checkWinner() should invoke setMessage(), passing in the appropriate string based on who won: 'Player X Won!' or 'Player O Won!'
-function checkWinner(params) {
-  var winner = false;
-  var board = {};
+function checkWinner() {
+  let winner = false;
+  let board = {};
 
   // generate board object
   $("td").text((index, square) => (board[index] = square));
@@ -87,4 +88,56 @@ function checkWinner(params) {
 function resetBoard() {
   $("td").empty();
   turn = 0;
+  currentGame = 0;
+}
+
+function previousGames() {
+  $("#games").text("");
+  $("#message").text("");
+  $.get("/games", gamesAll => {
+    gamesAll.data.forEach(game => {
+      $("#games").append(
+        `<button id="gameid-${game.id}">${game.id}</button><br>`
+      );
+      $(`#gameid-${game.id}`).on("click", () => loadGame(game.id));
+    });
+  });
+}
+
+function loadGame(gameId) {
+  $("#message").text("");
+  $.get(`/games/${gameId}`).done(response => {
+    currentGame = response.data.id;
+    let state = response.data.attributes.state;
+    turn = state.join("").length;
+    let i = 0;
+    state.forEach(e => {
+      $("td")[i].innerHTML = e;
+      i++;
+    });
+  });
+}
+
+function currentBoard() {
+  let state = [];
+  // generate board object
+  $("td").text((index, square) => {
+    state.push(square);
+  });
+  return state;
+}
+
+function saveGame() {
+  let gameData = { state: currentBoard() };
+  if (currentGame === 0) {
+    $.post("/games", gameData, game => {
+      currentGame = game.data.id;
+    });
+  } else {
+    $.ajax({
+      type: "PATCH",
+      url: `/games/${currentGame}`,
+      data: "gameData"
+    });
+  }
 }
