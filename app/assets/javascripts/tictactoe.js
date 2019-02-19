@@ -1,5 +1,5 @@
 var turn = 0
-
+var currentGame = 0
 var winCombinations = [
     [0,1,2],
     [3,4,5],
@@ -13,13 +13,12 @@ var winCombinations = [
 
 var player = () => turn % 2 ? 'O' : 'X';
 
-// var player = function() {
-// 	if (turn % 2 === 0) {
-// 		return "X";
-// 	} else {
-// 		return "O";
-// 	}
-// 	turn += 1;
+// function player() {
+//   if (turn % 2 === 0) {
+//     return "X";
+//   } else {
+//     return "O";
+//   }
 // }
 
 $(document).ready(function() {
@@ -27,85 +26,82 @@ $(document).ready(function() {
 });
 
 function attachListeners() {
-  move = document.querySelector("td");
   $("td").click(function() {
-    doTurn(this);
+    if (!$.text(this) && !checkWinner())
+      doTurn(this);
+  });
+
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => previousGames());
+  $('#clear').on('click', () => clearGame());
+
+  
+}
+
+function saveGame() {
+  var state = $("td").toArray().map((el) => { return el.innerHTML });
+  var boardState = {state: state};
+
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: boardState
+    });
+  } else {
+      $.post("/games", boardState, function(game) {
+        //the POST route goes to #create controller method, creates new game with boardState attributes
+      currentGame = game.data.id
+  });
+  }
+}
+
+function previousGames() {
+  //clear out the games div so nothing is repeated
+  $('#games').empty();
+  $.get("/games", function(games) {
+    //Games is a data object we can iterate over
+    games.data.forEach(function(game) {
+      $('#games').append(`<button data-id="${game.id}">${game.id}</button><br>`);
+    });
   });
 }
 
-function doTurn(move) {
-	turn += 1;
-	updateState(move);
+function clearGame() {
+  resetBoard();
+}
 
-	if (checkWinner()) {
-	    resetBoard();
-	} else if (turn === 9) {
-		//  Tie game message not working
-	    setMessage("Tie game.");
-	    resetBoard();
-	}
+
+function doTurn(square) {
+  updateState(square);
+  turn++;
+  if (checkWinner()) {
+    saveGame();
+    resetBoard();
+  } else if (turn === 9) {
+    //Tie game message not working
+    setMessage("Tie game.");
+    saveGame();
+    resetBoard();
+  }
 }
 
 function updateState(td) {
-	$(td).html(player());
-}
-
-function resetBoard(){
-	$('td').empty();
-	turn = 0;
+  $(td).html(player());
 }
 
 function setMessage(message) {
-	$("#message").html(message);
+  console.log(message);
+  $("#message").html(message);
 }
-
-// function checkWinner() {
-// 	var square = $('td');
-// 	var winner 
-// 	let message = `Player ${winner} won!`;
-
-// 	// Check for horizontal X winner
-// 	if (square[0].innerHTML === 'X' && square[1].innerHTML === 'X' && square[2].innerHTML === 'X') {
-// 		return true;
-// 		winner = 'X';
-// 	} else if (square[3].innerHTML === 'X' && square[4].innerHTML === 'X' && square[5].innerHTML === 'X') {
-// 		return true;
-// 		winner = 'X';
-// 	} else if (square[6].innerHTML === 'X' && square[7].innerHTML === 'X' && square[8].innerHTML === 'X') {
-// 		return true;
-// 		winner = 'X';
-
-// 	// Check for diagonal X winner
-// 	} else if (square[0].innerHTML === 'O' && square[4].innerHTML === 'O' && square[8].innerHTML === 'O') {
-// 		return true;
-// 		winner = 'O';
-// 	} else if (square[2].innerHTML === 'O' && square[4].innerHTML === 'O' && square[6].innerHTML === 'O') {
-// 		return true;
-// 		winner = 'O';
-
-// 	// Check for vertical X winner
-// 	} else if (square[0].innerHTML === 'X' && square[3].innerHTML === 'X' && square[6].innerHTML === 'X') {
-// 		return true;
-// 		winner = 'X';
-// 	} else if (square[1].innerHTML === 'X' && square[4].innerHTML === 'X' && square[7].innerHTML === 'X') {
-// 		return true;
-// 		winner = 'X';
-// 	} else if (square[2].innerHTML === 'X' && square[5].innerHTML === 'X' && square[8].innerHTML === 'X') {
-// 		return true;
-// 		winner = 'X';
-// 	} else {
-// 		return false;
-// 	}
-// 	debugger
-
-// }
 
 function checkWinner() {
   var winner = false;
-  var board = {};
-
+  
   // generate board object
-  // need explanation on this
+  // var board = {};
+  // $("td").text((index, square) => (board[index] = square));
+  var board = $("td").toArray().map((el) => { return el.innerHTML })
 
   winCombinations.forEach(position => {
     if (
@@ -114,9 +110,21 @@ function checkWinner() {
       board[position[0]] !== ""
     ) {
       setMessage(`Player ${board[position[0]]} Won!`);
-      return (winner = true);
+      return winner = true;
     }
   });
 
   return winner;
 }
+
+function resetBoard(){
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
+}
+
+
+
+
+
+
