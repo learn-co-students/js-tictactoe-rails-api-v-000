@@ -1,5 +1,7 @@
 var turn = 0
+
 var currentGame = 0
+
 var winCombinations = [
     [0,1,2],
     [3,4,5],
@@ -35,7 +37,6 @@ function attachListeners() {
   $('#previous').on('click', () => previousGames());
   $('#clear').on('click', () => clearGame());
 
-  
 }
 
 function saveGame() {
@@ -62,7 +63,22 @@ function previousGames() {
   $.get("/games", function(games) {
     //Games is a data object we can iterate over
     games.data.forEach(function(game) {
-      $('#games').append(`<button data-id="${game.id}">${game.id}</button><br>`);
+      $('#games').append(`<button data-id="${game.id}" onclick="loadGame(${game.id})">${game.id}</button><br>`);
+    });
+  });
+}
+
+function loadGame(id) {
+  $.get(`/games/${id}`, function(game) {
+    //array of the state of selected game
+    let boardState = game.data.attributes.state
+    turn = boardState.join("").length
+    currentGame = game.data.id;
+
+    let i = 0;
+    boardState.forEach(function(square) {
+      $("td")[i].innerHTML = square;
+      i++;
     });
   });
 }
