@@ -1,11 +1,24 @@
 // import { uptime } from "os";
 
-function player(turnCount){
+var turn = 0
 
-    if (turnCount === 2 % 0){
+function player(){
+
+    if (turn % 2 === 0 ){
         return "X"
     } else {
         return "O"
     }    
+}
+
+function updateState(){
+  
+    const squareChosen = document.querySelector("td").attr("data-x", "data-y");
+
+    squareChosen.addEventListener('click', function(){
+        
+        player();
+        turn++;
+    })
 }
 
