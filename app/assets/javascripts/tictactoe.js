@@ -24,9 +24,11 @@ function updateState(square) {
     $(square).text(token)
 }
 
-// function fullBoard(value) {
-//   value != ""
-// }
+function clearBoard() {
+   var fullBoard = $('td')
+   fullBoard.empty()
+   turn = 0
+}
 
 function checkWinner() {
   var winner = false
@@ -64,6 +66,7 @@ function checkWinner() {
 
   function attachListeners(){
     $('td').on('click', function() {
+      setMessage("")
       doTurn(this);
     })
   }
@@ -76,8 +79,10 @@ function doTurn(square) {
    } else {
      setMessage('That square is taken.');
    };
-
-
-  checkWinner()
+   // checkWinner()
+    if (checkWinner() === true || turn === 9) {
+        // $("td").off("click");
+        clearBoard()
+    }
 
 }
