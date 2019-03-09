@@ -273,7 +273,6 @@ describe('tictactoe.js', () => {
 
     it('attaches event listeners that invoke doTurn() when a square is clicked on', () => {
       var spy = sandbox.stub(window, 'doTurn');
-
       squares[0].click();
 
       expect(spy.calledOnce).to.be.true;

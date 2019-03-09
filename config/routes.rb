@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   root 'home#index'
 
   resources :games, only: [:index, :show, :create, :update]
+  get 'games/' => 'games#games'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

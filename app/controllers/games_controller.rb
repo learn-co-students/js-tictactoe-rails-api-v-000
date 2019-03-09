@@ -6,6 +6,12 @@ class GamesController < ApplicationController
     render json: games
   end
 
+  def games
+    debugger;
+    @games = Game.all
+    render json: @games
+  end
+
   def show
     render json: @game
   end
