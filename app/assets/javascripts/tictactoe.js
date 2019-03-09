@@ -24,6 +24,10 @@ function updateState(square) {
     $(square).text(token)
 }
 
+// function fullBoard(value) {
+//   value != ""
+// }
+
 function checkWinner() {
   var winner = false
   const winningCombos = [
@@ -51,6 +55,8 @@ function checkWinner() {
     if (position_1 !== "" && position_1 === position_2 && position_2 === position_3) {
            setMessage(`Player ${board[element[0]]} Won!`);
            winner = true;
+      } else if (turn === 9) {
+        setMessage("Tie game.")
       }
   });
   return winner
@@ -64,13 +70,13 @@ function checkWinner() {
 
 
 function doTurn(square) {
-  console.log(square.textContent)
    if (square.textContent === "") {
      updateState(square);
      turn++
    } else {
      setMessage('That square is taken.');
    };
+
 
   checkWinner()
 
