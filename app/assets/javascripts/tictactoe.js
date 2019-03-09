@@ -1,5 +1,7 @@
 // Code your JavaScript / jQuery solution here
-
+$(document).ready(function() {
+  attachListeners();
+});
 
 var turn = 0
 
@@ -54,6 +56,15 @@ function checkWinner() {
   return winner
 }
 
-function doTurn() {
+  function attachListeners(){
+    $('td').on('click', function() {
+      doTurn(this);
+    })
+  }
 
+
+function doTurn(square) {
+  updateState(square)
+  checkWinner()
+  turn++
 }
