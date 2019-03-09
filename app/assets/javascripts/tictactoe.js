@@ -1,10 +1,11 @@
 var turn =0;
 var winningCombIdx = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
-var currentBoard = window.document.querySelectorAll('td');
 
 $(document).ready(function() {
    attachListeners();
    previousGames();
+   saveGame();
+   clearGame();
 });
 
 
@@ -29,6 +30,7 @@ function checkWinner() {
 	var currentX = [];
 	var currentO = [];
 	var matchingIdx = [];
+	var currentBoard = window.document.querySelectorAll('td');
 
 //gather the current indices for each player
 	for (let i = 0; i < 9; i++) {
@@ -94,6 +96,8 @@ function doTurn(td) {
 
 function resetGame() {
 	turn = 0;
+	currentBoard = window.document.querySelectorAll('td');
+
 	for (let i = 0; i < 9; i++) {
     	currentBoard[i].innerHTML = '';
   	}
@@ -104,17 +108,54 @@ function resetGame() {
 function attachListeners() {
 	document.querySelectorAll('td')
 	.forEach(e => e.addEventListener("click", function() {
-		doTurn(event.target);
+		if (e.innerHTML === "" && !checkWinner() && turn < 10) {
+			doTurn(e);
+		}
 	}));
 }
 
 
 function previousGames() {
 	$("#previous").on("click", function() {
-		$.get("/games" + ".json", function(data) {
-		var games = data;
-	    debugger;
-	 	$("#games").text(game["id"]);
+		$("#games").empty();
+		$.get("/games", function(data) {
+			var games = data["data"];
+	    	for (var i = 0; i < games.length; i++) {
+        		$("#games").append('<button class="prev-game" data-id="' + games[i]["id"] + '">' + games[i]["id"] + '</button></br>');
+    		}
 	   });
 	});
 }
+
+function saveGame() {
+	$("#save").on("click", function() {
+		event.preventDefault();
+		currentBoard = window.document.querySelectorAll('td');
+		var boardState = Array.from(currentBoard).map(s => s.innerHTML);
+		var posting = $.post("/games", {"state" : boardState});
+
+		posting
+		.done(function(data) {
+       		alert("Board was Saved")
+     	})
+     	.fail(updateGame())
+	});
+}
+
+function updateGame() {
+	currentBoard = window.document.querySelectorAll('td');
+	var boardState = Array.from(currentBoard).map(s => s.innerHTML);
+
+	var patching = $.ajax({ type: 'PATCH', url: '/games', data: {"state" : boardState} });
+
+	patching.done(function(data) {
+       	alert("Board was Updated")
+    });
+}
+
+function clearGame() {
+	$("#clear").on("click", function() {
+		$("td").html("");
+	});
+}
+
