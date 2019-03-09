@@ -64,7 +64,14 @@ function checkWinner() {
 
 
 function doTurn(square) {
-  updateState(square)
+  console.log(square.textContent)
+   if (square.textContent === "") {
+     updateState(square);
+     turn++
+   } else {
+     setMessage('That square is taken.');
+   };
+
   checkWinner()
-  turn++
+
 }
