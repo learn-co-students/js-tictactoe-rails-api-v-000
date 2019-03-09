@@ -157,5 +157,6 @@ function clearGame() {
 	$("#clear").on("click", function() {
 		$("td").html("");
 	});
+	turn = 0;
 }
 
