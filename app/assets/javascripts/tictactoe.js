@@ -57,8 +57,10 @@ function checkWinner() {
     if (position_1 !== "" && position_1 === position_2 && position_2 === position_3) {
            setMessage(`Player ${board[element[0]]} Won!`);
            winner = true;
+           saveGame()
       } else if (turn === 9) {
         setMessage("Tie game.")
+        saveGame()
       }
   });
   return winner
@@ -92,7 +94,7 @@ function doTurn(square) {
 
 
 function previousGames() {
-  $.get("/games.json", function(games) {
+  $.get("/games", function(games) {
     $.each(games.data, function(index, game) {
       $("#games").append(`<p>${game.id}</p>`);
     });
