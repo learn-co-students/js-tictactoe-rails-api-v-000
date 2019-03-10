@@ -173,10 +173,14 @@ function clearGame() {
 
 function clickGame(clickedGameId) {
 	gameId = parseInt(clickedGameId);
+	turn = 0;
 	$.get("/games/" + gameId, function(data) {
-    //	document.querySelectorAll('td').each(e => e.innerHTML === data["data"]["attributes"]["state"][index]);
-    //	debugger;
-      //  $('td 0 0').innerHTML
+    	for (let i = 0; i < 9; i++) {
+    		$('td')[i].innerHTML = data["data"]["attributes"]["state"][i];
+    		if (data["data"]["attributes"]["state"][i] !== "") {
+    			turn++;
+    		}
+  		}
     });
 }
 
