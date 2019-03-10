@@ -72,6 +72,7 @@ function checkWinner() {
 
     $('#previous').on('click', () => previousGames());
     $('#save').on('click', () => saveGame());
+    $('#clear').on('click', () => clearBoard());
   }
 
 
@@ -87,16 +88,20 @@ function doTurn(square) {
         // $("td").off("click");
         clearBoard()
     }
-
 }
 
 
 function previousGames() {
-  $.get("/games.json", function(data) {
-    console.log(data)
-  })
+  $.get("/games.json", function(games) {
+    $.each(games.data, function(index, game) {
+      $("#games").append(`<p>${game.id}</p>`);
+    });
+  });
 }
 
 function saveGame() {
-  
+let values = $(this).serialize();
+let saving = $.post('/games', values);
+
+clearBoard();
 }
