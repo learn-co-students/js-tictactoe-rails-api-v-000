@@ -68,7 +68,10 @@ function checkWinner() {
     $('td').on('click', function() {
       setMessage("")
       doTurn(this);
-    })
+    });
+
+    $('#previous').on('click', () => previousGames());
+    $('#save').on('click', () => saveGame());
   }
 
 
@@ -85,4 +88,15 @@ function doTurn(square) {
         clearBoard()
     }
 
+}
+
+
+function previousGames() {
+  $.get("/games.json", function(data) {
+    console.log(data)
+  })
+}
+
+function saveGame() {
+  
 }
