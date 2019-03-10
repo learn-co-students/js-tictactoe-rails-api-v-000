@@ -484,7 +484,6 @@ describe('AJAX interactions with the Rails API', () => {
     context('when the current game has not yet been saved', () => {
       it('sends a POST request to the "/games" route', () => {
         saveButton.click();
-
         expect(requests[0].method).to.equal('POST');
         expect(requests[0].url).to.equal('/games');
       });
@@ -499,7 +498,6 @@ describe('AJAX interactions with the Rails API', () => {
           { 'Content-Type': 'application/json' },
           jsonifyGame(['', '', '', '', '', '', '', '', ''])
         );
-
         saveButton.click();
 
         expect(requests[0].method).to.equal('POST');
@@ -527,9 +525,7 @@ describe('AJAX interactions with the Rails API', () => {
       it('clears the game board', () => {
         squares[8].innerHTML = 'X';
         window.turn = 1;
-
         clearButton.click();
-
         const board = Array.from(squares).map(s => s.innerHTML);
 
         expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);

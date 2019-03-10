@@ -1,11 +1,13 @@
 var turn =0;
 var winningCombIdx = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+var gameId = 0;
 
 $(document).ready(function() {
    attachListeners();
    previousGames();
    saveGame();
    clearGame();
+   clickGame();
 });
 
 
@@ -88,6 +90,10 @@ function doTurn(td) {
 		setMessage("Tie game.")
 	};
 
+	if (won || turn === 9) {
+		$("#save").click()
+	}
+
 	if (turn === 9) {
 		resetGame()
 	};
@@ -112,6 +118,11 @@ function attachListeners() {
 			doTurn(e);
 		}
 	}));
+
+	// document.querySelectorAll('.prev-game')
+	// .forEach(e => e.addEventListener("click", function() {
+	// 	console.log("i was clicked")
+	// }));
 }
 
 
@@ -121,42 +132,51 @@ function previousGames() {
 		$.get("/games", function(data) {
 			var games = data["data"];
 	    	for (var i = 0; i < games.length; i++) {
-        		$("#games").append('<button class="prev-game" data-id="' + games[i]["id"] + '">' + games[i]["id"] + '</button></br>');
+        		$("#games").append('<button class="prev-game" data-id="' + games[i]["id"] + '" onclick="clickGame(' + games[i]["id"] + ')">' + games[i]["id"] + '</button></br>');
     		}
 	   });
 	});
 }
 
 function saveGame() {
-	$("#save").on("click", function() {
-		event.preventDefault();
-		currentBoard = window.document.querySelectorAll('td');
-		var boardState = Array.from(currentBoard).map(s => s.innerHTML);
-		var posting = $.post("/games", {"state" : boardState});
-
-		posting
-		.done(function(data) {
-       		alert("Board was Saved")
-     	})
-     	.fail(updateGame())
+	currentBoard = window.document.querySelectorAll('td');
+    $("#save").on("click", function(){
+    	if (!!gameId) {
+    		updateGame(gameId)
+    	} else {
+  			$.post("/games",
+  			{ state: Array.from(currentBoard).map(s => s.innerHTML)},
+  			function(data){
+  				gameId = parseInt(data["data"]["id"]);
+  			});
+  		}
 	});
 }
 
-function updateGame() {
+function updateGame(gameId) {
 	currentBoard = window.document.querySelectorAll('td');
-	var boardState = Array.from(currentBoard).map(s => s.innerHTML);
+	$.ajax({
+    	url : '/games/' + gameId,
+    	data : { state: Array.from(currentBoard).map(s => s.innerHTML)},
+    	type : 'PATCH'
+    })
+};       
 
-	var patching = $.ajax({ type: 'PATCH', url: '/games', data: {"state" : boardState} });
-
-	patching.done(function(data) {
-       	alert("Board was Updated")
-    });
-}
 
 function clearGame() {
 	$("#clear").on("click", function() {
 		$("td").html("");
-	});
-	turn = 0;
+		turn = 0;
+		gameId = 0;
+	});   
+}
+
+function clickGame(clickedGameId) {
+	gameId = parseInt(clickedGameId);
+	$.get("/games/" + gameId, function(data) {
+    //	document.querySelectorAll('td').each(e => e.innerHTML === data["data"]["attributes"]["state"][index]);
+    	debugger;
+        $('td 0 0').innerHTML
+    });
 }
 
