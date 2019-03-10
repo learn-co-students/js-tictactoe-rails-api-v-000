@@ -175,8 +175,8 @@ function clickGame(clickedGameId) {
 	gameId = parseInt(clickedGameId);
 	$.get("/games/" + gameId, function(data) {
     //	document.querySelectorAll('td').each(e => e.innerHTML === data["data"]["attributes"]["state"][index]);
-    	debugger;
-        $('td 0 0').innerHTML
+    //	debugger;
+      //  $('td 0 0').innerHTML
     });
 }
 
