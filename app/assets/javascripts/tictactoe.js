@@ -3,16 +3,11 @@ $(document).ready(function() {
   attachListeners();
 });
 
-var turn = 0
-
+var turn = 0;
+currentGame = 0;
 
 // sets the player token to X or O
 var player = () => turn % 2 ? 'O' : 'X';
-
-function getBoard() {
-  squares = document.querySelectorAll('td')
-  return squares
-}
 
 // setMessage() Accepts a string and adds it to the div#message element in the DOM.
 var setMessage = (note) => {
@@ -27,7 +22,9 @@ function updateState(square) {
 function clearBoard() {
    var fullBoard = $('td')
    fullBoard.empty()
-   turn = 0
+   turn = 0;
+   currentGame = 0;
+
 }
 
 function checkWinner() {
@@ -47,7 +44,7 @@ function checkWinner() {
 
   currentState.text((i, square) =>  {
     board.push(square)
-  })
+  });
 
   winningCombos.some(function(element) {
     var position_1 = board[element[0]]
@@ -75,6 +72,7 @@ function checkWinner() {
     $('#previous').on('click', () => previousGames());
     $('#save').on('click', () => saveGame());
     $('#clear').on('click', () => clearBoard());
+    $('.loadGame').on('click', () => loadGame());
   }
 
 
@@ -85,7 +83,6 @@ function doTurn(square) {
    } else {
      setMessage('That square is taken.');
    };
-   // checkWinner()
     if (checkWinner() === true || turn === 9) {
         // $("td").off("click");
         clearBoard()
@@ -94,16 +91,36 @@ function doTurn(square) {
 
 
 function previousGames() {
+  $("#games").empty();
   $.get("/games", function(games) {
     $.each(games.data, function(index, game) {
-      $("#games").append(`<p>${game.id}</p>`);
+      $("#games").append(`<button class="loadGame" id="gameID-${game.id}">Load Game ${game.id}</button><br>`);
+      $(`#gameID-${game.id}`).on('click', () => loadGame(game.id))
     });
+  });
+  attachListeners();
+}
+
+function loadGame(game) {
+  $.get(`/games/${game}`, function(data) {
+      let board = $('td');
+      let state = data.data.attributes.state;
+      currentGame = parseInt(data.data.id);
+
+       for (i = 0; i < state.length; i++) {
+         board[i].textContent = state[i]
+         console.log(board[i])
+       }
   });
 }
 
 function saveGame() {
-let values = $(this).serialize();
-let saving = $.post('/games', values);
+  var state = [];
+    $('td').text((i, square) =>  {
+      state.push(square)
+    });
+  var gameState = {state: state};
+  let saving = $.post('/games', gameState);
 
-clearBoard();
+  clearBoard();
 }
