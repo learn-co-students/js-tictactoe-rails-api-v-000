@@ -111,6 +111,7 @@ function loadGame(game) {
          board[i].textContent = state[i]
          console.log(board[i])
        }
+       turn = state.join('').length;
   });
 }
 
@@ -120,7 +121,17 @@ function saveGame() {
       state.push(square)
     });
   var gameState = {state: state};
-  let saving = $.post('/games', gameState);
-
-  clearBoard();
+    if (currentGame > 0) {
+      $({
+        url: `/games/${currentGame}`,
+        type: 'PATCH',
+        data: {state: state}
+      });
+      clearBoard();
+      setMessage("Game saved.");
+    } else {
+      $.post('/games', gameState);
+      clearBoard();
+      setMessage("Game saved.");
+    }
 }
