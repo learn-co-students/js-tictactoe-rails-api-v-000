@@ -1,27 +1,38 @@
 // Code your JavaScript / jQuery solution here
+
 var turn =  0
+
 
 $(document).ready(function(){
     attachListeners()
 })
 
  function attachListeners(){
-    $("td").click(function() {
+    $("td").on("click",function() {
     doTurn(this)
     });
+     
+    previousListern()
  }
 
 
 function doTurn(square){
-   updateState(square) ;
-    turn = turn + 1
- if (checkWinner()){
+
+if (valid(square)){
+   var updateState = updateState(square);
+    updateState.save
+    debugger
+   turn = turn + 1
+   
+ }  
+
+    if (checkWinner()){
    //  board === ""
    reset()
- }else if (turn ===  9){
-   setMessage("Tie game.")
+   }else if (turn ===  9){
+     setMessage("Tie game.")
     reset()
- }
+    }
 
 // if else statment( checking if the one or not).. No ternnary
  
@@ -33,10 +44,27 @@ function player(){
 //  X or O is called token in here
 }
 
+
+function valid(input){
+ if (input.innerHTML === ""){
+   return true
+
+ }else{
+    return false
+   }
+}
+
 function updateState(square){
        var token = player()
  $(square).append(token);
+ 
 }
+
+function saveGame(){
+   var state = []
+ 
+}
+
 
 function checkWinner(){
    WIN_COMBINATIONS= [
@@ -77,15 +105,12 @@ WIN_COMBINATIONS.forEach(function(win_combination) {
 )
 
 return winner
-
 // Check each against what token are on the board...
 // Logic of tic-tac toe of CLI> 
-
 }
 
 function setMessage(string){
    document.getElementById("message").innerHTML = string
-
 }
 
 
@@ -93,3 +118,24 @@ function reset(){
    $("td").empty()
    turn = 0
 }
+
+function play(){
+    if (checkWinner() === winner){
+       reset
+    }
+}
+
+ function previousListern(){
+  $("#previous").on('click',function(){
+   var id = $(this)
+
+   $.get("/games", function(data, status){
+//   take me to index
+        
+        
+     });
+  
+     
+})}
+
+

@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'home#index'
-
+  # get '/games/:id/index', to: 'games#update'
   resources :games, only: [:index, :show, :create, :update]
 
   # Example of regular route:
