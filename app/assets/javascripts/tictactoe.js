@@ -77,11 +77,11 @@ function checkWinner() {
 
 
 function doTurn(square) {
-   if (square.textContent === "") {
+   if (square.textContent !== "") {
+     setMessage('That square is taken.');
+   } else {
      updateState(square);
      turn++
-   } else {
-     setMessage('That square is taken.');
    };
     if (checkWinner() === true || turn === 9) {
         // $("td").off("click");
@@ -125,7 +125,7 @@ function saveGame() {
       $({
         url: `/games/${currentGame}`,
         type: 'PATCH',
-        data: {state: state}
+        data: {gameState}
       });
       clearBoard();
       setMessage("Game saved.");
