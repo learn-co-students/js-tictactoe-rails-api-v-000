@@ -4,7 +4,7 @@ $(document).ready(function() {
 });
 
 var turn = 0;
-currentGame = 0;
+var currentGame = 0;
 
 // sets the player token to X or O
 var player = () => turn % 2 ? 'O' : 'X';
@@ -24,7 +24,6 @@ function clearBoard() {
    fullBoard.empty()
    turn = 0;
    currentGame = 0;
-
 }
 
 function checkWinner() {
@@ -54,10 +53,6 @@ function checkWinner() {
     if (position_1 !== "" && position_1 === position_2 && position_2 === position_3) {
            setMessage(`Player ${board[element[0]]} Won!`);
            winner = true;
-           saveGame()
-      } else if (turn === 9) {
-        setMessage("Tie game.")
-        saveGame()
       }
   });
   return winner
@@ -66,33 +61,45 @@ function checkWinner() {
   function attachListeners(){
     $('td').on('click', function() {
       setMessage("")
-      doTurn(this);
+      if (!$.text(this) && !checkWinner()) {
+            doTurn(this);
+          }
     });
 
     $('#previous').on('click', () => previousGames());
     $('#save').on('click', () => saveGame());
     $('#clear').on('click', () => clearBoard());
-    $('.loadGame').on('click', () => loadGame());
+    // $('.loadGame').on('click', () => loadGame());
   }
 
 
 function doTurn(square) {
-   if (square.textContent !== "") {
-     setMessage('That square is taken.');
-   } else {
-     updateState(square);
-     turn++
-   };
-    if (checkWinner() === true || turn === 9) {
-        // $("td").off("click");
-        clearBoard()
-    }
+  updateState(square);
+  turn++
+  if (checkWinner()) {
+    clearBoard();
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+  }
+
+   // if (square.textContent !== "") {
+   //   setMessage('That square is taken.');
+   // } else {
+   //   updateState(square);
+   //   turn++
+   //  checkWinner();
+   // };
+    // if ( checkWinner() === true || turn === 9) {
+    //     // $("td").off("click");
+    //     // clearBoard()
+    // }
 }
 
 
 function previousGames() {
-  $("#games").empty();
+
   $.get("/games", function(games) {
+      $("#games").empty();
     $.each(games.data, function(index, game) {
       $("#games").append(`<button class="loadGame" id="gameID-${game.id}">Load Game ${game.id}</button><br>`);
       $(`#gameID-${game.id}`).on('click', () => loadGame(game.id))
@@ -120,18 +127,17 @@ function saveGame() {
     $('td').text((i, square) =>  {
       state.push(square)
     });
+
   var gameState = {state: state};
-    if (currentGame > 0) {
-      $({
+    if (currentGame) {
+      $.ajax({
         url: `/games/${currentGame}`,
         type: 'PATCH',
-        data: {gameState}
+        data: gameState
       });
-      clearBoard();
       setMessage("Game saved.");
     } else {
       $.post('/games', gameState);
-      clearBoard();
       setMessage("Game saved.");
     }
 }
