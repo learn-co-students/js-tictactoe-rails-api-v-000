@@ -76,9 +76,11 @@ function doTurn(square) {
   updateState(square);
   turn++
   if (checkWinner()) {
+    saveGame()
     clearBoard();
   } else if (turn === 9) {
     setMessage("Tie game.");
+    saveGame()
     clearBoard()
   }
 }
@@ -92,7 +94,6 @@ function previousGames() {
       $(`#gameID-${game.id}`).on('click', () => loadGame(game.id))
     });
   });
-  // attachListeners();
 }
 
 function loadGame(game) {
