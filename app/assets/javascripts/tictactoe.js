@@ -69,7 +69,6 @@ function checkWinner() {
     $('#previous').on('click', () => previousGames());
     $('#save').on('click', () => saveGame());
     $('#clear').on('click', () => clearBoard());
-    // $('.loadGame').on('click', () => loadGame());
   }
 
 
@@ -80,24 +79,12 @@ function doTurn(square) {
     clearBoard();
   } else if (turn === 9) {
     setMessage("Tie game.");
+    clearBoard()
   }
-
-   // if (square.textContent !== "") {
-   //   setMessage('That square is taken.');
-   // } else {
-   //   updateState(square);
-   //   turn++
-   //  checkWinner();
-   // };
-    // if ( checkWinner() === true || turn === 9) {
-    //     // $("td").off("click");
-    //     // clearBoard()
-    // }
 }
 
 
 function previousGames() {
-
   $.get("/games", function(games) {
       $("#games").empty();
     $.each(games.data, function(index, game) {
@@ -135,9 +122,14 @@ function saveGame() {
         type: 'PATCH',
         data: gameState
       });
-      setMessage("Game saved.");
+      // setMessage("Game saved.");
     } else {
-      $.post('/games', gameState);
+      debugger
+      let saving = $.post('/games', gameState);
+      saving.done(function(response) {
+        clearBoard()
+        previousGames();
+      });
       setMessage("Game saved.");
     }
 }
