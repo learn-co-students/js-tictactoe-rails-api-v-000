@@ -92,7 +92,7 @@ function previousGames() {
       $(`#gameID-${game.id}`).on('click', () => loadGame(game.id))
     });
   });
-  attachListeners();
+  // attachListeners();
 }
 
 function loadGame(game) {
@@ -114,21 +114,17 @@ function saveGame() {
     $('td').text((i, square) =>  {
       state.push(square)
     });
-
   var gameState = {state: state};
+
     if (currentGame) {
       $.ajax({
         url: `/games/${currentGame}`,
         type: 'PATCH',
         data: gameState
       });
-      // setMessage("Game saved.");
     } else {
-      debugger
-      let saving = $.post('/games', gameState);
-      saving.done(function(response) {
-        clearBoard()
-        previousGames();
+      $.post('/games', gameState, function(response) {
+        currentGame = response.data.id
       });
       setMessage("Game saved.");
     }
