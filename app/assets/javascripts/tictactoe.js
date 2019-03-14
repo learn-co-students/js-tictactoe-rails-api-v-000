@@ -13,7 +13,7 @@ winningCombos =  [
 ]
 
 var turn = 1
-let board = [ '', '', '', '', '', '', '', '', '' ]
+var board = [ '', '', '', '', '', '', '', '', '' ]
 
 function reset_game() {
   turn = 1;
@@ -32,50 +32,67 @@ function fill_board() {
   board[8] = $('table td[data-x=' + 2 + '][data-y=' + 2 + ']')[0].innerHTML
 }
 
-
 function player() {
   return turn % 2 === 0 ? 'X' : 'O'
 };
 
 function updateState(position) {
-  fill_board()
-  position.innerHTML = player()
+  if (position.innerHTML === 'X' || position.innerHTML === 'O' ) {
+    turn -= 1
+    return;
+    doTurn(position);
+  } else {
+
+    position.innerHTML = player()
+  }
 };
 
 function setMessage(message) {
   $('div#message')[0].innerHTML = message
 };
 
+function has_winning_combo() {
+  for(i=0; i< winningCombos.length; i++) {
+    if ((board[winningCombos[i][0]].toLowerCase() === 'x' &&
+         board[winningCombos[i][1]].toLowerCase() === 'x' &&
+         board[winningCombos[i][2]].toLowerCase() === 'x')) {
+
+      setMessage(`Player X Won!`);
+      return true
+
+    } else if ((board[winningCombos[i][0]].toLowerCase() === 'o' &&
+                board[winningCombos[i][1]].toLowerCase() === 'o' &&
+                board[winningCombos[i][2]].toLowerCase() === 'o')) {
+
+      setMessage(`Player O Won!`);
+      return true
+    }
+  }
+}
+
 function checkWinner() {
   win_bool = false;
   fill_board()
 
-  for(i=0; i< winningCombos.length; i++) {
+  if (board.every(el => el === "")) {
+    win_bool = false
 
-    if (board.every(el => el === "")) {
-      win_bool = false
-    } else if (board[winningCombos[i][0]] === board[winningCombos[i][1]] &&
-               board[winningCombos[i][1]] === board[winningCombos[i][2]]) {
+  } else if (has_winning_combo()) {
+    win_bool = true
+    reset_game()
+    //debugger;
 
-      setMessage(`Player ${player()} Won!`);
-      win_bool =  true
-    }
+  } else if (!has_winning_combo() && board.every(el => el.toLowerCase() === "x" || el.toLowerCase() === "o")) {
+    setMessage(`Tie game.`)
   }
-
   return win_bool
 }
 
-function doTurn (position) {
 
-  if (checkWinner() === false  && turn === 9) {
-    setMessage('Tie game.');
-    reset_game();
-  } else if (checkWinner() === true) {
-    reset_game();
-  } else if (checkWinner() === false  && turn < 9) {
-    updateState(position);
-    turn += 1
-  }
+function doTurn (position) {
+  updateState(position)
+  checkWinner()
+  turn += 1
 }
 
 
