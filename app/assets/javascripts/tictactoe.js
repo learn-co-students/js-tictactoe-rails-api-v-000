@@ -12,12 +12,26 @@ winningCombos =  [
   [6,7,8],            // Bottom row
 ]
 
-var turn = 1
+var turn = 0
 var board = [ '', '', '', '', '', '', '', '', '' ]
 
 function reset_game() {
-  turn = 1;
+  turn = 0;
+  window.turn = 0;
   board = [ '', '', '', '', '', '', '', '', '' ];
+  empty_board();
+}
+
+function empty_board() {
+  $('table td[data-x=' + 0 + '][data-y=' + 0 + ']')[0].innerHTML = ''
+  $('table td[data-x=' + 1 + '][data-y=' + 0 + ']')[0].innerHTML = ''
+  $('table td[data-x=' + 2 + '][data-y=' + 0 + ']')[0].innerHTML = ''
+  $('table td[data-x=' + 0 + '][data-y=' + 1 + ']')[0].innerHTML = ''
+  $('table td[data-x=' + 1 + '][data-y=' + 1 + ']')[0].innerHTML = ''
+  $('table td[data-x=' + 2 + '][data-y=' + 1 + ']')[0].innerHTML = ''
+  $('table td[data-x=' + 0 + '][data-y=' + 2 + ']')[0].innerHTML = ''
+  $('table td[data-x=' + 1 + '][data-y=' + 2 + ']')[0].innerHTML = ''
+  $('table td[data-x=' + 2 + '][data-y=' + 2 + ']')[0].innerHTML = ''
 }
 
 function fill_board() {
@@ -39,10 +53,7 @@ function player() {
 function updateState(position) {
   if (position.innerHTML === 'X' || position.innerHTML === 'O' ) {
     turn -= 1
-    return;
-    doTurn(position);
   } else {
-
     position.innerHTML = player()
   }
 };
@@ -70,6 +81,12 @@ function has_winning_combo() {
   }
 }
 
+function is_a_tied_game() {
+  if (!has_winning_combo() && board.every(el => el.toLowerCase() === "x" || el.toLowerCase() === "o")) {
+    return true
+  }
+}
+
 function checkWinner() {
   win_bool = false;
   fill_board()
@@ -80,14 +97,12 @@ function checkWinner() {
   } else if (has_winning_combo()) {
     win_bool = true
     reset_game()
-    //debugger;
 
-  } else if (!has_winning_combo() && board.every(el => el.toLowerCase() === "x" || el.toLowerCase() === "o")) {
+  } else if (is_a_tied_game()) {
     setMessage(`Tie game.`)
   }
   return win_bool
 }
-
 
 function doTurn (position) {
   updateState(position)
@@ -95,16 +110,30 @@ function doTurn (position) {
   turn += 1
 }
 
-
-
 function attachListeners() {
   $('table td').on('click', function() {
-    let position = this
-    doTurn(position)
+    doTurn(this)
   })
+
+  $('button#previous').on('click', function() {
+    $.get("/games")
+      .done(function(data) {
+
+    })
+  })
+
+  $('button#save').on('click', function() {
+    $.post('/games', function(data) {
+      //debugger;
+    })
+  })
+
+  $('button#clear').on('click', function() {
+  })
+
+
+
 };
-
-
 
 $(function() {
   attachListeners()
