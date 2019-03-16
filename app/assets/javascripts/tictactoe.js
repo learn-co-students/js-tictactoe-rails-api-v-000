@@ -27,25 +27,6 @@ var board = [ '', '', '', '', '', '', '', '', '' ];
 
 
 //////////////////////////////////////////////////////
-// resets the game completely                       //
-//////////////////////////////////////////////////////
-function reset_game() {
-  turn = 0;
-  board = [ '', '', '', '', '', '', '', '', '' ];
-  currentGameNum = $('button.prev-game').length + 1
-  empty_board();
-}
-
-
-//////////////////////////////////////////////////////
-// empties the board by changing all of the         //
-// positions to ''                                  //
-//////////////////////////////////////////////////////
-function empty_board() {
-  jQuery.each($('table td'), function(i, td) { td.innerHTML = '' });
-}
-
-//////////////////////////////////////////////////////
 // fills the backend board with the tokens on the   //
 // browser board                                    //
 //////////////////////////////////////////////////////
@@ -76,6 +57,26 @@ function fillBrowserBoard() {
   $('table td[data-x=' + 1 + '][data-y=' + 2 + ']')[0].innerHTML = board[7]
   $('table td[data-x=' + 2 + '][data-y=' + 2 + ']')[0].innerHTML = board[8]
 }
+
+//////////////////////////////////////////////////////
+// empties the board by changing all of the         //
+// positions to ''                                  //
+//////////////////////////////////////////////////////
+function empty_board() {
+  jQuery.each($('table td'), function(i, td) { td.innerHTML = '' });
+}
+
+
+//////////////////////////////////////////////////////
+// resets the game completely                       //
+//////////////////////////////////////////////////////
+function reset_game() {
+  turn = 0;
+  board = [ '', '', '', '', '', '', '', '', '' ];
+  currentGameNum = $('button.prev-game').length + 1
+  empty_board();
+}
+
 
 //////////////////////////////////////////////////////
 // checks if the current player is an 'X' or an 'O' //
@@ -150,10 +151,6 @@ function checkWinner() {
   if (has_winning_combo()) {
     winBool = true
     $('button#save').trigger('click')
-
-  } else if (is_a_tied_game()) {
-    setMessage(`Tie game.`)
-    $('button#save').trigger('click')
   }
   return winBool
 }
@@ -168,6 +165,9 @@ function doTurn (position) {
   updateState(position)
   if (checkWinner() === true) {
     reset_game()
+  } else if (is_a_tied_game()) {
+    setMessage(`Tie game.`)
+    $('button#save').trigger('click')
   } else {
     turn += 1
   }
