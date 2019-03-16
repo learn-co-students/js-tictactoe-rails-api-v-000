@@ -84,17 +84,22 @@ function player() {
   return turn % 2 === 0 ? 'X' : 'O'
 };
 
+//////////////////////////////////////////////////////
+// Checks if a position is valid                    //
+//////////////////////////////////////////////////////
+function isNotValid(position) {
+  if (position.innerHTML === 'X' || position.innerHTML === 'O' ) {
+    return true
+  }
+}
+
 
 //////////////////////////////////////////////////////
 // updates the board if it doesn't                  //
 // have an 'X' or 'O'                               //
 //////////////////////////////////////////////////////
 function updateState(position) {
-  if (position.innerHTML === 'X' || position.innerHTML === 'O' ) {
-    turn -= 1
-  } else {
-    position.innerHTML = player()
-  }
+  isNotValid(position) ? turn -= 1 : position.innerHTML = player()
 };
 
 
@@ -113,18 +118,13 @@ function setMessage(message) {
 //////////////////////////////////////////////////////
 function has_winning_combo() {
   for(i=0; i< winningCombos.length; i++) {
-    if ((board[winningCombos[i][0]] === 'X' &&
-         board[winningCombos[i][1]] === 'X' &&
-         board[winningCombos[i][2]] === 'X')) {
+    if (board[winningCombos[i][0]] === board[winningCombos[i][1]] &&
+        board[winningCombos[i][1]] === board[winningCombos[i][2]] &&
+        board[winningCombos[i][0]] !== '') {
 
-      setMessage(`Player X Won!`);
-      return true
+      const winner = board[winningCombos[i][0]]
 
-    } else if ((board[winningCombos[i][0]] === 'O' &&
-                board[winningCombos[i][1]] === 'O' &&
-                board[winningCombos[i][2]] === 'O')) {
-
-      setMessage(`Player O Won!`);
+      setMessage(`Player ${board[winningCombos[i][0]]} Won!`);
       return true
     }
   }
@@ -249,7 +249,7 @@ function saveGame() {
         type: "PATCH",
         url: `/games/${currentGameNum}`,
         data: { state: board }
-      })
+      });
       //debugger;
 
     } else {
@@ -270,8 +270,8 @@ function saveGame() {
 //////////////////////////////////////////////////////
 function clearGame() {
   $('button#clear').on('click', function() {
-    reset_game()
-  })
+    reset_game();
+  });
 }
 
 //////////////////////////////////////////////////////
@@ -279,10 +279,10 @@ function clearGame() {
 //////////////////////////////////////////////////////
 function attachListeners() {
 
-  click_for_turn()
-  previousGames()
-  saveGame()
-  clearGame()
+  click_for_turn();
+  previousGames();
+  saveGame();
+  clearGame();
 
 };
 
@@ -290,5 +290,5 @@ function attachListeners() {
 // document.ready() function                        //
 //////////////////////////////////////////////////////
 $(function() {
-  attachListeners()
+  attachListeners();
 })
