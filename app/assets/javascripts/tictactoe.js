@@ -186,7 +186,9 @@ function doTurn (position) {
 function allowTurns() {
     $('table td').on('click', function(event) {
       event.preventDefault();
-      doTurn(this)
+      if (!has_winning_combo() && !is_a_tied_game()) {
+        doTurn(this)
+      }
     })
   }
 
