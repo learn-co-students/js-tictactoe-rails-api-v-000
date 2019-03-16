@@ -4,7 +4,7 @@
 // Tracks what game is loaded into the board        //
 //////////////////////////////////////////////////////
 var currentGameNum = 0
-
+var previousGameIds = []
 //////////////////////////////////////////////////////
 // A LIST OF ALL OF THE WINNING COMBINATIONS        //
 //////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ function empty_board() {
 function reset_game() {
   turn = 0;
   board = [ '', '', '', '', '', '', '', '', '' ];
-  currentGameNum = $('button.prev-game').length + 1
+  currentGameNum = 0;
   empty_board();
 }
 
@@ -173,16 +173,19 @@ function doTurn (position) {
   }
 }
 
+
 //////////////////////////////////////////////////////
 // Invokes the doTurn() method if the player clicks //
 // on any square of the game board                  //
 //////////////////////////////////////////////////////
 function click_for_turn() {
-  $('table td').on('click', function(event) {
-    event.preventDefault();
-    doTurn(this)
-  })
-}
+    $('table td').on('click', function(event) {
+      event.preventDefault();
+      if (!has_winning_combo() && !is_a_tied_game()) {
+        doTurn(this)
+      }
+    })
+  }
 
 //////////////////////////////////////////////////////
 // Adds an event listener to each game button       //
@@ -224,7 +227,7 @@ function previousGames() {
             <button class="prev-game" id="game-${game.id}">${game.id}</button> <br />
             `)
         });
-        selectGame()
+        selectGame() //activates the event handler for clicking on buttons for previous games
       };
     });
   });
@@ -240,25 +243,25 @@ function saveGame() {
   $('button#save').on('click', function(event) {
     event.preventDefault();
 
-    if ($(`#game-${currentGameNum}`)[0]) {
-      //debugger;
+    if (jQuery.inArray(currentGameNum, previousGameIds) !== -1) {
       $.ajax({
-        type: "PATCH",
+        method: "PATCH",
         url: `/games/${currentGameNum}`,
         data: { state: board }
       });
-      //debugger;
-
     } else {
-
       $.ajax({
         method: "POST",
         url: "/games",
         data: { state: board }
       })
-
+      .done(function(game) {
+        // sets the currentGameNum to be the same as the saved game
+        // Add the saved game's ID to the previousGameIds array
+        currentGameNum = parseInt(game['data']['id'])
+        previousGameIds.push(parseInt(game['data']['id']))
+      })
     }
-
   });
 }
 
