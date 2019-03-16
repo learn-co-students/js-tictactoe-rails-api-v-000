@@ -147,10 +147,7 @@ function checkWinner() {
   winBool = false;
   fillGameBoard()
 
-  if (board.every(el => el === "")) {
-    winBool = false
-
-  } else if (has_winning_combo()) {
+  if (has_winning_combo()) {
     winBool = true
     $('button#save').trigger('click')
 
