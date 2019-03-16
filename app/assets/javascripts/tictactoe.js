@@ -5,7 +5,7 @@ const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
 
 var turn = 0
 
-var player = () => turn % 2 === 0 ? "X" : "O"  
+var player = () => turn % 2 === 0 ? "X" : "O";  
 
     // if (turn % 2 === 0 ){
     //     return "X"
@@ -30,18 +30,31 @@ function updateState(square){
         // turn++;
 }
 
-function setMessage () {
-  $('#message').text("Player X Won!");
+function setMessage (s) {
+  $('#message').text(s);
 }
 
-function checkWinner () {
-  
+function checkWinner() {
+  var board = {};
+  var winner = false;
+
+  $('td').text((index, square) => board[index] = square);
+
+  WINNING_COMBOS.some(function(combo) {
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      return winner = true;
+    }
+  });
+
+  return winner;
+}
+
+
 //if any winning combo matches any three squares on board, checkWinner is true
 //get squares on board 
 //access tokens on squares
 
-
-}
 
 
 function doTurn () {
