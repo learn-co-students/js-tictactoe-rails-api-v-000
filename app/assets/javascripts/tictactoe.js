@@ -1,5 +1,8 @@
 // import { uptime } from "os";
 
+const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
+                        [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+
 var turn = 0
 
 var player = () => turn % 2 === 0 ? "X" : "O"  
@@ -28,11 +31,14 @@ function updateState(square){
 }
 
 function setMessage () {
-
-
+  $('#message').text("Player X Won!");
 }
 
 function checkWinner () {
+  
+//if any winning combo matches any three squares on board, checkWinner is true
+//get squares on board 
+//access tokens on squares
 
 
 }
