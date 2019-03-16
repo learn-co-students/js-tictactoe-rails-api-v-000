@@ -62,7 +62,7 @@ function fillBrowserBoard() {
 // empties the board by changing all of the         //
 // positions to ''                                  //
 //////////////////////////////////////////////////////
-function empty_board() {
+function emptyBoard() {
   jQuery.each($('table td'), function(i, td) { td.innerHTML = '' });
 }
 
@@ -70,11 +70,11 @@ function empty_board() {
 //////////////////////////////////////////////////////
 // resets the game completely                       //
 //////////////////////////////////////////////////////
-function reset_game() {
+function resetGame() {
   turn = 0;
   board = [ '', '', '', '', '', '', '', '', '' ];
   currentGameNum = 0;
-  empty_board();
+  emptyBoard();
 }
 
 
@@ -100,7 +100,12 @@ function isNotValid(position) {
 // have an 'X' or 'O'                               //
 //////////////////////////////////////////////////////
 function updateState(position) {
-  isNotValid(position) ? turn -= 1 : position.innerHTML = player()
+  if (isNotValid(position)) {
+    turn -= 1
+  } else {
+    position.innerHTML = player()
+    fillGameBoard()
+  }
 };
 
 
@@ -164,7 +169,7 @@ function checkWinner() {
 function doTurn (position) {
   updateState(position)
   if (checkWinner()) {
-    reset_game()
+    resetGame()
   } else if (is_a_tied_game()) {
     setMessage(`Tie game.`)
     $('button#save').trigger('click')
@@ -173,19 +178,27 @@ function doTurn (position) {
   }
 }
 
-
 //////////////////////////////////////////////////////
+// Allows Users to Take a Turn by Clicking Squares  //
 // Invokes the doTurn() method if the player clicks //
 // on any square of the game board                  //
 //////////////////////////////////////////////////////
-function click_for_turn() {
+function allowTurns() {
     $('table td').on('click', function(event) {
       event.preventDefault();
-      if (!has_winning_combo() && !is_a_tied_game()) {
-        doTurn(this)
-      }
+      doTurn(this)
     })
   }
+
+//////////////////////////////////////////////////////
+// Prevents users from being able to click squares  //
+// This prevents them from taking a turn            //
+//////////////////////////////////////////////////////
+// function preventTurns() {
+//   if (has_winning_combo() || is_a_tied_game()) {
+//     $('table td').off('click')
+//   }
+// }
 
 //////////////////////////////////////////////////////
 // Adds an event listener to each game button       //
@@ -193,7 +206,9 @@ function click_for_turn() {
 // of the game instance's Game state (board)        //
 //////////////////////////////////////////////////////
 function selectGame() {
+
   $('button.prev-game').on('click', function() {
+    //allowTurns()
     var id = this.innerHTML
     $.ajax({
     	url: `/games/${id}`,
@@ -203,7 +218,8 @@ function selectGame() {
       currentGameNum = parseInt(game['data']['id'])
     	board = game['data']['attributes']['state']
       turn = board.filter( x => x === 'X' || x === 'O' ).length
-    	fillBrowserBoard()
+    	fillBrowserBoard();
+      //preventTurns();
     });
   })
 }
@@ -270,7 +286,8 @@ function saveGame() {
 //////////////////////////////////////////////////////
 function clearGame() {
   $('button#clear').on('click', function() {
-    reset_game();
+    //allowTurns()
+    resetGame();
   });
 }
 
@@ -279,7 +296,7 @@ function clearGame() {
 //////////////////////////////////////////////////////
 function attachListeners() {
 
-  click_for_turn();
+  allowTurns();
   previousGames();
   saveGame();
   clearGame();
