@@ -118,7 +118,7 @@ function setMessage(message) {
 // an 'X' or an 'O'                                 //
 //////////////////////////////////////////////////////
 function has_winning_combo() {
-  for(i=0; i< winningCombos.length; i++) {
+  for(i=0; i < winningCombos.length; i++) {
     if (board[winningCombos[i][0]] === board[winningCombos[i][1]] &&
         board[winningCombos[i][1]] === board[winningCombos[i][2]] &&
         board[winningCombos[i][0]] !== '') {
@@ -163,7 +163,7 @@ function checkWinner() {
 //////////////////////////////////////////////////////
 function doTurn (position) {
   updateState(position)
-  if (checkWinner() === true) {
+  if (checkWinner()) {
     reset_game()
   } else if (is_a_tied_game()) {
     setMessage(`Tie game.`)
