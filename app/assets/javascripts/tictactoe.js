@@ -124,7 +124,7 @@ function setMessage(message) {
 // checks if the winning combination is             //
 // an 'X' or an 'O'                                 //
 //////////////////////////////////////////////////////
-function has_winning_combo() {
+function hasWinningCombo() {
   for(i=0; i < winningCombos.length; i++) {
     if (board[winningCombos[i][0]] === board[winningCombos[i][1]] &&
         board[winningCombos[i][1]] === board[winningCombos[i][2]] &&
@@ -141,8 +141,8 @@ function has_winning_combo() {
 //////////////////////////////////////////////////////
 // checks if the game is tied                       //
 //////////////////////////////////////////////////////
-function is_a_tied_game() {
-  if (board.every(el => el === "X" || el === "O") && !has_winning_combo()) {
+function isTiedGame() {
+  if (board.every(el => el === "X" || el === "O") && !hasWinningCombo()) {
     setMessage(`Tie game.`)
     return true
   }
@@ -156,7 +156,7 @@ function checkWinner() {
   winBool = false;
   fillGameBoard()
 
-  if (has_winning_combo()) {
+  if (hasWinningCombo()) {
     winBool = true
   }
   return winBool
@@ -171,7 +171,7 @@ function checkWinner() {
 function doTurn (position) {
   updateState(position)
   turn += 1
-  if (checkWinner() || is_a_tied_game()) {
+  if (checkWinner() || isTiedGame()) {
     $('button#save').trigger('click')
     $('button#clear').trigger('click')
   }
@@ -184,9 +184,8 @@ function doTurn (position) {
 // on any square of the game board                  //
 //////////////////////////////////////////////////////
 function allowTurns() {
-    $('table td').on('click', function(event) {
-      event.preventDefault();
-      if (!has_winning_combo() && !is_a_tied_game()) {
+    $('table td').on('click', function() {
+      if (!hasWinningCombo() && !isTiedGame()) {
         doTurn(this)
       } else {
         $('button#save').trigger('click')
@@ -199,7 +198,7 @@ function allowTurns() {
 // This prevents them from taking a turn            //
 //////////////////////////////////////////////////////
 // function preventTurns() {
-//   if (has_winning_combo() || is_a_tied_game()) {
+//   if (hasWinningCombo() || isTiedGame()) {
 //     $('table td').off('click')
 //   }
 // }
