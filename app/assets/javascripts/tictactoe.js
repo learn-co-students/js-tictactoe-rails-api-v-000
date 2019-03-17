@@ -175,7 +175,6 @@ function doTurn (position) {
     $('button#save').trigger('click')
     $('button#clear').trigger('click')
   }
-
 }
 
 //////////////////////////////////////////////////////
@@ -185,10 +184,8 @@ function doTurn (position) {
 //////////////////////////////////////////////////////
 function allowTurns() {
     $('table td').on('click', function() {
-      if (!hasWinningCombo() && !isTiedGame()) {
+      if (!checkWinner() && !isTiedGame()) {
         doTurn(this)
-      } else {
-        $('button#save').trigger('click')
       }
     })
   }
@@ -222,7 +219,7 @@ function selectGame() {
       turn = board.filter( x => x === 'X' || x === 'O' ).length
     	fillBrowserBoard();
     });
-  })
+  });
 }
 
 
