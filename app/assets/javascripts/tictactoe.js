@@ -26,6 +26,7 @@ winningCombos =  [
 //////////////////////////////////////////////////////
 var turn = 0;
 var board = [ '', '', '', '', '', '', '', '', '' ];
+var previousBoard = []
 
 
 //////////////////////////////////////////////////////
@@ -157,7 +158,6 @@ function checkWinner() {
 
   if (has_winning_combo()) {
     winBool = true
-    $('button#save').trigger('click')
   }
   return winBool
 }
@@ -170,14 +170,15 @@ function checkWinner() {
 //////////////////////////////////////////////////////
 function doTurn (position) {
   updateState(position)
-  if (checkWinner()) {
-    resetGame()
-  } else if (is_a_tied_game()) {
-    setMessage(`Tie game.`)
+  turn += 1
+  if (checkWinner() || is_a_tied_game()) {
+    if (is_a_tied_game()) {
+      setMessage(`Tie game.`)
+    }
     $('button#save').trigger('click')
-  } else {
-    turn += 1
+    $('button#clear').trigger('click')
   }
+
 }
 
 //////////////////////////////////////////////////////
@@ -190,6 +191,8 @@ function allowTurns() {
       event.preventDefault();
       if (!has_winning_combo() && !is_a_tied_game()) {
         doTurn(this)
+      } else {
+        $('button#save').trigger('click')
       }
     })
   }
@@ -212,7 +215,6 @@ function allowTurns() {
 function selectGame() {
 
   $('button.prev-game').on('click', function() {
-    //allowTurns()
     var id = this.innerHTML
     $.ajax({
     	url: `/games/${id}`,
@@ -223,7 +225,6 @@ function selectGame() {
     	board = game['data']['attributes']['state']
       turn = board.filter( x => x === 'X' || x === 'O' ).length
     	fillBrowserBoard();
-      //preventTurns();
     });
   })
 }
@@ -290,7 +291,6 @@ function saveGame() {
 //////////////////////////////////////////////////////
 function clearGame() {
   $('button#clear').on('click', function() {
-    //allowTurns()
     resetGame();
   });
 }
@@ -299,12 +299,10 @@ function clearGame() {
 // All of the event listeners                       //
 //////////////////////////////////////////////////////
 function attachListeners() {
-
   allowTurns();
   previousGames();
   saveGame();
   clearGame();
-
 };
 
 //////////////////////////////////////////////////////
