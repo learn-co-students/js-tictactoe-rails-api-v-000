@@ -206,7 +206,6 @@ function allowTurns() {
 // of the game instance's Game state (board)        //
 //////////////////////////////////////////////////////
 function selectGame() {
-
   $('button.prev-game').on('click', function() {
     var id = this.innerHTML
     $.ajax({
@@ -221,7 +220,6 @@ function selectGame() {
     });
   });
 }
-
 
 //////////////////////////////////////////////////////
 // Creates a new button for each previous game      //
@@ -240,6 +238,8 @@ function previousGames() {
           games_div.append(`
             <button class="prev-game" id="game-${game.id}">${game.id}</button> <br />
             `)
+
+          previousGameIds.push(parseInt(game.id))
         });
         selectGame() //activates the event handler for clicking on buttons for previous games
       };
