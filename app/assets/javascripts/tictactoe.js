@@ -26,7 +26,6 @@ winningCombos =  [
 //////////////////////////////////////////////////////
 var turn = 0;
 var board = [ '', '', '', '', '', '', '', '', '' ];
-var previousBoard = []
 
 
 //////////////////////////////////////////////////////
@@ -144,6 +143,7 @@ function has_winning_combo() {
 //////////////////////////////////////////////////////
 function is_a_tied_game() {
   if (board.every(el => el === "X" || el === "O") && !has_winning_combo()) {
+    setMessage(`Tie game.`)
     return true
   }
 }
@@ -172,9 +172,6 @@ function doTurn (position) {
   updateState(position)
   turn += 1
   if (checkWinner() || is_a_tied_game()) {
-    if (is_a_tied_game()) {
-      setMessage(`Tie game.`)
-    }
     $('button#save').trigger('click')
     $('button#clear').trigger('click')
   }
