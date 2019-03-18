@@ -5,6 +5,8 @@ var WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
 
 var turn = 0
 
+var currentGame = 0
+
 var player = () => turn % 2 === 0 ? "X" : "O";  
 
 function updateState(square){
@@ -12,6 +14,8 @@ function updateState(square){
     var token = player();
 
     $(square).text(token);
+
+
 }
 
 function setMessage (s) {
@@ -37,7 +41,6 @@ function checkWinner () {
 };
 
 function doTurn (square) {
-  
   updateState(square);
   
   //passing in the same variable to a function called by another function is no prob (and what I was going to code at first :) :) :) )
@@ -63,26 +66,49 @@ $(document).ready(function(){
 
 
 function attachListeners () {
-
   $('td').on('click', function(){
     if (!$.text(this) && !checkWinner()){
       doTurn(this);
     }
   })
+
+  $('#previous').on('click', () => {previousGames()})
+  $('#save').on('click', () => {saveGame()})
+  
 }
 //this is what is in the window when clicked
 
 function saveGame () {
-  console.log("this saves the game")
+  //post current gameboard to database
+    //post board to Game database with ajax
+  var state = [];
+  //push current gameboard onto new array
+
+  $('td').text((index, square) = () => {
+    state.push(square)
+  });
+
+
+
+
+
+
+
 
 }
 
+function previousGames () {
+  $.get("#games").on('click', function(){
 
-function previousGame () {
-  console.log("this shows the previous games")
+  })
+}
+
+function makePreviousGamesClickable(){
+  state = 
 }
 
 function clearBoard () {
   $("td").empty();
   turn = 0;
+  currentGame = 0;
 }
