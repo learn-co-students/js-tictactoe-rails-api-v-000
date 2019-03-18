@@ -2,6 +2,11 @@
 
 var turn =  0
 
+function player(){
+   return turn % 2 === 0 ? "X" :"O" 
+//    modulo operator (%)
+//  X or O is called token in here
+}
 
 $(document).ready(function(){
     attachListeners()
@@ -9,22 +14,37 @@ $(document).ready(function(){
 
  function attachListeners(){
     $("td").on("click",function() {
-    doTurn(this)
+
+      if (!$.text(this) && !checkWinner()){
+         // this refer to the td
+         doTurn(this)
+      }
+
     });
      
     previousListern()
  }
 
 
+function updateState(square){
+   var token = player()
+$(square).append(token);
+
+}
+
 function doTurn(square){
+  updateState(square)
+  turn++
 
 if (valid(square)){
-   var updateState = updateState(square);
-    updateState.save
-    debugger
+   // var updateState = updateState(square);
+   //  updateState.save
+   //  debugger
    turn = turn + 1
    
  }  
+
+ 
 
     if (checkWinner()){
    //  board === ""
@@ -38,11 +58,6 @@ if (valid(square)){
  
 }
 
-function player(){
-   return turn % 2 === 0 ? "X" :"O" 
-//    modulo operator (%)
-//  X or O is called token in here
-}
 
 
 function valid(input){
@@ -54,11 +69,6 @@ function valid(input){
    }
 }
 
-function updateState(square){
-       var token = player()
- $(square).append(token);
- 
-}
 
 function saveGame(){
    var state = []
@@ -67,6 +77,7 @@ function saveGame(){
 
 
 function checkWinner(){
+
    WIN_COMBINATIONS= [
       [0,1,2],
       [3,4,5],
