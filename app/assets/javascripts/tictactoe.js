@@ -57,11 +57,20 @@ function doTurn (square) {
   }
 }
   
+$(document).ready(function(){
+  attachListeners();
+})
+
 
 function attachListeners () {
 
+  $('td').on('click', function(){
+    if (!$.text(this) && !checkWinner()){
+      doTurn(this);
+    }
+  })
 }
-
+//this is what is in the window when clicked
 
 function saveGame () {
   console.log("this saves the game")
@@ -74,5 +83,6 @@ function previousGame () {
 }
 
 function clearBoard () {
-  console.log("this clears the game board")
+  $("td").empty();
+  turn = 0;
 }
