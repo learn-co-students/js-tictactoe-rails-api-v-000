@@ -87,7 +87,7 @@ function saveGame () {
   $('td').text((index, square) => {
     //didn't have to refer to index again here in saveGame ... it took what the first parameter would be for the element properties but it didn't necessarily need to be referred to again, not like a declared variable
 
-    state.push(square);
+    state.push((index,square));
   });
 
   gameData = { state: state };
@@ -98,6 +98,7 @@ function saveGame () {
       url: `/games/${currentGame}`,
       data: gameData
     });
+    debugger
   } else {
     $.post('/games', gameData, function(game){
       
