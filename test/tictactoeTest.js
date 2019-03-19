@@ -487,6 +487,8 @@ describe('AJAX interactions with the Rails API', () => {
     context('when the current game has not yet been saved', () => {
       it('sends a POST request to the "/games" route', () => {
         saveButton.click();
+  console.log("TESTING")
+  console.log(requests)
 
         expect(requests[0].method).to.equal('POST');
         expect(requests[0].url).to.equal('/games');

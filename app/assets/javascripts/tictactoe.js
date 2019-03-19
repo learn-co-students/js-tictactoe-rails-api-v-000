@@ -1,6 +1,7 @@
 // Code your JavaScript / jQuery solution here
 
 var turn =  0
+var currentGame = 0
 
 function player(){
    return turn % 2 === 0 ? "X" :"O" 
@@ -19,11 +20,21 @@ $(document).ready(function(){
          // this refer to the td
          doTurn(this)
       }
-
     });
-     
-    previousListern()
- }
+
+    $('#previous').click(function(event) {
+        previousGames(event)     
+     });
+
+     $('#save').click(function(event) {
+         saveGame(event)
+     });
+
+     $('#clear').click(function(event) {
+          clearGame() 
+     })
+
+   };
 
 
 function updateState(square){
@@ -143,10 +154,50 @@ function play(){
    $.get("/games", function(data, status){
 //   take me to index
         
-        
      });
-  
      
 })}
+
+// coding for the buttons
+ function previousGames (event){
+   event.preventDefault();
+   $("#games").empty() // empty out
+
+  $.ajax({
+      method: "GET",
+      url: "/games"
+   }).done(function(response){
+     if (response.data.length){
+      response.data.forEach(function(games) {
+
+         $("#games").append(`<button id= "gameid-${games.id}">${games.id}</button>`)
+      
+       });
+      }
+   })
+ }
+  
+ function saveGame(event){
+   // event.preventDefault();
+   console.log(this)
+   // alert("we r hack3rz");
+   $.ajax({
+      method: "POST",
+      url: "/games"
+   }).done(function(response){
+      console.log (response)
+      $("#games").append(`<button id= "gameid-${response.data.id}">${response.data.id}</button>`)
+   
+     })
+
+ }
+
+   
+function clearGame(){
+   $("#games").empty() 
+   turn = 0
+
+}
+
 
 
