@@ -82,20 +82,32 @@ function saveGame () {
   //post current gameboard to database
     //post board to Game database with ajax
   var state = [];
+  var gameData;
   //push current gameboard onto new array
 
   $('td').text((index, square) = () => {
     state.push(square)
   });
 
+  gameData = { state: state };
 
+  if (currentGame){
+    $.ajax( {
+      method: "patch",
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game){
+      
+      currentGame = game.data.id
 
-
-
-
-
-
-}
+    $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button>`);
+    $("gameid-" + game.data.id).on('click', reloadGame(game.data.id));
+    
+    });
+  };
+};
 
 function previousGames () {
   $.get("#games").on('click', function(){
@@ -104,11 +116,15 @@ function previousGames () {
 }
 
 function makePreviousGamesClickable(){
-  state = 
+   
 }
 
 function clearBoard () {
   $("td").empty();
   turn = 0;
   currentGame = 0;
+}
+
+function reloadGame () {
+
 }
