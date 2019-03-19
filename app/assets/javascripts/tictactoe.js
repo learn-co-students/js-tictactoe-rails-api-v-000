@@ -72,9 +72,10 @@ function attachListeners () {
     }
   })
 
-  $('#previous').on('click', () => {previousGames()})
+  $('#previous').on('click', () => {showPreviousGames()})
   $('#save').on('click', () => {saveGame()})
-  
+  $('#clear').on('click', () => clearBoard())
+
 }
 //this is what is in the window when clicked
 
@@ -87,7 +88,7 @@ function saveGame () {
 
   $('td').text((index, square) => {
     //didn't have to refer to index again here in saveGame ... it took what the first parameter would be for the element properties but it didn't necessarily need to be referred to again, not like a declared variable
-    
+
     state.push(square);
   });
 
@@ -95,14 +96,14 @@ function saveGame () {
 
   if (currentGame){
     $.ajax( {
-      method: "patch",
+      method: "PATCH",
       url: `/games/${currentGame}`,
       data: gameData
     });
   } else {
     $.post('/games', gameData, function(game){
       
-      currentGame = game.data.id
+    currentGame = game.data.id
 
     $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button>`);
     $("gameid-" + game.data.id).on('click', reloadGame(game.data.id));
@@ -111,14 +112,18 @@ function saveGame () {
   };
 };
 
-function previousGames () {
-  $.get("#games").on('click', function(){
-
+function showPreviousGames () {
+  $("#games").empty();
+  $.get("/games", (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(addButtonsForPreviousGames)
+    }
   })
 }
 
-function makePreviousGamesClickable(){
-   
+function addButtonsForPreviousGames(game){
+  $("#games").append(`<button id="dataid-${game.id}">${game.id}</button><br>`);
+  $(`#dataid-${game.id}`).on('click', reloadGame(game.id)); 
 }
 
 function clearBoard () {
@@ -127,6 +132,44 @@ function clearBoard () {
   currentGame = 0;
 }
 
-function reloadGame () {
+function reloadGame(gameID) {
+
+  document.getElementById('message').innerHTML = '';
+
+  const XHRReq = new XMLHttpRequest()
+
+  XHRReq.overrideMimeType('application/json');
+
+  XHRReq.open("GET", `/games/${gameID}`, true)
+
+  XHRReq.onload = () => {
+
+    const data = JSON.parse(XHRReq.responseText).data;
+
+    const id = data.id;
+
+    const state = data.attributes.state;
+
+    let index = 0;
+
+    for(let y=0; y < 3; y++){
+      for(let x=0; x < 3; x++){
+        document.querySelector(`[data-y="${x}"]`, `[data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+
+    turn = state.join('').length;
+
+    currentGame = id;
+
+    if (!checkWinner() && turn === 9){
+      setMessage("Tie game.");
+    }
+
+  };
+
+  XHRReq.send(null)
 
 }
+  // $("gameid" + game.data.id)
