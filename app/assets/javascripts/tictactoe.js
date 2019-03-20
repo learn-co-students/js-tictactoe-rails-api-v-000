@@ -98,7 +98,6 @@ function saveGame () {
       url: `/games/${currentGame}`,
       data: gameData
     });
-    debugger
   } else {
     $.post('/games', gameData, function(game){
       
@@ -106,7 +105,7 @@ function saveGame () {
 
     $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
     $("gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
-    
+
     });
   };
 };
@@ -114,6 +113,7 @@ function saveGame () {
 function showPreviousGames () {
   $("#games").empty();
   $.get("/games", (savedGames) => {
+    debugger
     if (savedGames.data.length) {
       savedGames.data.forEach(addButtonsForPreviousGames)
     }
