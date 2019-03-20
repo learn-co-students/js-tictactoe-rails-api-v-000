@@ -1,5 +1,3 @@
-// import { uptime } from "os";
-
 var WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
@@ -46,18 +44,13 @@ function checkWinner () {
 function doTurn (square) {
   updateState(square);
   
-  //passing in the same variable to a function called by another function is no prob (and what I was going to code at first :) :) :) )
   turn++
 
   if (checkWinner()){
-  //don't need to === true explicitly
-  //this automatically calls checkWinner, no need to invoke it separately
     saveGame();
     clearBoard();
-
   } else if (turn === 9){
     setMessage("Tie game.");
-      //don't have to declare a variable to pass tie game message through because setMessage does that
     saveGame();
     clearBoard();
   }
@@ -73,20 +66,13 @@ function attachListeners () {
   $('#previous').on('click', () => {showPreviousGames()})
   $('#save').on('click', () => {saveGame()})
   $('#clear').on('click', () => clearBoard())
-
 }
-//this is what is in the window when clicked
 
 function saveGame () {
-  //post current gameboard to database
-    //post board to Game database with ajax
   var state = [];
   var gameData;
-  //push current gameboard onto new array
 
   $('td').text((index, square) => {
-    //didn't have to refer to index again here in saveGame ... it took what the first parameter would be for the element properties but it didn't necessarily need to be referred to again, not like a declared variable
-
     state.push((index,square));
   });
 
@@ -151,7 +137,6 @@ function reloadGame(gameID) {
     let index = 0;
 
     for(let y = 0; y < 3; y++){
-      //outer loop first in multi-dimensional loop
       for(let x = 0; x < 3; x++){
         document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
         index++;
@@ -165,10 +150,7 @@ function reloadGame(gameID) {
     if (!checkWinner() && turn === 9){
       setMessage("Tie game.");
     }
-
   };
 
   XHRReq.send(null)
-
 }
-  // $("gameid" + game.data.id)
