@@ -113,7 +113,6 @@ function saveGame () {
 function showPreviousGames () {
   $("#games").empty();
   $.get("/games", (savedGames) => {
-    debugger
     if (savedGames.data.length) {
       savedGames.data.forEach(addButtonsForPreviousGames)
     }
@@ -135,7 +134,7 @@ function reloadGame(gameID) {
 
   document.getElementById('message').innerHTML = '';
 
-  const XHRReq = new XMLHttpRequest()
+  const XHRReq = new XMLHttpRequest;
 
   XHRReq.overrideMimeType('application/json');
 
@@ -151,10 +150,10 @@ function reloadGame(gameID) {
 
     let index = 0;
 
-    for(let y=0; y < 3; y++){
+    for(let y = 0; y < 3; y++){
       //outer loop first in multi-dimensional loop
-      for(let x=0; x < 3; x++){
-        document.querySelector(`[data-x="${x}"]`, `[data-y="${y}"]`).innerHTML = state[index];
+      for(let x = 0; x < 3; x++){
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
         index++;
       }
     }
