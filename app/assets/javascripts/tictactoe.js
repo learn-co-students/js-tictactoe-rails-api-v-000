@@ -3,6 +3,7 @@
 var turn = 0
 window.onload = function(){
 	attachListeners()
+
 }
 
 // $(function () {
@@ -20,7 +21,30 @@ const boxes = window.document.querySelectorAll('td');
   }
 }
 
+function turncount(){
+	const boxes = window.document.querySelectorAll('td');
+	for (let i = 0; i < 9; i++) {
+    if (boxes[i].innerHTML != ""){turn += 1}
+  }
+}
+
+function saveBoard(){
+	const boxes = window.document.querySelectorAll('td');
+	let state = []
+	for (let i = 0; i < 9; i++) {
+	state[i] = boxes[i].innerHTML
+	}
+	stateString = JSON.stringify(state)
+	
+	 let posting = $.post('/games', {"state" : stateString});
+ 
+      posting.done(function(data) {
+       console.log(data)
+      });
+}
+
 function player(){
+const boxes = window.document.querySelectorAll('td');
  if (turn % 2 === 0){return "X"}
  	else {return "O"}
 }
@@ -70,14 +94,32 @@ if (event.innerHTML === ""){
 
   	else {
   			turn += 1
-  			setMessage("Tie game.")
+  			if (turn === 9) {setMessage("Tie game.")}
   		}
 	}}
+
+function previousGames(){
+	$.get("/games", function(data) {
+		$('#games').empty()
+		data["data"].forEach(function(game){
+		$('#games').append("<a href='/games/"+game.id+"'>"+game.id+"</a>")})
+	})
+}
+
 
 function attachListeners(){
   $("td").on('click', function(event) {
   	doTurn(event.target)
-
+  })
+  $("#previous").on('click', function(event){
+  	previousGames()
+  })
+  $("#clear").on('click', function(event){
+  	clearBoard()
+  	$('#message').html("")
+  })
+  $("#save").on('click', function(event){
+  	saveBoard()
   })
 }
 
