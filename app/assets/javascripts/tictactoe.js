@@ -1,7 +1,9 @@
 // Code your JavaScript / jQuery solution here
 
 var turn = 0
-
+window.onload = function(){
+	attachListeners()
+}
 
 // $(function () {
 //   $(".box").on('click', function(event) {
@@ -59,7 +61,7 @@ function checkWinner(){
 }
 
 function doTurn(event){
-
+if (event.innerHTML === ""){
 	updateState(event)
 	if (checkWinner()) {
 		turn = 0
@@ -70,7 +72,7 @@ function doTurn(event){
   			turn += 1
   			setMessage("Tie game.")
   		}
-	}
+	}}
 
 function attachListeners(){
   $("td").on('click', function(event) {
