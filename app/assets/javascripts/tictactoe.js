@@ -1,24 +1,21 @@
 // Code your JavaScript / jQuery solution here
-
+var gameid = 0
 var turn = 0
+
 window.onload = function(){
 	attachListeners()
 
 }
 
-// $(function () {
-//   $(".box").on('click', function(event) {
-//   	updateState(event.target)
-//   	turn += 1
-    
-//   })
-// })
+
 
 function clearBoard(){ 
 const boxes = window.document.querySelectorAll('td');
   for (let i = 0; i < 9; i++) {
     boxes[i].innerHTML = "";
   }
+  turn = 0
+  gameid = 0
 }
 
 function turncount(){
@@ -34,13 +31,30 @@ function saveBoard(){
 	for (let i = 0; i < 9; i++) {
 	state[i] = boxes[i].innerHTML
 	}
-	stateString = JSON.stringify(state)
-	
+ 	stateString = JSON.stringify(state)
 	 let posting = $.post('/games', {"state" : stateString});
- 
       posting.done(function(data) {
-       console.log(data)
+      gameid = data["data"]["id"]
+      previousGames()
       });
+}
+
+function updateBoard(gid){
+	const boxes = window.document.querySelectorAll('td');
+	let state = []
+	for (let i = 0; i < 9; i++) {
+	state[i] = boxes[i].innerHTML
+	}
+    
+	let url = "/games/"+gid
+ 	stateString = JSON.stringify(state)
+ 	$.ajax({
+	  url : url,
+	  data : {state: stateString},
+	  type : 'PATCH',
+	  
+	});
+ 	
 }
 
 function player(){
@@ -75,26 +89,33 @@ function checkWinner(){
   		if (tempx === true) {
   			setMessage("Player X Won!")
   			winner = true
+  			
   		} 
   		if (tempo === true){
   			setMessage("Player O Won!")
   			winner = true
+  			
   		}
   })
   if (winner === true) {return true} else {return false}
 }
 
 function doTurn(event){
-if (event.innerHTML === ""){
+if (event.innerHTML === "" && !checkWinner()){
 	updateState(event)
 	if (checkWinner()) {
 		turn = 0
+		saveBoard()
+		gameid = 0 
 		clearBoard()
   	} 
 
   	else {
   			turn += 1
-  			if (turn === 9) {setMessage("Tie game.")}
+  			if (turn === 9) {
+  				setMessage("Tie game.")
+  				saveBoard()
+  				gameid = 0}
   		}
 	}}
 
@@ -102,10 +123,26 @@ function previousGames(){
 	$.get("/games", function(data) {
 		$('#games').empty()
 		data["data"].forEach(function(game){
-		$('#games').append("<a href='/games/"+game.id+"'>"+game.id+"</a>")})
+		$('#games').append("<button class='load'>"+game.id+"</button><br>")
+		})
+		$(".load").on('click', function(event){
+  		loadGame()
+  		})
 	})
 }
 
+function loadGame(){
+let game = event.target.innerHTML
+let board = $.get("/games/"+game)
+setMessage("")
+board.done(function(data){
+	let state = data["data"]["attributes"]["state"]
+	gameid = game
+	const boxes = window.document.querySelectorAll('td');
+  	for (let i = 0; i < 9; i++) {
+    boxes[i].innerHTML = state[i];
+	}
+})}
 
 function attachListeners(){
   $("td").on('click', function(event) {
@@ -113,14 +150,19 @@ function attachListeners(){
   })
   $("#previous").on('click', function(event){
   	previousGames()
+  	
   })
   $("#clear").on('click', function(event){
   	clearBoard()
-  	$('#message').html("")
+  
   })
   $("#save").on('click', function(event){
-  	saveBoard()
+  
+  	if (gameid === 0){saveBoard()}
+  	else {updateBoard(gameid)}
+
   })
+
 }
 
 
