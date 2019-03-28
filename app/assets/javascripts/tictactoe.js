@@ -61,23 +61,14 @@ function doTurn(square) {
   if (checkWinner()) {
     //reset board;
     saveGame();
-    //$('tbody').removeData('data-id')
+
     console.log('Already called');
     clearBoard();
-    //$('td').each(function() {
-      //this.innerHTML = "";
-    //});
-    //turn = 0;
   } else if (turn === 9) {
     setMessage('Tie game.');
     //reset board
     saveGame();
     clearBoard();
-    // $('tbody').removeData('data-id')
-    // $('td').each(function() {
-    //   this.innerHTML = "";
-    // });
-    // turn = 0;
   } else {
     console.log(turn);
   }
@@ -95,9 +86,6 @@ function saveGame() {
 
   if ($('tbody').data('data-id') === undefined) {
     $.post('/games', { state: values }).done(callback)
-    // $.post('/games', { state: values }).done(function(callback) {
-    //   $('tbody').data( "data-id", response["data"]["id"] );
-    //});
   } else {
     $.ajax({
       type: 'PATCH',
