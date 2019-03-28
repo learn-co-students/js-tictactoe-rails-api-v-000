@@ -11,19 +11,22 @@ class GamesController < ApplicationController
   end
 
   def create
-    game = Game.create(game_params)
+    board = JSON.parse(params.permit(:state)["state"])
+    game = Game.create(:state => board)
     render json: game, status: 201
   end
 
   def update
-    @game.update(game_params)
+    
+    board = JSON.parse(params.permit(:state)["state"])
+    @game.update(:state => board)
     render json: @game
   end
 
   private
 
   def game_params
-    params.permit(state: [])
+    params.permit(:state)
   end
 
   def set_game
