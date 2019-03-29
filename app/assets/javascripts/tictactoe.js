@@ -6,6 +6,7 @@ $(document).ready(function() {
 
 const winningArray = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 var turn = 0;
+var gameId;
 
 const xPos = function(td) {
 	return $(td).data("x");
@@ -27,23 +28,93 @@ const gameBoardCells = function() {
 	return $('td').toArray()
 }
 
-function attachListeners() {
-		gameBoardCells().forEach(function(cell) {
-			cell.addEventListener("click", function(e) {
-				console.log("clicked on cell: ", reportPosition(this));
-				if (!checkWinner())	 {
-					doTurn(this);
-				}
-			})
-		})
+function attachListenerToClear() {
+	$("#clear").on("click", function() {
+		resetBoard();
+		gameId = '';
+	})
+}
 
-		$("#previous").on("click", function() {
-			$.get("/games", function(resp) {
-				resp.data.forEach(function(game) {
-					
-				});
+function attachGameButtonListener(button) {
+	button.addEventListener("click", function(e) {
+		console.log("game button pressed: ", $(this).data("id"))
+		$.get('/games/' + $(this).data('id'), function(resp) {
+			loadGame(resp);
+		})
+	});
+}
+
+function attachListenerToPrevious() {
+	$("#previous").on("click", function() {
+		$.get("/games", function() {
+		}).done(function(resp) {
+			// reset div#games
+			clearGamesDiv();
+
+			resp.data.forEach(function(game) {
+				newButton = document.createElement('button');
+				newButton.textContent = `Game ${game.id}`;
+				newButton.setAttribute('data-id', game.id);
+				attachGameButtonListener(newButton);
+				$("#games").append(newButton, '<br>')
 			});
 		});
+	});
+}
+
+function loadGame(resp) {
+	gameId = parseInt(resp.data.id)
+	turn = 0
+	clearGamesDiv();
+	// load the values of the game
+	gameBoardCells().forEach(function(cell, index) {
+    	cell.textContent = resp.data.attributes.state[index]
+    	if (cell.textContent) { turn++ }
+})
+}
+
+function attachListenersToGridCells() {
+	gameBoardCells().forEach(function(cell) {
+		cell.addEventListener("click", function(e) {
+			console.log("clicked on cell: ", reportPosition(this));
+			if (!checkWinner())	 {
+				doTurn(this);
+			}
+		})
+	})
+}
+
+function saveGame() {
+	let gameData = {'state': showBoard()}
+	// if this is an already existing game
+	if (gameId) {
+		gameData['id'] = gameId;
+		$.ajax({
+			url: `/games/${gameId}`,
+			method: 'PATCH',
+			data: gameData,
+			done: function(resp) {
+				loadGame(resp);
+			}
+		});
+	} else {
+		$.post('/games', gameData).done(function(resp) {
+			loadGame(resp);
+		})
+	}
+}
+
+function attachListenerToSave() {
+	$('#save').on('click', function(){
+		saveGame();	
+	})
+}
+
+function attachListeners() {
+	attachListenersToGridCells();	
+	attachListenerToPrevious();
+	attachListenerToSave();
+	attachListenerToClear();	
 	}
 
 function player() {
@@ -68,6 +139,15 @@ function setMessage(text) {
 	messageBox.text(text)
 }
 
+function displayGames(text) {
+	gameBox = $("#games")
+	gameBox.html(text)
+}
+
+function clearGamesDiv() {
+	$("#games").empty();	
+}
+
 function checkWinner() {
 	let currentBoard = gameBoardCells()
 	let winner = false
@@ -76,8 +156,8 @@ function checkWinner() {
 		if (currentBoard[combo[0]].textContent === currentBoard[combo[1]].textContent && 
 			currentBoard[combo[1]].textContent === currentBoard[combo[2]].textContent && 
 			currentBoard[combo[0]].textContent !== "") {
+			saveGame();
 			setMessage(`Player ${currentBoard[combo[0]].textContent} Won!`)
-			// console.log('winning combo: ', showBoard())
 			winner = true
 		}
 	})
@@ -105,6 +185,7 @@ function doTurn(cell) {
 			resetBoard();
 		} else if (turn === 9) {
 			setMessage("Tie game.")
+			saveGame();
 			resetBoard();
 		}
 	}
