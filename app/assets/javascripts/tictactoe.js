@@ -56,7 +56,7 @@ function attachListenerToPrevious() {
 				newButton.textContent = `Game ${game.id}`;
 				newButton.setAttribute('data-id', game.id);
 				attachGameButtonListener(newButton);
-				$("#games").append(newButton, '<br>')
+				$("#games").append(newButton, 'last updated: ', game.attributes["updated-at"], '<br>')
 			});
 		});
 	});
@@ -70,7 +70,7 @@ function loadGame(resp) {
 	gameBoardCells().forEach(function(cell, index) {
     	cell.textContent = resp.data.attributes.state[index]
     	if (cell.textContent) { turn++ }
-})
+});
 }
 
 function attachListenersToGridCells() {
