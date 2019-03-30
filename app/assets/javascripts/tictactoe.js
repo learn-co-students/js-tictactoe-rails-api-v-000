@@ -1,7 +1,6 @@
 // Code your JavaScript / jQuery solution here
 const winningArray = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 var turn = 0;
-var gameId;
 var game;
 
 class Game {
@@ -25,6 +24,14 @@ class Board {
 	static updateState(cell) {
 		let token = player()		
 		cell.innerHTML = token
+	}
+
+	static resetBoard() {
+		Board.cellElementArray().forEach(function(cell) {
+			cell.textContent = "";
+	})
+
+	turn = 0;
 	}
 }
 
@@ -56,7 +63,7 @@ const gameBoardCells = function() {
 function attachListenerToClear() {
 	$("#clear").on("click", function() {
 		resetBoard();
-		gameId = '';
+		game.id = '';
 	})
 }
 
@@ -88,7 +95,7 @@ function attachListenerToPrevious() {
 }
 
 function loadGame(resp) {
-	gameId = parseInt(resp.data.id)
+	game.id = parseInt(resp.data.id)
 	turn = 0
 	clearGamesDiv();
 	// load the values of the game
@@ -112,10 +119,10 @@ function attachListenersToGridCells() {
 function saveGame() {
 	let gameData = {'state': Board.cellTextArray()}
 	// if this is an already existing game
-	if (gameId) {
-		gameData['id'] = gameId;
+	if (game.id) {
+		gameData['id'] = game.id;
 		$.ajax({
-			url: `/games/${gameId}`,
+			url: `/games/${game.id}`,
 			method: 'PATCH',
 			data: gameData,
 			done: function(resp) {
@@ -186,10 +193,7 @@ function checkWinner() {
 }
 
 function resetBoard() {
-	gameBoardCells().forEach(function(cell) {
-		cell.textContent = "";
-	})
-	turn = 0;
+	Board.resetBoard()
 }
 
 function doTurn(cell) {
