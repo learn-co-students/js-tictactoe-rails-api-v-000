@@ -1,12 +1,37 @@
 // Code your JavaScript / jQuery solution here
-$(document).ready(function() {
-	attachListeners();
-})
-
-
 const winningArray = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 var turn = 0;
 var gameId;
+var game;
+
+class Game {
+	constructor(state = ['','','','','','','','',''], id = '') {
+		this.state = state;
+		this.id = id;
+	}
+}
+
+class Board {
+	static cellElementArray() {
+		return $('td').toArray()
+	}
+
+	static cellTextArray() {
+		return Board.cellElementArray().map(function(cell) {
+			return cell.textContent;
+		})
+	}
+
+	static updateState(cell) {
+		let token = player()		
+		cell.innerHTML = token
+	}
+}
+
+$(document).ready(function() {
+	attachListeners();
+	game = new Game
+})
 
 const xPos = function(td) {
 	return $(td).data("x");
@@ -85,7 +110,7 @@ function attachListenersToGridCells() {
 }
 
 function saveGame() {
-	let gameData = {'state': showBoard()}
+	let gameData = {'state': Board.cellTextArray()}
 	// if this is an already existing game
 	if (gameId) {
 		gameData['id'] = gameId;
@@ -127,11 +152,7 @@ function player() {
 	}
 
 function updateState(cell) {
-	let token = player()
-	// console.log("turn: ", turn)
-	// console.log("playing", token, " on ", cell.attributes)
-	cell.innerHTML = token
-	// console.log("update board: ", showBoard())
+	Board.updateState(cell)
 }
 
 function setMessage(text) {
@@ -162,12 +183,6 @@ function checkWinner() {
 		}
 	})
 	return winner
-}
-
-function showBoard() {
-	return gameBoardCells().map(function(cell) {
-		return cell.textContent;
-	})
 }
 
 function resetBoard() {
