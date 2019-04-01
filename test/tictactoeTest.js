@@ -227,7 +227,6 @@ describe('tictactoe.js', () => {
       sinon.useFakeXMLHttpRequest();
 
       const spy = sandbox.spy(window, 'setMessage');
-
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
       //  X | O | X 
       // -----------
