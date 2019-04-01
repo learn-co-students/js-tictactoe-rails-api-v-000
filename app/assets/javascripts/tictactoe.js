@@ -10,6 +10,29 @@ class Board {
 		this.id = id;
 	}
 
+	static load(id) {
+		console.log('loading ', id, ' from cache')
+		if (Object.keys(cache).includes(id.toString())) {
+			board.id = id
+			gameBoardCells().forEach(function(cell, index) {
+    			cell.textContent = cache[id][index]
+    			if (cell.textContent) { turn++ }
+			});	
+		} else {
+			// try to retrieve if not in the cache
+		}
+
+		turn = 0
+		clearGamesDiv();
+		// load the values of the game
+	}
+
+	static saveToCache(id) {
+		setMessage(`Current game id: ${id}`)
+		debugger
+		cache[id] = Board.cellTextArray()
+	}
+
 	static cellElementArray() {
 		return $('td').toArray()
 	}
@@ -36,6 +59,7 @@ class Board {
 
 $(document).ready(function() {
 	attachListeners();
+	retrievePrevious();
 	board = new Board
 })
 
@@ -69,9 +93,7 @@ function attachListenerToClear() {
 function attachGameButtonListener(button) {
 	button.addEventListener("click", function(e) {
 		console.log("game button pressed: ", $(this).data("id"))
-		$.get('/games/' + $(this).data('id'), function(resp) {
-			loadGame(resp);
-		})
+		Board.load($(this).data('id'))
 	});
 }
 
@@ -121,6 +143,13 @@ function attachListenersToGridCells() {
 			console.log("clicked on cell: ", reportPosition(this));
 			if (!checkWinner())	 {
 				doTurn(this);
+				if (board.id) {
+					setMessage(`Current game id: ${board.id}`)
+				} else {
+					setMessage('Save game to set game id.')
+				}
+			} else {
+				setMessage('Winner has already been declared for this game.')
 			}
 		})
 	})
@@ -137,15 +166,18 @@ function saveGame() {
 			data: gameData,
 			dataType: 'json',
 			success: function(resp) {
-				console.log(resp)
-				debugger
+				Board.saveToCache(board.id);
+				console.log('game updated')
 			}
 		});
 	} else {
-		$.post('/games', gameData).done(function(resp) {
-			loadGame(resp);
+		$.post('/games', gameData).success(function(resp) {
+			board.id = parseInt(resp.data.id)
+			console.log('game saved')
+			Board.saveToCache(board.id)
 		})
 	}
+
 }
 
 function attachListenerToSave() {
@@ -196,7 +228,6 @@ function checkWinner() {
 		if (currentBoard[combo[0]].textContent === currentBoard[combo[1]].textContent && 
 			currentBoard[combo[1]].textContent === currentBoard[combo[2]].textContent && 
 			currentBoard[combo[0]].textContent !== "") {
-			saveGame();
 			setMessage(`Player ${currentBoard[combo[0]].textContent} Won!`)
 			winner = true
 		}
@@ -213,6 +244,7 @@ function doTurn(cell) {
 		updateState(cell);
 		turn++;
 		if (checkWinner()) {
+			saveGame();
 			resetBoard();
 		} else if (turn === 9) {
 			setMessage("Tie game.")
