@@ -20,6 +20,14 @@ class Board {
 			});	
 		} else {
 			// try to retrieve if not in the cache
+			$.get('/games/' + id, function() {
+				console.log('game ', id, ' not found. Attempting to retrieve from server.')
+			}).success(function(resp) {
+				console.log(id, 'successfully found')
+				writeToCache(resp.data)
+			}).error(function() {
+				console.log(id, 'not found')
+			});
 		}
 
 		turn = 0
@@ -97,12 +105,16 @@ function attachGameButtonListener(button) {
 	});
 }
 
+function writeToCache(game) {
+	cache[game.id] = game.attributes['state']
+}
+
 function retrievePrevious() {
 	$.get("/games", function() {
 	}).done(function(resp) {
 		// load the response into cache, and log it to the console
 		resp.data.forEach(function(game) {
-			cache[game.id] = game.attributes['state']
+			writeToCache(game);
 		});
 	console.log('cache loaded: ', cache)
 	});
