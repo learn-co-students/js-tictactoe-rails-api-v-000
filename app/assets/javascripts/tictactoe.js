@@ -1,14 +1,8 @@
 // Code your JavaScript / jQuery solution here
 const winningArray = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 var turn = 0;
-var game;
-
-class Game {
-	constructor(state = ['','','','','','','','',''], id = '') {
-		this.state = state;
-		this.id = id;
-	}
-}
+var board;
+var cache = {}
 
 class Board {
 	constructor(state = ['','','','','','','','',''], id = '') {
@@ -78,6 +72,17 @@ function attachGameButtonListener(button) {
 		$.get('/games/' + $(this).data('id'), function(resp) {
 			loadGame(resp);
 		})
+	});
+}
+
+function retrievePrevious() {
+	$.get("/games", function() {
+	}).done(function(resp) {
+		// load the response into cache, and log it to the console
+		resp.data.forEach(function(game) {
+			cache[game.id] = game.attributes['state']
+		});
+	console.log('cache loaded: ', cache)
 	});
 }
 
