@@ -1,4 +1,4 @@
-// let turn = 0;
+let turn = 0;
 var origBoard;
 const winCombinations = [
     [0, 1, 2],
@@ -9,8 +9,20 @@ const winCombinations = [
     [2, 5, 8],
     [0, 4, 8],
     [2, 4, 6]
-  ]
+]
 
+$(function () {
+    attachListeners()
+});
+
+function attachListeners() {
+    $('td').on('click', function() {
+        if(!$.text(this) && !checkWinner()) {
+            doTurn(this);
+        }    
+    });
+    //$()
+}
 
 // need to build a function that adds count to turn after every move in order for this to work
 function player() {
@@ -20,6 +32,7 @@ function player() {
       return "O"
     }
   }
+  
 
 function updateState(square) {
     square.innerHTML = player()
@@ -33,7 +46,6 @@ function checkWinner() {
     let winner = false
     boardValues = Array.from($('td')).map(e => e.innerHTML)
     winCombinations.some(winCombo => { 
-        debugger
         if (boardValues[winCombo[0]] !== "" && boardValues[winCombo[0]] === boardValues[winCombo[1]] && boardValues[winCombo[1]] === boardValues[winCombo[2]] ) {
             setMessage("Player " + boardValues[winCombo[0]] + " Won!")
             return winner = true
@@ -41,3 +53,21 @@ function checkWinner() {
     })
     return winner
 }
+
+function doTurn(square) {
+    updateState(square)
+    turn += 1
+
+    if (checkWinner()) {
+        resetBoard()
+    } else if (turn === 9){
+        setMessage("Tie game.")
+        resetBoard()
+    }
+}
+
+function resetBoard() {
+    $('td').empty();
+    turn = 0;
+    currentGame = 0;
+  }
