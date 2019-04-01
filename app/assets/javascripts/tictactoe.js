@@ -11,6 +11,11 @@ class Game {
 }
 
 class Board {
+	constructor(state = ['','','','','','','','',''], id = '') {
+		this.state = state;
+		this.id = id;
+	}
+
 	static cellElementArray() {
 		return $('td').toArray()
 	}
@@ -37,7 +42,7 @@ class Board {
 
 $(document).ready(function() {
 	attachListeners();
-	game = new Game
+	board = new Board
 })
 
 const xPos = function(td) {
@@ -63,7 +68,7 @@ const gameBoardCells = function() {
 function attachListenerToClear() {
 	$("#clear").on("click", function() {
 		resetBoard();
-		game.id = '';
+		board.id = '';
 	})
 }
 
@@ -95,7 +100,7 @@ function attachListenerToPrevious() {
 }
 
 function loadGame(resp) {
-	game.id = parseInt(resp.data.id)
+	board.id = parseInt(resp.data.id)
 	turn = 0
 	clearGamesDiv();
 	// load the values of the game
@@ -119,14 +124,16 @@ function attachListenersToGridCells() {
 function saveGame() {
 	let gameData = {'state': Board.cellTextArray()}
 	// if this is an already existing game
-	if (game.id) {
-		gameData['id'] = game.id;
+	if (board.id) {
+		gameData['id'] = board.id;
 		$.ajax({
-			url: `/games/${game.id}`,
+			url: `/games/${board.id}`,
 			method: 'PATCH',
 			data: gameData,
-			done: function(resp) {
-				loadGame(resp);
+			dataType: 'json',
+			success: function(resp) {
+				console.log(resp)
+				debugger
 			}
 		});
 	} else {
