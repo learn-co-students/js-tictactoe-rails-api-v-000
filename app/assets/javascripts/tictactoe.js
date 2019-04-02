@@ -76,7 +76,7 @@ function doTurn(square) {
     } else if (turn === 9){
         setMessage("Tie game.")
         saveGame()
-        resetBoard()
+        clearBoard()
     }
 }
 
@@ -97,7 +97,6 @@ function resetBoard() {
 function saveGame() {
     gameState = Array.from($('td')).map(e => e.innerHTML)
     gameData = {state: gameState}
-
     if (gameId !== 0) {
         $.ajax({
         type: "PATCH",
@@ -106,7 +105,7 @@ function saveGame() {
         })
     } else {
         $.post('/games', gameData, function(game){
-            let gameId = game.data.id
+            gameId = game.data.id
             $('#games').append(`<button data-id=${gameId} onclick="getGame(${gameId})">Game ${gameId}</button><br>`)
         })
     }
@@ -116,5 +115,24 @@ function previousGames() {
     $.get('/games', function(games){
         let gameIds = games.data.map(game => `<button data-id=${game.id} onclick="getGame(${game.id})">Game ${game.id}</button><br>`)
         $('#games').html(gameIds)
+    })
+}
+
+function getGame(id) {
+    $.get(`/games/${id}`, function(game){
+        let state = game.data.attributes.state 
+        let tds = Array.from($('td')).map(e => e.innerHTML)
+
+        $('td').text(function(i) {
+                return state[i]
+            })  
+        
+        // for(let i = 0; i < state.length; i++){
+        //     tds[i] = state[i]
+        // }
+
+        
+        turn = state.filter(e => e !== "").length
+        gameId = game.data.id
     })
 }
