@@ -1,5 +1,6 @@
-let turn = 0;
-var origBoard;
+var turn = 0;
+var gameId = 0;
+
 const winCombinations = [
     [0, 1, 2],
     [3, 4, 5],
@@ -21,7 +22,18 @@ function attachListeners() {
             doTurn(this);
         }    
     });
-    //$()
+
+    $('#save').on('click', function() {
+        saveGame()
+    })
+
+    $('#previous').on('click', function(){
+        previousGames()
+    })
+
+    $('#clear').on('click', function(){
+        resetBoard()
+    })
 }
 
 // need to build a function that adds count to turn after every move in order for this to work
@@ -59,15 +71,50 @@ function doTurn(square) {
     turn += 1
 
     if (checkWinner()) {
-        resetBoard()
+        saveGame()
+        clearBoard()
     } else if (turn === 9){
         setMessage("Tie game.")
+        saveGame()
         resetBoard()
     }
 }
 
-function resetBoard() {
+function clearBoard() {
     $('td').empty();
     turn = 0;
-    currentGame = 0;
+    gameId = 0;
+}
+
+function resetBoard() {
+    $('td').empty();
+    $('#message').empty();
+    $('#games').empty();
+    turn = 0;
+    gameId = 0;
   }
+
+function saveGame() {
+    gameState = Array.from($('td')).map(e => e.innerHTML)
+    gameData = {state: gameState}
+
+    if (gameId !== 0) {
+        $.ajax({
+        type: "PATCH",
+        url: `/games/${gameId}`,
+        data: gameData 
+        })
+    } else {
+        $.post('/games', gameData, function(game){
+            let gameId = game.data.id
+            $('#games').append(`<button data-id=${gameId} onclick="getGame(${gameId})">Game ${gameId}</button><br>`)
+        })
+    }
+}
+
+function previousGames() {
+    $.get('/games', function(games){
+        let gameIds = games.data.map(game => `<button data-id=${game.id} onclick="getGame(${game.id})">Game ${game.id}</button><br>`)
+        $('#games').html(gameIds)
+    })
+}
