@@ -3,7 +3,14 @@ $(document).ready(function () {
 	let game = new Game(-1);
 
 	$("td").click(function() {
-		game.updateState(this);
+		game.doTurn(this);
+	});
+
+	$("button#clear").click(function(e) {
+		e.preventDefault();
+		const id = game.id;
+		game = new Game(id);
+		game.resetBoard();
 	});	
 });
 
@@ -13,27 +20,48 @@ class Game {
   constructor (id, boardArr = []) {
     this.boardArr = boardArr;
 		this.id = id;
+		this.turn = 0
   }
 	
+	resetBoard() {
+		this.boardArr = [];
+		const board = this.getBoard();
+
+		for (let i = 0; i < board.length; i++) {
+			board[i].innerText = "";
+		}
+
+		this.setMessage("");
+	}
+
+	doTurn(square) {
+		this.updateState(square);
+		this.turn++;
+		const winner = this.checkWinner();
+	}
+
 	checkWinner() {
 		const transformArray = this.transformBoard();
 
 		const winningSumm = this.lookForWinners(transformArray);
 
+		let rtn = false;
 		let msg = "";
 		if (winningSumm === 3) {
 			msg = "Player X Won!";
+			rtn = true;
 		} else if (winningSumm === -3) {
 			msg = "Player O Won!";
+			rtn = true;
 		}
 		
 		this.setMessage(msg);
-		return msg;
+		return rtn;
 	}
 
 
 	setMessage(message) {
-		$("div#message").innerHTML = message;
+		$("div#message")[0].innerHTML = message;
 	}
 	
 	updateState(square) {
@@ -83,9 +111,9 @@ private
 		tuples.push(boardTransform[0]);
 		tuples.push(boardTransform[1]);
 		tuples.push(boardTransform[2]);
-		tuples.push([boardTransform[0][0], boardTransform[0][1], boardTransform[0][2]]);
-		tuples.push([boardTransform[1][0], boardTransform[1][1], boardTransform[1][2]]);
-		tuples.push([boardTransform[2][0], boardTransform[2][1], boardTransform[2][2]]);
+		tuples.push([boardTransform[0][0], boardTransform[1][0], boardTransform[2][0]]);
+		tuples.push([boardTransform[0][1], boardTransform[1][1], boardTransform[2][1]]);
+		tuples.push([boardTransform[0][2], boardTransform[1][2], boardTransform[2][2]]);
 		tuples.push([boardTransform[0][0], boardTransform[1][1], boardTransform[2][2]]);
 		tuples.push([boardTransform[0][2], boardTransform[1][1], boardTransform[2][0]]);
 
