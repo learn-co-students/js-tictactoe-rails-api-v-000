@@ -82,7 +82,9 @@ class Game {
 
 private
 
-	getBoard() { return $("td"); }
+	getBoard() { 
+		return $("td"); 
+	}
 
 	transformBoard() {
 		let baseArray = [[0, 0, 0],[0, 0, 0],[0, 0, 0]];
