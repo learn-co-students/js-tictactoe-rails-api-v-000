@@ -1,6 +1,9 @@
 // Code your JavaScript / jQuery solution here
+let game;
+
 $(document).ready(function () {
-	let game = new Game(-1);
+//	let game = new Game(-1);
+	if (game === undefined) { game = new Game(-1); }
 
 	$("td").click(function() {
 		game.doTurn(this);
@@ -12,17 +15,75 @@ $(document).ready(function () {
 		game = new Game(id);
 		game.resetBoard();
 	});	
+
+	$("button#save").click(function(e) {
+		e.preventDefault();
+		game.updateDB();
+	});
 });
 
 function OnClick(){}
 
 class Game {  
   constructor (id, boardArr = []) {
-    this.boardArr = boardArr;
+		this.boardArr = boardArr;
 		this.id = id;
-		this.turn = 0
+		this.turn = 0;
+		this.winner = false;
   }
 	
+	updateDB() {
+		const board = this.getBoard();
+		const boardArray = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+		for (let i = 0; i < board.length; i++) {
+			const square = board[i];
+
+			const x = parseInt(square.dataset["x"]);
+			const y = parseInt(square.dataset["y"]);
+
+			const txt = square.innerText;
+			
+			if (txt === "X") {
+				boardArray[x + 3 * y] = 1;
+			} else if (txt === "O") {
+				boardArray[x + 3 * y] = -1;
+			}
+		}
+		
+		let jVar;
+		const putUri = "http://localhost:3000/games/".concat((this.id), ".json");
+		
+		if (this.id < 0) {
+			jVar = {state: boardArray};
+		} else {
+			jVar = {id: this.id, state: boardArray};
+		}
+
+		if (this.id < 0) {
+			$.ajax({
+				type: 'POST',
+				url: "http://localhost:3000/games.json",
+				data: JSON.stringify(jVar),
+//				headers: {"X-HTTP-Method-Override": "PUT"},
+				processData: true,
+				contentType: 'application/json',
+				}).done(( data ) => {
+					this.id = parseInt(data["data"]["id"]);
+				});
+		} else {
+			$.ajax({
+				type: 'POST',
+				url: putUri,
+				data: JSON.stringify(jVar),
+				headers: {"X-HTTP-Method-Override": "PUT"},
+				processData: true,
+				contentType: 'application/json',
+			});
+			//$.patch("http://localhost:3000/games/" + toString(this.id) + ".json", jVar);
+		}
+	}
+
 	resetBoard() {
 		this.boardArr = [];
 		const board = this.getBoard();
@@ -35,9 +96,14 @@ class Game {
 	}
 
 	doTurn(square) {
+		if (this.winner) {
+			return true;
+		}
+
 		this.updateState(square);
 		this.turn++;
-		const winner = this.checkWinner();
+		this.winner = this.checkWinner();
+		return this.winner;
 	}
 
 	checkWinner() {
