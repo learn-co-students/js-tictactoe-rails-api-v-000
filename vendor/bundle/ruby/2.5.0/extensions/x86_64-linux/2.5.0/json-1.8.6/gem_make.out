@@ -1,0 +1,13 @@
+current directory: /home/jons/code/labs/js-tictactoe-rails-api-v-000/vendor/bundle/ruby/2.5.0/gems/json-1.8.6/ext/json
+/usr/bin/ruby2.5 -I /usr/local/lib/site_ruby/2.5.0 -r ./siteconf20190323-17617-1wk2z0.rb extconf.rb
+creating Makefile
+
+current directory: /home/jons/code/labs/js-tictactoe-rails-api-v-000/vendor/bundle/ruby/2.5.0/gems/json-1.8.6/ext/json
+make "DESTDIR=" clean
+
+current directory: /home/jons/code/labs/js-tictactoe-rails-api-v-000/vendor/bundle/ruby/2.5.0/gems/json-1.8.6/ext/json
+make "DESTDIR="
+make: Nothing to be done for 'all'.
+
+current directory: /home/jons/code/labs/js-tictactoe-rails-api-v-000/vendor/bundle/ruby/2.5.0/gems/json-1.8.6/ext/json
+make "DESTDIR=" install

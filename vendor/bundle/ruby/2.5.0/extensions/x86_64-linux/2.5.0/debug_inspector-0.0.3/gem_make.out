@@ -1,0 +1,15 @@
+current directory: /home/jons/code/labs/js-tictactoe-rails-api-v-000/vendor/bundle/ruby/2.5.0/gems/debug_inspector-0.0.3/ext/debug_inspector
+/usr/bin/ruby2.5 -I /usr/local/lib/site_ruby/2.5.0 -r ./siteconf20190323-17617-1lr84wn.rb extconf.rb
+creating Makefile
+
+current directory: /home/jons/code/labs/js-tictactoe-rails-api-v-000/vendor/bundle/ruby/2.5.0/gems/debug_inspector-0.0.3/ext/debug_inspector
+make "DESTDIR=" clean
+
+current directory: /home/jons/code/labs/js-tictactoe-rails-api-v-000/vendor/bundle/ruby/2.5.0/gems/debug_inspector-0.0.3/ext/debug_inspector
+make "DESTDIR="
+compiling debug_inspector.c
+linking shared-object debug_inspector.so
+
+current directory: /home/jons/code/labs/js-tictactoe-rails-api-v-000/vendor/bundle/ruby/2.5.0/gems/debug_inspector-0.0.3/ext/debug_inspector
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 debug_inspector.so ./.gem.20190323-17617-1wkf4rr
