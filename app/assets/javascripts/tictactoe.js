@@ -1,9 +1,9 @@
 // Code your JavaScript / jQuery solution here
-let game;
 
 $(document).ready(function () {
-//	let game = new Game(-1);
-	if (game === undefined) { game = new Game(-1); }
+	let game = new Game(-1);
+	const games = [];	
+
 
 	$("td").click(function() {
 		game.doTurn(this);
@@ -20,9 +20,13 @@ $(document).ready(function () {
 		e.preventDefault();
 		game.updateDB();
 	});
-});
 
-function OnClick(){}
+	$("button#previous").click(function(e) {
+		e.preventDefault();
+		game.previousGames();
+	});
+
+});
 
 class Game {  
   constructor (id, boardArr = []) {
@@ -32,6 +36,21 @@ class Game {
 		this.winner = false;
   }
 	
+	previousGames() {
+		$.ajax({
+			type: 'GET',
+			url: "http://localhost:3000/games.json",
+//			data: JSON.stringify(jVar),
+			processData: true,
+			contentType: 'application/json',
+			}).done(( data ) => {
+debugger
+				this.id = parseInt(data["data"]["id"]);
+			});
+		
+		$("#games")[0].innerHTML = this.createPreviousButton(1);
+	}
+
 	updateDB() {
 		const board = this.getBoard();
 		const boardArray = [0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -65,7 +84,6 @@ class Game {
 				type: 'POST',
 				url: "http://localhost:3000/games.json",
 				data: JSON.stringify(jVar),
-//				headers: {"X-HTTP-Method-Override": "PUT"},
 				processData: true,
 				contentType: 'application/json',
 				}).done(( data ) => {
@@ -80,7 +98,6 @@ class Game {
 				processData: true,
 				contentType: 'application/json',
 			});
-			//$.patch("http://localhost:3000/games/" + toString(this.id) + ".json", jVar);
 		}
 	}
 
@@ -146,7 +163,9 @@ class Game {
 		return count % 2 === 0 ? "X" : "O";
 	}
 
-private
+// ================================================
+// Functions I'd like to be Private Below
+// ================================================
 
 	getBoard() { 
 		return $("td"); 
@@ -202,5 +221,8 @@ private
 		return 0;
 	}
 
+	createPreviousButton(id) {
+		return `<p><button id="${id}" class"previous-game">Previous Game - ID: ${id}</button></p>`;
+	}
 }
 
