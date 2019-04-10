@@ -44,11 +44,12 @@ class Game {
 			processData: true,
 			contentType: 'application/json',
 			}).done(( data ) => {
-debugger
+				let x = data;	
+				console.log(data);
 				this.id = parseInt(data["data"]["id"]);
 			});
 		
-		$("#games")[0].innerHTML = this.createPreviousButton(1);
+//		$("#games")[0].innerHTML = this.createPreviousButton(1);
 	}
 
 	updateDB() {
