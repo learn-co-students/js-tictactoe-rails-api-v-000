@@ -26,6 +26,10 @@ $(document).ready(function () {
 		game.previousGames();
 	});
 
+	$("button.previous-game").click(function(e) {
+		e.preventDefault();
+		game.loadPrevious(1);
+	});
 });
 
 class Game {  
@@ -36,20 +40,21 @@ class Game {
 		this.winner = false;
   }
 	
+	loadPreviousGame(id) {
+		alert(id);		
+
+	}
+
 	previousGames() {
 		$.ajax({
 			type: 'GET',
 			url: "http://localhost:3000/games.json",
-//			data: JSON.stringify(jVar),
 			processData: true,
 			contentType: 'application/json',
 			}).done(( data ) => {
-				let x = data;	
-				console.log(data);
-				this.id = parseInt(data["data"]["id"]);
-			});
-		
-//		$("#games")[0].innerHTML = this.createPreviousButton(1);
+				const htmlStr = data["data"].map((item) => { return this.createPreviousButton(item["id"]); }).join("");		
+				$("div#games")[0].innerHTML = htmlStr;		
+				});
 	}
 
 	updateDB() {
@@ -223,7 +228,7 @@ class Game {
 	}
 
 	createPreviousButton(id) {
-		return `<p><button id="${id}" class"previous-game">Previous Game - ID: ${id}</button></p>`;
+		return `<p><button data-id="${id}" class"previous-game">Previous Game - ID: ${id}</button></p>`;
 	}
 }
 
