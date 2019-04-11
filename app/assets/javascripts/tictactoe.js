@@ -26,9 +26,11 @@ $(document).ready(function () {
 		game.previousGames();
 	});
 
-	$("button.previous-game").click(function(e) {
+	$("div#games").click(function(e) {
 		e.preventDefault();
-		game.loadPrevious(1);
+		const id = e.target.dataset["id"];	
+	
+		game.loadPreviousGame(id);
 	});
 });
 
@@ -40,9 +42,16 @@ class Game {
 		this.winner = false;
   }
 	
-	loadPreviousGame(id) {
-		alert(id);		
-
+	loadPreviousGame(id) {		
+		$.ajax({
+			type: 'GET',
+			url: `http://localhost:3000/games/${id}.json`,
+			processData: true,
+			contentType: 'application/json',
+			}).done(( data ) => {
+				this.id = parseInt(data["data"]["id"]);
+				this.updateBoard(data["data"]["attributes"]["state"]);
+			});
 	}
 
 	previousGames() {
@@ -54,7 +63,7 @@ class Game {
 			}).done(( data ) => {
 				const htmlStr = data["data"].map((item) => { return this.createPreviousButton(item["id"]); }).join("");		
 				$("div#games")[0].innerHTML = htmlStr;		
-				});
+			});
 	}
 
 	updateDB() {
@@ -229,6 +238,32 @@ class Game {
 
 	createPreviousButton(id) {
 		return `<p><button data-id="${id}" class"previous-game">Previous Game - ID: ${id}</button></p>`;
+	}
+
+	updateBoard(boardArray) {
+		const board = this.getBoard();
+
+		for (let i = 0; i < board.length; i++) {
+			const square = board[i];
+
+			const x = parseInt(square.dataset["x"]);
+			const y = parseInt(square.dataset["y"]);
+
+			const arrayIdx = x + 3 * y;
+			const arrayVal = parseInt(boardArray[arrayIdx]);
+
+			switch (arrayVal) {
+				case 1:
+					square.innerText = "X";
+					break;
+				case -1:
+					square.innerText = "0";
+					break;
+				default:
+					square.innerText = "";
+			}
+		}
+		this.checkWinner("");
 	}
 }
 
