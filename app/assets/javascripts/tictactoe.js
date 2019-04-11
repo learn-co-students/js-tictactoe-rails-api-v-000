@@ -28,8 +28,7 @@ $(document).ready(function () {
 
 	$("div#games").click(function(e) {
 		e.preventDefault();
-		const id = e.target.dataset["id"];	
-	
+		const id = e.target.dataset["id"];		
 		game.loadPreviousGame(id);
 	});
 });
@@ -252,18 +251,15 @@ class Game {
 			const arrayIdx = x + 3 * y;
 			const arrayVal = parseInt(boardArray[arrayIdx]);
 
-			switch (arrayVal) {
-				case 1:
-					square.innerText = "X";
-					break;
-				case -1:
-					square.innerText = "0";
-					break;
-				default:
-					square.innerText = "";
+			if (arrayVal === 1) {
+				square.innerText = "X";
+			} else if (arrayVal === -1) {
+				square.innerText = "O";
+			} else {
+				square.innerText = "";				
 			}
 		}
-		this.checkWinner("");
+		this.checkWinner();
 	}
 }
 
