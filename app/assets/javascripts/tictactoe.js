@@ -24,13 +24,13 @@ function updateState(htmlTd) { return htmlTd.innerHTML = player() }
 function setMessage(message) { return $("div#message").html(message) }
 
 function checkWinner() {
-    let board = $("table tr td");
-    let winnerComb = WINNING_COMBINATIONS.find((winning_row) => {
-        return winning_row.every((cell) => (board[cell].innerText === 'X') || winning_row.every((cell) => board[cell].innerText === 'O'))
+    let cells = $("table tr td");
+    let winnerCombIdx = WINNING_COMBINATIONS.find((winning_row) => {
+        return winning_row.every((index) => (cells[index].textContent === 'X') || winning_row.every((index) => cells[index].textContent === 'O'))
     });
 
-    if (!!winnerComb) { setMessage(`Player ${board[winnerComb[0]].innerHTML} Won!`) }
-    return !!winnerComb;
+    if (!!winnerCombIdx) { setMessage(`Player ${cells[winnerCombIdx[0]].textContent} Won!`) }
+    return !!winnerCombIdx;
 }
 
 function doTurn() {
