@@ -1,4 +1,5 @@
 // Code your JavaScript / jQuery solution here
+var cells = $("table tr td");
 var turn = 0;
 var WINNING_COMBINATIONS = [
     [0, 1, 2],
@@ -11,30 +12,37 @@ var WINNING_COMBINATIONS = [
     [2, 4, 6]
 ]
 
-function player() {
-    const token = (turn % 2) ? "O" : "X";
-    nextTurn();
-    return token;
-}
+function player() { return (turn % 2) ? "O" : "X"; }
 
-function nextTurn() { return ++turn }
-
-function updateState(htmlTd) { return htmlTd.innerHTML = player() }
+function updateState(htmlTd) { return (htmlTd.innerHTML = player()) }
 
 function setMessage(message) { return $("div#message").html(message) }
 
 function checkWinner() {
-    let cells = $("table tr td");
-    let winnerCombIdx = WINNING_COMBINATIONS.find((winning_row) => {
-        return winning_row.every((index) => (cells[index].textContent === 'X') || winning_row.every((index) => cells[index].textContent === 'O'))
-    });
+    let winnerCombIdx = WINNING_COMBINATIONS.find((winning_row) =>
+        ((winning_row.every((index) => (cells[index].innerHTML === 'X') ||
+            winning_row.every((index) => cells[index].innerHTML === 'O')))));
 
-    if (!!winnerCombIdx) { setMessage(`Player ${cells[winnerCombIdx[0]].textContent} Won!`) }
+    if (!!winnerCombIdx) {
+        setMessage(`Player ${cells[winnerCombIdx[0]].innerHTML} Won!`)
+    }
     return !!winnerCombIdx;
 }
 
-function doTurn() {
+function doTurn(htmlTd) {
+    updateState(htmlTd);
+    turn++;
+    if (checkWinner()) {
+        resetBoard();
+    } else if (turn === 9) {
+        setMessage("Tie game.");
+        resetBoard();
+    }
+}
 
+function resetBoard() {
+    turn = 0;
+    Array.from(cells).map(s => s.innerHTML = "")
 }
 
 function attachListeners() {
