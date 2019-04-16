@@ -1,5 +1,5 @@
 // Code your JavaScript / jQuery solution here
-var cells = $("table tr td");
+var cells = Array.from($("table tr td"));
 var turn = 0;
 var WINNING_COMBINATIONS = [
     [0, 1, 2],
@@ -11,6 +11,7 @@ var WINNING_COMBINATIONS = [
     [0, 4, 8],
     [2, 4, 6]
 ]
+$(function() { attachListeners() });
 
 function player() { return (turn % 2) ? "O" : "X"; }
 
@@ -20,8 +21,8 @@ function setMessage(message) { return $("div#message").html(message) }
 
 function checkWinner() {
     let winnerCombIdx = WINNING_COMBINATIONS.find((winning_row) =>
-        ((winning_row.every((index) => (cells[index].innerHTML === 'X') ||
-            winning_row.every((index) => cells[index].innerHTML === 'O')))));
+        (winning_row.every((index) => (cells[index].innerHTML === 'X') ||
+            winning_row.every((index) => cells[index].innerHTML === 'O'))));
 
     if (!!winnerCombIdx) {
         setMessage(`Player ${cells[winnerCombIdx[0]].innerHTML} Won!`)
@@ -42,9 +43,13 @@ function doTurn(htmlTd) {
 
 function resetBoard() {
     turn = 0;
-    Array.from(cells).map(s => s.innerHTML = "")
+    cells.map(cell => cell.innerHTML = "")
 }
 
-function attachListeners() {
 
+function attachListeners() {
+    cells.map((cell) => cell.addEventListener("click", function() { doTurn(this) }));
+    $("#save").click(() => console.log("Saved"));
+    $("#previous").click(() => console.log("Previous"));
+    $("#clear").click(() => console.log("Clear"));
 }
