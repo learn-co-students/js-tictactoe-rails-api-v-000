@@ -31,19 +31,23 @@ function checkWinner() {
 }
 
 function doTurn(htmlTd) {
-    updateState(htmlTd);
-    turn++;
-    if (checkWinner()) {
-        resetBoard();
-    } else if (turn === 9) {
-        setMessage("Tie game.");
-        resetBoard();
+    let anyWinners = checkWinner();
+    let isCellFree = htmlTd.innerHTML === "";
+    if (isCellFree && !anyWinners) {
+        updateState(htmlTd);
+        turn++;
+        if (anyWinners) {
+            resetBoard();
+        } else if (turn === 9) {
+            setMessage("Tie game.");
+            resetBoard();
+        }
     }
 }
 
 function resetBoard() {
     turn = 0;
-    cells.map(cell => cell.innerHTML = "")
+    cells.map(cell => cell.innerHTML = "");
 }
 
 
@@ -51,5 +55,5 @@ function attachListeners() {
     cells.map((cell) => cell.addEventListener("click", function() { doTurn(this) }));
     $("#save").click(() => console.log("Saved"));
     $("#previous").click(() => console.log("Previous"));
-    $("#clear").click(() => console.log("Clear"));
+    $("#clear").click(() => resetBoard());
 }
