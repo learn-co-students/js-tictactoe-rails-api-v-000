@@ -1,45 +1,46 @@
-// Code your JavaScript / jQuery solution here
-
 $(document).ready(function () {
 	let game = new Game(-1);
-	const games = [];	
-
-
-	$("td").click(function() {
-		game.doTurn(this);
-	});
-
-	$("button#clear").click(function(e) {
-		e.preventDefault();
-		const id = game.id;
-		game = new Game(id);
-		game.resetBoard();
-	});	
-
-	$("button#save").click(function(e) {
-		e.preventDefault();
-		game.updateDB();
-	});
-
-	$("button#previous").click(function(e) {
-		e.preventDefault();
-		game.previousGames();
-	});
-
-	$("div#games").click(function(e) {
-		e.preventDefault();
-		const id = e.target.dataset["id"];		
-		game.loadPreviousGame(id);
-	});
+	game.attachListeners();
 });
 
 class Game {  
-  constructor (id, boardArr = []) {
-		this.boardArr = boardArr;
-		this.id = id;
+  constructor (id) {
+		this.setUp(id);
+  }
+
+	setUp(id) {
+		this.id = id
 		this.turn = 0;
 		this.winner = false;
-  }
+	}
+
+	attachListeners() {
+		$("td").click((e) => {
+			this.doTurn(e.target);
+		});
+
+		$("button#clear").click((e) => {
+			e.preventDefault();
+			this.setUp(-1);
+			this.resetBoard();
+		});	
+
+		$("button#save").click((e) => {
+			e.preventDefault();
+			this.updateDB();
+		});
+
+		$("button#previous").click((e) => {
+			e.preventDefault();
+			this.previousGames();
+		});
+
+		$("div#games").click((e) => {
+			e.preventDefault();
+			const id = e.target.dataset["id"];		
+			this.loadPreviousGame(id);
+		});
+	}
 	
 	loadPreviousGame(id) {		
 		$.ajax({
@@ -50,6 +51,7 @@ class Game {
 			}).done(( data ) => {
 				this.id = parseInt(data["data"]["id"]);
 				this.updateBoard(data["data"]["attributes"]["state"]);
+				this.winner = this.checkWinner();
 			});
 	}
 
@@ -86,6 +88,9 @@ class Game {
 		
 		let jVar;
 		const putUri = "http://localhost:3000/games/".concat((this.id), ".json");
+		// Why am I using a PUT and not a PATCH...  We are updating all data on the database row. 
+		// As such, we are dealing wiht a PUT.  A PATCH is used when updating some of the data on the database row.
+		// Reference: https://stackoverflow.com/questions/31089221/what-is-the-difference-between-put-post-and-patch
 		
 		if (this.id < 0) {
 			jVar = {state: boardArray};
@@ -115,6 +120,33 @@ class Game {
 		}
 	}
 
+	checkWinner() {
+		const transformArray = this.transformBoard();
+
+		const winningSumm = this.lookForWinners(transformArray);
+
+		let rtn = false;
+		let msg = "";
+		if (winningSumm === 3) {
+			msg = "Player X Won!";
+			rtn = true;
+		} else if (winningSumm === -3) {
+			msg = "Player O Won!";
+			rtn = true;
+		}
+		
+		this.setMessage(msg);
+		return rtn;
+	}
+
+	player() { 
+		return this.turn % 2 === 0 ? "X" : "O";
+	}
+
+// ================================================
+// Functions I'd like to be Private Below - this seems to be complicated in JavaScript
+// ================================================
+	
 	resetBoard() {
 		this.boardArr = [];
 		const board = this.getBoard();
@@ -137,25 +169,6 @@ class Game {
 		return this.winner;
 	}
 
-	checkWinner() {
-		const transformArray = this.transformBoard();
-
-		const winningSumm = this.lookForWinners(transformArray);
-
-		let rtn = false;
-		let msg = "";
-		if (winningSumm === 3) {
-			msg = "Player X Won!";
-			rtn = true;
-		} else if (winningSumm === -3) {
-			msg = "Player O Won!";
-			rtn = true;
-		}
-		
-		this.setMessage(msg);
-		return rtn;
-	}
-
 
 	setMessage(message) {
 		$("div#message")[0].innerHTML = message;
@@ -164,22 +177,6 @@ class Game {
 	updateState(square) {
 		square.innerText = this.player();
 	}
-
-	player() { 
-		let count = 0;
-		let board = this.getBoard();
-		
-		for (let i = 0; i < board.length; i++) {
-			if (board[i].innerText !== "") {
-				count++;
-			}
-		}
-		return count % 2 === 0 ? "X" : "O";
-	}
-
-// ================================================
-// Functions I'd like to be Private Below
-// ================================================
 
 	getBoard() { 
 		return $("td"); 
@@ -241,6 +238,7 @@ class Game {
 
 	updateBoard(boardArray) {
 		const board = this.getBoard();
+		this.turn = 0;
 
 		for (let i = 0; i < board.length; i++) {
 			const square = board[i];
@@ -253,13 +251,14 @@ class Game {
 
 			if (arrayVal === 1) {
 				square.innerText = "X";
+				this.turn++;
 			} else if (arrayVal === -1) {
 				square.innerText = "O";
+				this.turn++;
 			} else {
 				square.innerText = "";				
 			}
 		}
-		this.checkWinner();
 	}
 }
 
