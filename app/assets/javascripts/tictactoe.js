@@ -1,5 +1,5 @@
 // Code your JavaScript / jQuery solution here
-var cells = Array.from($("table tr td"));
+var cells = [];
 var turn = 0;
 var WINNING_COMBINATIONS = [
     [0, 1, 2],
@@ -11,7 +11,10 @@ var WINNING_COMBINATIONS = [
     [0, 4, 8],
     [2, 4, 6]
 ]
-$(function() { attachListeners() });
+$(function() {
+    cells = Array.from($("table tr td"));
+    attachListeners()
+});
 
 function player() { return (turn % 2) ? "O" : "X"; }
 
@@ -31,18 +34,15 @@ function checkWinner() {
 }
 
 function doTurn(htmlTd) {
-    let anyWinners = checkWinner();
-    let isCellFree = htmlTd.innerHTML === "";
-    if (isCellFree && !anyWinners) {
-        updateState(htmlTd);
-        turn++;
-        if (anyWinners) {
-            resetBoard();
-        } else if (turn === 9) {
-            setMessage("Tie game.");
-            resetBoard();
-        }
+    updateState(htmlTd);
+    turn++;
+    if (checkWinner()) {
+        resetBoard();
+    } else if (turn === 9) {
+        setMessage("Tie game.");
+        resetBoard();
     }
+
 }
 
 function resetBoard() {
@@ -52,8 +52,25 @@ function resetBoard() {
 
 
 function attachListeners() {
-    cells.map((cell) => cell.addEventListener("click", function() { doTurn(this) }));
+    cells.map((cell) => cell.addEventListener("click", function() {
+        let isCellFree = !cell.innerHTML;
+        let isEndOfGame = checkWinner() || turn === 9;
+        if (isCellFree && !isEndOfGame) {
+            doTurn(this)
+        }
+    }));
     $("#save").click(() => console.log("Saved"));
-    $("#previous").click(() => console.log("Previous"));
+    $("#previous").click(() => previousGames());
     $("#clear").click(() => resetBoard());
+}
+
+function previousGames() {
+
+    $.get("/games", function(savedGames) {
+        let $games = $("#games");
+        if (!!savedGames.data.length) {
+            $games.empty();
+            savedGames.data.forEach(game => $games.append(`<button>${game}</button>`))
+        }
+    })
 }
