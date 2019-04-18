@@ -1,5 +1,5 @@
 // Code your JavaScript / jQuery solution here
-var cells = [];
+var $cells;
 var turn = 0;
 var WINNING_COMBINATIONS = [
     [0, 1, 2],
@@ -12,7 +12,7 @@ var WINNING_COMBINATIONS = [
     [2, 4, 6]
 ]
 $(function() {
-    cells = Array.from($("table tr td"));
+    $cells = $("table tr td");
     attachListeners()
 });
 
@@ -24,11 +24,11 @@ function setMessage(message) { return $("div#message").html(message) }
 
 function checkWinner() {
     let winnerCombIdx = WINNING_COMBINATIONS.find((winning_row) =>
-        (winning_row.every((index) => (cells[index].innerHTML === 'X') ||
-            winning_row.every((index) => cells[index].innerHTML === 'O'))));
+        (winning_row.every((index) => ($cells[index].innerHTML === 'X') ||
+            winning_row.every((index) => $cells[index].innerHTML === 'O'))));
 
     if (!!winnerCombIdx) {
-        setMessage(`Player ${cells[winnerCombIdx[0]].innerHTML} Won!`)
+        setMessage(`Player ${$cells[winnerCombIdx[0]].innerHTML} Won!`)
     }
     return !!winnerCombIdx;
 }
@@ -42,30 +42,32 @@ function doTurn(htmlTd) {
         setMessage("Tie game.");
         resetBoard();
     }
-
 }
 
 function resetBoard() {
     turn = 0;
-    cells.map(cell => cell.innerHTML = "");
+    $cells.empty();
 }
 
 
 function attachListeners() {
-    cells.map((cell) => cell.addEventListener("click", function() {
-        let isCellFree = !cell.innerHTML;
-        let isEndOfGame = checkWinner() || turn === 9;
-        if (isCellFree && !isEndOfGame) {
-            doTurn(this)
+    $cells.each(function(i) {
+            $(this).click(function() {
+                let isCellFree = !$(this).text();
+                let isEndOfGame = checkWinner() || turn === 9;
+                if (isCellFree && !isEndOfGame) {
+                    doTurn(this);
+                }
+            })
         }
-    }));
+        //)
+    );
     $("#save").click(() => console.log("Saved"));
     $("#previous").click(() => previousGames());
     $("#clear").click(() => resetBoard());
 }
 
 function previousGames() {
-
     $.get("/games", function(savedGames) {
         let $games = $("#games");
         if (!!savedGames.data.length) {
@@ -73,4 +75,8 @@ function previousGames() {
             savedGames.data.forEach(game => $games.append(`<button>${game}</button>`))
         }
     })
+}
+
+function saveGame() {
+    $.post("/games");
 }
