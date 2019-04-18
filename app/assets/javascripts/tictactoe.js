@@ -23,6 +23,7 @@ function updateState(htmlTd) { return (htmlTd.innerHTML = player()) }
 function setMessage(message) { return $("div#message").html(message) }
 
 function checkWinner() {
+    $cells = $("table tr td");
     let winnerCombIdx = WINNING_COMBINATIONS.find((winning_row) =>
         (winning_row.every((index) => ($cells[index].innerHTML === 'X') ||
             winning_row.every((index) => $cells[index].innerHTML === 'O'))));
@@ -37,9 +38,11 @@ function doTurn(htmlTd) {
     updateState(htmlTd);
     turn++;
     if (checkWinner()) {
+        saveGame();
         resetBoard();
     } else if (turn === 9) {
         setMessage("Tie game.");
+        saveGame();
         resetBoard();
     }
 }
@@ -62,7 +65,7 @@ function attachListeners() {
         }
         //)
     );
-    $("#save").click(() => console.log("Saved"));
+    $("#save").click(() => saveGame());
     $("#previous").click(() => previousGames());
     $("#clear").click(() => resetBoard());
 }
@@ -72,11 +75,18 @@ function previousGames() {
         let $games = $("#games");
         if (!!savedGames.data.length) {
             $games.empty();
-            savedGames.data.forEach(game => $games.append(`<button>${game}</button>`))
+            savedGames.data.forEach(game => $games.append(`<button id=${game.id} onclick="showGame(this)">${game.id}</button></br>`));
         }
     })
 }
 
 function saveGame() {
-    $.post("/games");
+    let state = $("table tr td").map(function() { return $(this).text() }).get();
+    $.post("/games", { state: state });
+}
+
+function showGame(elem) {
+    $.get("/games/" + elem.id, function(game) {
+        console.log(game.data.attributes["state"]);
+    })
 }
