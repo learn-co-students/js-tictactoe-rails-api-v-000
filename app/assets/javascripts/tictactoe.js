@@ -1,6 +1,8 @@
 // Code your JavaScript / jQuery solution here
-var $cells;
+var $board;
 var turn = 0;
+var currentGameId = null;
+var root = "/games";
 var WINNING_COMBINATIONS = [
     [0, 1, 2],
     [3, 4, 5],
@@ -12,7 +14,7 @@ var WINNING_COMBINATIONS = [
     [2, 4, 6]
 ]
 $(function() {
-    $cells = $("table tr td");
+    $board = $("table tr td");
     attachListeners()
 });
 
@@ -23,13 +25,13 @@ function updateState(htmlTd) { return (htmlTd.innerHTML = player()) }
 function setMessage(message) { return $("div#message").html(message) }
 
 function checkWinner() {
-    $cells = $("table tr td");
+    $board = $("table tr td");
     let winnerCombIdx = WINNING_COMBINATIONS.find((winning_row) =>
-        (winning_row.every((index) => ($cells[index].innerHTML === 'X') ||
-            winning_row.every((index) => $cells[index].innerHTML === 'O'))));
+        (winning_row.every((index) => ($board[index].innerHTML === 'X') ||
+            winning_row.every((index) => $board[index].innerHTML === 'O'))));
 
     if (!!winnerCombIdx) {
-        setMessage(`Player ${$cells[winnerCombIdx[0]].innerHTML} Won!`)
+        setMessage(`Player ${$board[winnerCombIdx[0]].innerHTML} Won!`)
     }
     return !!winnerCombIdx;
 }
@@ -47,31 +49,29 @@ function doTurn(htmlTd) {
     }
 }
 
-function resetBoard() {
-    turn = 0;
-    $cells.empty();
-}
-
-
 function attachListeners() {
-    $cells.each(function(i) {
-            $(this).click(function() {
-                let isCellFree = !$(this).text();
-                let isEndOfGame = checkWinner() || turn === 9;
-                if (isCellFree && !isEndOfGame) {
-                    doTurn(this);
-                }
-            })
-        }
-        //)
-    );
+    $board.each(function(i) {
+        $(this).click(function() {
+            let isCellFree = !$(this).text();
+            let isEndOfGame = checkWinner() || turn === 9;
+            if (isCellFree && !isEndOfGame) {
+                doTurn(this);
+            }
+        })
+    });
     $("#save").click(() => saveGame());
     $("#previous").click(() => previousGames());
     $("#clear").click(() => resetBoard());
 }
 
+function resetBoard() {
+    currentGameId = null;
+    turn = 0;
+    $board.empty();
+}
+
 function previousGames() {
-    $.get("/games", function(savedGames) {
+    $.get(root, function(savedGames) {
         let $games = $("#games");
         if (!!savedGames.data.length) {
             $games.empty();
@@ -81,12 +81,30 @@ function previousGames() {
 }
 
 function saveGame() {
-    let state = $("table tr td").map(function() { return $(this).text() }).get();
-    $.post("/games", { state: state });
+    let board = $("table tr td").map(function() { return $(this).text() }).get();
+    if (currentGameId) {
+        $.put(`${root}/${currentGameId}`, { state: board });
+    } else {
+        $.post(root, { state: board }, function(savedGame) {
+            debugger;
+            currentGameId = savedGame.data.id;
+        })
+    }
+}
+
+$.put = function(url, data) {
+    $.ajax({
+        url: url,
+        type: 'PATCH',
+        data: data,
+    });
 }
 
 function showGame(elem) {
     $.get("/games/" + elem.id, function(game) {
-        console.log(game.data.attributes["state"]);
+        let savedGame = game.data.attributes["state"];
+        currentGameId = game.data.id;
+        turn = savedGame.filter((cell) => !!cell).length
+        $("table tr td").map(function(index) { return $(this).text(savedGame[index]) });
     })
 }
