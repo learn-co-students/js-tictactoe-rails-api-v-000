@@ -6,9 +6,9 @@ Rails.application.routes.draw do
   root 'home#index'
 
   resources :games, only: [:index, :show, :create, :update]
-
+  get 'games/:id/game_data', to: 'games#game_data'
   # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
+     
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
