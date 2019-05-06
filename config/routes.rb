@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   resources :games, only: [:index, :show, :create, :update]
 
+  #patch '/games/:id', to: 'games#update'
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
