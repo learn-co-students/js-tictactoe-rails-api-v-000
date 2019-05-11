@@ -13,16 +13,17 @@ WIN_COMBINATIONS = [
 var turn = 0;
 var player = () => turn % 2 ? 'O' : 'X';
 
-function updateState() {
-	$( "button" ).click( function() {
-  var value,
-    div = $( "div" )[ 0 ];
-  data-x
-  data-y
-}
+//function updateState() {
+	//$( "button" ).click( function() {
+  //var value,
+    //div = $( "div" )[ 0 ];
+  //data-x
+  //data-y
+//}
 
-function setMessage(message) {
-   var div = $( "div" )[ 0 ];
+function setMessage(string) {
+   $( "#message").html(string);
+   //div.text("string");
 
 }
 
