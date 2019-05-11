@@ -13,13 +13,10 @@ WIN_COMBINATIONS = [
 var turn = 0;
 var player = () => turn % 2 ? 'O' : 'X';
 
-//function updateState() {
-	//$( "button" ).click( function() {
-  //var value,
-    //div = $( "div" )[ 0 ];
-  //data-x
-  //data-y
-//}
+function updateState(square) {
+	var token = player();
+  $(square).text(token);
+}
 
 function setMessage(string) {
    $( "#message").html(string);
@@ -27,12 +24,17 @@ function setMessage(string) {
 
 }
 
-function checkWinner() {
-
+function checkWinner(board) {
+  //$.each( WIN_COMBINATIONS, function( index, value ){
+  //  .each(board, function());
+//});
+ 
 }
 
-function doTurn() {
-
+function doTurn(square) {
+  turn ++;
+  updateState(square);
+  //checkwinner(board);
 }
 
 function attachListeners() {
