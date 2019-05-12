@@ -20,23 +20,61 @@ function updateState(square) {
 
 function setMessage(string) {
    $( "#message").html(string);
-   //div.text("string");
-
 }
 
 function checkWinner(board) {
-  //$.each( WIN_COMBINATIONS, function( index, value ){
-  //  .each(board, function());
-//});
- 
+  var board = {};
+  var winner = false;
+
+  $('td').text((index, square) => board[index] = square);
+
+  WIN_COMBINATIONS.some(function(combo) {  //check if any elements match test, don't change original array 
+    if (board[combo[0]] !== "" && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] && board[combo[0]] === board[combo[2]]) {
+      setMessage(`Player ${board[combo[0]]} Won!`);
+      return winner = true;
+    }
+  });
+
+  return winner;
 }
 
+
 function doTurn(square) {
-  turn ++;
   updateState(square);
-  //checkwinner(board);
+    turn++;
+    if (checkWinner()) {
+      $('td').empty();        //any cell within the grid 
+      turn = 0;
+      currentGame = 0;
+    }
+    else if (turn === 9) {  //both type and value are the same 
+      setMessage("Tie game.");
+      $('td').empty();       //any cell within the grid 
+      turn = 0;
+      currentGame = 0;
+    }
 }
 
 function attachListeners() {
+    $('td').on('click', function() {
+    if (!$.text(this)) {
+      doTurn(this);
+    }
+  });
+    document.getElementById("button#save").addEventListener("click", saveGame);
+    document.getElementById("button#previous").addEventListener("click", previousGame);
+    document.getElementById("button#clear").addEventListener("click", clearGame);
+}
+
+
+function saveGame() {
+
+}
+
+function previousGame() {
+
+}
+
+function clearGame() {
 
 }
