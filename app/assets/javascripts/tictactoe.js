@@ -11,8 +11,13 @@ WIN_COMBINATIONS = [
 ]
 
 var turn = 0;
-var player = () => turn % 2 ? 'O' : 'X';
 
+$(document).ready(function() {
+  attachListeners()
+});
+
+var player = () => turn % 2 ? 'O' : 'X';  //implicitly returns value without explicit return statement
+//anonymous function without var statement. 
 function updateState(square) {
 	var token = player();
   $(square).text(token);
@@ -54,16 +59,18 @@ function doTurn(square) {
       currentGame = 0;
     }
 }
-
+//function invoked from another function, this is assigned to window
 function attachListeners() {
-    $('td').on('click', function() {
-    if (!$.text(this)) {
+    $('td').on('click', function() {  //binding events, attach element to click event 
+ //sets or returns the text content of a selected element 
+        if (!$.text(this) && !checkWinner()) {  //if no data and still no winner, continue to invoke doTurn 
       doTurn(this);
     }
-  });
-    document.getElementById("button#save").addEventListener("click", saveGame);
-    document.getElementById("button#previous").addEventListener("click", previousGame);
-    document.getElementById("button#clear").addEventListener("click", clearGame);
+     //should invoke when user clicks on square on board 
+    });
+    $('#save').on('click', saveGame());
+    $('#previous').on("click", previousGame());
+    $("#clear").on("click", clearGame());
 }
 
 
