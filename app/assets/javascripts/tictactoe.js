@@ -9,18 +9,25 @@ $(function() {
 
 class Game {
     constructor() {
-        this.currentGameId = null;
+        this.gameId = null;
         this.turn = 0;
         this.root_url = "/games/";
         this.board = new Board();
         this.player = new Player(this.turn);
     }
+    get gameId() {
+        return this.currentGameId;
+    }
+    set gameId(gameId) {
+        this.currentGameId = gameId;
+    }
     showGame(elem) {
-        $.get(this.root_url + elem.id, function(game) {
-            let savedGame = game.data.attributes["state"];
-            this.currentGameId = game.data.id;
-            this.turn = savedGame.filter((cell) => !!cell).length
-            $("table tr td").map(function(index) { return $(this).text(savedGame[index]) });
+        $.get(this.root_url + elem.id, function(gameState) {
+            let savedGame = gameState.data.attributes["state"];
+            game = new Game()
+            game.gameId = gameState.data.id;
+            game.turn = savedGame.filter((cell) => !!cell).length
+            game.board.$cells.map(function(index) { return $(this).text(savedGame[index]) });
         })
     }
     previousGames() {
@@ -34,16 +41,16 @@ class Game {
     }
     saveGame() {
         let boardState = this.board.$cells.map(function() { return $(this).text() }).get();
-        if (!!this.currentGameId) {
-            this.$put(`${this.root_url}/${this.currentGameId}`, { state: board });
+        if (!!this.gameId) {
+            this.$put(`${this.root_url}/${this.gameId}`, { state: boardState });
         } else {
             $.post(this.root_url, { state: boardState }, function(savedGame) {
-                this.currentGameId = savedGame.data.id;
+                this.gameId = savedGame.data.id;
             })
         }
     }
     resetGame() {
-        this.currentGameId = null;
+        this.gameId = null;
         this.turn = 0;
         this.board.reset();
     }
