@@ -6,7 +6,16 @@
     <%= javascript_include_tag 'application' %>
     <%= csrf_meta_tags %>
   </head>
-
+  <style>
+   table td{
+    font-size: 30px;
+    text-align: center;
+    border: 2px solid black;
+    padding: 40px;
+    min-width: 40px;
+    height: 40px;
+   }
+  </style>
   <body>
     <%= yield %>
   </body>
