@@ -8,3 +8,8 @@ function player() {
         return 'O';
     }
 }
+
+function updateState(square) {
+    var currentPlayer = player();
+    $(square).text(currentPlayer);
+}
