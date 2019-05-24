@@ -45,3 +45,9 @@ function doTurn(square) {
         setMessage("Tie game.")
     }
 }
+
+function attachListeners() {
+    $( "#target" ).click(function() {
+        alert( "Handler for .click() called." );
+      });
+}
