@@ -52,9 +52,11 @@ function doTurn(square){
   updateState(square)
   turn++;
   if (checkWinner()) {
+    saveGame()
     resetBoard()
   } else if (turn === 9) {
     setMessage("Tie game.")
+    saveGame()
     resetBoard()
   }
 }
@@ -71,6 +73,7 @@ function attachListeners(){
       doTurn(this)
     }
   });
+  $('#clear').on('click', () => resetBoard());
   $("#save").click(function(e){
     saveGame()
     })
