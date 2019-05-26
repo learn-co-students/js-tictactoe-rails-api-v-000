@@ -1,5 +1,7 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
+var currentGame = 0
+// var games = [[], [], [], [], [], [], [], [], [], [], []]
 
 var WIN_COMBINATIONS = [
   [0,1,2],
@@ -11,6 +13,10 @@ var WIN_COMBINATIONS = [
   [0,4,8],
   [2,4,6]
 ];
+
+$(document).ready(function() {
+  attachListeners()
+});
 
 function player(){
   if (turn%2 === 0){
@@ -46,25 +52,101 @@ function doTurn(square){
   updateState(square)
   turn++;
   if (checkWinner()) {
-    $('td').empty()
-    turn = 0;
+    resetBoard()
   } else if (turn === 9) {
     setMessage("Tie game.")
-    $('td').empty()
-    turn = 0
+    resetBoard()
   }
+}
+
+function resetBoard() {
+  $('td').empty();
+  turn = 0;
+  currentGame = 0;
 }
 
 function attachListeners(){
   $("td").click(function(e){
-    if (this.textContent === "" && turn < 9){
+    if (this.textContent === "" && !checkWinner()){
       doTurn(this)
-    } else {
-      setMessage("this square has already been taken!")
+    }
+  });
+  $("#save").click(function(e){
+    saveGame()
+    })
+  $('#previous').click(function(e){
+    showPreviousGames()
+    })
+}
+
+function saveGame(){
+  squares = document.getElementsByTagName("td")
+  var state = []
+  var gameData
+
+  for (const square of squares) {
+    state.push(square.innerText)
+  }
+
+  gameData = { state: state };
+
+if (currentGame) {
+  $.ajax({
+    type: 'PATCH',
+    url: `/games/${currentGame}`,
+    data: gameData
+  });
+} else {
+  $.post('/games', gameData, function(game) {
+    currentGame = game.data.id;
+    $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+    $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+  });
+}
+}
+
+
+function showPreviousGames() {
+  $('#games').empty();
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(buttonizePreviousGame);
     }
   });
 }
 
-$(document).ready(function() {
-  attachListeners()
-});
+function buttonizePreviousGame(game) {
+  $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+  $(`#gameid-${game.id}`).on('click', () => reloadGame(game.id));
+}
+
+
+function reloadGame(gameID) {
+  document.getElementById('message').innerHTML = '';
+
+  const xhr = new XMLHttpRequest;
+  xhr.overrideMimeType('application/json');
+  xhr.open('GET', `/games/${gameID}`, true);
+  xhr.onload = () => {
+    const data = JSON.parse(xhr.responseText).data;
+    const id = data.id;
+    const state = data.attributes.state;
+
+    let index = 0;
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+
+    turn = state.join('').length;
+    currentGame = id;
+
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.');
+    }
+  };
+
+  xhr.send(null);
+}
