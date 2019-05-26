@@ -50,12 +50,18 @@ function doTurn(square){
     turn = 0;
   } else if (turn === 9) {
     setMessage("Tie game.")
+    $('td').empty()
+    turn = 0
   }
 }
 
 function attachListeners(){
   $("td").click(function(e){
-    doTurn(this)
+    if (this.textContent === "" && turn < 9){
+      doTurn(this)
+    } else {
+      setMessage("this square has already been taken!")
+    }
   });
 }
 
