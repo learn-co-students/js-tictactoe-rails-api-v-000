@@ -52,7 +52,9 @@ function doTurn(square) {
 
 function attachListeners() {
     $('td').click(function() {
-        console.log("Document is loaded");
+        if (!$.text(this) && !checkWinner()) {
+            doTurn(this);
+          }
     });
 
     $('#save').click(function() {
