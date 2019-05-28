@@ -47,7 +47,12 @@ function doTurn(square) {
 }
 
 function attachListeners() {
-    $( "#target" ).click(function() {
-        alert( "Handler for .click() called." );
-      });
+    $(document).ready(function() {
+        alert("Document is loaded");
+    });
+
+    $('#save').click(function() {
+        console.log("Document is loaded");
+    });
 }
+
