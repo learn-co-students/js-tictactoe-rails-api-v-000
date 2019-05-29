@@ -1,3 +1,5 @@
+var state = ["","","","","","","","",""]
+var game = 0
 var turn = 0
 const winningCombo =
       [
@@ -48,17 +50,19 @@ function doTurn(element) {
   if (element.innerHTML !== ""){
   return "try another element"
 }
-
   updateState(element);
   turn ++;
 
   if (checkWinner()){
     $("td").empty()
     turn = 0
+    saveGame()
   }
   else if (turn === 9) {
     setMessage("Tie game.")
-
+      $("td").empty()
+      turn = 0
+      saveGame()
   }
 
 }
@@ -67,28 +71,78 @@ function attachListeners() {
   $("td").on("click", function(){
     if (!checkWinner()) {
       doTurn(this)
-
-    }
+    };
   });
 
-    $("#save").on("click", function(saveGame) {
-    });
+  $("#save").on("click", () => saveGame())
 
 
-    $("#previous").on("click", function(previousGame) {
-
-    });
+  $("#previous").on("click", () => previousGames())
 
 
-    $("#clear").on("click", function() {
-        $("td").empty()
-  });
+  $("#clear").on("click", () => resetGame())
 }
 
-  function previousGame() {
-    $.get("/games")
-  }
+function resetGame() {
+    $("td").empty()
+    turn = 0
+    game = 0
+};
+
+  function previousGames() {
+    $.get("/games", function(data){
+      $("#games").html("")
+      data.data.forEach(function(game){
+          previousGameButton(game)
+      });
+    });
+  };
+
+  function previousGameButton(game) {
+    $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+    $(`#gameid-${game.id}`).on("click", () => loadGame(game.id))
+ };
+
+ function loadGame(id) {
+
+   $.ajax({
+     type: 'GET',
+     url: `/games/${id}`,
+     dataType: 'json'
+   }).done(function(data) {
+     var board = data.data.attributes.state
+     turn = board.join("").length
+     game = id
+
+     $("td").each(function(cell){
+       this.innerHTML = board[cell]
+     });
+
+   })
+ };
+
 
   function saveGame() {
+    $("td").text(function(cell){
+      state.push(cell.innerHTML)
+    });
+     if (game === 0){
+      $.post('/games', {state: state}, function(json){
+        game = parseInt(json.data['id'])
+      });
+   }else{
+      $.ajax({
+        type: 'PATCH',
+        url: `/games/${game}`,
+        data: { state: state},
+        dataType: 'json'
+      })
+   }
+    //  posting.done(function(data) {
+    //
+    //    var post = data;
+    //    // $("#games").text(post[board]);
+    //
+    // });
 
-  }
+ };
