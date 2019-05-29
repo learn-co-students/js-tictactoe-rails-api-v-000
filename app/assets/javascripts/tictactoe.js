@@ -114,8 +114,8 @@ function resetGame() {
      turn = board.join("").length
      game = id
 
-     $("td").each(function(cell){
-       this.innerHTML = board[cell]
+     $("td").each(function(element){
+       this.innerHTML = board[element]
      });
 
    })
