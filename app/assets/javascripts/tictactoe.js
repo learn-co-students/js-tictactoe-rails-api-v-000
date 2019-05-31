@@ -62,6 +62,10 @@ function attachListeners() {
     $('#save').click(function(e) {
         saveGame();
       });
+
+    $('#previous').click(function(e) {
+       previousGame();
+     });
 }
 
 function saveGame() {
@@ -77,4 +81,14 @@ function saveGame() {
         dataType: 'json'
       });
     }
+  }
+
+  function previousGame() {
+    $.get( '/games', function( json ) {
+      let $games = $('#games')
+      $games.html('');
+      json.data.forEach(function(game) {
+        $games.append(`<button id='gameid-${game.id}'>${game.id}</button><br>`)
+      });
+    });
   }
