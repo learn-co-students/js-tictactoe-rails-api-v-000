@@ -45,10 +45,12 @@ function doTurn(square) {
     updateState(square);
     turn++;
     if (checkWinner()) {
-        $(`td`).empty()
+        saveGame();
+        $(`td`).empty();
         turn = 0;
     } else if (turn === 9) {
-        setMessage("Tie game.")
+        setMessage("Tie game.");
+        saveGame();
     }
 }
 
