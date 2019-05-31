@@ -2,6 +2,8 @@
 const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 
 var turn = 0;
+var currentGame = 0;
+var currentState = ['','','','','','','','',''];
 
 $(document).ready(function() {
     attachListeners();
@@ -57,8 +59,22 @@ function attachListeners() {
           }
     });
 
-    $('#save').click(function() {
-        console.log("Document is loaded");
-    });
+    $('#save').click(function(e) {
+        saveGame();
+      });
 }
 
+function saveGame() {
+    if (currentGame === 0) {
+      $.post( '/games', { 'state[]': currentState }, function(json) {
+        currentGame = parseInt(json.data['id']);
+      });
+    } else {
+      $.ajax( {
+        type: 'PATCH',
+        url: `/games/${currentGame}`,
+        data: { _method:'PUT', 'state[]': currentState },
+        dataType: 'json'
+      });
+    }
+  }
