@@ -73,6 +73,12 @@ function attachListeners() {
        clearBoard();
        $('#message').empty();
      });
+
+     $('div#games').click(function(e) {
+        currentGame = e.target.innerHTML
+        loadGame();
+        e.preventDefault();
+      });
 }
 
 function saveGame() {
@@ -106,4 +112,16 @@ function saveGame() {
       })
       turn = 0;
       currentGame = 0;
+  }
+
+  function loadGame() {
+    $.get( `/games/${currentGame}`, function( json ) {
+        let index = 0;
+        $('td').each(function () {
+          this.innerHTML = json.data.attributes['state'][index];
+          currentState[index] = [index];
+          index++;
+        })
+        turn = json.data.attributes['state'].join('').length;
+      });
   }
