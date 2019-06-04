@@ -68,6 +68,11 @@ function attachListeners() {
     $('#previous').click(function(e) {
        previousGame();
      });
+
+    $('#clear').click(function(e) {
+       clearBoard();
+       $('#message').empty();
+     });
 }
 
 function saveGame() {
@@ -93,4 +98,12 @@ function saveGame() {
         $games.append(`<button id='gameid-${game.id}'>${game.id}</button><br>`)
       });
     });
+  }
+
+  function clearBoard() {
+    $('td').each(function () {
+        this.innerHTML = ''
+      })
+      turn = 0;
+      currentGame = 0;
   }
