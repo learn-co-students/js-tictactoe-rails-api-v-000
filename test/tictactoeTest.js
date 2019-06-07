@@ -401,7 +401,7 @@ describe('AJAX interactions with the Rails API', () => {
     it('sends a GET request to the "/games" route', () => {
       previousButton.click();
 
-      // expect(requests[0].method).to.equal('GET');
+      expect(requests[0].method).to.equal('GET');
       expect(requests[0].url).to.equal('/games');
     });
 
@@ -587,8 +587,8 @@ describe('AJAX interactions with the Rails API', () => {
       window.turn = 8;
       window.doTurn(squares[7]);
 
-      // expect(requests[0].method).to.equal('POST');
-      // expect(requests[0].url).to.equal('/games');
+      expect(requests[0].method).to.equal('POST');
+      expect(requests[0].url).to.equal('/games');
     });
 
     it('auto-saves won games', () => {
@@ -602,8 +602,8 @@ describe('AJAX interactions with the Rails API', () => {
 
       squares[2].click();
 
-      // expect(requests[0].method).to.equal('POST');
-      // expect(requests[0].url).to.equal('/games');
+      expect(requests[0].method).to.equal('POST');
+      expect(requests[0].url).to.equal('/games');
     });
   });
 
@@ -634,8 +634,8 @@ describe('AJAX interactions with the Rails API', () => {
 
       gameButtons[0].click();
 
-      // expect(requests[1].method).to.equal('GET');
-      // expect(requests[1].url).to.equal('/games/1');
+      expect(requests[1].method).to.equal('GET');
+      expect(requests[1].url).to.equal('/games/1');
     });
 
     it("loads the saved game's state into the board", () => {
@@ -653,16 +653,16 @@ describe('AJAX interactions with the Rails API', () => {
 
       gameButtons[0].click();
 
-      // requests[1].respond(
-      //   200,
-      //   { 'Content-Type': 'application/json' },
-      //   jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
-      // );
+      requests[1].respond(
+        200,
+        { 'Content-Type': 'application/json' },
+        jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
+      );
 
       const board = Array.from(squares).map(s => s.innerHTML);
 
-      // expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', 'O', '']);
-      // expect(window.turn).to.equal(2);
+      expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', 'O', '']);
+      expect(window.turn).to.equal(2);
     });
 
     it('marks the newly-loaded game state such that clicking the "save" button after loading a game sends a PATCH request', () => {
@@ -680,11 +680,16 @@ describe('AJAX interactions with the Rails API', () => {
 
       gameButtons[0].click();
 
+      requests[1].respond(
+        200,
+        { 'Content-Type': 'application/json' },
+        jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
+      );
 
       saveButton.click();
 
-      // expect(requests[2].method).to.equal('PATCH');
-      // expect(requests[2].url).to.equal('/games/1');
+      expect(requests[2].method).to.equal('PATCH');
+      expect(requests[2].url).to.equal('/games/1');
     });
   });
 });
