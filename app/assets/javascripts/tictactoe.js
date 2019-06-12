@@ -1,7 +1,7 @@
 //  Code your JavaScript / jQuery solution here
 
 var turn = 0;
-var currentGame;
+var currentGame = 0;
 
 $(document).ready(function(){
   attachListeners();
@@ -131,6 +131,7 @@ function loadGame(game){
 
   $.get(url, function(game) {
     currentGame = game.data.id;
+    console.log(game)
     var gameState = game.data.attributes.state;
     turn = gameState.join("").length;
 
@@ -139,7 +140,6 @@ function loadGame(game){
 
     $.each(td, function(key,value){
       value.innerHTML = gameState[counter];
-      console.log(gameState[1])
       counter++
     });
   });
