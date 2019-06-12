@@ -126,7 +126,7 @@ function previousGames(){
 }
 
 function loadGame(game){
-  var id  = event.path[0].innerText
+  const id = event.path[0].innerText
   var url = `/games/${id}`
 
   $.get(url, function(game) {
