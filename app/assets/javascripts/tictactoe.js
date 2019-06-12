@@ -1,135 +1,144 @@
-// Code your JavaScript / jQuery solution here
-var turn = 0;
-var board = $('table').find('td');
-
-function player() {
-  if (turn % 2 == 0) {
-    return 'X';
-  } else {
-    return 'O';
-  }
-};
-
-function updateState(td) {
-  var square = board.filter(function() {
-    return this.dataset["x"] == td.dataset["x"] && this.dataset["y"] == td.dataset["y"]
+$(document).ready(function() {
+    attachListeners();
   });
-  square.text(player());
-};
 
-function setMessage(message) {
-  $('#message').text(message);
-}
 
-function checkWinner() {
-  var win_combos = [
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,3,6],
-    [1,4,7],
-    [2,5,8],
-    [0,4,8],
-    [2,4,6]
+  var winCombinations = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
   ];
-  // check if the inner text is the same for all configurations
-  var check_horizontal = board.filter(function(index) {
-    return (this.innerHTML !== "" && this.innerHTML === board[index + 1].innerHTML && this.innerHTML === board[index + 2].innerHTML);
-  });
-  var check_vertical = board.filter(function(index) {
-    return (this.innerHTML !== "" && this.innerHTML === board[index + 3].innerHTML && this.innerHTML === board[index + 6].innerHTML);
-  });
-  var check_left_diagonal = board.filter(function(index) {
-    return (this.innerHTML !== "" && this.innerHTML === board[index + 4].innerHTML && this.innerHTML === board[index + 4].innerHTML);
-  });
-  var check_right_diagonal = board.filter(function(index) {
-    return (this.innerHTML !== "" && this.innerHTML === board[index + 2].innerHTML && this.innerHTML === board[index + 2].innerHTML);
-  });
-  // get the winner's value from whichever configuration, if it exists
-  let winner = '';
-  if (check_left_diagonal.length == 0) {
-    false;
-  } else {
-    winner = check_left_diagonal[0].innerText;
+  var gameID = 0;
+  var turn = 0;
+  //tests would not pass when "let" or "const" was used instead of "var"
+
+  function player() {
+    return (turn % 2 === 0 ? "X" : "O")
   }
-  if (check_right_diagonal.length == 0) {
-    false;
-  } else {
-    winner = check_right_diagonal[0].innerText;
+
+  function updateState(square) {
+    //if (!square.innerHTML) {
+      square.innerHTML = player();
+    // return true;
+    //}// else {setMessage('Try another space.')}; - caused tests to fail
   }
-  if (check_vertical.length == 0) {
-    false;
-  } else {
-    winner = check_vertical[0].innerText;
+
+  function currentState() {
+    const squares = document.querySelectorAll('td');
+    let state = [];
+    squares.forEach(square => state.push(square.innerHTML));
+    return state;
   }
-  if (check_horizontal.length == 0) {
-    false;
-  } else {
-    winner = check_horizontal[0].innerText;
+
+  function turnCount() {
+    turn = 0;
+    currentState().forEach(function(square) {
+      if (square !== "") {
+        turn++;
+      };
+    });
+    return turn;
   }
-  if (winner == '') {
-    false;
-  } else {
-    var message =  `Player ${winner} Won!`;
-    setMessage(message);
+
+  function setMessage(string) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.innerHTML = string
   }
-};
 
-function doTurn(td) {
-  turn += 1;
-  updateState(td);
-  checkWinner();
-}
+  function checkWinner() {
+    var values = currentState();
+    var winner;
+    winCombinations.forEach(function(win) {
+      if (values[win[0]] == values[win[1]] && values[win[1]] == values[win[2]] && values[win[0]] !== "") {
+        winner = values[win[0]]
+        setMessage(`Player ${winner} Won!`)
+      };
+    });
+    if (winner) {return true}
+    else {return false}
+  }
 
-function attachListeners() {
-  board.click(function() {
-    doTurn(this);
-  })
+  function doTurn(square) {
+    updateState(square)
+    turn++;
+    if (checkWinner()) {
+      saveGame();
+      resetGame();
+    } else if (turn === 9) {
+      setMessage('Tie game.');
+      saveGame();
+      resetGame();
+    };
+  }
 
-}
+  function resetGame() {
+    $('td').empty();
+    //let squares = document.querySelectorAll('td');
+    //squares.forEach(function(square) {
+    //  square.innerHTML = "";
+    //});
+    gameID = 0;
+    turn = 0;
+  }
 
-$(function () {
-  attachListeners();
-})
+  function saveGame() {
+    if (gameID !== 0) {
+      //update existing game
+      $.ajax({
+        type: "patch",
+        url: `/games/${gameID}`,
+        data: {state: currentState()}
+      });
+    } else {
+      //create new game and save to db
+      $.post("/games", {state: currentState()}, function(savedGame) {
+        gameID = savedGame["data"]["id"];
+      });
+    }
+  }
 
-$(function () {
-	// load new game
-	$.post('/games', function(data) {
-		var state = data.state
-		$("table").find("td").map(function(i, e) {
-			// fill the board with state values
-			// e.textContent = state[i]
-		})
-	})
-})
+  function previousGames() {
+    const gamesDiv = document.getElementById('games');
+    var gameList = "";
+    $.getJSON('/games', function(response) {
+      response["data"].forEach(function(game) {
+        var gameButton = `<button class="prior-game" data-id="${game["id"]}">Game ${game["id"]}</button><br>`;
+        gameList += gameButton;
+      });
+    }).done(function() {
+      gamesDiv.innerHTML = gameList
+      $(".prior-game").on('click', loadGame);
+    });
+  }
 
+  function loadGame() {
+    gameID = $(this).data("id");
+    $.getJSON(`/games/${gameID}`, function(response) {
+      var gameState = response["data"]["attributes"]["state"];
+      const squares = document.querySelectorAll('td');
+      function updateSquares(square, index) {
+        square.innerHTML = gameState[index];
+      };
+      squares.forEach(updateSquares);
+      turnCount();
+    });
+  }
 
-$(function () {
-	$("#previous").click(function() {
-		$.get('/games.json', function(data) {
-			// var ids = data.map( ())
-      var games = `<li><button data-id="${id}" onclick="updateState(this);">${id}</button>`
-			var string = "<ul>"
-				+`${games}`
-				+"</ul>";
-			$("#games").text(string);
-		});
-	});
-});
+  function attachListeners() {
+    //const squares = document.querySelectorAll('td');
+    const saveButton = document.getElementById('save');
+    const previousButton = document.getElementById('previous');
+    const clearButton = document.getElementById('clear');
 
-$(function () {
-	$("#clear").click(function() {
-		$("table").find("td").empty();
-	})
-})
-
-$(function () {
-	$("#save").click(function() {
-		var state = $("table").find("td").text().split("");
-		var update = $.post('/games/' + id, state)
-		update.done(function(data) {
-			var state = data.state
-			// fill in the board
-		})
-	})
-})
+    $('td').on('click', function () {
+      if(!$.text(this) && !checkWinner()) {
+        doTurn(this);
+      };
+    });
+    //squares.forEach(function(square) {
+    //  square.addEventListener('click', doTurn);
+    //}); - tests did not like this version; but still worked
+    saveButton.addEventListener('click', saveGame);
+    previousButton.addEventListener('click', previousGames);
+    clearButton.addEventListener('click', resetGame);
+  };
