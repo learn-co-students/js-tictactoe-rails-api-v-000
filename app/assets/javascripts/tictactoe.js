@@ -1,5 +1,7 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
+var currentGame = 0;
+
 const WIN_COMBINATIONS = [
   [0, 1, 2],
   [3, 4, 5],
@@ -11,6 +13,9 @@ const WIN_COMBINATIONS = [
   [2, 4, 6]
   ];
 
+$(document).ready(function() {
+  attachListeners();
+});
 
 function player() {
 	if(turn % 2 === 0) {
@@ -21,11 +26,11 @@ function player() {
 }
 
 function updateState(position) {
-	position.innerHTML = player();
+	$(position).text(player());
 }
 
 function setMessage(msg) {
-	document.getElementById('message').innerHTML = msg;
+	$('#message').text(msg);
 }
 
 function checkWinner() {
@@ -43,19 +48,74 @@ function checkWinner() {
 }
 
 function doTurn(position) {
-	turn += 1;
 	updateState(position);
+	turn++;
+
 	if(checkWinner()) {
-		$('td').empty();
-		turn = 0;
+		saveGame();
+		resetBoard();
 	} else if (turn === 9) {
 		setMessage('Tie game.');
-		$('td').empty();
-		turn = 0;
+		saveGame();
+		resetBoard();
 	}
 }
 
 function attachListeners() {
+	$('td').on('click', function() {
+    	if (!$.text(this) && !checkWinner()) {
+      		doTurn(this);
+    	}
+  	});
+
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => showPreviousGames());
+  $('#clear').on('click', () => resetBoard());
+}
+
+function saveGame() {
+	var currentState = [];
+	var gameData;
+
+	$('td').text((index, position) => {
+		currentState.push(position);
+	});
+	gameData = {state: currentState};
+
+	if(currentGame) {
+		$.ajax({
+	      type: 'PATCH',
+	      url: `/games/${currentGame}`,
+	      data: gameData
+	    });
+	} else {
+		$.post('/games', gameData, function(game) {
+			currentGame = game.data.id;
+			$("#games").append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+			$(`#gameid-${game.data.id}`).on('click', () => reloadGame(game.data.id));
+		})
+	}
 
 }
 
+function resetBoard() {
+	$('td').empty();
+	turn = 0;
+	currentGame = 0;
+}
+
+function showPreviousGames() {
+	$("#games").empty();
+	$.get("/games", function(games) {
+      if (games.data.length) {
+      	games.data.forEach(function(game) {
+      		$("#games").append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      		$(`#gameid-${game.data.id}`).on('click', () => reloadGame(game.data.id));
+      	})
+      }
+    });
+  }
+
+function reloadGame() {
+
+}
