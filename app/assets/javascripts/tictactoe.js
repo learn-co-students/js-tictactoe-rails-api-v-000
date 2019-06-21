@@ -19,9 +19,7 @@ function setMessage(string) {
 
 function checkWinner() {
   WINNING_COMBOS.forEach(function(combo){
-
     if (document.querySelectorAll("td")[combo[0]].innerHTML != "" && document.querySelectorAll("td")[combo[0]].innerHTML === document.querySelectorAll("td")[combo[1]].innerHTML && document.querySelectorAll("td")[combo[1]].innerHTML === document.querySelectorAll("td")[combo[2]].innerHTML) {
-
       if document.querySelectorAll("td")[combo[0]].innerHTML === "X" {
         setMessage("Player X Won!")
         return true
@@ -29,8 +27,7 @@ function checkWinner() {
         setMessage("Player O Won!")
         return true
       }
-
     }
-    return false
   })
+  return false
 }
