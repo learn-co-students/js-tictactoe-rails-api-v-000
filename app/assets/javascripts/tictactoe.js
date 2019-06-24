@@ -57,3 +57,16 @@ function resetBoard() {
   $('td').html('');
   turn = 0;
 }
+
+$(document).ready(function() {
+  attachListeners();
+})
+
+function attachListeners() {
+  $('td').click (function() {
+    if (!checkWinner() && !$.text(this)) {
+      doTurn(this);
+    }
+
+  })
+}
