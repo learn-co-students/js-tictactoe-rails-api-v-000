@@ -28,7 +28,7 @@ function attachListeners() {
   })
 
   $('#clear').click(function() {
-    clearGame();
+    resetBoard();
   })
 }
 
@@ -73,7 +73,7 @@ function previousGame() {
   })
 }
 
-function clearGame() {
+function resetBoard() {
   $('td').empty();
   turn = 0;
   currentGame = 0;
@@ -115,10 +115,10 @@ function doTurn(clickedElement) {
   turn++;
   if (checkWinner()) {
     saveGame();
-    clearGame();
+    resetBoard();
   } else if (turn === 9) {
     setMessage('Tie game.');
     saveGame();
-    clearGame();
+    resetBoard();
   }
 }
