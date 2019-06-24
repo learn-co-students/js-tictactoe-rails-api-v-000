@@ -1,5 +1,6 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
+var currentGame = 0;
 var winningCombos = [
   [0, 1, 2],
   [3, 4, 5],
@@ -63,10 +64,54 @@ $(document).ready(function() {
 })
 
 function attachListeners() {
-  $('td').click (function() {
+  userClick();
+
+  $('#save').click(function() {
+    saveGame();
+  })
+
+  $('#previous').click(function() {
+    previousGame();
+  })
+}
+
+function userClick() {
+  $('td').click(function() {
     if (!checkWinner() && !$.text(this)) {
       doTurn(this);
     }
+  })
+}
 
+function saveGame() {
+  let state = [];
+
+  $('td').text((index, td) => {
+    state.push(td);
+  })
+
+  if (currentGame !== 0) {
+    $.ajax({
+      url: `/games/${currentGame}`,
+      data: {
+        state: state,
+        id: currentGame
+      },
+      type: 'PATCH'
+    });
+  } else {
+    $.post('/games', {state: state}).done((data) => {
+      currentGame = data['data']['id'];
+    });
+  }
+}
+
+function previousGame() {
+  $.get('/games', function(json) {
+    let $games = $('#games');
+    $games.html('');
+    json.data.forEach(function(game) {
+      $games.append(`<button id='gameid-${game.id}'>${game.id}</button><br>`)
+    })
   })
 }
