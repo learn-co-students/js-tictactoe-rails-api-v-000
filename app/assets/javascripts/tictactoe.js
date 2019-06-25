@@ -12,18 +12,16 @@ var winningCombos = [
   [2, 4, 6]
 ];
 
-$(document).ready(function() {
-  attachListeners();
-})
+window.onload = () => { attachListeners() };
 
-function attachListeners() {
+var attachListeners = () => {
   userClick();
   $('#save').on('click', () => saveGame());
   $('#previous').on('click', () => previousGame());
   $('#clear').on('click', () => resetBoard());
 }
 
-function userClick(){
+var userClick = () => {
   $('td').on('click', function(){
     if (!checkWinner() && !$.text(this)) {
       doTurn(this);
@@ -31,7 +29,7 @@ function userClick(){
   })
 }
 
-function saveGame() {
+var saveGame = () => {
   let state = [];
 
   $('td').text((index, td) => {
@@ -54,7 +52,7 @@ function saveGame() {
   }
 }
 
-function previousGame() {
+var previousGame = () => {
   $.get('/games', (data) => {
     let games = data['data'];
     if (games.length > 0) {
@@ -71,7 +69,7 @@ function previousGame() {
   });
 }
 
-function loadPreviousGame(event) {
+var loadPreviousGame = (event) => {
   let id = $(event.target).data('id');
   $.get(`/games/${id}`, (game) => {
     currentGame = game['data']['id'];
@@ -87,7 +85,7 @@ function loadPreviousGame(event) {
   });
 }
 
-function resetBoard() {
+var resetBoard = () => {
   $('td').empty();
   turn = 0;
   currentGame = 0;
