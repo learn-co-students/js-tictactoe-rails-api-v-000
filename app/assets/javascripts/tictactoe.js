@@ -18,22 +18,13 @@ $(document).ready(function() {
 
 function attachListeners() {
   userClick();
-
-  $('#save').click(function() {
-    saveGame();
-  })
-
-  $('#previous').click(function() {
-    previousGame();
-  })
-
-  $('#clear').click(function() {
-    resetBoard();
-  })
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => previousGame());
+  $('#clear').on('click', () => resetBoard());
 }
 
-function userClick() {
-  $('td').click(function() {
+function userClick(){
+  $('td').on('click', function(){
     if (!checkWinner() && !$.text(this)) {
       doTurn(this);
     }
@@ -45,7 +36,7 @@ function saveGame() {
 
   $('td').text((index, td) => {
     state.push(td);
-  })
+  });
 
   if (currentGame !== 0) {
     $.ajax({
@@ -64,13 +55,36 @@ function saveGame() {
 }
 
 function previousGame() {
-  $.get('/games', function(json) {
-    let $games = $('#games');
-    $games.html('');
-    json.data.forEach(function(game) {
-      $games.append(`<button id='gameid-${game.id}'>${game.id}</button><br>`)
-    })
-  })
+  $.get('/games', (data) => {
+    let games = data['data'];
+    if (games.length > 0) {
+      let gamesHtml = '';
+
+      $(games).each((i, game) => {
+        gamesHtml += '<button data-id="' + game['id'] + '" class="game-button">' + game.id + '</button><br>';
+      });
+      $('#games').html(gamesHtml);
+      $('.game-button').on('click', (event) => {
+        loadPreviousGame(event);
+      });
+    }
+  });
+}
+
+function loadPreviousGame(event) {
+  let id = $(event.target).data('id');
+  $.get(`/games/${id}`, (game) => {
+    currentGame = game['data']['id'];
+    let td = $('td');
+    game['data']['attributes']['state'].forEach((data, i) => {
+      if (data) {
+        td[i].innerHTML = data;
+        ++turn;
+      } else {
+        td[i].innerHTML = '';
+      }
+    });
+  });
 }
 
 function resetBoard() {
@@ -79,39 +93,29 @@ function resetBoard() {
   currentGame = 0;
 }
 
-function player() {
-  if (turn % 2 === 0) {
-    return 'X';
-  } else {
-    return 'O';
-  }
-}
+var player = () => turn % 2 ? 'O' : 'X';
 
-function updateState(grid) {
-  $(grid).html(player());
-}
+var updateState = (td) => $(td).html(player());
 
-function setMessage(message) {
-  $('#message').text(message);
-}
+var setMessage = (message) => $('#message').text(message);
 
-function checkWinner() {
+var checkWinner = () => {
   let winner = false;
   const board = {};
 
   $('td').text((index, square) => board[index] = square);
 
-  winningCombos.forEach(function(mark) {
-    if (board[mark[0]] === board[mark[1]] && board[mark[1]] === board[mark[2]] && board[mark[0]] !== '') {
-      setMessage(`Player ${board[mark[0]]} Won!`);
+  winningCombos.forEach(function(td) {
+    if (board[td[0]] !== '' && board[td[0]] === board[td[1]] && board[td[1]] === board[td[2]]) {
+      setMessage(`Player ${board[td[0]]} Won!`);
       winner = true;
     }
   })
   return winner;
 }
 
-function doTurn(clickedElement) {
-  updateState(clickedElement);
+var doTurn = (clickedTd) => {
+  updateState(clickedTd);
   turn++;
   if (checkWinner()) {
     saveGame();
