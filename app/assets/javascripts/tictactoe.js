@@ -58,11 +58,14 @@ function doTurn(square) {
   }
 };
 
+$(function() {
+    attachListeners();
+})
+
 function attachListeners(){
   $('td').on('click', function(){
     if (!$.text(this) && !checkWinner()){
       doTurn(this);
     }
   });
-
 }
