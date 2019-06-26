@@ -10,20 +10,20 @@ const WINNING_COMBOS = [
   [2,4,6]
 ];
 
-let turn = 0;
+var turn = 0;
 
 function player() {
   if(turn % 2 == 0) {
-    turn++
+    // turn++
     return "X"
   } else {
-    turn++
+    // turn++
     return "O"
   };
 };
 
 function updateState(square) {
-  token = player();
+  let token = player();
   $(square).text(token);
 }
 
@@ -32,9 +32,9 @@ function setMessage(string) {
 }
 
 function checkWinner() {
-  let winner = false;
-  let board = {}
-  let token = player();
+  var winner = false;
+  var board = {}
+  var token = player();
   $('td').text((x, y) => board[x] = y);
   WINNING_COMBOS.some(function(position){
      if (board[position[0]] !== "" && board[position[0]]  === board[position[1]] && board[position[1]] === board[position[2]]){
@@ -45,10 +45,24 @@ function checkWinner() {
    return winner;
 };
 
-function doTurn() {
-
+function doTurn(square) {
+  turn++;
+  updateState(square);
+  if(checkWinner()) {
+      $('td').empty();
+      turn = 0;
+  } else if (turn === 9) {
+    $('td').empty();
+    turn = 0;
+    setMessage("Tie Game.");
+  }
 };
 
-function attachListeners() {
+function attachListeners(){
+  $('td').on('click', function(){
+    if (!$.text(this) && !checkWinner()){
+      doTurn(this);
+    }
+  });
 
-};
+}
