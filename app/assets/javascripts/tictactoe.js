@@ -69,3 +69,11 @@ function attachListeners(){
     }
   });
 }
+
+function saveGame() {
+  var state = [];
+  $('td').text(function(index, square) {
+    state.push(square);
+  })
+
+};
