@@ -47,16 +47,18 @@ function checkWinner() {
 };
 
 function doTurn(square) {
+
   updateState(square);
+  turn++;
   if(checkWinner()) {
       $('td').empty();
       turn = 0;
   } else if (turn === 9) {
     $('td').empty();
     turn = 0;
-    setMessage("Tie Game.");
+    setMessage("Tie game.");
   }
-  turn++;
+
 };
 
 $(function() {
