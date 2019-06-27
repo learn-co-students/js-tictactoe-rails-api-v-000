@@ -24,7 +24,7 @@ function player() {
 };
 
 function updateState(square) {
-  let token = player();
+  var token = player();
   $(square).text(token);
 }
 
@@ -70,9 +70,9 @@ function attachListeners(){
     }
   });
 
-  $('#save'.on('click', saveGame()))
-
-  $('#previous'.on('click', previousGame()))
+  // $('#save'.on('click', saveGame()))
+  //
+  // $('#previous'.on('click', previousGame()))
 }
 
 function saveGame() {
