@@ -13,6 +13,7 @@ const WINNING_COMBOS = [
 var turn = 0;
 
 function player() {
+  // debugger;
   if(turn % 2 == 0) {
     // turn++
     return "X"
@@ -46,7 +47,6 @@ function checkWinner() {
 };
 
 function doTurn(square) {
-  turn++;
   updateState(square);
   if(checkWinner()) {
       $('td').empty();
@@ -56,6 +56,7 @@ function doTurn(square) {
     turn = 0;
     setMessage("Tie Game.");
   }
+  turn++;
 };
 
 $(function() {
@@ -68,6 +69,10 @@ function attachListeners(){
       doTurn(this);
     }
   });
+
+  $('#save'.on('click', saveGame()))
+
+  $('#previous'.on('click', previousGame()))
 }
 
 function saveGame() {
@@ -75,5 +80,8 @@ function saveGame() {
   $('td').text(function(index, square) {
     state.push(square);
   })
-
 };
+
+function previousGame() {
+
+}
