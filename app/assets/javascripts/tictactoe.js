@@ -9,7 +9,6 @@ $(document).ready(function() {
 var player = () => turn % 2 ? 'O' : 'X';
 
 //The $ is a shortcut for jQuery, and provides an interface to the library.
-//Arrow Function
 var updateState = (td) => $(td).text(player());
 
 //Arrow Function: Set message.
@@ -31,9 +30,9 @@ function checkWinner() {
 function doTurn(move) { 
     updateState(move);
     turn++;
-    if (checkWinner() === true || tiedGame()) {
-        turn = 0;
-        $('td').empty();
+    if (checkWinner() || tiedGame()) {
+        saveGame();
+        clearBoard();
     } 
 }
 
@@ -51,9 +50,12 @@ function attachListeners() {
     $('#previous').on('click', () => previousGames());
     $('#clear').on('click', () => clearBoard());
  }
-
-//Arrow Function: Clear board
-var clearBoard = () => $('td').empty();
+ 
+function clearBoard() {
+    $('td').empty();
+    turn = 0;
+    currentGame = 0;
+}
 
 function saveGame() {
     const state = [];
@@ -70,12 +72,10 @@ function saveGame() {
     } else {
         $.post('/games', gameData, function(game) {
             currentGame = game.data.id;
-            // $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
-            // $("#gameid-" + game.data.id).on('click', () => clearBoard(game.data.id));
         });
     };
 }
-  
+
 function previousGames() {
     $("div#games").html('');
     $.get('/games', function(games) {
