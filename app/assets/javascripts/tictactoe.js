@@ -1,5 +1,3 @@
-// Code your JavaScript / jQuery solution here
-let turn_count = 0;
 var currentGame = 0
 const WIN_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
@@ -7,20 +5,12 @@ $(document).ready(function() {
     attachListeners();
 });  
 
-function player() {
-    let result;
-    turn_count % 2 === 0 ? result = 'X' : result = 'O';
-    return result;
-}
+var player = () => turn % 2 ? 'O' : 'X';
 
-function updateState(td) {
-    //The $ is a shortcut for jQuery, and provides an interface to the library.
-    $(td).text(player());
-}
+//The $ is a shortcut for jQuery, and provides an interface to the library.
+var updateState = (td) => $(td).text(player());
 
-function setMessage(str) {
-    $('#message').text(str);
-}
+var setMessage = (str) => $('#message').text(str);
 
 function checkWinner() {
     var board = {};
