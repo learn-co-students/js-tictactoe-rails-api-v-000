@@ -5,11 +5,14 @@ $(document).ready(function() {
     attachListeners();
 });  
 
+//Arrow Function: If turn is odd (0= falsy value), return 'O'. If it's even, return 'X'. 
 var player = () => turn % 2 ? 'O' : 'X';
 
 //The $ is a shortcut for jQuery, and provides an interface to the library.
+//Arrow Function
 var updateState = (td) => $(td).text(player());
 
+//Arrow Function: Set message.
 var setMessage = (str) => $('#message').text(str);
 
 function checkWinner() {
@@ -34,11 +37,8 @@ function doTurn(move) {
     } 
 }
 
-function tiedGame () {
-    let response;
-    turn === 9 ? response = true && setMessage("Tie game.") : response = false;
-    return response;
-}
+//Arrow Function: If last turn, return true and set message to "Tie game". If not, return false
+var tiedGame = () => turn === 9 ? true && setMessage("Tie game.") : false;
 
 function attachListeners() {
     $('td').on('click', function() {
@@ -52,9 +52,8 @@ function attachListeners() {
     $('#clear').on('click', () => clearBoard());
  }
 
- function clearBoard() {
-    $('td').empty();
- }
+//Arrow Function: Clear board
+var clearBoard = () => $('td').empty();
 
 function saveGame() {
     const state = [];
