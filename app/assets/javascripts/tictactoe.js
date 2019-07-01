@@ -1,6 +1,29 @@
 // Code your JavaScript / jQuery solution here
-let game_id;
+var game_id;
 var turn = 0;
+
+function player(){
+  if (turn % 2){
+    return "O"
+  }else {
+    return "X"
+  }
+}
+
+function updateState(position){
+  var token = player()
+  var el = document.querySelector(position)
+  el.html(token)
+}
+
+
+function setMessage(){
+
+}
+
+
+
+
 
 $(function () {
   $("#save").on('click', function() {
@@ -15,21 +38,3 @@ $(function () {
     // });
   });
 });
-
-
-function player(){
-  if (turn % 2){
-    return "O"
-  }else {
-    return "X"
-  }
-}
-
-function updateState(position){
-  var el = document.querySelector(position)
-  el.html(position)
-}
-
-function setMessage(){
-
-}
