@@ -20,10 +20,20 @@ function setMessage(string){
 }
 
 function checkWinner(){
-  
+
 }
 
 
+
+
+
+function doTurn(){
+
+}
+
+function attachListeners(){
+
+}
 
 
 // $(function () {
