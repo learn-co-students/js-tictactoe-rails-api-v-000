@@ -10,31 +10,29 @@ function player(){
   }
 }
 
-function updateState(position){
+function updateState(square){
   var token = player()
-  var el = document.querySelector(position)
-  el.html(token)
+  square.innerHTML = token
+}
+
+function setMessage(string){
+  document.querySelector('#message').innerHTML = string
 }
 
 
-function setMessage(){
-
-}
 
 
 
-
-
-$(function () {
-  $("#save").on('click', function() {
-    if (game_id === undefined){
-      $.post("/games", $("td").text(), function(data){
-        // console.log(data)
-      })
-    }
-    var id = $(this).data("id");
-    // $.patch("/games/" + id, function(data) {
-    //   $("#body-" + id).text(data);
-    // });
-  });
-});
+// $(function () {
+//   $("#save").on('click', function() {
+//     if (game_id === undefined){
+//       $.post("/games", $("td").text(), function(data){
+//         console.log(data)
+//       })
+//     }
+//     var id = $(this).data("id");
+//     $.patch("/games/" + id, function(data) {
+//     $("#body-" + id).text(data);
+//     });
+//   });
+// });
