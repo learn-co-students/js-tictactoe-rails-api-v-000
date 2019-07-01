@@ -18,10 +18,18 @@ $(function () {
 
 
 function player(){
-  console.log("turn", turn)
   if (turn % 2){
     return "O"
   }else {
     return "X"
   }
+}
+
+function updateState(position){
+  var el = document.querySelector(position)
+  el.html(position)
+}
+
+function setMessage(){
+
 }
