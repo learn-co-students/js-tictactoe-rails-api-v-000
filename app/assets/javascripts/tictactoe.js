@@ -1,4 +1,27 @@
 // Code your JavaScript / jQuery solution here
+let game_id;
+var turn = 0;
+
+$(function () {
+  $("#save").on('click', function() {
+    if (game_id === undefined){
+      $.post("/games", $("td").text(), function(data){
+        // console.log(data)
+      })
+    }
+    var id = $(this).data("id");
+    // $.patch("/games/" + id, function(data) {
+    //   $("#body-" + id).text(data);
+    // });
+  });
+});
+
+
 function player(){
-  
+  console.log("turn", turn)
+  if (turn % 2){
+    return "O"
+  }else {
+    return "X"
+  }
 }
