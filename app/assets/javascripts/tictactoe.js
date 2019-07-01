@@ -19,6 +19,9 @@ function setMessage(string){
   document.querySelector('#message').innerHTML = string
 }
 
+function checkWinner(){
+  
+}
 
 
 
