@@ -37,7 +37,8 @@ function checkWinner(){
 function doTurn(){
   turn += 1
   win_check = checkWinner()
-  
+  token = updateState()
+
 }
 
 function attachListeners(){
