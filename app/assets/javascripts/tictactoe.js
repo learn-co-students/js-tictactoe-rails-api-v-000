@@ -1,7 +1,11 @@
-// Code your JavaScript / jQuery solution here
-
 var turn = 0;
 var WinCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [6,4,2]]
+var currentGame = 0
+
+  function resetBoard(){
+    $('td').empty()
+    turn = 0
+  }
 
   function player(){
       if (turn % 2 ){
@@ -23,8 +27,8 @@ var WinCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], 
 
     function checkWinner(){
       var tds = document.querySelectorAll("td")
-      var board = []
       var winner = false
+      var board = []
         tds.forEach(function(td){
           board.push(td.innerHTML)
         })
@@ -34,11 +38,18 @@ var WinCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], 
               return winner = true
             }})          
        return winner
-     
     }
 
-    function doTurn(){
-
+    function doTurn(square){
+      updateState(square);
+      turn++;
+      if (checkWinner()){
+           // save the game at this point
+        resetBoard()
+      } else if (turn === 9){
+        setMessage('Tie game.')
+        resetBoard()
+      }  
     }
 
     function attachListeners(){
