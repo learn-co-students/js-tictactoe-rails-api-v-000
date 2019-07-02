@@ -44,7 +44,7 @@ var currentGame = 0
       updateState(square);
       turn++;
       if (checkWinner()){
-           // save the game at this point
+        // save the game at this point
         resetBoard()
       } else if (turn === 9){
         setMessage('Tie game.')
@@ -52,9 +52,21 @@ var currentGame = 0
       }  
     }
 
-    function attachListeners(){
 
-    }
+    // $(document).ready(function(){
+
+      function attachListeners(){
+        // var tds = document.querySelectorAll("td")
+        // tds.forEach(function(td){ 
+        //   td.addEventListener('click', doTurn(td))
+        // })  
+        
+        $('td').addEventListener('click', function(){
+          doTurn('td')
+        })
+      }
+    // })
+  
 
     
 
