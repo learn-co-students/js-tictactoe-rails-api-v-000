@@ -29,16 +29,12 @@ var WinCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], 
           board.push(td.innerHTML)
         })
           WinCombos.forEach(function(winCombo){
-            if (board[winCombo[0]] === ' ' || board[winCombo[0]] === ''){
-             return winner = false
-            }
-            else if (board[winCombo[0]] === board[winCombo[1]] && board[winCombo[1]] === board[winCombo[2]] && board[winCombo[0]] === board[winCombo[2]]){
-              debugger   
+          if (board[winCombo[0]] !== "" && board[winCombo[0]] === board[winCombo[1]] && board[winCombo[1]] === board[winCombo[2]]){
               setMessage(`Player ${board[winCombo[0]]} Won!`)
               return winner = true
-            }  
-          })
-          return winner          
+            }})          
+       return winner
+     
     }
 
     function doTurn(){
