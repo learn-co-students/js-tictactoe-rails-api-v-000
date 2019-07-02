@@ -25,10 +25,8 @@ function checkWinner(){
 
 
 
-
-
 function doTurn(){
-
+  turn += 1
 }
 
 function attachListeners(){
