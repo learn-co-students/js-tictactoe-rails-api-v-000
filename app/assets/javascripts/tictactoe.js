@@ -63,7 +63,12 @@ function attachListeners(){
 }
 
 
-// $(function () {
+
+$(function () {
+  $("#previous").on('click', fuction(){
+    
+  })
+
 //   $("#save").on('click', function() {
 //     if (game_id === undefined){
 //       $.post("/games", $("td").text(), function(data){
@@ -75,4 +80,4 @@ function attachListeners(){
 //     $("#body-" + id).text(data);
 //     });
 //   });
-// });
+});
