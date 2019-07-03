@@ -5,6 +5,7 @@ var currentGame = 0
   function resetBoard(){
     $('td').empty()
     turn = 0
+    currentGame = 0 
   }
 
   function player(){
@@ -44,29 +45,59 @@ var currentGame = 0
       updateState(square);
       turn++;
       if (checkWinner()){
-        // save the game at this point
+        saveGame()
         resetBoard()
       } else if (turn === 9){
         setMessage('Tie game.')
+        saveGame()
         resetBoard()
       }  
     }
 
 
-    // $(document).ready(function(){
+    $(document).ready(function() {
+      attachListeners();
+    });
 
-      function attachListeners(){
-        // var tds = document.querySelectorAll("td")
-        // tds.forEach(function(td){ 
-        //   td.addEventListener('click', doTurn(td))
-        // })  
-        
-        $('td').addEventListener('click', function(){
-          doTurn('td')
+    function attachListeners(){
+      $('td').on('click', function(){
+        if (this.innerHTML === "" && !checkWinner()){
+          doTurn(this)
+        }
+      })
+      $("#save").on('click', saveGame)
+    }
+  
+    function saveGame(){
+      var board = []
+      $('td').text((index, square) => {
+        board.push(square)
+      })
+      var data = {state: board}
+       if (currentGame !== 0){
+        $.ajax({
+          url: `/games/${currentGame}`,
+          data: data,
+          type: 'patch'
+        }) 
+       } else {
+        $.post(`/games`, data, function(game){
+          currentGame = game.data.id
         })
-      }
-    // })
+     
+       }
+       
+    }
+
+
+ 
+   
   
 
-    
+    function previousGames(){
 
+    }
+
+    function clearGame(){
+
+    }
