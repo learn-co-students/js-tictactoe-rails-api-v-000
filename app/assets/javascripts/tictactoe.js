@@ -5,6 +5,7 @@ var WinCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], 
 function resetBoard(){
   $('td').empty()
   turn = 0
+  currentGame = 0
 }
 
 function player(){
@@ -43,7 +44,6 @@ function doTurn(square){
   updateState(square);
   turn++;
   if (checkWinner()){
-     // save the game at this point
     resetBoard()
   } else if (turn === 9){
     setMessage('Tie game.')
@@ -53,6 +53,7 @@ function doTurn(square){
 
 $(document).ready(function() {
   attachListeners();
+  previous();
 });
 function attachListeners(){
   $('td').on('click', function(){
@@ -60,24 +61,44 @@ function attachListeners(){
       doTurn(this)
     }
   })
+  $("#save").on('click', saveGame)
 }
 
-
-
-$(function () {
-  $("#previous").on('click', fuction(){
-    
+function previous () {
+  $("#previous").on('click', function(){
+    $.getJSON("/games", function(data){
+      debugger
+      data["data"].forEach(function(game){
+        // const button = document.createElement("button")
+        // const id = game.id
+        // button.appendChild(id)
+        // document.getElementById("games").appendChild(button)
+      })
+    })
   })
+}
 
-//   $("#save").on('click', function() {
-//     if (game_id === undefined){
-//       $.post("/games", $("td").text(), function(data){
-//         console.log(data)
-//       })
-//     }
-//     var id = $(this).data("id");
-//     $.patch("/games/" + id, function(data) {
-//     $("#body-" + id).text(data);
-//     });
-//   });
-});
+function saveGame(){
+  var board = []
+  $('td').text((index, square) => {
+    board.push(square)
+  })
+  var data = {state: board}
+   if (currentGame !== 0){
+    $.ajax({
+      url: `/games/${currentGame}`,
+      data: data,
+      type: 'patch'
+    }) 
+   } else {
+    $.post(`/games`, data, function(game){
+      currentGame = game.data.id
+      })
+    }
+}
+
+function clear(){
+  $("#clear").on('click', function(){
+    resetBoard()
+  })
+}
