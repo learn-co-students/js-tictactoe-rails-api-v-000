@@ -2,6 +2,11 @@
 var turn = 0;
 var WinCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [6,4,2]]
 
+function resetBoard(){
+  $('td').empty()
+  turn = 0
+}
+
 function player(){
   if (turn % 2){
     return "O"
@@ -34,15 +39,27 @@ function checkWinner(){
   return winner
 }
 
-function doTurn(){
-  turn += 1
-  win_check = checkWinner()
-  token = updateState()
-
+function doTurn(square){
+  updateState(square);
+  turn++;
+  if (checkWinner()){
+     // save the game at this point
+    resetBoard()
+  } else if (turn === 9){
+    setMessage('Tie game.')
+    resetBoard()
+  }  
 }
 
+$(document).ready(function() {
+  attachListeners();
+});
 function attachListeners(){
-
+  $('td').on('click', function(){
+    if (this.innerHTML === "" && !checkWinner()){
+      doTurn(this)
+    }
+  })
 }
 
 
