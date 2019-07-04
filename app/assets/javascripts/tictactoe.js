@@ -80,13 +80,19 @@ function previousGame() {
       }
     })
   }
-// function reloadGame(id){
-//   $.get('/games'+id, function(data){
 
-//   })
-  //find game by id
-  //parse state of game in view
-// }
+function reloadGame(id){
+  $.get('/games/'+id, function(data){
+    const state = data.data.attributes.state
+    let i = 0
+    for(let y=0; y<3; y++){
+      for(let x=0; x<3; x++){
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[i]
+        i++
+      }
+    }
+  })
+}
 
 function saveGame(){
   var board = []
@@ -94,7 +100,7 @@ function saveGame(){
     board.push(square)
   })
   var data = {state: board}
-   if (currentGame !== 0){
+   if (currentGame){
     $.ajax({
       url: `/games/${currentGame}`,
       data: data,
