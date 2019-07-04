@@ -56,7 +56,7 @@ function doTurn(square){
 
 $(document).ready(function() {
   attachListeners();
-  previous();
+  // $("#games").empty()
 });
 function attachListeners(){
   $('td').on('click', function(){
@@ -64,21 +64,29 @@ function attachListeners(){
       doTurn(this)
     }
   })
-  $("#save").on('click', saveGame())
+  $("#save").on('click', saveGame)
+  $("#previous").on('click', previousGame)
+  $("#clear").on('click', clearGame())
 }
 
 function previousGame() {
-  $("#previous").on('click', function(){
-    $.get("/games", function(data){
-      data["data"].forEach(function(game){
-        // const button = document.createElement("button")
-        // const id = game.id
-        // button.appendChild(id)
-        // document.getElementById("games").appendChild(button)
-      })
+  $("#games").empty()
+    $.get('/games', function(data){
+      if(data.data.length > 0){
+        data["data"].forEach(function(game){
+          $("#games").append(`<button id="game-${game.id}">${game.id}</button>`)
+          $(`#game-${game.id}`).on('click', () => reloadGame(game.id))
+        })
+      }
     })
-  })
-}
+  }
+// function reloadGame(id){
+//   $.get('/games'+id, function(data){
+
+//   })
+  //find game by id
+  //parse state of game in view
+// }
 
 function saveGame(){
   var board = []
@@ -99,7 +107,7 @@ function saveGame(){
     }
 }
 
-function clear(){
+function clearGame(){
   $("#clear").on('click', function(){
     resetBoard()
   })
