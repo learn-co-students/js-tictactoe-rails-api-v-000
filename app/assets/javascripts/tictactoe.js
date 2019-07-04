@@ -91,6 +91,8 @@ function reloadGame(id){
         i++
       }
     }
+    turn = state.join("").length
+    currentGame = parseInt(data.data.id)
   })
 }
 
