@@ -1,6 +1,7 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0;
 var WinCombos = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [6,4,2]]
+var currentGame = 0
 
 function resetBoard(){
   $('td').empty()
@@ -63,10 +64,10 @@ function attachListeners(){
       doTurn(this)
     }
   })
-  $("#save").on('click', saveGame)
+  $("#save").on('click', saveGame())
 }
 
-function previous () {
+function previousGame() {
   $("#previous").on('click', function(){
     $.getJSON("/games", function(data){
       debugger
