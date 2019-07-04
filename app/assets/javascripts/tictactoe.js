@@ -56,7 +56,6 @@ function doTurn(square){
 
 $(document).ready(function() {
   attachListeners();
-  // $("#games").empty()
 });
 function attachListeners(){
   $('td').on('click', function(){
