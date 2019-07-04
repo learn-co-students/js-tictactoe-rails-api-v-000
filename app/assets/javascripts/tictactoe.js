@@ -69,8 +69,7 @@ function attachListeners(){
 
 function previousGame() {
   $("#previous").on('click', function(){
-    $.getJSON("/games", function(data){
-      debugger
+    $.get("/games", function(data){
       data["data"].forEach(function(game){
         // const button = document.createElement("button")
         // const id = game.id
