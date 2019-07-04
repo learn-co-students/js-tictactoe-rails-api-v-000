@@ -7,15 +7,15 @@ try {
   var window = dom.window;
 }
 
-const sandbox = sinon.sandbox.create();
-const expect = chai.expect;
+var sandbox = sinon.sandbox.create();
+var expect = chai.expect;
 
-const squares = window.document.querySelectorAll('td');
-const messageDiv = window.document.getElementById('message');
-const gamesDiv = window.document.getElementById('games');
-const saveButton = window.document.getElementById('save');
-const previousButton = window.document.getElementById('previous');
-const clearButton = window.document.getElementById('clear');
+var squares = window.document.querySelectorAll('td');
+var messageDiv = window.document.getElementById('message');
+var gamesDiv = window.document.getElementById('games');
+var saveButton = window.document.getElementById('save');
+var previousButton = window.document.getElementById('previous');
+var clearButton = window.document.getElementById('clear');
 
 // Define helper functions
 function resetFixtures() {
@@ -67,7 +67,7 @@ describe('tictactoe.js', () => {
     });
 
     it('invokes the player() function', () => {
-      const spy = sandbox.stub(window, 'player');
+      var spy = sandbox.stub(window, 'player');
 
       window.updateState(squares[4]);
 
@@ -94,7 +94,7 @@ describe('tictactoe.js', () => {
     });
 
     it('sets a provided string as the innerHTML of the div#message element', () => {
-      const string = "Player X Won!";
+      var string = "Player X Won!";
 
       window.setMessage(string);
 
@@ -159,7 +159,7 @@ describe('tictactoe.js', () => {
     });
 
     it('invokes the setMessage() function with the argument "Player X Won!" when player X wins', () => {
-      const spy = sandbox.stub(window, 'setMessage');
+      var spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['', '', '', 'X', 'X', 'X', 'O', 'O', '']);
       //    |   |   
@@ -174,7 +174,7 @@ describe('tictactoe.js', () => {
     });
 
     it('invokes the setMessage() function with the argument "Player O Won!" when player O wins', () => {
-      const spy = sandbox.stub(window, 'setMessage');
+      var spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['O', '', '', 'X', 'O', 'X', 'X', '', 'O']);
       //  O |   |   
@@ -208,7 +208,7 @@ describe('tictactoe.js', () => {
     });
 
     it('invokes the checkWinner() function', () => {
-      const spy = sandbox.spy(window, 'checkWinner');
+      var spy = sandbox.spy(window, 'checkWinner');
 
       window.doTurn(squares[8]);
 
@@ -216,7 +216,7 @@ describe('tictactoe.js', () => {
     });
 
     it('invokes the updateState() function', () => {
-      const spy = sandbox.spy(window, 'updateState');
+      var spy = sandbox.spy(window, 'updateState');
 
       window.doTurn(squares[0]);
 
@@ -226,7 +226,7 @@ describe('tictactoe.js', () => {
     it('invokes the setMessage() function with the argument "Tie game." when the game is tied', () => {
       sinon.useFakeXMLHttpRequest();
 
-      const spy = sandbox.spy(window, 'setMessage');
+      var spy = sandbox.spy(window, 'setMessage');
 
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
       //  X | O | X 
@@ -254,7 +254,7 @@ describe('tictactoe.js', () => {
       window.turn = 8;
       window.doTurn(squares[6]);
 
-      const board = Array.from(squares).map(s => s.innerHTML);
+      var board = Array.from(squares).map(s => s.innerHTML);
 
       expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);
       expect(window.turn).to.equal(0);
@@ -340,7 +340,7 @@ describe('Gameplay', () => {
 
     window.doTurn(squares[4]);
 
-    const board = Array.from(squares).map(s => s.innerHTML);
+    var board = Array.from(squares).map(s => s.innerHTML);
 
     expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', '', '']);
   });
@@ -365,7 +365,7 @@ describe('AJAX interactions with the Rails API', () => {
   }
 
   function jsonifyGames(boards) {
-    const jsonObj = {
+    var jsonObj = {
       "data": [],
       "jsonapi": {
         "version": "1.0"
@@ -432,7 +432,7 @@ describe('AJAX interactions with the Rails API', () => {
           ])
         );
 
-        const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
+        var gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
 
         expect(gameButtons.length).to.equal(2);
       });
@@ -463,7 +463,7 @@ describe('AJAX interactions with the Rails API', () => {
           ])
         );
 
-        const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
+        var gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
 
         expect(gameButtons.length).to.equal(4);
       });
@@ -531,7 +531,7 @@ describe('AJAX interactions with the Rails API', () => {
 
         clearButton.click();
 
-        const board = Array.from(squares).map(s => s.innerHTML);
+        var board = Array.from(squares).map(s => s.innerHTML);
 
         expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);
         expect(window.turn).to.equal(0);
@@ -630,7 +630,7 @@ describe('AJAX interactions with the Rails API', () => {
         ])
       );
 
-      const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
+      var gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
 
       gameButtons[0].click();
 
@@ -649,7 +649,7 @@ describe('AJAX interactions with the Rails API', () => {
         ])
       );
 
-      const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
+      var gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
 
       gameButtons[0].click();
 
@@ -659,7 +659,7 @@ describe('AJAX interactions with the Rails API', () => {
         jsonifyGame(['', '', '', '', 'X', '', '', 'O', ''])
       );
 
-      const board = Array.from(squares).map(s => s.innerHTML);
+      var board = Array.from(squares).map(s => s.innerHTML);
 
       expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', 'O', '']);
       expect(window.turn).to.equal(2);
@@ -676,7 +676,7 @@ describe('AJAX interactions with the Rails API', () => {
         ])
       );
 
-      const gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
+      var gameButtons = Array.from(gamesDiv.children).filter(c => c.tagName === 'BUTTON');
 
       gameButtons[0].click();
 
