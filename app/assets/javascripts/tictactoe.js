@@ -66,6 +66,8 @@ var currentGame = 0
         }
       })
       $("#save").on('click', saveGame)
+      $("#previous").on('click', previousGame)
+      $("#clear").on('click', clearGame)
     }
   
     function saveGame(){
@@ -84,20 +86,37 @@ var currentGame = 0
         $.post(`/games`, data, function(game){
           currentGame = game.data.id
         })
-     
-       }
-       
+       }   
     }
 
-
- 
-   
-  
-
-    function previousGames(){
-
-    }
+    function previousGame() {
+      $("#games").empty()
+        $.get('/games', function(data){
+          if(data.data.length > 0){
+            data["data"].forEach(function(game){
+              $("#games").append(`<button id="game-${game.id}">${game.id}</button>`)
+              $(`#game-${game.id}`).on('click', () => reloadGame(game.id))
+            })
+          }
+        })
+      }
+    
+      function reloadGame(id){
+        $.get('/games/'+id, function(data){
+          const state = data.data.attributes.state
+          let i = 0
+          for(let y=0; y<3; y++){
+            for(let x=0; x<3; x++){
+              document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[i]
+              i++
+            }
+          }
+          turn = state.join("").length
+          currentGame = parseInt(data.data.id)
+        })
+      }
+      
 
     function clearGame(){
-
+      resetBoard()
     }
