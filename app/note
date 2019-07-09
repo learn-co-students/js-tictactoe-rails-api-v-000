@@ -1,0 +1,12 @@
+
+
+  trs = document.querySelectorAll('tr')
+  for (var i=0; i < trs.length; i++)
+  {
+    tds = trs[i].querySelectorAll("td");
+    debugger
+    for (var n=0; n<tds.length;n++){
+      let v = tds[n].innerText
+      board.push(v);
+      
+      return board

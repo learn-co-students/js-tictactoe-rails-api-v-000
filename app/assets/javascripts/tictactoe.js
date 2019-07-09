@@ -29,10 +29,22 @@ function checkWinner() {
   return winner;
 }
 
-function reset() {
-  board = []
-}
+function showBoard () {
+  let board = [];
 
+
+  tds = document.querySelectorAll('td')
+  for (var i=0; i < tds.length; i++)
+  {
+    board.push(tds[i].innerText)
+    debugger
+
+      return board
+    
+
+  }
+  
+}
 // function saveGame (){
 //   board.save 
 // }
@@ -41,6 +53,8 @@ function doTurn(td) {
   updateState(td);
   turn++;
   if (checkWinner()) {
+    showBoard()
+    debugger
     reset();
   } else if (turn === 9) {
     setMessage("Tie game.");
