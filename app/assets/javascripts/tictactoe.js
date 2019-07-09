@@ -1,4 +1,5 @@
 var turn = 0;
+var currentGame = 0;
 
 const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
   [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
@@ -29,20 +30,19 @@ function checkWinner() {
   return winner;
 }
 
-function showBoard () {
+function showBoard() {
   let board = [];
-
-
   tds = document.querySelectorAll('td')
   for (var i=0; i < tds.length; i++)
   {
     board.push(tds[i].innerText)
-    debugger
-
       return board
-    
-
   }
+}
+
+function reset() {
+  $('td').empty();
+  turn = 0;
   
 }
 // function saveGame (){
@@ -53,8 +53,8 @@ function doTurn(td) {
   updateState(td);
   turn++;
   if (checkWinner()) {
-    showBoard()
-    debugger
+    // showBoard()
+    // debugger
     reset();
   } else if (turn === 9) {
     setMessage("Tie game.");
