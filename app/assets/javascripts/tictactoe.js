@@ -6,13 +6,39 @@ const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
 
 var player = () => turn % 2 ? 'O' : 'X';
 
-function updateState(square) {
-  var token = player();
-  $(square).text(token);
+
+$(document).ready(function() {
+  attachListeners();
+});
+
+
+function doTurn(td) {
+  updateState(td);
+  turn++;
+  if (checkWinner()) {
+    saveGame();
+    reset();
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+    saveGame();
+    reset();
+  }
 }
 
-function setMessage(msg) {
-  $("#message").text(msg) 
+function reset() {
+  $('td').empty();
+  turn = 0;
+}
+
+function attachListeners() {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  });
+  $('#save').on('click', () => saveGame());
+  $('#previous').on('click', () => showPreviousGames());
+  $('#clear').on('click', () => resetBoard());
 }
 
 function checkWinner() {
@@ -30,34 +56,46 @@ function checkWinner() {
   return winner;
 }
 
-function showBoard() {
-  let board = [];
-  tds = document.querySelectorAll('td')
-  for (var i=0; i < tds.length; i++)
-  {
-    board.push(tds[i].innerText)
-      return board
+function updateState(square) {
+  var token = player();
+  $(square).text(token);
+}
+
+function setMessage(msg) {
+  $("#message").text(msg) 
+}
+
+function saveGame() {
+  var state = [];
+  var gameData;
+
+  $('td').text((square) => {
+    state.push(square);
+  })
+
+  gameData = { state: state };
+
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => reloadGame(game.data.id));
+    });
   }
 }
 
-function reset() {
-  $('td').empty();
-  turn = 0;
-  
-}
-// function saveGame (){
-//   board.save 
-// }
 
-function doTurn(td) {
-  updateState(td);
-  turn++;
-  if (checkWinner()) {
-    // showBoard()
-    // debugger
-    reset();
-  } else if (turn === 9) {
-    setMessage("Tie game.");
-    reset();
-  }
+function showPreviousGames() {
+  $('#games').empty();
+  $.get('/games', (savedGames) => {
+    if (savedGames.data.length) {
+      savedGames.data.forEach(buttonizePreviousGame);
+    }
+  });
 }
