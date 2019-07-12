@@ -2,6 +2,7 @@
 
 const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 var turn = 0;
+var currentGame = 0;
 
 $(document).ready(function() {
     attachListeners();
@@ -39,14 +40,24 @@ function checkWinner() {
   return winner;
 }
 
+// function doTurn(square) {
+// updateState(square);
+//   turn++;
+//   if (checkWinner()) {
+//     clearBoard();
+//   } else if (turn === 9){
+//     setMessage("Tie game.")
+//     clearBoard();
+//   }
+// }
+
 function doTurn(square) {
 updateState(square);
   turn++;
-  if (checkWinner()) {
-    resetBoard()
-  } else if (turn === 9){
+  if (checkWinner() || turn === 9){
     setMessage("Tie game.")
-    resetBoard()
+    saveGame();
+    clearBoard();
   }
 }
 
@@ -58,33 +69,76 @@ function attachListeners() {
     }
   })
   $('#save').on('click', () => saveGame());
-  $('#previous').on('click', () => previousGame());
-  $('#clear').on('click', () => clearGame());
+  $('#previous').on('click', () => previousGames());
+  $('#clear').on('click', () => clearBoard());
 }
 
-function previousGame() {
+
+function previousGames() {
+  $('#games').empty();
+  var $gameDiv = $('#games');
+
   $.ajax({
     type: 'GET',
     url: '/games',
-    success: function(data) {
+    success: function(games) {
+      games.data.forEach(function(game) {
+        $gameDiv.append(`<button id="gameid-${game.id}">${game.id}</button>`);
 
+        $(`#gameid-${game.id}`).on('click', () => loadGame(game.id));
+      })
     }
+  })
+}
+
+function loadGame(id){
+
+  $.get(`/games/${id}`, function(game) {
+      state = game.data.attributes.state
+      debugger
+      squares = document.querySelectorAll("td")
+      currentGame = id;
+      turn = state.join("").length;
+      var i = 0;
+      squares.forEach(function(square) {
+          square.innerHTML = state[i];
+          i++;
+      })
   })
 }
 
 function saveGame() {
-var $gameDiv = $('#games');
+var state = []
+$('td').text((index,square) => {
+  state.push(square)
+})
 
+var gameData = {state:state};
+
+if (currentGame) {
+  $.ajax({
+    type: 'PATCH',
+    url: `/games/${currentGame}`,
+    data: gameData
+  })
+} else {
   $.ajax({
     type: 'POST',
     url: '/games',
-    success: function(data) {
-      $gameDiv.append('test');
+    data: gameData,
+    success: function(gameData) {
+      currentGame = gameData.data.id
+
+      $('#games').append(`<button id="gameid-${currentGame}">${currentGame}</button>`)
+      $("#gameid-" + currentGame).on('click', () => loadGame(currentGame));
     }
   })
+ }
 }
 
-function resetBoard() {
+
+function clearBoard() {
     $('td').empty();
     turn = 0;
+    currentGame = 0;
 }
