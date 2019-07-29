@@ -4,6 +4,15 @@
 */
 var turn = 0;
 
+function resetBoard(){
+  boardHTMLData = document.querySelectorAll("td")
+  boardHTMLDataLength = boardHTMLData.length
+  board = []
+  for(var i = 0; i < boardHTMLDataLength; i++){
+    boardHTMLData[i].innerHTML = ""
+  }
+}
+
 function getBoard(){
   boardHTMLData = document.querySelectorAll("td")
   boardHTMLDataLength = boardHTMLData.length
@@ -66,37 +75,18 @@ function checkWinner(){
    }
    return false
 }
-function checkTieGame(){
-  var currentBoard = getBoard()
-  if(currentBoard.indexOf('') < 0){
-      console.log("Tie Game")
-      setMessage('Tie game.')
-      return true
-  }
-  return false
-}
-function resetBoard(){
-  boardHTMLData = document.querySelectorAll("td")
-  boardHTMLDataLength = boardHTMLData.length
-  board = []
-  for(var i = 0; i < boardHTMLDataLength; i++){
-    boardHTMLData[i].innerHTML = ""
-  }
-}
-function checkGameOver(){
-  var winnerFound = checkWinner();
-  var gameTied = checkTieGame();
-  if (winnerFound || gameTied){
-    turn = 0;
-    resetBoard();
-    return true
-  }
-  return false
-}
+
+
+
 function doTurn(board_cell){
-  if(!checkGameOver()){
+  if(!checkWinner()){
     updateState(board_cell)
     turn++;
-    checkGameOver() 
+
+    if(getBoard().indexOf('') < 0){
+      setMessage('Tie game.')
+      turn = 0;
+      resetBoard();
+    }
   }
 }
