@@ -279,7 +279,7 @@ describe('tictactoe.js', () => {
       expect(spy.calledOnce).to.be.true;
 
       squares[8].click();
-
+      console.log(spy)
       expect(spy.calledTwice).to.be.true;
     });
 

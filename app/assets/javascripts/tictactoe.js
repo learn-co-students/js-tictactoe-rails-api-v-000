@@ -89,13 +89,17 @@ function doTurn(board_cell){
   }
 }
 
-
 function attachListeners(){
   console.log("attach listeners fired")
   boardHTMLData = $("td")
   boardHTMLDataLength = boardHTMLData.length
   board = []
-  $("td").on("click", doTurn)
+  $("td").on("click", function(e){
+    doTurn(e)
+  });
+  // for(var i = 0; i < boardHTMLDataLength; i++){
+  //   boardHTMLData[i].addEventListener("click", doTurn)
+  // }
 }
 
 $(document).on("ready", function(){
