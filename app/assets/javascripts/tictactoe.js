@@ -43,6 +43,8 @@ function checkWinner(){
   var currentBoard = getBoard()
   var playerXWins = false
   var playerOWins = false
+
+  // Check if either player has won
   for(var i = 0; i < WINNING_COMBINATIONS_LENGTH; i++){
      currentCombination = WINNING_COMBINATIONS[i]
       playerXWins = ( currentBoard[currentCombination[0]] == playerX
@@ -63,4 +65,38 @@ function checkWinner(){
       }
    }
    return false
+}
+function checkTieGame(){
+  var currentBoard = getBoard()
+  if(currentBoard.indexOf('') < 0){
+      console.log("Tie Game")
+      setMessage('Tie game.')
+      return true
+  }
+  return false
+}
+function resetBoard(){
+  boardHTMLData = document.querySelectorAll("td")
+  boardHTMLDataLength = boardHTMLData.length
+  board = []
+  for(var i = 0; i < boardHTMLDataLength; i++){
+    boardHTMLData[i].innerHTML = ""
+  }
+}
+function checkGameOver(){
+  var winnerFound = checkWinner();
+  var gameTied = checkTieGame();
+  if (winnerFound || gameTied){
+    turn = 0;
+    resetBoard();
+    return true
+  }
+  return false
+}
+function doTurn(board_cell){
+  if(!checkGameOver()){
+    updateState(board_cell)
+    turn++;
+    checkGameOver() 
+  }
 }
