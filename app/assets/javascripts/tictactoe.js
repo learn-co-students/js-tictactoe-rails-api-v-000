@@ -11,3 +11,7 @@ var player = function(){
 function updateState(board_cell){
     board_cell.innerHTML = player()
 }
+
+function setMessage(message){
+  document.getElementById("message").innerHTML = message
+}
