@@ -7,3 +7,7 @@ var player = function(){
    ticTacToePiece = turn % 2 == 0 ? "X" : "O"
    return ticTacToePiece
 }
+
+function updateState(board_cell){
+    board_cell.innerHTML = player()
+}
