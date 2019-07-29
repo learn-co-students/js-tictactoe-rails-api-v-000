@@ -76,6 +76,7 @@ function checkWinner(){
 }
 
 function doTurn(board_cell){
+  console.log("do turn called")
   if(!checkWinner()){
     updateState(board_cell)
     turn++;
