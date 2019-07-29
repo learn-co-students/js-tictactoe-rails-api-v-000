@@ -2,9 +2,18 @@
 /*
   REMINDER: DO NOT USE ES5+ Sprokects cannot read it and it will result in odd, confusing errors!!
 */
-var board = ["","","","","","","",""]
 var turn = 0;
-var player = function(){
+
+function getBoard(){
+  boardHTMLData = document.querySelectorAll("td")
+  boardHTMLDataLength = boardHTMLData.length
+  board = []
+  for(var i = 0; i < boardHTMLDataLength; i++){
+    board.push( boardHTMLData[i].innerHTML )
+  }
+  return board
+}
+function player(){
    ticTacToePiece = turn % 2 == 0 ? "X" : "O"
    return ticTacToePiece
 }
@@ -29,17 +38,29 @@ function checkWinner(){
   ];
   var WINNING_COMBINATIONS_LENGTH = WINNING_COMBINATIONS.length
   var currentCombination = []
-  var currentPlayer = player() ;
+  var playerX = 'X'
+  var playerO = 'O'
+  var currentBoard = getBoard()
+  var playerXWins = false
+  var playerOWins = false
   for(var i = 0; i < WINNING_COMBINATIONS_LENGTH; i++){
      currentCombination = WINNING_COMBINATIONS[i]
+      playerXWins = ( currentBoard[currentCombination[0]] == playerX
+          && currentBoard[currentCombination[1]] == playerX
+          && currentBoard[currentCombination[2]] ==  playerX )
 
-      if( board[[currentCombination][0]] == currentPlayer
-          && board[[currentCombination][1]] == currentPlayer
-          && board[[currentCombination][2]] ==  currentPlayer ){
-            setMessage("Player X Won!")
-            return true
-    }
+      playerOWins =  ( currentBoard[currentCombination[0]] == playerO
+          && currentBoard[currentCombination[1]] == playerO
+          && currentBoard[currentCombination[2]] ==  playerO )
+
+      if(playerXWins){
+        setMessage("Player X Won!")
+        return true
+      }
+      else if(playerOWins){
+        setMessage("Player O Won!")
+        return true
+      }
    }
-   setMessage("Player O Won!")
    return false
 }
