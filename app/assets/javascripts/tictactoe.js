@@ -3,9 +3,8 @@
   REMINDER: DO NOT USE ES5+ Sprokects cannot read it and it will result in odd, confusing errors!!
 */
 var turn = 0;
-
 function resetBoard(){
-  boardHTMLData = document.querySelectorAll("td")
+  boardHTMLData = $("td")
   boardHTMLDataLength = boardHTMLData.length
   board = []
   for(var i = 0; i < boardHTMLDataLength; i++){
@@ -76,8 +75,6 @@ function checkWinner(){
    return false
 }
 
-
-
 function doTurn(board_cell){
   if(!checkWinner()){
     updateState(board_cell)
@@ -90,3 +87,17 @@ function doTurn(board_cell){
     }
   }
 }
+
+
+function attachListeners(){
+  console.log("attach listeners fired")
+  boardHTMLData = $("td")
+  boardHTMLDataLength = boardHTMLData.length
+  board = []
+  $("td").on("click", doTurn)
+}
+
+$(document).on("ready", function(){
+  console.log("ready")
+  attachListeners();
+})
