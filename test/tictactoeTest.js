@@ -70,7 +70,6 @@ describe('tictactoe.js', () => {
       const spy = sandbox.stub(window, 'player');
 
       window.updateState(squares[4]);
-
       expect(spy.calledOnce).to.be.true;
     });
 
@@ -275,11 +274,11 @@ describe('tictactoe.js', () => {
       var spy = sandbox.stub(window, 'doTurn');
 
       squares[0].click();
-
+  console.log(spy)
       expect(spy.calledOnce).to.be.true;
 
       squares[8].click();
-      console.log(spy)
+      console.log(spy.calledTwice)
       expect(spy.calledTwice).to.be.true;
     });
 
