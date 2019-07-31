@@ -104,12 +104,8 @@ function getPreviousGames(e){
 	    gameFound = false 
 	    currentGame = games[i] 
 	    currentState = currentGame.attributes.state
-	    for(var j = 0; j < gamesProcessed.length; j++){
-		gameFound = JSON.stringify( gamesProcessed[j])  == JSON.stringify(currentState)
-		if(gameFound){ break; }
-	    }
-	    if(!gameFound){
-		    gamesProcessed.push(currentState)
+	    if( !gameAlreadyProcessed(currentGame) ){
+		gamesProcessed.push(currentGame)
 	    }
 	  }
 
@@ -117,7 +113,7 @@ function getPreviousGames(e){
 	   *
 	   * Render all processed games
 	   * */
-
+	
 	  for(var l = 0; l < gamesProcessed.length; l++){
 		$("#games").append("<button>Game</button>"); 
 	  }
@@ -127,7 +123,7 @@ function getPreviousGames(e){
 function gameAlreadyProcessed(currentGame){
 	var gamesProcessedLength = gamesProcessed.length
 	for(var i = 0; i < gamesProcessedLength; i++){
-		if( JSON.stringify( gamesProcessed[i].state ) == JSON.stringify( currentGame.state ) ){
+		if( JSON.stringify( gamesProcessed[i].attributes.state ) == JSON.stringify( currentGame.attributes.state ) ){
 			return true 
 		}
 	}
