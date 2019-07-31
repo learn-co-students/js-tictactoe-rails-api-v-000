@@ -30,6 +30,14 @@ function resetBoard() {
   turn = 0;
   currentGame = 0;
 }
+function getBoard(){
+  boardHTMLData = $("td")
+  boardHTMLDataLength = boardHTMLData.length
+  board = []
+  for(var i = 0; i < boardHTMLDataLength; i++){
+    board.push( boardHTMLData[i].innerHTML )
+   }
+}
 
 function attachListeners() {
   $('td').on('click', function() {
@@ -38,7 +46,8 @@ function attachListeners() {
     }
   });
 
-  $("#previous").on('click', getPreviousGames); 
+  $("#previous").on('click', getPreviousGames);
+  $("#save").on('click', saveGame); 
 }
 
 function checkWinner() {
@@ -56,9 +65,29 @@ function checkWinner() {
 
   return winner;
 }
+function saveGame(e){
+   e.preventDefault();
+   var currentBoardState = getBoard();
+   var gameFound = false; 
+   for(var j = 0; j < gamesProcessed.length; j++){
+	gameFound = JSON.stringify( gamesProcessed[j])  == JSON.stringify(currentBoardState)
+	if(gameFound){ break; }
+   }
+   if(!gameFound){
+   	$.post("/games", {state: currentBoardState})
+	.done(function(res){
+	  console.log("Game saved successfully"); 
+	})
+	.fail(function(res){
+	  console.log("Game not saved. An error has occurred.");
+	});
+   }
+}
 
-function getPreviousGames(){
-    $.get("/games", function(res){
+function getPreviousGames(e){
+    e.preventDefault(); 
+    $.get("/games")
+    .done(function(res){
 	var games = res.data 
 	var numOfGames = games.length
 	if(numOfGames > 0){
