@@ -70,11 +70,21 @@ function autoSave(){
    saveGame(new Event(window))
 }
 function loadGame(loadedGame){
-  var loadedGameState = loadedGame.state 
-  var tdElements = $("td") 
-  for(var i = 0; i < tdElements.length; i++){
-	tdElements[i].html( loadedGameState[i] )
-  }
+  recordOfSavedGames = []
+  var gameId = loadedGame.id
+  $.get("/games/" + gameId)
+  .done(function(res){
+   
+     var loadedGameState = loadedGame.attributes.state
+     console.log("Loaded State", loadedGameState) 
+     var tdElements = $("td") 
+     for(var i = 0; i < tdElements.length; i++){
+   	tdElements[i].innerHTML = ( loadedGameState[i] )
+     }
+  })
+  .fail(function(res){
+
+  });
 }
 function saveGame(e){
    e.preventDefault();
@@ -123,7 +133,10 @@ function saveGame(e){
 
 function getPreviousGames(e){
     e.preventDefault(); 
-    $.get("/games")
+    $.ajax({
+    url:"/games",
+    method: "GET",
+    dataType: "json" })
     .done(function(res){
 	var games = res.data 
 	var numOfGames = games.length
