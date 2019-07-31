@@ -3,9 +3,8 @@
 const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 var turn = 0;
-var currentGame = 0;
 var gamesProcessed = []
-
+var recordOfSavedGames = [];
 $(document).ready(function() {
   attachListeners();
 });
@@ -28,7 +27,7 @@ function doTurn(square) {
 function resetBoard() {
   $('td').empty();
   turn = 0;
-  currentGame = 0;
+  recordOfSavedGames = [] 
 }
 function getBoard(){
   boardHTMLData = $("td")
@@ -37,6 +36,7 @@ function getBoard(){
   for(var i = 0; i < boardHTMLDataLength; i++){
     board.push( boardHTMLData[i].innerHTML )
    }
+   return board 
 }
 
 function attachListeners() {
@@ -65,21 +65,48 @@ function checkWinner() {
 
   return winner;
 }
+
 function saveGame(e){
    e.preventDefault();
    var currentBoardState = getBoard();
    var gameFound = false; 
-   for(var j = 0; j < gamesProcessed.length; j++){
-	gameFound = JSON.stringify( gamesProcessed[j])  == JSON.stringify(currentBoardState)
-	if(gameFound){ break; }
+   var gameFoundId = undefined; 
+   var currentProcessedData = ""
+   var currentBoardData = ""
+   for(var j = 0; j < recordOfSavedGames.length; j++){
+	currentBoardData = JSON.stringify(currentBoardState); 
+	currentProcessedData = JSON.stringify( recordOfSavedGames[j].attributes.state);
+
+	gameFound = (currentBoardData == currentProcessedData)
+        console.log(currentBoardData, currentProcessedData, gameFound)  
+	if(gameFound){ 
+		gameFoundId = recordOfSavedGames[j].id;
+		break;
+	}
    }
    if(!gameFound){
    	$.post("/games", {state: currentBoardState})
 	.done(function(res){
-	  console.log("Game saved successfully"); 
+	  console.log("Game saved successfully");
+	  recordOfSavedGames.push( res.data) 
 	})
 	.fail(function(res){
 	  console.log("Game not saved. An error has occurred.");
+	});
+   }
+   else{
+       console.log("Game Found ID:", gameFoundId, " Setting New State To:", currentBoardState); 
+	$.ajax({
+	  url: "/games/" + gameFoundId,
+	  method: "PATCH",
+	  data: {id: gameFoundId, state: currentBoardState}  
+
+	})
+	.done(function(res){
+	  console.log("New game saved successfully."); 
+	})
+	.fail(function(res){
+	  console.log("New game not saved. An error has occured.");
 	});
    }
 }
