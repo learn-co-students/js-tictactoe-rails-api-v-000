@@ -274,7 +274,6 @@ describe('tictactoe.js', () => {
       var spy = sandbox.stub(window, 'doTurn');
 
       squares[0].click();
-  console.log(spy)
       expect(spy.calledOnce).to.be.true;
 
       squares[8].click();
