@@ -24,7 +24,7 @@ function doTurn(square) {
   }
 }
 
-function resetBoard() {
+function resetBoard(e=undefined) {
   $('td').empty();
   turn = 0;
   recordOfSavedGames = [] 
@@ -47,7 +47,8 @@ function attachListeners() {
   });
 
   $("#previous").on('click', getPreviousGames);
-  $("#save").on('click', saveGame); 
+  $("#save").on('click', saveGame);
+  $("#clear").on('click', resetBoard); 
 }
 
 function checkWinner() {
