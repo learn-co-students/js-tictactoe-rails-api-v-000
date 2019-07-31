@@ -4,6 +4,7 @@ const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
 var turn = 0;
 var currentGame = 0;
+var gamesProcessed = []
 
 $(document).ready(function() {
   attachListeners();
@@ -37,6 +38,7 @@ function attachListeners() {
     }
   });
 
+  $("#previous").on('click', getPreviousGames); 
 }
 
 function checkWinner() {
@@ -53,6 +55,45 @@ function checkWinner() {
   });
 
   return winner;
+}
+
+function getPreviousGames(){
+    $.get("/games", function(res){
+	var games = res.data 
+	var numOfGames = games.length
+	if(numOfGames > 0){
+	  var newButton = ""
+	  var currentState = ""
+	  var currentGame = {}
+	  var gameFound = false
+	  /* Empty the games container*/
+	  $("#games").empty();
+	  /*
+	   * Find games that haven't been processed.
+	   * */
+	  for(var i = 0; i < numOfGames; i++){
+	    gameFound = false 
+	    currentGame = games[i] 
+	    currentState = currentGame.attributes.state
+	    for(var j = 0; j < gamesProcessed.length; j++){
+		gameFound = JSON.stringify( gamesProcessed[j])  == JSON.stringify(currentState)
+		if(gameFound){ break; }
+	    }
+	    if(!gameFound){
+		    gamesProcessed.push(currentState)
+	    }
+	  }
+
+	  /*
+	   *
+	   * Render all processed games
+	   * */
+
+	  for(var l = 0; l < gamesProcessed.length; l++){
+		$("#games").append("<button>Game</button>"); 
+	  }
+	}
+    });
 }
 
 function updateState(square) {
