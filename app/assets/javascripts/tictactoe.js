@@ -124,7 +124,15 @@ function getPreviousGames(e){
 	}
     });
 }
-
+function gameAlreadyProcessed(currentGame){
+	var gamesProcessedLength = gamesProcessed.length
+	for(var i = 0; i < gamesProcessedLength; i++){
+		if( JSON.stringify( gamesProcessed[i].state ) == JSON.stringify( currentGame.state ) ){
+			return true 
+		}
+	}
+	return false 
+}
 function updateState(square) {
   var token = player();
   $(square).text(token);
