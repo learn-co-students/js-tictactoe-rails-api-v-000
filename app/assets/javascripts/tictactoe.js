@@ -15,11 +15,11 @@ function doTurn(square) {
   updateState(square);
   turn++;
   if (checkWinner()) {
-    autoSave();
+    saveGame();
     resetBoard();
   } else if (turn === 9) {
     setMessage("Tie game.");
-    autoSave();
+    saveGame();
     resetBoard();
   }
 }
@@ -67,16 +67,23 @@ function checkWinner() {
   return winner;
 }
 function autoSave(){
-   saveGame(new Event(window))
+   console.log("Autosaved Board: ", getBoard(), "\n-----------------------------");
+   saveGame()
 }
 function loadGame(loadedGame){
+/*
+ * Possible cause for test failure #2: 
+ * The game isn't laoding the state properly, or it's assigning the data incorrectly, leading the state
+ * to be a list of blank strings. 
+ *
+ * */
   recordOfSavedGames = []
   var gameId = loadedGame.id
   $.get("/games/" + gameId)
   .done(function(res){
    
      var loadedGameState = loadedGame.attributes.state
-     console.log("Loaded State", loadedGameState) 
+     //console.log("Loaded State", loadedGameState) 
      var tdElements = $("td") 
      for(var i = 0; i < tdElements.length; i++){
    	tdElements[i].innerHTML = ( loadedGameState[i] )
@@ -87,7 +94,14 @@ function loadGame(loadedGame){
   });
 }
 function saveGame(e){
-   e.preventDefault();
+/*
+ * Possible cause for test failure #1: 
+ * The game state isn't properly retrieving all the board data, so it always saves the current board 
+ * as a list of empty strings.
+ *
+ * Both for patch and post 
+ *
+ * */
    var currentBoardState = getBoard();
    var gameFound = false; 
    var gameFoundId = undefined; 
@@ -98,24 +112,28 @@ function saveGame(e){
 	currentProcessedData = JSON.stringify( recordOfSavedGames[j].attributes.state);
 
 	gameFound = (currentBoardData == currentProcessedData)
-        console.log(currentBoardData, currentProcessedData, gameFound)  
+	//console.log(currentBoardData, currentProcessedData, gameFound)  
 	if(gameFound){ 
 		gameFoundId = recordOfSavedGames[j].id;
 		break;
 	}
    }
+   console.log("Saved Game Foo Current State: ", currentBoardState, gameFound, "\n--------------------------");
    if(!gameFound){
-   	$.post("/games", {state: currentBoardState})
+   	console.log("Game not saved, starting save process", currentBoardState, "\n-------------------------");
+	$.post("/games", {state: currentBoardState})
 	.done(function(res){
-	  console.log("Game saved successfully");
+	  //console.log("Game saved successfully", currentBoardState);
+	  console.log("Game Saved", currentBoardState)
+	  console.log("Game Saved Object", res.data) 
 	  recordOfSavedGames.push( res.data) 
 	})
 	.fail(function(res){
-	  console.log("Game not saved. An error has occurred.");
+		console.log("Failed to save game");
 	});
+	console.log("Game saved?", recordOfSavedGames, "\n--------------------------");
    }
    else{
-       console.log("Game Found ID:", gameFoundId, " Setting New State To:", currentBoardState); 
 	$.ajax({
 	  url: "/games/" + gameFoundId,
 	  method: "PATCH",
@@ -123,16 +141,18 @@ function saveGame(e){
 
 	})
 	.done(function(res){
-	  console.log("New game saved successfully."); 
+	  console.log("Re-Saved Game", currentBoardState, "--------------------------------------"); 
+	  //console.log("Game state saved successfully."); 
 	})
 	.fail(function(res){
-	  console.log("New game not saved. An error has occured.");
+	  //console.log("New game not saved. An error has occured.");
 	});
    }
 }
 
 function getPreviousGames(e){
     e.preventDefault(); 
+    setMessage("");
     $.ajax({
     url:"/games",
     method: "GET",
@@ -150,7 +170,7 @@ function getPreviousGames(e){
 	  /*
 	   * Find games that haven't been processed.
 	   * */
-	  for(var i = 0; i < numOfGames; i++){
+	  for(var i = 0; i < numOfGames; ++i){
 	    gameFound = false 
 	    currentGame = games[i] 
 	    currentState = currentGame.attributes.state
@@ -158,14 +178,21 @@ function getPreviousGames(e){
 		gamesProcessed.push(currentGame)
 	    }
 	  }
-
+	  /*
+	   *  Bug fix: remove the last element if it''s a duplicate of the first element. 
+	   * 
+	   * */
+	  if( gamesProcessed[ gamesProcessed.length - 1 ].id == gamesProcessed[0].id){
+		gamesProcessed.pop();
+	  }
 	  /*
 	   *
 	   * Render all processed games
 	   * */
-	
+	  console.log("Begin Loop\n---------------------------------");
 	  for(var l = 0; l < gamesProcessed.length; l++){
-		$("#games").append("<button onclick=loadGame("+JSON.stringify(gamesProcessed[i]) +")>Game</button>"); 
+	       console.log("Game " + gamesProcessed[l].id + ":", gamesProcessed[l].attributes.state) 
+		$("#games").append("<button onclick=loadGame("+JSON.stringify(gamesProcessed[l]) +")>Game</button>"); 
 	  }
 	}
     });

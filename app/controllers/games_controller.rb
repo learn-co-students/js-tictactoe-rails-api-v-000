@@ -12,6 +12,7 @@ class GamesController < ApplicationController
 
   def create
     game = Game.create(game_params)
+    puts "Game Saved: #{game_params[:state]}, id: #{game.id}"
     render json: game, status: 201
   end
 
