@@ -95,7 +95,6 @@ function showPreviousGames(){
                 gameNode = $("#games").append($(`<button id=${gameObject.id} >${gameObject.id}</button><br>`));
             });
     });
- //   $('#games').on('click', (event) => loadPreviousGame(event));
   };
 
   function readBoardState() {
@@ -128,12 +127,12 @@ function showPreviousGames(){
 
   function loadPreviousGame(event){
     var savedGameId = event.originalEvent.originalTarget.id
-    console.log(`/game/${savedGameId}`)
-    // var savedGame; 
-    // $.get(`/game/${savedGameId}`, (game) => {
-    //     savedGame = game; 
-    //     console.log(game); 
-    // }); 
+    var savedGame; 
+
+    $.get(`/games/${savedGameId}`, (game) => {
+        savedGame = game.data; 
+        debugger 
+    }); 
 
     // var squares = window.document.querySelectorAll('td');
     // counter = 0; 
