@@ -54,9 +54,15 @@ function checkWinner(){
 function doTurn(square) {
     var squares = window.document.querySelectorAll('td');
     var catsGame = 0; 
-    window.turn++;
     updateState(square); 
-    checkWinner(); 
+    window.turn++;
+    if (checkWinner()) {
+        window.turn = 0; 
+        squares.forEach(function(position) {
+            position.innerHTML = ""; 
+        });
+    }
+
     squares.forEach(function(position) {
         if (position.innerHTML === "X" || position.innerHTML === "O") {
             catsGame++; 
