@@ -153,8 +153,18 @@ $( document ).ready(function() {
     });
 
     $("#previous").on("click", function() {
+        var gamesHtml = "<li>hello</li>"; 
         $.get("/games", function(data) {
-//          $(".productName").text(data["name"]);
+            gamesData = data["data"]
+            gamesData.forEach(function (gameObject) {
+                gamesHtml += "<li>" + "Itsme" + "</li>"
+            });
         });
+        $("#games").append(gamesHtml);
+      });
+
+      $("#save").on("click", function() {
+        var values = $(this).serialize();
+        $.post('/games', values);
       });
 });
