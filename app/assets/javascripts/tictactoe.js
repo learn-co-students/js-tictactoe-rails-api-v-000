@@ -88,8 +88,9 @@ function showPreviousGames(){
     $.get('/games', (games) => {
         gamesData = games.data
         gamesData.forEach(function (gameObject) {
-                $("#games").append($(`<a href='https://www.freecodecamp.org/'><button>${gameObject.id}</button></a><br>`));
-        });
+                gameNode = $("#games").append($(`<button>${gameObject.id}</button><br>`));
+  //              gameNode = $("#games").append($(`<a href='https://www.freecodecamp.org/'><button>${gameObject.id}</button></a><br>`));
+            });
     });
   };
 
