@@ -108,9 +108,9 @@ function showPreviousGames(){
 }
 
   function saveGame(){
+    var board = readBoardState(); 
+    values = {state: board}; 
       if (gameId === 0) {
-        var board = readBoardState(); 
-        values = {state: board}; 
         $.post('/games', values);
       }
   }
@@ -121,7 +121,8 @@ function showPreviousGames(){
     squares.forEach(function(position) {
         position.innerHTML = ""; 
     });
-    
+
+    turn = 0; 
   }
 
 function attachListeners(){
