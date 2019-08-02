@@ -8,7 +8,7 @@ function player(){
 }
 
 function updateState(square){
-    square.innerHTML = player(); 
+        square.innerHTML = player(); 
 }
 
 function setMessage(message){
@@ -54,19 +54,23 @@ function checkWinner(){
 function doTurn(square) {
     var squares = window.document.querySelectorAll('td');
     var catsGame = 0; 
-    updateState(square); 
-    window.turn++;
+
+    if (square.innerHTML === "") {
+        updateState(square); 
+        window.turn++;
+    };
+
     if (checkWinner()) {
         window.turn = 0; 
         squares.forEach(function(position) {
             position.innerHTML = ""; 
         });
-    }
+    };
 
     squares.forEach(function(position) {
         if (position.innerHTML === "X" || position.innerHTML === "O") {
             catsGame++; 
-        }
+        };
     });
 
     if (catsGame === 9) {
@@ -76,6 +80,7 @@ function doTurn(square) {
             position.innerHTML = ""; 
         });
     }
+    
 }
 
 function attachListeners(){
