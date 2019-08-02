@@ -71,6 +71,10 @@ function doTurn(square) {
 
     if (catsGame === 9) {
         setMessage("Tie game.")
+        window.turn = 0; 
+        squares.forEach(function(position) {
+            position.innerHTML = ""; 
+        });
     }
 }
 
@@ -80,7 +84,31 @@ function attachListeners(){
 
 $( document ).ready(function() {
     var squares = window.document.querySelectorAll('td');
-    $('td').click(function() {
-     alert("YOu clicked me!")
+    $(squares[0]).click(function() {
+        doTurn(squares[0])
+    });
+    $(squares[1]).click(function() {
+        doTurn(squares[1])
+    });
+    $(squares[2]).click(function() {
+        doTurn(squares[2])
+    });
+    $(squares[3]).click(function() {
+        doTurn(squares[3])
+    });
+    $(squares[4]).click(function() {
+        doTurn(squares[4])
+    });
+    $(squares[5]).click(function() {
+        doTurn(squares[5])
+    });
+    $(squares[6]).click(function() {
+        doTurn(squares[6])
+    });
+    $(squares[7]).click(function() {
+        doTurn(squares[7])
+    });
+    $(squares[8]).click(function() {
+        doTurn(squares[8])
     });
 });
