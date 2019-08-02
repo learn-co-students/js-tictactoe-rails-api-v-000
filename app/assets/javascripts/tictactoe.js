@@ -90,8 +90,7 @@ function showPreviousGames(){
         var counter = 5; 
         gamesData.forEach(function (gameObject) {
             counter += 1; 
-            console.log(gameObject.id);
-            $("#games").append(gameObject.id);
+            $("#games").append($(`<input type="button" value=${gameObject.id} /><br>`));
         });
     });
   };
