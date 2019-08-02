@@ -80,7 +80,6 @@ function doTurn(square) {
             position.innerHTML = ""; 
         });
     }
-    
 }
 
 function attachListeners(){
@@ -90,30 +89,66 @@ function attachListeners(){
 $( document ).ready(function() {
     var squares = window.document.querySelectorAll('td');
     $(squares[0]).click(function() {
+        var won = checkWinner();
+
+        if (!won) {
         doTurn(squares[0])
+        }
     });
     $(squares[1]).click(function() {
+        var won = checkWinner();
+
+        if (!won) {
         doTurn(squares[1])
+        }
     });
     $(squares[2]).click(function() {
+        var won = checkWinner();
+
+        if (!won) {
         doTurn(squares[2])
+        }
     });
     $(squares[3]).click(function() {
+        var won = checkWinner();
+
+        if (!won) {
         doTurn(squares[3])
+        }
     });
     $(squares[4]).click(function() {
+        var won = checkWinner();
+
+        if (!won) {
         doTurn(squares[4])
+        }
     });
     $(squares[5]).click(function() {
+        var won = checkWinner();
+
+        if (!won) {
         doTurn(squares[5])
+        }
     });
     $(squares[6]).click(function() {
+        var won = checkWinner();
+
+        if (!won) {
         doTurn(squares[6])
+        }
     });
     $(squares[7]).click(function() {
+        var won = checkWinner();
+
+        if (!won) {
         doTurn(squares[7])
+        }
     });
     $(squares[8]).click(function() {
+        var won = checkWinner();
+
+        if (!won) {
         doTurn(squares[8])
+        }
     });
 });
