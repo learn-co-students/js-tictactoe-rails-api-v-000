@@ -151,4 +151,10 @@ $( document ).ready(function() {
         doTurn(squares[8])
         }
     });
+
+    $("#previous").on("click", function() {
+        $.get("/games", function(data) {
+//          $(".productName").text(data["name"]);
+        });
+      });
 });
