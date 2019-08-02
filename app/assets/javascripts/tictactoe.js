@@ -74,10 +74,13 @@ function doTurn(square) {
     }
 }
 
-// addEventListener(){
-    $( document ).ready(function() {
+function attachListeners(){
+    var squares = window.document.querySelectorAll('td');
+}
+
+$( document ).ready(function() {
+    var squares = window.document.querySelectorAll('td');
     $('td').click(function() {
-     
+     alert("YOu clicked me!")
     });
 });
-// }
