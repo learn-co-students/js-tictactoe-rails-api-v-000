@@ -122,6 +122,8 @@ function showPreviousGames(){
   function saveGame(){
         var board = readBoardState(); 
         var values = jsonifyTheGame(board);
+        var testing = values
+        console.log(testing)
         $.post('/games', values);
   }
 
