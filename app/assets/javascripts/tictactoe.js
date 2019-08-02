@@ -1,8 +1,9 @@
 var gameId = 0; 
+var turn = 0; 
 
 function player(){
     var currentPlayer = "O"
-    if (window.turn % 2 === 0 ) {
+    if (window.turn % 2 === 0 || window.turn === 0) {
       currentPlayer = "X";   
     } 
 
@@ -115,8 +116,12 @@ function showPreviousGames(){
   }
 
   function clearGame(){
-        var values = $(this).serialize();
-        $.post('/games', values);
+    var squares = window.document.querySelectorAll('td');
+
+    squares.forEach(function(position) {
+        position.innerHTML = ""; 
+    });
+    
   }
 
 function attachListeners(){
