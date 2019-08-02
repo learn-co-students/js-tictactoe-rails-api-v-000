@@ -92,9 +92,10 @@ function showPreviousGames(){
     $.get('/games', (games) => {
         gamesData = games.data
         gamesData.forEach(function (gameObject) {
-                gameNode = $("#games").append($(`<button id=${gameObject.id} class= "previous">${gameObject.id}</button><br>`));
+                gameNode = $("#games").append($(`<button id=${gameObject.id} >${gameObject.id}</button><br>`));
             });
     });
+ //   $('#games').on('click', (event) => loadPreviousGame(event));
   };
 
   function readBoardState() {
@@ -125,20 +126,22 @@ function showPreviousGames(){
     turn = 0; 
   }
 
-  function loadPreviousGame(){
-    var savedGame; 
-    $.get('/game', (game) => {
-        savedGame = game; 
-        console.log(game); 
-    }); 
+  function loadPreviousGame(event){
+    var savedGameId = event.originalEvent.originalTarget.id
+    console.log(`/game/${savedGameId}`)
+    // var savedGame; 
+    // $.get(`/game/${savedGameId}`, (game) => {
+    //     savedGame = game; 
+    //     console.log(game); 
+    // }); 
 
-    var squares = window.document.querySelectorAll('td');
-    counter = 0; 
-    squares.forEach(function(position) {
-        position.innerHTML = savedGame[counter]; 
-        counter++; 
-        if (position.innerHTML !== "") { turn++}; 
-    });
+    // var squares = window.document.querySelectorAll('td');
+    // counter = 0; 
+    // squares.forEach(function(position) {
+    //     position.innerHTML = savedGame[counter]; 
+    //     counter++; 
+    //     if (position.innerHTML !== "") { turn++}; 
+    // });
   }
 
 function attachListeners(){
@@ -210,8 +213,7 @@ function attachListeners(){
     $('#previous').on('click', () => showPreviousGames());
     $('#save').on('click', () => saveGame());
     $('#clear').on('click', () => clearGame());
-    $('.previous').on('click', () => loadPreviousGame());
-
+    $('#games').on('click', (event) => loadPreviousGame(event));
 };
 
 $( document ).ready(function() {
