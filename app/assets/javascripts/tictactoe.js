@@ -94,10 +94,19 @@ function showPreviousGames(){
     });
   };
 
-  $("#save").on("click", function() {
-    var values = $(this).serialize();
-    $.post('/games', values);
-    });
+  function saveGame(){
+    $("#save").on("click", function() {
+        var values = $(this).serialize();
+        $.post('/games', values);
+        });
+  }
+
+  function clearGame(){
+    $("#clear").on("click", function() {
+        var values = $(this).serialize();
+        $.post('/games', values);
+        });
+  }
 
 function attachListeners(){
     var squares = window.document.querySelectorAll('td');
@@ -166,6 +175,8 @@ function attachListeners(){
     });
 
     $('#previous').on('click', () => showPreviousGames());
+    $('#save').on('click', () => saveGame());
+    $('#clear').on('click', () => clearGame());
 };
 
 $( document ).ready(function() {
