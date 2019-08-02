@@ -36,7 +36,7 @@ function checkWinner(){
         var firstPosition = squares[winArray[0]].innerHTML; 
         var secondPosition = squares[winArray[1]].innerHTML; 
         var thirdPosition = squares[winArray[2]].innerHTML; 
-        
+
         if (firstPosition === "X" || firstPosition === "O") {
             if (firstPosition === secondPosition && secondPosition === thirdPosition) {
                 winningToken = firstPosition; 
@@ -51,6 +51,22 @@ function checkWinner(){
     return winner; 
 }
 
+function doTurn(square) {
+    var squares = window.document.querySelectorAll('td');
+    var catsGame = 0; 
+    window.turn++;
+    updateState(square); 
+    checkWinner(); 
+    squares.forEach(function(position) {
+        if (position.innerHTML === "X" || position.innerHTML === "O") {
+            catsGame++; 
+        }
+    });
+
+    if (catsGame === 9) {
+        setMessage("Tie game.")
+    }
+}
 
 // addEventListener(){
     $( document ).ready(function() {
