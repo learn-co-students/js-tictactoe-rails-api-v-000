@@ -1,3 +1,5 @@
+var gameId = 0; 
+
 function player(){
     var currentPlayer = "O"
     if (window.turn % 2 === 0 ) {
@@ -104,27 +106,12 @@ function showPreviousGames(){
     return boardState;
 }
 
-  function jsonifyTheGame(board) {
-    return JSON.stringify({
-      "data": {
-        "id": "1",
-        "type": "games",
-        "attributes": {
-          "state": board
-        }
-      },
-      "jsonapi": {
-        "version": "1.0"
-      }
-    });
-  }
-
   function saveGame(){
+      if (gameId === 0) {
         var board = readBoardState(); 
-        var values = jsonifyTheGame(board);
-        var testing = values
-        console.log(testing)
+        values = {state: board}; 
         $.post('/games', values);
+      }
   }
 
   function clearGame(){
