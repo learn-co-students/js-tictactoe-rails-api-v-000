@@ -130,17 +130,16 @@ function showPreviousGames(){
     var savedGame; 
 
     $.get(`/games/${savedGameId}`, (game) => {
-        savedGame = game.data; 
-        debugger 
+        savedGame = game.data.attributes.state; 
     }); 
 
-    // var squares = window.document.querySelectorAll('td');
-    // counter = 0; 
-    // squares.forEach(function(position) {
-    //     position.innerHTML = savedGame[counter]; 
-    //     counter++; 
-    //     if (position.innerHTML !== "") { turn++}; 
-    // });
+    var squares = window.document.querySelectorAll('td');
+    counter = 0; 
+    squares.forEach(function(position) {
+        position.innerHTML = savedGame[counter]; 
+        counter++; 
+        if (position.innerHTML !== "") { turn++}; 
+    });
   }
 
 function attachListeners(){
