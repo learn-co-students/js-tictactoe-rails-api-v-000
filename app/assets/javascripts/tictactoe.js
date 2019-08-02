@@ -120,8 +120,8 @@ function showPreviousGames(){
   }
 
   function saveGame(){
-        var values = $(this).serialize();
-        console.log(this)
+        var board = readBoardState(); 
+        var values = jsonifyTheGame(board);
         $.post('/games', values);
   }
 
