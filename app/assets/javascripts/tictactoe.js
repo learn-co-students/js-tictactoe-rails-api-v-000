@@ -82,11 +82,26 @@ function doTurn(square) {
     }
 }
 
-function attachListeners(){
-    var squares = window.document.querySelectorAll('td');
-}
+function showPreviousGames(){
+    var gamesHtml = "<li>hello</li>"; 
+    // reset div to empty string 
+    $.get('/games', (games) => {
+        gamesData = games.data
+        var counter = 5; 
+        gamesData.forEach(function (gameObject) {
+            counter += 1; 
+            console.log(gameObject.id);
+            $("#games").append(gameObject.id);
+        });
+    });
+  };
 
-$( document ).ready(function() {
+  $("#save").on("click", function() {
+    var values = $(this).serialize();
+    $.post('/games', values);
+    });
+
+function attachListeners(){
     var squares = window.document.querySelectorAll('td');
     $(squares[0]).click(function() {
         var won = checkWinner();
@@ -152,19 +167,9 @@ $( document ).ready(function() {
         }
     });
 
-    $("#previous").on("click", function() {
-        var gamesHtml = "<li>hello</li>"; 
-        $.get("/games", function(data) {
-            gamesData = data["data"]
-            gamesData.forEach(function (gameObject) {
-                gamesHtml += "<li>" + "Itsme" + "</li>"
-            });
-        });
-        $("#games").append(gamesHtml);
-      });
+    $('#previous').on('click', () => showPreviousGames());
+};
 
-      $("#save").on("click", function() {
-        var values = $(this).serialize();
-        $.post('/games', values);
-      });
+$( document ).ready(function() {
+    attachListeners();
 });
