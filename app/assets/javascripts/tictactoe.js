@@ -64,6 +64,7 @@ function doTurn(square) {
     };
 
     if (checkWinner()) {
+        saveGame();
         window.turn = 0; 
         squares.forEach(function(position) {
             position.innerHTML = ""; 
@@ -77,6 +78,7 @@ function doTurn(square) {
     });
 
     if (catsGame === 9) {
+        saveGame();
         setMessage("Tie game.")
         window.turn = 0; 
         squares.forEach(function(position) {
@@ -86,13 +88,11 @@ function doTurn(square) {
 }
 
 function showPreviousGames(){
-    var gamesHtml = "<li>hello</li>"; 
     $("#games").empty();
     $.get('/games', (games) => {
         gamesData = games.data
         gamesData.forEach(function (gameObject) {
-                gameNode = $("#games").append($(`<button>${gameObject.id}</button><br>`));
-  //              gameNode = $("#games").append($(`<a href='https://www.freecodecamp.org/'><button>${gameObject.id}</button></a><br>`));
+                gameNode = $("#games").append($(`<button id=${gameObject.id} class= "previous">${gameObject.id}</button><br>`));
             });
     });
   };
@@ -123,6 +123,22 @@ function showPreviousGames(){
     });
 
     turn = 0; 
+  }
+
+  function loadPreviousGame(){
+    var savedGame; 
+    $.get('/game', (game) => {
+        savedGame = game; 
+        console.log(game); 
+    }); 
+
+    var squares = window.document.querySelectorAll('td');
+    counter = 0; 
+    squares.forEach(function(position) {
+        position.innerHTML = savedGame[counter]; 
+        counter++; 
+        if (position.innerHTML !== "") { turn++}; 
+    });
   }
 
 function attachListeners(){
@@ -194,6 +210,8 @@ function attachListeners(){
     $('#previous').on('click', () => showPreviousGames());
     $('#save').on('click', () => saveGame());
     $('#clear').on('click', () => clearGame());
+    $('.previous').on('click', () => loadPreviousGame());
+
 };
 
 $( document ).ready(function() {
