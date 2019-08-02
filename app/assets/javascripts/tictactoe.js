@@ -94,18 +94,40 @@ function showPreviousGames(){
     });
   };
 
+  function readBoardState() {
+    var squares = window.document.querySelectorAll('td');
+    var boardState = []; 
+    squares.forEach(function(position) {
+        boardState.push(position.innerHTML)
+    });
+    
+    return boardState;
+}
+
+  function jsonifyTheGame(board) {
+    return JSON.stringify({
+      "data": {
+        "id": "1",
+        "type": "games",
+        "attributes": {
+          "state": board
+        }
+      },
+      "jsonapi": {
+        "version": "1.0"
+      }
+    });
+  }
+
   function saveGame(){
-    $("#save").on("click", function() {
         var values = $(this).serialize();
+        console.log(this)
         $.post('/games', values);
-        });
   }
 
   function clearGame(){
-    $("#clear").on("click", function() {
         var values = $(this).serialize();
         $.post('/games', values);
-        });
   }
 
 function attachListeners(){
