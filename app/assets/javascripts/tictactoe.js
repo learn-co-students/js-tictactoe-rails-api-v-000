@@ -32,16 +32,21 @@ function checkWinner(){
         [2, 4, 6]
     ]
 
-    winCombinations.forEach(function(winArray) {
-        if (squares[winArray[0]] === "X" || squares[winArray[0]] === "O") {
-            if (squares[winArray[0]] === squares[winArray[1]] && squares[winArray[1]] === squares[winArray[2]]) {
-                winningToken = squares[winArray[0]]; 
+    function winFunction(winArray) {
+        var firstPosition = squares[winArray[0]].innerHTML; 
+        var secondPosition = squares[winArray[1]].innerHTML; 
+        var thirdPosition = squares[winArray[2]].innerHTML; 
+        
+        if (firstPosition === "X" || firstPosition === "O") {
+            if (firstPosition === secondPosition && secondPosition === thirdPosition) {
+                winningToken = firstPosition; 
                 winner = true;
-                setMessage("You're a winner!")
+                setMessage(`Player ${winningToken} Won!`)
             }
         }
-    });
-
+    }
+    
+    winCombinations.forEach(winFunction); 
 
     return winner; 
 }
