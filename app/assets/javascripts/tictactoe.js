@@ -84,13 +84,11 @@ function doTurn(square) {
 
 function showPreviousGames(){
     var gamesHtml = "<li>hello</li>"; 
-    // reset div to empty string 
+    $("#games").empty();
     $.get('/games', (games) => {
         gamesData = games.data
-        var counter = 5; 
         gamesData.forEach(function (gameObject) {
-            counter += 1; 
-            $("#games").append($(`<input type="button" value=${gameObject.id} /><br>`));
+                $("#games").append($(`<a href='https://www.freecodecamp.org/'><button>${gameObject.id}</button></a><br>`));
         });
     });
   };
