@@ -112,7 +112,9 @@ function showPreviousGames(){
     values = {state: board}; 
       if (gameId === 0) {
         $.post('/games', values);
-      }
+      } else {
+        $.patch(`/games/${gameId}`, values);
+    }
   }
 
   function clearGame(){
@@ -129,11 +131,12 @@ function showPreviousGames(){
   function loadPreviousGame(event){
     var savedGameId = event.originalEvent.originalTarget.id
     gameId = savedGameId; 
-    
+
     $.get(`/games/${savedGameId}`, (game) => {
         var savedGameBoard = game.data.attributes.state; 
         var squares = window.document.querySelectorAll('td');
         var counter = 0; 
+        turn = 0; 
 
         squares.forEach(function(position) {
             position.innerHTML = savedGameBoard[counter]; 
