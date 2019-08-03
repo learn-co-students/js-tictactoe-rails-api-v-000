@@ -113,8 +113,14 @@ function showPreviousGames(){
       if (gameId === 0) {
         $.post('/games', values);
       } else {
-          console.log("inside the patch else statement")
-        $.patch(`/games/${gameId}`, values);
+        console.log("inside the patch else statement")
+        $.ajax({
+            type: "Patch",
+            url: "/games/" + gameId,
+            data: values,
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8'
+        });
     }
   }
 
