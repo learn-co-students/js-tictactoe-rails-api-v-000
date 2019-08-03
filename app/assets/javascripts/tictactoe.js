@@ -111,7 +111,10 @@ function showPreviousGames(){
     var board = readBoardState(); 
     values = {state: board}; 
       if (gameId === 0) {
-        $.post('/games', values);
+        var posting = $.post('/games', values);
+        posting.done(function(response) {
+            gameId = response.data.id
+          });
       } else {
         $.ajax({
             type: "Patch",
@@ -126,10 +129,10 @@ function showPreviousGames(){
 
     squares.forEach(function(position) {
         position.innerHTML = ""; 
-        gameId = 0; 
     });
 
     turn = 0; 
+    gameId = 0;
   }
 
   function loadPreviousGame(event){
