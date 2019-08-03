@@ -113,6 +113,7 @@ function showPreviousGames(){
       if (gameId === 0) {
         $.post('/games', values);
       } else {
+          console.log("inside the patch else statement")
         $.patch(`/games/${gameId}`, values);
     }
   }
