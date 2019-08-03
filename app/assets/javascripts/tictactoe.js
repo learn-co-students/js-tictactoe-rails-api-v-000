@@ -120,6 +120,7 @@ function showPreviousGames(){
 
     squares.forEach(function(position) {
         position.innerHTML = ""; 
+        gameId = 0; 
     });
 
     turn = 0; 
@@ -127,11 +128,13 @@ function showPreviousGames(){
 
   function loadPreviousGame(event){
     var savedGameId = event.originalEvent.originalTarget.id
+    gameId = savedGameId; 
+    
     $.get(`/games/${savedGameId}`, (game) => {
         var savedGameBoard = game.data.attributes.state; 
         var squares = window.document.querySelectorAll('td');
         var counter = 0; 
-        
+
         squares.forEach(function(position) {
             position.innerHTML = savedGameBoard[counter]; 
             counter++; 
