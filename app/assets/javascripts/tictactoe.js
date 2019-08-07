@@ -1,4 +1,7 @@
 // Code your JavaScript / jQuery solution here
+$(document).ready(function() {
+  attachListeners();
+});
 
 var turn = 0;
 //debugger
@@ -49,7 +52,7 @@ function setMessage(message) {
       return found
     }
     });
-    console.log(result)
+    //  console.log(result)
     if (result === undefined) {
       return false;
 
@@ -67,39 +70,65 @@ function setMessage(message) {
     }
   }
 
+  function doTurn(elementThatWasClicked) {
+
+    updateState(elementThatWasClicked);
+    turn++;
+    // checkWinner();
+    if (checkWinner()) {
+      resetBoard();
+    } else if (turn === 9 && !checkWinner()){
+      setMessage('Tie game.');
+      resetBoard();
+    } else if (isTaken()){
+         player();
+    }
+  }
+
+  function resetBoard() {
+    turn = 0;
+    $("td").empty();
+  }
+
+function attachListeners(){
+  // code to be executed goes here
+  $("td").on("click", function(event){
+  //  console.log(this)
+  //  console.log(event)
+  doTurn(this);
+
+  });
+}
+
+function isTaken() {
+  var aElement = player();
+  if (aElement === 'X' || aElement === 'O') {
+    var position = player();
+      return position;
+  }
+}
+
+function saveGame(){
+  var gameBoard = {state: board}
+
+  //var board = access all of text inside td for each square
+  var board = $("td");
+  $("td").map(function( key, value ) {
+    value.text //console.log( value );
+  });
+  // var gameBoard = {state: board}
+  // check if their is a current game
+  // if currnent game then do a patch request - to send the game board data
+  // - the url is the url of the current game
+  // if not do a post request - function
+  // - updating current game
+
+  // create a button for this game and append to our #games
+
+}
+//create current game variable that starts at 0
 
 
-
-
-
-
-
-// step 1: gather board data from td element.
-  // $("div#message").append(message);
-  // td.innerText
-
-// step 2: iterate through the win combinations to
-// see if the board data contains any wins
-
-  //debugger
-//   WIN_COMBINATIONS = [
-//   [0,1,2], // Top row
-//   [3,4,5],  // Middle row
-//   [6,7,8],  // bottom row
-//   [0,3,6], // Left column
-//   [1,4,7],  // Middle column
-//   [2,5,8],  // Right column
-//   [2,4,6], // right diagonal
-//   [0,4,8] // left diagonal
-// ]
-//   if ( WIN_COMBINATIONS[0][6] || WIN_COMBINATIONS[0][7] ) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
-
-// debugger
-  // var aMessage = document.getElementById("div#message");
-  // var node = document.createTextNode(message);
-  // aMessage.appendChild(node);
+$("td").each(function( key, value ) {
+  value.text //console.log( value );
+});
