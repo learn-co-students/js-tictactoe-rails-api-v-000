@@ -40,7 +40,7 @@ function setMessage(message) {
   //     newArray.push($("td")[i].innerHTML);
   //   }
     var found = false
-    WIN_COMBINATIONS.find(function(combo) {
+  var result =  WIN_COMBINATIONS.find(function(combo) {
       if (board[combo[0]] !== '' && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] ) {
       found = true
       return found
@@ -49,18 +49,22 @@ function setMessage(message) {
       return found
     }
     });
+    console.log(result)
+    if (result === undefined) {
+      return false;
 
-    token = player()
-    var message = ''
-    if (token === 'X') {
-      message = 'Player X Won!'
-      setMessage(message);
-    } else if(token === 'O') {
-      message = 'Player O Won!'
-      setMessage(message);
+    } else {
+      var message = ''
+      if (board[result[0]] === 'X') {
+        message = 'Player X Won!'
+        setMessage(message);
+        return true;
+      } else if(board[result[0]] === 'O') {
+        message = 'Player O Won!'
+        setMessage(message);
+        return true;
+      }
     }
-    //debugger
-  return found;
   }
 
 
