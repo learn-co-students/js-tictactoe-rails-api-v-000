@@ -49,6 +49,17 @@ function setMessage(message) {
       return found
     }
     });
+
+    token = player()
+    var message = ''
+    if (token === 'X') {
+      message = 'Player X Won!'
+      setMessage(message);
+    } else if(token === 'O') {
+      message = 'Player O Won!'
+      setMessage(message);
+    }
+    //debugger
   return found;
   }
 
