@@ -41,10 +41,12 @@ function setMessage(message) {
   //   }
     var found = false
     WIN_COMBINATIONS.find(function(combo) {
-      if (!board[combo[0]] === ' ' && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] ) {
+      if (board[combo[0]] !== '' && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]] ) {
       found = true
+      return found
     } else {
       found = false
+      return found
     }
     });
   return found;
