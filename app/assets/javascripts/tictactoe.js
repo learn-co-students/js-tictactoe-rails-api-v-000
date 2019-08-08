@@ -1,8 +1,12 @@
 // Code your JavaScript / jQuery solution here
 var turn = 0
 var board = {};
+var currentGame = 0;
 const WINNING_COMBOS = [[0,1,2], [3,4,5], [6,7,8], [0,3,6],
                         [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+$(document).ready(function() {
+  attachListeners();
+})
 
 function player() {
   if(turn % 2 == 0){
@@ -52,10 +56,44 @@ function doTurn(square) {
   }
 }
 
+function saveGame() {
+  var state = [];
+  var gameData;
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+  gameDate = {state: state};
+  if(currentGame) {
+    $.ajax({
+  type: "PATCH",
+  url: `/games/${currentGame}`,
+  data: gameData
+});
+}else {
+  $.post('/games', gameData, function(game) {
+    currentGame = game.data.id;
+  });
+}
+}
+
+function previousGame() {
+  $.get('/games', function(games) {
+    for(i in games) {
+      debugger;
+    }
+  })
+}
+
 function attachListeners() {
   $('td').on('click', function() {
-    if($(this).text === "") {
+    if($(this).text === "" && !checkWinner()) {
       doTurn(this);
     }
+  });
+  $('#save').on('click', function() {
+    saveGame();
+  });
+  $('#previous').on('click', function() {
+    previousGame();
   })
 }
