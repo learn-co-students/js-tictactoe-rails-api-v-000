@@ -108,7 +108,7 @@ function saveGame() {
     }
 }
 
-function showPreviousGame() {
+function showPreviousGames() {
     $('#games').empty();
     $.get('/games', (savedGames) => {
       if (savedGames.data.length) {
