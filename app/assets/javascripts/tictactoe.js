@@ -17,12 +17,8 @@ function player() {
 function updateState(td) {
   //debugger
 var token = player();
-   if (!td.innerText) {
-    turn+=1;
-     console.log(turn)
+
      td.innerText = token
-   }
-  //$(td).text(token)
 }
 
 function setMessage(message) {
@@ -80,7 +76,8 @@ function setMessage(message) {
   function doTurn(elementThatWasClicked) {
 
     updateState(elementThatWasClicked);
-    debugger
+    turn+=1;
+  //  debugger
     //turn++;
     // checkWinner();
     if (checkWinner()) {
@@ -103,7 +100,9 @@ function attachListeners(){
   $("td").on("click", function(event){
   //  console.log(this)
   //  console.log(event)
-  doTurn(this);
+  if (!checkWinner() && !$.text(this)) {
+    doTurn(this);
+  }
 
   });
 }

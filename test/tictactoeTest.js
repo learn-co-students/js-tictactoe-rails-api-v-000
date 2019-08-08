@@ -300,15 +300,15 @@ describe('Gameplay', () => {
     resetFixtures();
   });
 
-  // it('Users cannot place a token in a square that is already taken', () => {
-  //   squares[0].innerHTML = 'X';
-  //   window.turn = 1;
-  //
-  //   squares[0].click();
-  //
-  //   expect(squares[0].innerHTML).to.equal('X');
-  //   expect(window.turn).to.equal(1);
-  // });
+  it('Users cannot place a token in a square that is already taken', () => {
+    squares[0].innerHTML = 'X';
+    window.turn = 1;
+
+    squares[0].click();
+
+    expect(squares[0].innerHTML).to.equal('X');
+    expect(window.turn).to.equal(1);
+  });
 
   it('Users cannot play any turns once a game is won or tied', () => {
     populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
@@ -325,25 +325,25 @@ describe('Gameplay', () => {
     expect(window.turn).to.equal(5);
   });
 
-  // it('Users can play multiple games', () => {
-  //   sinon.useFakeXMLHttpRequest();
-  //
-  //   populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-  //   //  X | O | X
-  //   // -----------
-  //   //  X | O | X
-  //   // -----------
-  //   //  O |   | O
-  //
-  //   window.turn = 8;
-  //   window.doTurn(squares[7]);
-  //
-  //   window.doTurn(squares[4]);
-  //
-  //   const board = Array.from(squares).map(s => s.innerHTML);
-  //
-  //   expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', '', '']);
-  // });
+  it('Users can play multiple games', () => {
+    sinon.useFakeXMLHttpRequest();
+
+    populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
+    //  X | O | X
+    // -----------
+    //  X | O | X
+    // -----------
+    //  O |   | O
+
+    window.turn = 8;
+    window.doTurn(squares[7]);
+
+    window.doTurn(squares[4]);
+
+    const board = Array.from(squares).map(s => s.innerHTML);
+
+    expect(board).to.have.ordered.members(['', '', '', '', 'X', '', '', '', '']);
+  });
 });
 
 describe('AJAX interactions with the Rails API', () => {
