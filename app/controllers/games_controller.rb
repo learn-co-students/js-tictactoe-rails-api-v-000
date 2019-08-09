@@ -1,5 +1,6 @@
 class GamesController < ApplicationController
   before_action :set_game, only: [:show, :update]
+  skip_before_action :verify_authenticity_token
 
   def index
     games = Game.all
@@ -29,4 +30,5 @@ class GamesController < ApplicationController
   def set_game
     @game = Game.find(params[:id])
   end
+
 end
