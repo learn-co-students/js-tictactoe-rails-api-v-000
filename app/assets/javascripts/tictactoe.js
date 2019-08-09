@@ -62,7 +62,7 @@ function saveGame() {
   $('td').text((index, square) => {
     state.push(square);
   });
-  gameDate = {state: state};
+  gameData = {state: state};
   if(currentGame) {
     $.ajax({
   type: "PATCH",
@@ -77,9 +77,12 @@ function saveGame() {
 }
 
 function previousGame() {
-  $.get('/games', function(games) {
-    for(i in games) {
-      debugger;
+  $.getJSON('/games', function(games) {
+    for(i in games.data) {
+      $('#games').append(`<button id="gameId-${games.data[i].id}">Game${games.data[i].id}</button><br>`);
+      $("#gameId-" + games.data[i].id).on('click', function () {
+        return board[games.data[i]] = games.data[i].attributes.state;
+      })
     }
   })
 }
