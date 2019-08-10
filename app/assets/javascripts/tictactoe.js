@@ -83,9 +83,11 @@ function setMessage(message) {
     //turn++;
     // checkWinner();
     if (checkWinner()) {
+      saveGame();
       resetBoard();
-    } else if (turn === 9 && !checkWinner()){
+    } else if (turn === 9 ){
       setMessage('Tie game.');
+      saveGame();
       resetBoard();
     } else if (isTaken()){
          player();
@@ -95,6 +97,7 @@ function setMessage(message) {
   function resetBoard() {
     $("td").empty();
     turn = 0;
+    currentGame = 0;
   }
 
 function attachListeners(){
@@ -118,6 +121,13 @@ function attachListeners(){
   $("#previous").on("click", function(event){
     //console.log(event)
     previousGames();
+  //  console.log(event)
+
+  });
+
+  $("#clear").on("click", function(event){
+    //console.log(event)
+    clearGame();
   //  console.log(event)
 
   });
@@ -215,7 +225,6 @@ function previousGames() {
 
         if (response.data.length) {
           var aUl = document.createElement("ul");
-        // queary selector
           $("#games").empty();
         //  $("#games").append(aUl);
           response.data.forEach(function(game) {
@@ -239,40 +248,17 @@ function previousGames() {
 function reloadGame(gameId){
   $.get(`/games/${gameId}`, function(response){
     const theState = response.data.attributes.state;
-    //debugger
-    //arr = []
     var i = 0;
     for (var y=0; y < 3; y++) {
       for (var x=0; x < 3; x++) {
-        //for ( i of theState) {
-          //document.querySelector(`[data-x="1"][data-y="1"]`).innerHTML = theState[i]
           document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = theState[i]
-          //$("td")[theState[0]]
-          //console.log(i)
-         //debugger
-
         turn = theState.join("").length
         currentGame = gameId
-          //arr.push(x)
           i++;
-      // console.log(theState[i])
-        //}
       }
     }
   });
 }
-// var x;
-// for ( x of theState) {
-  //   //debugger
-  //   document.write(x + "<br >");
-  //  //console.log(x);
-  // }
-  // var y;
-  // for (y in theState) {
-    // // console.log(y);
-    // }
-
-
 // CLEAR - clear the game board && start a completely new game
 // BEHAVOR of clear //
 // (1) button#save - game persisted to the database.
@@ -281,35 +267,17 @@ function reloadGame(gameId){
 // (3) button#save -  ^ this game persisted to the database.
 // expected result - two games should have been persisted to the database //
 function clearGame() {
-
+  // alert("Hello!");
+  resetBoard();
+  // var aBoard = $("td").map(function( key, value ) {
+  //   return value.innerText
+  //    console.log( value );
+  // });
+  // var board = Array.from(aBoard)
+  // var gameBoard = {state: board}
+  //   $.post("/games", { state: board },
+  //   function(board){
+  //     currentGame = board.data.id
+  //   }
+  // );
 }
-////////////////////////////////
-///////// crap code /////////////
-////////////////////////////////
-//console.log("Data: " + data);
-  //  alert("Data: " + data);
-//  function getGameState(event){
-
-      //event.target.dataset.gameId
-        //response.data
-        //The filter() method creates a new array with all elements that
-        // pass the test implemented by the provided function.
-
-    //   var gameState = response.data.filter(game => event.target.dataset.gameId == game.id);
-    //   // $("td").text((index, square) => board[index] = square)
-    //  gameState.map(function( key, value ) {
-    //     return value.innerText
-    //      console.log( value );
-    //   });
-    // }
-
-
-
-    // var allbuttonElements = $( "button" );
-    // var allButtons = $( "#games" ).find( allbuttonElements );
-    // var allButtons = allButtons.find( allbuttonElements );
-  //  debugger
-    ///if (parseInt(btn.innerText) == parseInt(game.id)) {
-    ///} else {
-      // $( "#games" ).append(btn)
-    ///}
