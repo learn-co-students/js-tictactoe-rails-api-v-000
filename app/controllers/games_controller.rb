@@ -11,8 +11,13 @@ class GamesController < ApplicationController
   end
 
   def create
-    game = Game.create(game_params)
-    render json: game, status: 201
+    game = Game.find(params[:id]
+    if game != nil
+      redirect_to game_update_path
+    else
+        new_game = Game.create(game_params)
+        render json: new_game, status: 201
+    end
   end
 
   def update
