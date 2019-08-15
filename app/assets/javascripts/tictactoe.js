@@ -43,15 +43,18 @@ function checkWinner() {
 function emptyBoard() {
   $('td').empty();
   turn = 0;
+  currentGame = 0;
 }
 
 function doTurn(square) {
   updateState(square);
   turn++;
   if(checkWinner()) {
+    saveGame();
     emptyBoard();
   } else if (turn === 9) {
     setMessage("Tie game.")
+    saveGame();
     emptyBoard();
   }
 }
@@ -65,31 +68,53 @@ function saveGame() {
   gameData = {state: state};
   if(currentGame) {
     $.ajax({
-  type: "PATCH",
-  url: `/games/${currentGame}`,
-  data: gameData
-});
-}else {
-  $.post('/games', gameData, function(game) {
-    currentGame = game.data.id;
-  });
-}
+      type: "PATCH",
+      url: `/games/${currentGame}`,
+      data: gameData
+    });
+  }else {
+    $.post('/games', gameData, function(game) {
+      currentGame = game.data.id;
+      $('#games').append(`<button id= "gameId-${currentGame}">Game${currentGame}</button><br>`)
+      $("#gameId-" + currentGame).on('click', function() {
+        loadBoard(currentGame);
+      })
+    });
+  }
 }
 
 function previousGame() {
+  $('#games').empty();
   $.getJSON('/games', function(games) {
     for(i in games.data) {
-      $('#games').append(`<button id="gameId-${games.data[i].id}">Game${games.data[i].id}</button><br>`);
-      $("#gameId-" + games.data[i].id).on('click', function () {
-        return board[games.data[i]] = games.data[i].attributes.state;
-      })
-    }
-  })
+      var gameId = games.data[i].id
+      $('#games').append(`<button id="gameId-${gameId}">Game${gameId}</button><br>`);
+      $("#gameId-" + gameId).on('click', function () {
+      loadBoard(gameId);
+    });
+  }
+});
 }
+
+function loadBoard(gameId) {
+  $.get(`/games/${gameId}`, function(game) {
+    var state = game.data.attributes.state;
+    var index = 0;
+    for (var y = 0; y < 3; y++) {
+      for (var x = 0; x < 3; x++) {
+        document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
+        index++;
+      }
+    }
+  });
+}
+
+
 
 function attachListeners() {
   $('td').on('click', function() {
-    if($(this).text === "" && !checkWinner()) {
+
+    if(this.innerHTML === "" && !checkWinner()) {
       doTurn(this);
     }
   });
@@ -98,5 +123,8 @@ function attachListeners() {
   });
   $('#previous').on('click', function() {
     previousGame();
-  })
+  });
+  $('#clear').on('click', function() {
+    emptyBoard();
+  });
 }
