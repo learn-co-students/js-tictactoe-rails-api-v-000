@@ -75,10 +75,11 @@ function saveGame() {
   }else {
     $.post('/games', gameData, function(game) {
       currentGame = game.data.id;
-      $('#games').append(`<button id= "gameId-${currentGame}">Game${currentGame}</button><br>`)
-      $("#gameId-" + currentGame).on('click', function() {
+      debugger;
+      $('#games').append(`<button id="gameId-${currentGame}">Game${currentGame}</button><br>`)
+      $("#gameId-" + currentGame).on('click', function () {
         loadBoard(currentGame);
-      })
+      });
     });
   }
 }
@@ -90,25 +91,32 @@ function previousGame() {
       var gameId = games.data[i].id
       $('#games').append(`<button id="gameId-${gameId}">Game${gameId}</button><br>`);
       $("#gameId-" + gameId).on('click', function () {
-      loadBoard(gameId);
-    });
-  }
-});
+        loadGame(gameId);
+      });
+    }
+  });
 }
 
-function loadBoard(gameId) {
+function loadGame(gameId){
   $.get(`/games/${gameId}`, function(game) {
+    console.log(gameId);
     var state = game.data.attributes.state;
     var index = 0;
+    var id = game.data.id;
+
     for (var y = 0; y < 3; y++) {
       for (var x = 0; x < 3; x++) {
         document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = state[index];
         index++;
       }
     }
+    currentGame = id;
+    turn = state.join('').length;
+    if (!checkWinner() && turn === 9) {
+      setMessage('Tie game.')
+    }
   });
 }
-
 
 
 function attachListeners() {
