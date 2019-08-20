@@ -1,0 +1,22 @@
+body {
+  background: cornflowerblue;
+  font-size: 1.4rem;
+  color: white;
+}
+#wrapper {
+  text-align: center;
+}
+table {
+  max-width: 700px;
+  margin: 1rem auto;
+  border-color: white;
+  background: white;
+}
+
+td {
+  border: 2px solid white;
+  background: cornflowerblue;
+  box-sizing: border-box;
+  color: white;
+  font-family: Arial, sans-serif;
+}
