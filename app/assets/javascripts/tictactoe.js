@@ -8,3 +8,7 @@ function player() {
     return 'O';
   }
 };
+
+function updateState(squares){
+  squares.innerHTML = player();
+}
