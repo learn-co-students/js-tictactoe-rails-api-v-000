@@ -1,3 +1,5 @@
+require 'pry'
+
 class GamesController < ApplicationController
   before_action :set_game, only: [:show, :update]
 
@@ -12,11 +14,13 @@ class GamesController < ApplicationController
 
   def create
     game = Game.create(game_params)
+    #binding.pry
     render json: game, status: 201
   end
 
   def update
     @game.update(game_params)
+    #binding.pry
     render json: @game
   end
 
