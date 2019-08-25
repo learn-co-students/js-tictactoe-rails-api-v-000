@@ -74,7 +74,8 @@ function saveGame() {
   // we need to check if the game is in that db, if it is, we need to update the state, if it's not we need to create it
   $.get('games/', function(data) {
     var id = data["data"][0]["id"]
-    // if id = null? => create, else update 
+    // var state = data["data"][0]["state"]????
+    // if id = null? => create, else update
     debugger
   })
 
