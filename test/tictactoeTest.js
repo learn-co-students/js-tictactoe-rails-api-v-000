@@ -1,3 +1,4 @@
+//THESE TESTS PASS WHEN OPENING test/fixtures/index-test.html then running mocha.run() in the console, but not by doing npm test
 try {
   // If window is defined, it means we're running the tests in the browser, so we should use Mocha's BDD interface.
   window.document;
@@ -46,6 +47,7 @@ describe('tictactoe.js', () => {
     });
 
     it('returns "X" when the turn count is even', () => {
+      // debugger;
       expect(window.player()).to.equal('X');
     });
 
@@ -114,46 +116,47 @@ describe('tictactoe.js', () => {
 
     it('returns true when a player wins horizontally', () => {
       populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
-      //  X | X | X 
+      //  X | X | X
       // -----------
-      //    |   |   
+      //    |   |
       // -----------
-      //  O | O |   
+      //  O | O |
 
       expect(window.checkWinner()).to.be.true;
     });
 
     it('returns true when a player wins diagonally', () => {
       populateBoard(['X', 'X', 'O', '', 'O', '', 'O', 'X', '']);
-      //  X | X | O 
+      //  X | X | O
       // -----------
-      //    | O |   
+      //    | O |
       // -----------
-      //  O | X |   
+      //  O | X |
 
       expect(window.checkWinner()).to.be.true;
     });
 
     it('returns true when a player wins vertically', () => {
       populateBoard(['O', '', 'X', '', 'O', 'X', 'O', '', 'X']);
-      //  O |   | X 
+      //  O |   | X
       // -----------
-      //    | O | X 
+      //    | O | X
       // -----------
-      //  O |   | X 
+      //  O |   | X
 
       expect(window.checkWinner()).to.be.true;
     });
 
+    // passes in mocha browser, but not in learn
     it('returns false if no winning combination is present on the board', () => {
       expect(window.checkWinner()).to.equal(false);
 
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', 'X', 'O']);
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  O | X | O 
+      //  O | X | O
 
       expect(window.checkWinner()).to.equal(false);
     });
@@ -162,11 +165,11 @@ describe('tictactoe.js', () => {
       const spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['', '', '', 'X', 'X', 'X', 'O', 'O', '']);
-      //    |   |   
+      //    |   |
       // -----------
-      //  X | X | X 
+      //  X | X | X
       // -----------
-      //  O | O |   
+      //  O | O |
 
       window.checkWinner();
 
@@ -177,11 +180,11 @@ describe('tictactoe.js', () => {
       const spy = sandbox.stub(window, 'setMessage');
 
       populateBoard(['O', '', '', 'X', 'O', 'X', 'X', '', 'O']);
-      //  O |   |   
+      //  O |   |
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X |   | O 
+      //  X |   | O
 
       window.checkWinner();
 
@@ -229,11 +232,11 @@ describe('tictactoe.js', () => {
       const spy = sandbox.spy(window, 'setMessage');
 
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  O |   | O 
+      //  O |   | O
 
       window.turn = 8;
       window.doTurn(squares[7]);
@@ -245,11 +248,11 @@ describe('tictactoe.js', () => {
       sinon.useFakeXMLHttpRequest();
 
       populateBoard(['X', 'X', 'O', 'X', 'O', 'X', '', 'O', 'O']);
-      //  X | X | O 
+      //  X | X | O
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //    | O | O 
+      //    | O | O
 
       window.turn = 8;
       window.doTurn(squares[6]);
@@ -313,11 +316,11 @@ describe('Gameplay', () => {
   it('Users cannot play any turns once a game is won or tied', () => {
     populateBoard(['X', 'X', 'X', '', '', '', 'O', 'O', '']);
     window.turn = 5;
-    //  X | X | X 
+    //  X | X | X
     // -----------
-    //    |   |   
+    //    |   |
     // -----------
-    //  O | O |   
+    //  O | O |
 
     squares[4].click();
 
@@ -329,11 +332,11 @@ describe('Gameplay', () => {
     sinon.useFakeXMLHttpRequest();
 
     populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-    //  X | O | X 
+    //  X | O | X
     // -----------
-    //  X | O | X 
+    //  X | O | X
     // -----------
-    //  O |   | O 
+    //  O |   | O
 
     window.turn = 8;
     window.doTurn(squares[7]);
@@ -578,11 +581,11 @@ describe('AJAX interactions with the Rails API', () => {
 
     it('auto-saves tie games', () => {
       populateBoard(['X', 'O', 'X', 'X', 'O', 'X', 'O', '', 'O']);
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  X | O | X 
+      //  X | O | X
       // -----------
-      //  O |   | O 
+      //  O |   | O
 
       window.turn = 8;
       window.doTurn(squares[7]);
@@ -594,11 +597,11 @@ describe('AJAX interactions with the Rails API', () => {
     it('auto-saves won games', () => {
       populateBoard(['X', 'X', '', '', '', '', 'O', 'O', '']);
       window.turn = 4;
-      //  X | X |   
+      //  X | X |
       // -----------
-      //    |   |   
+      //    |   |
       // -----------
-      //  O | O |   
+      //  O | O |
 
       squares[2].click();
 
