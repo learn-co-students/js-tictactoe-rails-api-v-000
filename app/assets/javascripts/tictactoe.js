@@ -68,30 +68,16 @@ function doTurn(square) {
 }
 
 function saveGame() {
-  var state = [];
-
-
-  // we need to check if the game is in that db, if it is, we need to update the state, if it's not we need to create it
   $.get('games/', function(data) {
-    var id = data["data"][0]["id"]
-    // var state = data["data"][0]["state"]????
-    // if id = null? => create, else update
-    debugger
-  })
+    var state = data["data"]["0"]["attributes"]["state"];
+    $('td').text((index, square) => state[index] = square);
+    var dataId = data["data"]["0"]["id"];
+    // We need to pass params with the $.post()
+      $.post(`/games`,function(data, status){
+        console.log(data, status)
 
-  //$('td').text((index, square) => state[index] = square)
-  //debugger
-
-  //if (currentGame) {
-  //  $.ajax({
-  //    type: 'PATCH',
-  //    url: `/games/${currentGame}`,
-  //    data: state
-  //  });
-  //});
-
-
-
+      })
+  })  
 }
 
 function resetBoard() {
@@ -120,10 +106,9 @@ function previousGame(){
     var divGames = document.getElementById('games');
     var anchorTag = document.createElement('a');
     anchorTag.setAttribute('href', '#');
-    anchorTag.innerText = "I'm here!";
-    // anchorTag.addcontenttothis = data.somedata
+    anchorTag.innerText = "Game:" + data["data"][0];
     console.log(data)
-    if (data == false) {
+    if (data == true) {
       divGames.appendChild(anchorTag)
     }
   })
