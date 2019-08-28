@@ -68,17 +68,19 @@ function doTurn(square) {
 }
 
 function saveGame() {
-  $.get('games/', function(data) {
-    var state = data["data"]["0"]["attributes"]["state"];
-    $('td').text((index, square) => state[index] = square);
-    var dataId = data["data"]["0"]["id"];
-    // We need to pass params with the $.post()
-      $.post(`/games`,function(data, status){
-        console.log(data, status)
-
-      })
-  })  
+  var state = []
+  $('td').text((index, square) => state[index] = square);
+  $.post(`/games`,function(data, status){
+    var gameId = data["data"]["id"];
+    debugger
+      if (Number.isInteger(gameId)) {
+        data["data"]["attributes"]["state"] = state;
+      } else {
+        // need to make a $.patch - don't think it works with patch
+      }
+  })
 }
+
 
 function resetBoard() {
  $('td').empty();
