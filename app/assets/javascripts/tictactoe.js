@@ -61,14 +61,12 @@ function checkWinner() {
     }
 }
 
-
 function resetGame() {
   $('td').each(function(index, el) {
     $(el).text('');
   })
   turn = 0;
 }
-
 
 function getState() {
   var state = []
@@ -134,7 +132,9 @@ function displayGames() {
       if (data['data'].length > 0) {
         var gamesHTML = ''
         for (var i = 0; i < data['data'].length; i++) {
-          gamesHTML += '<button>' + data['data'][i]['id'] + '</button>'
+          var date = new Date(data['data'][i]['attributes']['updated-at']).toLocaleString();
+          gamesHTML += '<button>' + data['data'][i]['id'] + ' - ' + date + '</button>'
+          console.log(data)
         }
         $('#games').html(gamesHTML)
         $('#games button').click(function(event) {
