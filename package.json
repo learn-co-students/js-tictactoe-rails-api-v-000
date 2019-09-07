@@ -31,5 +31,9 @@
     "mocha": "^3.4.2",
     "mocha-multi": "^0.11.0",
     "sinon": "^2.3.4"
+  },
+  "dependencies": {
+    "es6-promise": "^4.2.8",
+    "isomorphic-fetch": "^2.2.1"
   }
 }
