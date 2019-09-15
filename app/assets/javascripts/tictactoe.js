@@ -13,16 +13,18 @@ const WINNING_COMBOS = [
   [2, 4, 6]
 ];
 
+var turn = 0;
 var currentGame = 0;
 
-var turn = 0;
-function player() {
-  if (turn % 2 === 0) {
-    return "X";
-  } else {
-    return "O";
-  }
-}
+// function player() {
+//   if (turn % 2 === 0) {
+//     return "X";
+//   } else {
+//     return "O";
+//   }
+// }
+
+var player = () => (turn % 2 === 0 ? "O" : "X");
 
 function updateState(square) {
   $(square).text(player());
