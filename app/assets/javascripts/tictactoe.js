@@ -9,7 +9,7 @@ $(document).ready(function() {
 
 
 function player() {
-  if (turn % 2) {
+  if (turn % 2) { //if there is a remainder, meaning its off, do this...and 0 isnt truthy in js
     return 'O'
   } else {
     return 'X'
