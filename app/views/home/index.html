@@ -1,25 +1,44 @@
+<!-- table uses a coordinate system 
+  (0,0) for upper-left
+  (1,0) for upper-middle
+  (2,0) for upper-right etc
+
+  use jQuery to add text to specific cell when clicked
+-->
+
 <table border="1" cellpadding="40">
-	<tr>
-		<td data-x="0" data-y="0"></td>
-		<td data-x="1" data-y="0"></td>
-		<td data-x="2" data-y="0"></td>
-	</tr>
-	<tr>
-		<td data-x="0" data-y="1"></td>
-		<td data-x="1" data-y="1"></td>
-		<td data-x="2" data-y="1"></td>
-	</tr>
-	<tr>
-		<td data-x="0" data-y="2"></td>
-		<td data-x="1" data-y="2"></td>
-		<td data-x="2" data-y="2"></td>
-	</tr>
+  <tr>
+    <td data-x="0" data-y="0"></td>
+    <td data-x="1" data-y="0"></td>
+    <td data-x="2" data-y="0"></td>
+  </tr>
+  <tr>
+    <td data-x="0" data-y="1"></td>
+    <td data-x="1" data-y="1"></td>
+    <td data-x="2" data-y="1"></td>
+  </tr>
+  <tr>
+    <td data-x="0" data-y="2"></td>
+    <td data-x="1" data-y="2"></td>
+    <td data-x="2" data-y="2"></td>
+  </tr>
 </table>
 
-<div id="games"></div>
+<div class="grid">
+  <div>
+    <button class="action-button" id="previous">Show Previous Games</button>
+  </div>
+  <div>
+    <button class="action-button" id="save">Save Game</button>
+  </div>
+  <div class="span-col-2">
+    <button class="action-button" id="clear">Clear Current Game</button>
+  </div>
+</div>
 
-<div id="message"></div>
+<div class="buttonMenu">
+  <div id="message"></div>
 
-<button id="save">Save Game</button>
-<button id="previous">Show Previous Games</button>
-<button id="clear">Clear Current Game</button>
+  <div id="games"></div>
+
+</div>
