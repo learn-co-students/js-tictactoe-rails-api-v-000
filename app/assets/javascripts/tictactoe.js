@@ -15,11 +15,37 @@ window.onload = function () {
 };
 
 function attachListeners () {
+  // Add event listeners to tic tac toe board squares
   var squares = window.document.querySelectorAll('td');
-  // debugger;
+  // for (let i = 0; i < 9; i++) {
+  //   squares[i].addEventListener('click', function (e) {
+  //     // IE 8 stuff :(
+  //     e = e || window.event;
+  //   	var square = e.target || e.srcElement;
+  //     doTurn(square);
+  //   });
+
+  // Hook up gmae buttons
+  document.getElementById("save").addEventListener('click', saveGame);
+  document.getElementById("previous").addEventListener('click', previousGame);
+  document.getElementById("clear").addEventListener('click', clearGame);
+}
+
+function saveGame () {
+  console.log("save button pressed")
+}
+
+function previousGame () {
+  console.log("previous button pressed")
+}
+
+function clearGame () {
+  turn = 0;
   for (let i = 0; i < 9; i++) {
-    squares[i].addEventListener('click', doTurn);
+    squares[i].innerHTML = "";
   }
+  setMessage("");
+  console.log("clear button pressed")
 }
 
 function player () {
@@ -28,32 +54,64 @@ function player () {
 
 function updateState (square) {
   var playerToken = player();
-  if (square.innerHTML.length == 0) {
+  var squares = window.document.querySelectorAll('td');
+
+  if (square.innerHTML.length == 0 && turn <= 9) {
     square.innerHTML = playerToken;
+  } else if (turn > 9){
+
   }
 }
 
 function checkWinner () {
   var squares = window.document.querySelectorAll('td');
-  // add every possible win to nested array as number
-  // add up every item in array if == 3 then "X" won if === 8 then "O" won
-  //
-  var possibleWins = []
+  var winner = "";
+  var winCombinations = [
+   [0,1,2],
+   [3,4,5],
+   [6,7,8],
+   [0,3,6],
+   [1,4,7],
+   [2,5,8],
+   [0,4,8],
+   [2,4,6]
+ ]
 
-  setMessage();
+ winCombinations.forEach(checkCombination);
+
+ function checkCombination (combo, index) {
+   if (squares[combo[0]].innerHTML == "X" && squares[combo[1]].innerHTML == "X" && squares[combo[2]].innerHTML == "X") {
+     winner = "X"
+   } else if (squares[combo[0]].innerHTML == "O" && squares[combo[1]].innerHTML == "O" && squares[combo[2]].innerHTML == "O") {
+     winner = "O"
+   }
+ }
+
+ if (winner == "X" || winner == "O") {
+   setMessage(`Player ${winner} Won!`);
+   return true;
+ } else {
+   return false;
+ }
 }
 
 function setMessage (message) {
-
+  document.getElementById("message").innerHTML = message;
 }
 
-function doTurn (e) {
+function doTurn (square) {
   // IE 8 stuff :(
-  e = e || window.event;
-	var square = e.target || e.srcElement;
-
+  // e = e || window.event;
+	// var square = e.target || e.srcElement;
+  // debugger;
   // Back to regular stuff
-  turn += 1;
+  turn++;
   updateState(square);
-  checkWinner();
+  var gameWon = checkWinner();
+  if (gameWon == true) {
+    turn = 0;
+    clearGame();
+  } else if (turn > 8) {
+    setMessage("Tie game.");
+  }
 }
