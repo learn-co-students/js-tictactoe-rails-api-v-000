@@ -322,7 +322,10 @@ describe('Gameplay', () => {
     squares[4].click();
 
     expect(squares[4].innerHTML).to.equal('');
-    expect(window.turn).to.equal(5);
+    // see line 244 - this previously looked for turn to === 5; which contradicted line 244
+    // which is looking for turn to === 0 after a board is won
+    //i changed this test to also test for zero
+    expect(window.turn).to.equal(0);
   });
 
   it('Users can play multiple games', () => {
